@@ -32,24 +32,26 @@ const { navLabel, glow, cards, cta } = data;
     <!-- Expanding navigation (aligned with the cards below) -->
     <div
       data-care-nav
-      class="co-nav flex w-full shrink-0 flex-nowrap items-center justify-start gap-1 overflow-x-auto rounded-[40px] bg-black/[0.04] p-2 backdrop-blur-md"
+      class="co-nav flex w-full shrink-0 flex-nowrap items-center justify-start gap-6 overflow-x-auto rounded-[40px] bg-black/[0.04] py-2 pl-8 pr-2 backdrop-blur-md"
     >
-      <span class="shrink-0 px-6 py-3 text-sm font-semibold uppercase tracking-[-0.01em]">
+      <span class="shrink-0 text-sm font-semibold uppercase tracking-[-0.01em] text-black">
         {navLabel}
       </span>
-      {
-        cards.map((c, i) => (
-          <button
-            type="button"
-            data-tab
-            data-idx={i}
-            class="co-tab max-w-[200px] shrink-0 rounded-[40px] px-6 py-3 text-center text-sm font-semibold uppercase leading-tight tracking-[-0.01em] transition-colors"
-            style={`transition-delay:${120 + i * 90}ms`}
-          >
-            {c.tab}
-          </button>
-        ))
-      }
+      <div class="flex shrink-0 items-stretch gap-2">
+        {
+          cards.map((c, i) => (
+            <button
+              type="button"
+              data-tab
+              data-idx={i}
+              class="co-tab flex max-w-[220px] shrink-0 items-center justify-center rounded-[40px] border border-gray-200 px-8 py-4 text-center text-sm font-semibold uppercase leading-tight tracking-[-0.01em] transition-colors"
+              style={`transition-delay:${120 + i * 90}ms`}
+            >
+              {c.tab}
+            </button>
+          ))
+        }
+      </div>
     </div>
 
     <!-- Viewport clips the track; the track is translated (and scaled to fit)
