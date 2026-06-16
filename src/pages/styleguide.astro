@@ -1,20 +1,97 @@
 ---
 /**
  * Living style guide — a visual catalog of design tokens and every component
- * in the library. As components are extracted from the design, render each one
- * here (with its variants) so anyone can see what already exists before
- * building something new.
+ * in the library. Add each new component here (with its variants) so anyone can
+ * see what already exists before building something new.
  */
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import Button from "../components/ui/Button.astro";
+import Eyebrow from "../components/ui/Eyebrow.astro";
+import CircleButton from "../components/ui/CircleButton.astro";
+import Logo from "../components/layout/Logo.astro";
+
+const swatches = [
+  { name: "brand", cls: "bg-brand", hex: "#7700ee" },
+  { name: "coral", cls: "bg-coral", hex: "#ffedee" },
+  { name: "black", cls: "bg-black", hex: "#000000" },
+  { name: "white", cls: "bg-white border border-black/10", hex: "#ffffff" },
+];
 ---
 
-<Layout title="Style Guide · intelligence.sword.com">
-  <main>
-    <!--
-      TODO: as the library grows, add sections here:
-        1. Colors      — swatches for each token in @theme
-        2. Typography  — headings, body, captions
-        3. Components  — every component with all its variants
-    -->
+<Layout title="Style Guide · Sword Intelligence">
+  <main class="mx-auto max-w-5xl px-6 py-16">
+    <h1 class="font-serif text-5xl tracking-[-0.02em]">Style Guide</h1>
+    <p class="mt-3 text-black/60">
+      Design tokens and components extracted from the Figma design. Check here
+      before building something new.
+    </p>
+
+    <!-- Colors -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">Colors</h2>
+      <div class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        {
+          swatches.map((s) => (
+            <div>
+              <div class={`h-20 rounded-2xl ${s.cls}`} />
+              <p class="mt-2 text-sm font-semibold">{s.name}</p>
+              <p class="text-sm text-black/50">{s.hex}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Typography -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">
+        Typography
+      </h2>
+      <div class="mt-4 space-y-3">
+        <p class="font-serif text-5xl tracking-[-0.02em]">
+          Lora — editorial headline
+        </p>
+        <p class="font-sans text-2xl">Figtree — supporting paragraph</p>
+        <p class="font-sans text-sm font-semibold uppercase tracking-[-0.01em]">
+          Figtree — uppercase label
+        </p>
+      </div>
+    </section>
+
+    <!-- Buttons -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">Button</h2>
+      <div class="mt-4 flex flex-wrap items-center gap-4">
+        <Button variant="solid" href="#">Book a meeting</Button>
+        <Button variant="glass" href="#">About</Button>
+        <Button variant="glass" href="#" caret>Solution</Button>
+      </div>
+    </section>
+
+    <!-- Eyebrow -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">Eyebrow</h2>
+      <div class="mt-4">
+        <Eyebrow>Built by the #1 AI Care company.</Eyebrow>
+      </div>
+    </section>
+
+    <!-- CircleButton -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">
+        CircleButton
+      </h2>
+      <div class="mt-4">
+        <CircleButton href="#" />
+      </div>
+    </section>
+
+    <!-- Logo -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">Logo</h2>
+      <div class="mt-4">
+        <Logo />
+      </div>
+    </section>
   </main>
 </Layout>

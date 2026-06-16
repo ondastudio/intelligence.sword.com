@@ -1,0 +1,33 @@
+---
+/**
+ * Navbar — transparent top bar from the design: logo (left),
+ * centered glass nav pills, purple CTA (right).
+ * Content is driven by src/data/site.json.
+ */
+import site from "../../data/site.json";
+import Logo from "./Logo.astro";
+import Button from "../ui/Button.astro";
+---
+
+<header class="absolute inset-x-0 top-0 z-20">
+  <nav
+    class="mx-auto flex max-w-[1440px] items-center justify-between px-6 pb-5 pt-10 lg:px-20"
+  >
+    <Logo />
+
+    <!-- Centered menu (absolutely centered on large screens) -->
+    <div
+      class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex"
+    >
+      {
+        site.nav.map((item) => (
+          <Button variant="glass" href={item.href} caret={item.caret}>
+            {item.label}
+          </Button>
+        ))
+      }
+    </div>
+
+    <Button variant="solid" href={site.cta.href}>{site.cta.label}</Button>
+  </nav>
+</header>

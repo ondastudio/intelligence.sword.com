@@ -1,0 +1,46 @@
+---
+/**
+ * CircleButton — large circular dashed button with a downward arrow.
+ * From the design's 132px dashed-border arrow control in the hero.
+ * Renders an <a> when `href` is set, otherwise a <button>.
+ */
+interface Props {
+  href?: string;
+  label?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+const { href, label = "Scroll to explore", class: className = "", ...rest } =
+  Astro.props;
+
+const classes = [
+  "group inline-flex size-[132px] items-center justify-center rounded-full",
+  "border-2 border-dashed border-black text-black transition-colors",
+  "hover:bg-black hover:text-white",
+  className,
+].join(" ");
+const Tag = href ? "a" : "button";
+---
+
+<Tag class={classes} href={href} aria-label={label} {...rest}>
+  <!-- arrow-right rotated 90° to point down (from the design's arrow-right-02) -->
+  <svg
+    class="size-7 rotate-90"
+    viewBox="0 0 28 28"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path
+      d="M21.5833 14H5.8333"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+    <path
+      d="M15.1667 21C15.1667 21 22.1667 15.8446 22.1667 14C22.1667 12.1553 15.1667 7 15.1667 7"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+  </svg>
+</Tag>

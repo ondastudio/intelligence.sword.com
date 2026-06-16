@@ -1,12 +1,39 @@
 @import "tailwindcss";
 
 /* ===========================================================================
-   DESIGN TOKENS  —  TO BE EXTRACTED FROM THE DESIGN
+   DESIGN TOKENS  —  extracted from the Figma design (Sword Intelligence 2026)
    ---------------------------------------------------------------------------
-   Colors, fonts, spacing, and radius tokens will be added here once the
-   design link is provided. They are defined inside @theme so each becomes
-   both a CSS variable and a Tailwind utility class.
+   Each token is defined inside @theme, so it becomes BOTH a CSS variable and
+   a Tailwind utility class. Edit a value here to update it everywhere.
+
+   Non-developers: you can safely change the hex colors and font names below.
+   Keep the token names and structure the same.
+
+   Figma variable → token mapping:
+     color/purple/Default   #7700ee  → --color-brand   (bg-brand, text-brand…)
+     color/coral/Coral 200  #ffedee  → --color-coral   (bg-coral…)
+     color/black/Default    #000000  → use Tailwind `black`
+     color/white/Default    #ffffff  → use Tailwind `white`
    =========================================================================== */
 @theme {
-  /* Tokens go here after extraction from the design. */
+  /* ---- Brand colors ---- */
+  --color-brand: #7700ee; /* primary purple — CTAs, accents */
+  --color-coral: #ffedee; /* soft page background tint */
+
+  /* ---- Typography ---- */
+  /* Figtree: UI + body. Lora: editorial headlines. Loaded in Layout.astro. */
+  --font-sans: "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: "Lora", ui-serif, Georgia, "Times New Roman", serif;
+}
+
+/* ===========================================================================
+   BASE STYLES
+   =========================================================================== */
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background-color: #fff;
+    color: #000;
+  }
 }

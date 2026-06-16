@@ -30,8 +30,9 @@ npx astro check  # type-check .astro files
 ```
 src/
   components/
-    ui/        # primitives & building blocks (Button, Heading, Card, …)
-    layout/    # structural pieces (Header, Footer, Nav, Container, …)
+    ui/        # primitives & building blocks (Button, Eyebrow, CircleButton, …)
+    layout/    # structural pieces (Logo, Navbar, …)
+    sections/  # page sections composed from ui + layout (Hero, …)
     README.md  # component library rules
   data/        # editable content (JSON/Markdown) for non-developers
   layouts/

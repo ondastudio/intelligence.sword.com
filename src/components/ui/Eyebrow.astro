@@ -1,0 +1,17 @@
+---
+/**
+ * Eyebrow — small uppercase label preceded by a dot.
+ * From the design's "Label" element (e.g. "Built by the #1 AI Care company.").
+ */
+interface Props {
+  class?: string;
+}
+const { class: className = "" } = Astro.props;
+---
+
+<div class={`flex items-center gap-2 ${className}`}>
+  <span class="size-2 shrink-0 rounded-full bg-black"></span>
+  <span class="text-sm font-semibold uppercase tracking-[-0.01em] text-black">
+    <slot />
+  </span>
+</div>

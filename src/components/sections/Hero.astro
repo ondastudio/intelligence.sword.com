@@ -1,0 +1,55 @@
+---
+/**
+ * Hero — the "Home • Desktop" landing screen from the design.
+ * Full-bleed mesh-gradient background with the navbar overlaid, a large Lora
+ * headline, an eyebrow label, a divider cross, a supporting paragraph, and a
+ * circular arrow button. Content comes from src/data/hero.json.
+ */
+import hero from "../../data/hero.json";
+import Navbar from "../layout/Navbar.astro";
+import Eyebrow from "../ui/Eyebrow.astro";
+import CircleButton from "../ui/CircleButton.astro";
+---
+
+<section
+  class="relative flex min-h-screen flex-col overflow-hidden bg-coral text-black"
+>
+  <!-- Background mesh gradient -->
+  <img
+    src="/hero/mesh-gradient.png"
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
+  />
+
+  <Navbar />
+
+  <div
+    class="relative z-10 mx-auto flex min-h-screen w-full max-w-[1440px] flex-col px-6 lg:px-20"
+  >
+    <!-- Headline block -->
+    <div class="max-w-[1160px] pt-[160px] lg:pt-[200px]">
+      <Eyebrow>{hero.eyebrow}</Eyebrow>
+      <h1
+        class="mt-8 font-serif font-normal leading-[1.03] tracking-[-0.02em] text-[clamp(2.75rem,6vw,88px)]"
+      >
+        {hero.headline}
+      </h1>
+    </div>
+
+    <!-- Divider cross + lower content -->
+    <div class="mt-auto pb-10">
+      <div class="border-t border-black/15"></div>
+      <div class="grid grid-cols-1 md:grid-cols-2">
+        <div class="flex items-center py-10">
+          <CircleButton href={hero.cta.href} label={hero.cta.label} />
+        </div>
+        <div class="py-10 md:border-l md:border-black/15 md:pl-12">
+          <p class="max-w-[540px] text-2xl leading-[1.2] tracking-[-0.01em]">
+            {hero.paragraph}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
