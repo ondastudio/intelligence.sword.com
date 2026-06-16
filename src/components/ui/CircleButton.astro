@@ -1,7 +1,8 @@
 ---
 /**
- * CircleButton — large circular dashed button with a downward arrow.
- * From the design's 132px dashed-border arrow control in the hero.
+ * CircleButton — large circular dotted button with a downward chevron.
+ * Faithful to the design's "Frame 2147224426" (134×134): a dotted ring
+ * (round-capped dashes) enclosing a down arrow.
  * Renders an <a> when `href` is set, otherwise a <button>.
  */
 interface Props {
@@ -14,33 +15,55 @@ const { href, label = "Scroll to explore", class: className = "", ...rest } =
   Astro.props;
 
 const classes = [
-  "group inline-flex size-[132px] items-center justify-center rounded-full",
-  "border-2 border-dashed border-black text-black transition-colors",
-  "hover:bg-black hover:text-white",
+  "inline-flex size-[134px] items-center justify-center text-black",
+  "transition-opacity hover:opacity-60",
   className,
 ].join(" ");
 const Tag = href ? "a" : "button";
 ---
 
 <Tag class={classes} href={href} aria-label={label} {...rest}>
-  <!-- arrow-right rotated 90° to point down (from the design's arrow-right-02) -->
   <svg
-    class="size-7 rotate-90"
-    viewBox="0 0 28 28"
+    class="size-[134px]"
+    viewBox="0 0 134 134"
     fill="none"
     aria-hidden="true"
   >
-    <path
-      d="M21.5833 14H5.8333"
+    <rect
+      x="133"
+      y="1"
+      width="132"
+      height="132"
+      rx="66"
+      transform="rotate(90 133 1)"
       stroke="currentColor"
-      stroke-width="1.5"
+      stroke-width="2"
       stroke-linecap="round"
-      stroke-linejoin="round"></path>
-    <path
-      d="M15.1667 21C15.1667 21 22.1667 15.8446 22.1667 14C22.1667 12.1553 15.1667 7 15.1667 7"
-      stroke="currentColor"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"></path>
+      stroke-dasharray="0.01 8"></rect>
+    <mask
+      id="circlebtn-arrow"
+      style="mask-type:alpha"
+      maskUnits="userSpaceOnUse"
+      x="53"
+      y="53"
+      width="28"
+      height="28"
+    >
+      <rect x="53" y="53" width="28" height="28" fill="#D9D9D9"></rect>
+    </mask>
+    <g mask="url(#circlebtn-arrow)">
+      <path
+        d="M67 74.5833L67 58.8333"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+      <path
+        d="M60 68.1666C60 68.1666 65.1554 75.1666 67 75.1666C68.8447 75.1666 74 68.1666 74 68.1666"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </g>
   </svg>
 </Tag>

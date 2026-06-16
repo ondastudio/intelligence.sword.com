@@ -1,7 +1,8 @@
 ---
 /**
- * Logo — the "sword | Intelligence" wordmark from the design.
- * Rendered as text (crisp + editable). Text comes from src/data/site.json.
+ * Logo — the "Sword Intelligence" wordmark from the design.
+ * Rendered from the SVG asset in public/logotype.svg (168×21, native size).
+ * The accessible label text comes from src/data/site.json.
  */
 import site from "../../data/site.json";
 
@@ -15,10 +16,14 @@ const { bold, regular } = site.logo;
 
 <a
   href={href}
-  class={`inline-flex items-center gap-2 text-[19px] leading-none text-black ${className}`}
+  class={`inline-flex items-center ${className}`}
   aria-label={`${bold} ${regular}`}
 >
-  <span class="font-bold tracking-tight">{bold}</span>
-  <span class="h-[18px] w-px bg-black/30" aria-hidden="true"></span>
-  <span class="font-normal">{regular}</span>
+  <img
+    src="/logotype.svg"
+    width="168"
+    height="21"
+    alt={`${bold} ${regular}`}
+    class="block h-[21px] w-auto"
+  />
 </a>
