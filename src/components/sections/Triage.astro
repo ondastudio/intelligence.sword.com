@@ -3,9 +3,9 @@
  * Triage — the "agentic workforce" use-case section below Care.
  * A centered serif headline with a purple accent, a tab/segmented control
  * highlighting the active use case, and a lime-themed SolutionCard. The card
- * slides in horizontally on first view, then scales down + fades out as the
- * user scrolls on into the Care Orchestration section. Content comes from
- * src/data/triage.json.
+ * slides in horizontally on first view, then crossfades out (with a slight
+ * scale-down) as the Care Orchestration section fades in and replaces it.
+ * Content comes from src/data/triage.json.
  */
 import triage from "../../data/triage.json";
 import Eyebrow from "../ui/Eyebrow.astro";
@@ -46,9 +46,10 @@ const { eyebrow, heading, tabs, card, case: useCase } = triage;
         >
       </div>
 
-      <!-- triage-reveal = horizontal slide-in; data-triage-exit = scale/fade -->
+      <!-- triage-reveal = horizontal slide-in; data-triage-exit = fade/scale out
+           as the Care Orchestration section fades in over the same scroll. -->
       <div class="triage-reveal w-full" data-triage-reveal>
-        <div data-triage-exit class="origin-center">
+        <div data-triage-exit class="origin-center will-change-[transform,opacity]">
           <SolutionCard
             theme="lime"
             title={card.title}
@@ -74,16 +75,13 @@ const { eyebrow, heading, tabs, card, case: useCase } = triage;
     opacity: 0;
     transform: translateX(-240px);
     transition:
-      opacity 2s ease-out,
-      transform 2.6s cubic-bezier(0.33, 1, 0.68, 1);
+      opacity 1.2s ease-out,
+      transform 1.6s cubic-bezier(0.33, 1, 0.68, 1);
     will-change: opacity, transform;
   }
   .triage-reveal.is-visible {
     opacity: 1;
     transform: translateX(0);
-  }
-  [data-triage-exit] {
-    will-change: transform, opacity;
   }
   @media (prefers-reduced-motion: reduce) {
     .triage-reveal {
@@ -116,7 +114,9 @@ const { eyebrow, heading, tabs, card, case: useCase } = triage;
     reveals.forEach((el) => observer.observe(el));
   }
 
-  // Exit: scale down + fade out as the Care Orchestration section rises over it.
+  // Crossfade: as the Care Orchestration section scrolls up into view, fade the
+  // lime card out (with a slight scale-down) and fade Care in over the same
+  // scroll range — so Care visibly "replaces" Triage.
   const exitEl = document.querySelector<HTMLElement>("[data-triage-exit]");
   const careEl = document.querySelector<HTMLElement>("[data-care]");
   if (exitEl && careEl && !reduce) {
@@ -125,10 +125,11 @@ const { eyebrow, heading, tabs, card, case: useCase } = triage;
       ticking = false;
       const vh = window.innerHeight;
       const careTop = careEl.getBoundingClientRect().top;
-      // 0 while Care is still below; ramps to 1 as Care rises up over the card.
-      const p = Math.min(1, Math.max(0, (vh * 0.9 - careTop) / (vh * 0.6)));
-      exitEl.style.transform = `scale(${1 - 0.2 * p})`;
-      exitEl.style.opacity = `${1 - p}`;
+      // 0 while Care is still below the fold; 1 by the time Care nears the top.
+      const p = Math.min(1, Math.max(0, (vh - careTop) / (vh * 0.85)));
+      exitEl.style.opacity = String(1 - p);
+      exitEl.style.transform = `scale(${1 - 0.05 * p})`;
+      careEl.style.opacity = String(p);
     };
     const onScroll = () => {
       if (!ticking) {

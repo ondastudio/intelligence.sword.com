@@ -63,7 +63,7 @@ const t = {
 }[theme];
 ---
 
-<div class={`flex w-full flex-col gap-1 ${className}`}>
+<div class={`flex w-full flex-col ${className}`}>
   <!-- Capability card -->
   <div
     class:list={[
@@ -80,7 +80,7 @@ const t = {
     />
 
     <div
-      class="relative z-10 flex flex-col gap-10 md:flex-row md:items-stretch md:justify-between"
+      class="relative z-10 flex flex-col gap-10 md:h-[470px] md:flex-row md:items-stretch md:justify-between"
     >
       <!-- Left: text content -->
       <div class="flex flex-1 flex-col justify-between gap-10 md:max-w-[472px]">
@@ -142,7 +142,7 @@ const t = {
   <!-- Case bar -->
   <div
     class:list={[
-      "flex flex-col items-center justify-between gap-8 overflow-hidden rounded-[24px] px-6 py-8 md:flex-row md:px-16 md:py-10",
+      "flex flex-col items-center justify-between gap-8 overflow-hidden rounded-[24px] px-6 py-8 md:h-[100px] md:flex-row md:px-16 md:py-0",
       t.caseBg,
     ]}
   >

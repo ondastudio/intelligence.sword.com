@@ -1,10 +1,17 @@
 ---
 /**
  * CareOrchestration — the "agentic workforce" continuation below Triage.
- * As the user scrolls in, the navigation expands to reveal the four solution
- * names; the first card rises up from below (overlapping the Triage card as it
- * scales down + fades out, handled in Triage.astro), and each subsequent card
- * reveals with a horizontal slide. The active nav tab tracks the card in view.
+ *
+ * Pinned horizontal scroll: on large screens the section locks to the viewport
+ * and, as the user scrolls *down* the page, the four cards slide *sideways* one
+ * after another; once the last card is reached, normal vertical scrolling
+ * resumes. The cards track is scaled to fit the pinned viewport height so the
+ * full card is always visible. The active nav tab tracks the card at the start
+ * edge; clicking a tab scrolls to its card.
+ *
+ * Below `lg` (or with reduced motion) it falls back to a native horizontal
+ * swipe/drag scroller so the page keeps scrolling vertically as normal.
+ *
  * Content comes from src/data/care-orchestration.json.
  */
 import data from "../../data/care-orchestration.json";
@@ -15,17 +22,19 @@ const { navLabel, glow, cards, cta } = data;
 
 <section
   data-care
-  class="relative z-10 -mt-[38vh] overflow-hidden bg-surface text-black"
+  class="co-section relative z-10 bg-surface text-black"
 >
+  <!-- Pin: becomes sticky + full-height while pinned (see .is-pinned styles). -->
   <div
-    class="mx-auto flex w-full max-w-[1440px] flex-col items-center gap-12 px-4 pb-40 pt-[8vh] sm:px-6 lg:px-20"
+    data-care-pin
+    class="co-pin mx-auto flex w-full max-w-[1440px] flex-col gap-8 px-4 pb-[6vh] pt-[8vh] sm:px-6 lg:px-20 lg:py-8"
   >
-    <!-- Expanding navigation -->
+    <!-- Expanding navigation (aligned with the cards below) -->
     <div
       data-care-nav
-      class="co-nav sticky top-6 z-30 flex max-w-full flex-wrap items-center justify-center gap-1 rounded-[40px] bg-black/[0.04] p-2 backdrop-blur-md"
+      class="co-nav flex w-full shrink-0 flex-nowrap items-center justify-start gap-1 overflow-x-auto rounded-[40px] bg-black/[0.04] p-2 backdrop-blur-md"
     >
-      <span class="px-6 py-3 text-sm font-semibold uppercase tracking-[-0.01em]">
+      <span class="shrink-0 px-6 py-3 text-sm font-semibold uppercase tracking-[-0.01em]">
         {navLabel}
       </span>
       {
@@ -34,7 +43,7 @@ const { navLabel, glow, cards, cta } = data;
             type="button"
             data-tab
             data-idx={i}
-            class="co-tab max-w-[168px] rounded-[40px] px-6 py-3 text-center text-sm font-semibold uppercase leading-tight tracking-[-0.01em] transition-colors"
+            class="co-tab max-w-[200px] shrink-0 rounded-[40px] px-6 py-3 text-center text-sm font-semibold uppercase leading-tight tracking-[-0.01em] transition-colors"
             style={`transition-delay:${120 + i * 90}ms`}
           >
             {c.tab}
@@ -43,31 +52,35 @@ const { navLabel, glow, cards, cta } = data;
       }
     </div>
 
-    <!-- Cards: first rises, the rest reveal horizontally -->
-    <div class="flex w-full max-w-[1064px] flex-col gap-[12vh]">
-      {
-        cards.map((c, i) => (
-          <div
-            data-care-card
-            data-idx={i}
-            class:list={["w-full", i === 0 ? "co-rise" : "co-slide"]}
-          >
-            <SolutionCard
-              theme="purple"
-              title={c.title}
-              headline={c.headline}
-              points={c.points}
-              glow={glow}
-              logo={c.logo}
-              logoAlt={c.logoAlt}
-              logoText={c.logoText}
-              stat={c.stat}
-              statLabel={c.statLabel}
-              cta={cta}
-            />
-          </div>
-        ))
-      }
+    <!-- Viewport clips the track; the track is translated (and scaled to fit)
+         horizontally as the user scrolls through the pinned section. -->
+    <div data-care-viewport class="co-viewport flex w-full flex-1 items-center">
+      <div data-care-track class="co-track flex w-full gap-8">
+        {
+          cards.map((c, i) => (
+            <div
+              data-care-card
+              data-idx={i}
+              class="co-card-enter w-full max-w-[1064px] shrink-0"
+              style={`transition-delay:${i * 110}ms`}
+            >
+              <SolutionCard
+                theme="purple"
+                title={c.title}
+                headline={c.headline}
+                points={c.points}
+                glow={glow}
+                logo={c.logo}
+                logoAlt={c.logoAlt}
+                logoText={c.logoText}
+                stat={c.stat}
+                statLabel={c.statLabel}
+                cta={cta}
+              />
+            </div>
+          ))
+        }
+      </div>
     </div>
   </div>
 </section>
@@ -92,111 +105,209 @@ const { navLabel, glow, cards, cta } = data;
     color: #fff;
   }
 
-  /* First card rises from below. */
-  .co-rise {
-    opacity: 0;
-    transform: translateY(120px);
-    transition:
-      opacity 1s ease-out,
-      transform 1.1s cubic-bezier(0.33, 1, 0.68, 1);
-    will-change: transform, opacity;
+  /* Fallback (mobile / reduced motion): native horizontal swipe scroll. */
+  .co-viewport {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
-  /* Subsequent cards reveal horizontally. */
-  .co-slide {
-    opacity: 0;
-    transform: translateX(260px);
-    transition:
-      opacity 0.9s ease-out,
-      transform 1.2s cubic-bezier(0.33, 1, 0.68, 1);
-    will-change: transform, opacity;
+  .co-viewport::-webkit-scrollbar {
+    display: none;
   }
-  .co-rise.is-visible,
-  .co-slide.is-visible {
+
+  /* Pinned mode (toggled by JS once the track fits the viewport). */
+  .co-section.is-pinned .co-pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .co-section.is-pinned .co-viewport {
+    overflow: hidden;
+  }
+  .co-section.is-pinned .co-track {
+    transform-origin: left center;
+    will-change: transform;
+  }
+
+  /* Cards rise + fade in (staggered) when the section scrolls into view. The
+     card element never receives the pinned-scroll transform (only the track
+     does), so this entrance transform is safe. */
+  .co-card-enter {
+    opacity: 0;
+    transform: translateY(56px);
+    transition:
+      opacity 0.7s ease-out,
+      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: opacity, transform;
+  }
+  .co-card-enter.is-visible {
     opacity: 1;
     transform: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .co-tab,
-    .co-rise,
-    .co-slide {
+    .co-card-enter {
       opacity: 1;
       transform: none;
-      transition: color 0.3s ease, background-color 0.3s ease;
+      transition:
+        color 0.3s ease,
+        background-color 0.3s ease;
+    }
+    .co-viewport {
+      scroll-behavior: auto;
     }
   }
 </style>
 
 <script>
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const section = document.querySelector<HTMLElement>("[data-care]");
+  const pin = document.querySelector<HTMLElement>("[data-care-pin]");
+  const viewport = document.querySelector<HTMLElement>("[data-care-viewport]");
+  const track = document.querySelector<HTMLElement>("[data-care-track]");
   const nav = document.querySelector<HTMLElement>("[data-care-nav]");
   const cards = Array.from(
     document.querySelectorAll<HTMLElement>("[data-care-card]"),
   );
   const tabs = Array.from(document.querySelectorAll<HTMLElement>("[data-tab]"));
 
-  // Reveal the nav (expands its tabs) once it scrolls into view.
-  if (nav) {
-    if (!("IntersectionObserver" in window) || reduce) {
-      nav.classList.add("is-visible");
-    } else {
-      const navObs = new IntersectionObserver(
-        (entries, obs) => {
-          entries.forEach((e) => {
-            if (e.isIntersecting) {
-              nav.classList.add("is-visible");
-              obs.disconnect();
-            }
-          });
-        },
-        { threshold: 0.6 },
-      );
-      navObs.observe(nav);
-    }
-  }
-
-  // Reveal each card once, and track which one is centered for the active tab.
   const setActive = (idx: number) => {
     tabs.forEach((t, i) => t.classList.toggle("is-active", i === idx));
   };
+  setActive(0);
 
-  if (!("IntersectionObserver" in window) || reduce) {
+  // Reveal the nav (expands its tabs) and rise the cards in once the section
+  // scrolls into view.
+  const reveal = () => {
+    nav?.classList.add("is-visible");
     cards.forEach((c) => c.classList.add("is-visible"));
-    setActive(0);
+  };
+  if (!("IntersectionObserver" in window) || reduce) {
+    reveal();
   } else {
     const revealObs = new IntersectionObserver(
       (entries, obs) => {
         entries.forEach((e) => {
           if (e.isIntersecting) {
-            e.target.classList.add("is-visible");
-            obs.unobserve(e.target);
+            reveal();
+            obs.disconnect();
           }
         });
       },
-      { threshold: 0.25 },
+      { threshold: 0.2 },
     );
-    cards.forEach((c) => revealObs.observe(c));
-
-    // Active-tab tracking: whichever card is nearest the viewport center.
-    const activeObs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            const idx = Number((e.target as HTMLElement).dataset.idx);
-            setActive(idx);
-          }
-        });
-      },
-      { rootMargin: "-45% 0px -45% 0px", threshold: 0 },
-    );
-    cards.forEach((c) => activeObs.observe(c));
-    setActive(0);
+    if (viewport) revealObs.observe(viewport);
+    else if (nav) revealObs.observe(nav);
   }
 
-  // Clicking a tab scrolls to its card.
+  // --- Pinned horizontal scroll -------------------------------------------
+  const lgMQ = window.matchMedia("(min-width: 1024px)");
+  let pinned = false;
+  let scale = 1; // track is scaled down to fit the pinned viewport height
+  let dist = 0; // total visual horizontal travel (px)
+
+  // Index of the card nearest the start edge, for the given visual offset.
+  const indexAt = (offset: number) => {
+    let idx = 0;
+    let best = Infinity;
+    cards.forEach((c, i) => {
+      const d = Math.abs(c.offsetLeft * scale - offset);
+      if (d < best) {
+        best = d;
+        idx = i;
+      }
+    });
+    return idx;
+  };
+
+  const render = () => {
+    if (!pinned || !section || !track) return;
+    const top = section.getBoundingClientRect().top;
+    const travelled = Math.min(Math.max(-top, 0), dist);
+    track.style.transform = `translateX(${-travelled}px) scale(${scale})`;
+    setActive(indexAt(travelled));
+  };
+
+  const measure = () => {
+    if (!section || !pin || !viewport || !track) return;
+    pinned = lgMQ.matches && !reduce && cards.length > 1;
+
+    // Reset before measuring natural sizes.
+    section.classList.remove("is-pinned");
+    section.style.height = "";
+    track.style.transform = "";
+
+    if (!pinned) return;
+
+    section.classList.add("is-pinned");
+    // Available height inside the pinned viewport (after the nav).
+    const availH = viewport.clientHeight;
+    const naturalH = track.offsetHeight;
+    scale = naturalH > 0 ? Math.min(1, availH / naturalH) : 1;
+
+    const visualTrackW = track.scrollWidth * scale;
+    dist = Math.max(0, visualTrackW - viewport.clientWidth);
+
+    // Tall section = pinned viewport + the horizontal travel distance.
+    section.style.height = `${pin.offsetHeight + dist}px`;
+    render();
+  };
+
+  let ticking = false;
+  const onScroll = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        if (pinned) render();
+        else syncNativeActive();
+      });
+    }
+  };
+
+  // Fallback: track active card from native horizontal scroll position.
+  const syncNativeActive = () => {
+    if (!viewport) return;
+    const anchor = viewport.getBoundingClientRect().left;
+    let idx = 0;
+    let best = Infinity;
+    cards.forEach((c, i) => {
+      const d = Math.abs(c.getBoundingClientRect().left - anchor);
+      if (d < best) {
+        best = d;
+        idx = i;
+      }
+    });
+    setActive(idx);
+  };
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  viewport?.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", measure);
+  lgMQ.addEventListener?.("change", measure);
+  window.addEventListener("load", measure);
+  measure();
+
+  // Clicking a tab jumps to its card (vertical scroll when pinned, horizontal
+  // scroll otherwise).
   tabs.forEach((tab, i) => {
     tab.addEventListener("click", () => {
-      cards[i]?.scrollIntoView({ behavior: "smooth", block: "center" });
+      const card = cards[i];
+      if (!card) return;
+      if (pinned && section) {
+        const sectionTop =
+          section.getBoundingClientRect().top + window.scrollY;
+        const target = sectionTop + Math.min(card.offsetLeft * scale, dist);
+        window.scrollTo({ top: target, behavior: reduce ? "auto" : "smooth" });
+      } else if (viewport) {
+        const left =
+          viewport.scrollLeft +
+          card.getBoundingClientRect().left -
+          viewport.getBoundingClientRect().left;
+        viewport.scrollTo({ left, behavior: reduce ? "auto" : "smooth" });
+      }
     });
   });
 </script>
