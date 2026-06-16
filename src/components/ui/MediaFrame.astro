@@ -1,0 +1,184 @@
+---
+/**
+ * MediaFrame — a large rounded media container (the design's product frame).
+ * Holds an image OR an autoplaying video at a fixed aspect ratio, clipped to the
+ * card radius. Generic and content-free: pass `src`, `alt`, and optionally an
+ * `aspect` ratio and a `poster` (first-frame image for videos).
+ *
+ * A video source (.webm/.mp4/.mov/.ogg) renders muted + looping + autoplay so it
+ * behaves like animated artwork. When `controls` is on (default), two 40px
+ * circular buttons overlay the bottom corners — a play/pause toggle (white,
+ * 4px backdrop blur) on the left and a mute toggle (lime accent) on the right —
+ * faithfully matching the Figma design (no drop shadow).
+ */
+interface Props {
+  src: string;
+  alt: string;
+  aspect?: string;
+  poster?: string;
+  controls?: boolean;
+  class?: string;
+}
+const {
+  src,
+  alt,
+  aspect = "1920/1080",
+  poster,
+  controls = true,
+  class: className = "",
+} = Astro.props;
+
+const isVideo = /\.(webm|mp4|mov|m4v|ogg)$/i.test(src);
+const showControls = isVideo && controls;
+
+// 40px round button; stroke icons inherit currentColor (black). No shadow.
+const btnBase =
+  "absolute bottom-6 z-10 inline-flex size-10 items-center justify-center rounded-full text-black transition hover:opacity-80";
+const iconBase = "size-6";
+---
+
+<div
+  class={`relative overflow-hidden rounded-card bg-white ${className}`}
+  style={`aspect-ratio:${aspect};`}
+  data-video-player={showControls ? "" : undefined}
+>
+  {
+    isVideo ? (
+      <>
+        <video
+          class="size-full object-cover"
+          src={src}
+          poster={poster}
+          aria-label={alt}
+          autoplay
+          loop
+          muted
+          playsinline
+          preload="metadata"
+        />
+        {showControls && (
+          <>
+            <button
+              type="button"
+              data-vp-toggle
+              aria-label="Pause video"
+              class={`${btnBase} left-6 bg-white backdrop-blur-[4px]`}
+            >
+              {/* pause (playing) */}
+              <svg
+                data-icon="pause"
+                class={iconBase}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                aria-hidden="true"
+              >
+                <path d="M4 7C4 5.58579 4 4.87868 4.43934 4.43934C4.87868 4 5.58579 4 7 4C8.41421 4 9.12132 4 9.56066 4.43934C10 4.87868 10 5.58579 10 7V17C10 18.4142 10 19.1213 9.56066 19.5607C9.12132 20 8.41421 20 7 20C5.58579 20 4.87868 20 4.43934 19.5607C4 19.1213 4 18.4142 4 17V7Z" />
+                <path d="M14 7C14 5.58579 14 4.87868 14.4393 4.43934C14.8787 4 15.5858 4 17 4C18.4142 4 19.1213 4 19.5607 4.43934C20 4.87868 20 5.58579 20 7V17C20 18.4142 20 19.1213 19.5607 19.5607C19.1213 20 18.4142 20 17 20C15.5858 20 14.8787 20 14.4393 19.5607C14 19.1213 14 18.4142 14 17V7Z" />
+              </svg>
+              {/* play (paused) */}
+              <svg
+                data-icon="play"
+                class={`${iconBase} hidden`}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M6 5.5v13a1 1 0 0 0 1.53.85l10.4-6.5a1 1 0 0 0 0-1.7L7.53 4.65A1 1 0 0 0 6 5.5Z" />
+              </svg>
+            </button>
+
+            <button
+              type="button"
+              data-vp-mute
+              aria-label="Unmute video"
+              aria-pressed="true"
+              class={`${btnBase} right-6 bg-accent`}
+            >
+              {/* volume-mute-02 (muted) */}
+              <svg
+                data-icon="muted"
+                class={iconBase}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M14 14.8135V9.18646C14 6.04126 14 4.46866 13.0747 4.0773C12.1494 3.68593 11.0603 4.79793 8.88232 7.02192C7.75439 8.17365 7.11085 8.42869 5.50604 8.42869C4.10257 8.42869 3.40084 8.42869 2.89675 8.77262C1.85035 9.48655 2.00852 10.882 2.00852 12C2.00852 13.118 1.85035 14.5134 2.89675 15.2274C3.40084 15.5713 4.10257 15.5713 5.50604 15.5713C7.11085 15.5713 7.75439 15.8264 8.88232 16.9781C11.0603 19.2021 12.1494 20.3141 13.0747 19.9227C14 19.5313 14 17.9587 14 14.8135Z" />
+                <path d="M18 10L22 14M18 14L22 10" />
+              </svg>
+              {/* volume on (unmuted) */}
+              <svg
+                data-icon="unmuted"
+                class={`${iconBase} hidden`}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M14 14.8135V9.18646C14 6.04126 14 4.46866 13.0747 4.0773C12.1494 3.68593 11.0603 4.79793 8.88232 7.02192C7.75439 8.17365 7.11085 8.42869 5.50604 8.42869C4.10257 8.42869 3.40084 8.42869 2.89675 8.77262C1.85035 9.48655 2.00852 10.882 2.00852 12C2.00852 13.118 1.85035 14.5134 2.89675 15.2274C3.40084 15.5713 4.10257 15.5713 5.50604 15.5713C7.11085 15.5713 7.75439 15.8264 8.88232 16.9781C11.0603 19.2021 12.1494 20.3141 13.0747 19.9227C14 19.5313 14 17.9587 14 14.8135Z" />
+                <path d="M18 9.5a3.5 3.5 0 0 1 0 5" />
+                <path d="M20.5 7.5a6.5 6.5 0 0 1 0 9" />
+              </svg>
+            </button>
+          </>
+        )}
+      </>
+    ) : (
+      <img src={src} alt={alt} loading="lazy" class="size-full object-cover" />
+    )
+  }
+</div>
+
+<script>
+  function initVideoPlayer(root: Element) {
+    const video = root.querySelector("video");
+    const toggle = root.querySelector<HTMLButtonElement>("[data-vp-toggle]");
+    const mute = root.querySelector<HTMLButtonElement>("[data-vp-mute]");
+    if (!video) return;
+
+    const show = (btn: Element | null, name: string) => {
+      btn?.querySelectorAll<SVGElement>("[data-icon]").forEach((icon) => {
+        icon.classList.toggle("hidden", icon.dataset.icon !== name);
+      });
+    };
+
+    const syncPlay = () => {
+      const playing = !video.paused;
+      show(toggle, playing ? "pause" : "play");
+      toggle?.setAttribute("aria-label", playing ? "Pause video" : "Play video");
+    };
+    const syncMute = () => {
+      const muted = video.muted;
+      show(mute, muted ? "muted" : "unmuted");
+      mute?.setAttribute("aria-label", muted ? "Unmute video" : "Mute video");
+      mute?.setAttribute("aria-pressed", String(muted));
+    };
+
+    toggle?.addEventListener("click", () => {
+      if (video.paused) video.play();
+      else video.pause();
+    });
+    mute?.addEventListener("click", () => {
+      video.muted = !video.muted;
+      syncMute();
+    });
+    video.addEventListener("play", syncPlay);
+    video.addEventListener("pause", syncPlay);
+
+    syncPlay();
+    syncMute();
+  }
+
+  document.querySelectorAll("[data-video-player]").forEach(initVideoPlayer);
+</script>

@@ -18,13 +18,42 @@
 @theme {
   /* ---- Brand colors ---- */
   --color-brand: #7700ee; /* primary purple — CTAs, accents */
+  --color-purple-100: #e1d6ff; /* soft purple — tints, chips */
   --color-coral: #ffedee; /* soft page background tint */
+  --color-surface: #f9f9f9; /* neutral section background */
+  --color-accent: #ccff33; /* lime accent — active video control */
 
   /* ---- Typography ---- */
   /* Figtree: UI + body. Lora: editorial headlines. Loaded in Layout.astro. */
   --font-sans: "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, Helvetica, Arial, sans-serif;
   --font-serif: "Lora", ui-serif, Georgia, "Times New Roman", serif;
+
+  /* display — section headline (Figma size/1400 = 56px) */
+  --text-display: 3.5rem;
+  /* lead — large supporting statement (Figma size/800 = 32px) */
+  --text-lead: 2rem;
+
+  /* ---- Radii ---- */
+  --radius-card: 40px; /* large rounded media frames */
+
+  /* ---- Gradients ---- */
+  /* care banner: lavender base that blooms bright center-left, with a soft
+     purple bloom on the right (the design's #a684ff → #bae0eb → #ecf3fe wash).
+     Use as: bg-[image:var(--gradient-care-banner)] */
+  --gradient-care-banner: radial-gradient(
+      90% 160% at 78% 55%,
+      rgba(166, 132, 255, 0.55) 0%,
+      rgba(186, 224, 235, 0.12) 43%,
+      rgba(236, 243, 254, 0) 72%
+    ),
+    linear-gradient(
+      100deg,
+      #d6c7ff 0%,
+      #ece7ff 45%,
+      #d8dafc 70%,
+      #cdc7fb 100%
+    );
 }
 
 /* ===========================================================================

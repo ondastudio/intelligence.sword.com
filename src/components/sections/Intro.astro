@@ -1,0 +1,48 @@
+---
+/**
+ * Intro — the "AI Care Managers" section directly below the hero.
+ * A faint mesh-gradient wash at the top, a centered mixed-weight positioning
+ * statement, a strip of partner/client logos, and a large rounded product
+ * screenshot. Content comes from src/data/intro.json.
+ */
+import intro from "../../data/intro.json";
+import LogoStrip from "../layout/LogoStrip.astro";
+import MediaFrame from "../ui/MediaFrame.astro";
+---
+
+<section class="relative overflow-hidden bg-surface text-black">
+  <!-- Soft mesh-gradient wash bleeding from the top -->
+  <img
+    src="/intro/mesh-gradient.png"
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute left-1/2 top-0 z-0 w-[160%] max-w-none -translate-x-1/2 -translate-y-1/2 rotate-[150deg] opacity-80 blur-2xl"
+  />
+
+  <!-- Outer block keeps the design's 16px gutters so the product frame can
+       span near-full-width; the text/logos sit in a narrower column inside. -->
+  <div class="relative z-10 mx-auto w-full max-w-[1440px] px-4 pt-[120px]">
+    <!-- Statement + logo strip: narrower centered column (max 1298px) -->
+    <div
+      class="mx-auto flex max-w-[1298px] flex-col items-center gap-20 px-2 pb-20 sm:px-6 lg:px-0"
+    >
+      <p
+        class="max-w-[962px] text-center text-2xl leading-[1.1] tracking-[-0.02em] md:text-lead"
+      >
+        {intro.lead.before}<span class="font-semibold">{intro.lead.highlight}</span
+        >{intro.lead.after}
+      </p>
+
+      <LogoStrip logos={intro.logos} class="w-full" />
+    </div>
+
+    <!-- Product screenshot: spans the full block width (1408px @ 1440) -->
+    <div class="pb-20 pt-[120px]">
+      <MediaFrame
+        src={intro.media.src}
+        poster={intro.media.poster}
+        alt={intro.media.alt}
+      />
+    </div>
+  </div>
+</section>

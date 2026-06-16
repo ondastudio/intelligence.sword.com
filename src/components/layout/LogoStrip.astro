@@ -1,0 +1,36 @@
+---
+/**
+ * LogoStrip — a row of partner / client logos, each in an equal-width cell
+ * topped by a divider line (the design's segmented top-borders with gaps).
+ * Logos are forced to a uniform solid black via `brightness(0)` (which keeps
+ * anti-aliased edges and transparency), matching the design's monochrome strip.
+ * Content is passed in so the component stays generic; the home page feeds it
+ * from src/data/intro.json.
+ */
+interface LogoItem {
+  src: string;
+  alt: string;
+}
+interface Props {
+  logos: LogoItem[];
+  class?: string;
+}
+const { logos, class: className = "" } = Astro.props;
+---
+
+<ul
+  class={`grid grid-cols-2 gap-7 sm:grid-cols-3 lg:grid-cols-5 ${className}`}
+>
+  {
+    logos.map((logo) => (
+      <li class="flex h-20 items-center justify-center border-t border-black px-6">
+        <img
+          src={logo.src}
+          alt={logo.alt}
+          loading="lazy"
+          class="max-h-12 w-auto object-contain [filter:brightness(0)]"
+        />
+      </li>
+    ))
+  }
+</ul>

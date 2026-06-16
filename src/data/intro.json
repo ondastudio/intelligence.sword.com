@@ -1,0 +1,19 @@
+{
+  "lead": {
+    "before": "Sword Intelligence deploys ",
+    "highlight": "AI agents trained on millions of care interactions",
+    "after": " to handle the operations of providers, payors, and national health systems."
+  },
+  "logos": [
+    { "src": "/logos/hellenic-health.png", "alt": "Hellenic Republic Ministry of Health" },
+    { "src": "/logos/nhs.svg", "alt": "NHS" },
+    { "src": "/logos/ne-london.png", "alt": "North East London Health & Care Partnership" },
+    { "src": "/logos/cheshire-merseyside.png", "alt": "Cheshire and Merseyside Health and Care Partnership" },
+    { "src": "/logos/vivamas.svg", "alt": "VivaMás Medical Centers" }
+  ],
+  "media": {
+    "src": "/intro/product.webm",
+    "poster": "/intro/product.png",
+    "alt": "Sword Intelligence AI Care Manager handling a patient call"
+  }
+}

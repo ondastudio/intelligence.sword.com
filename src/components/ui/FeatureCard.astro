@@ -1,0 +1,27 @@
+---
+/**
+ * FeatureCard — a single capability card from the "AI Care Managers" grid.
+ * A frosted white card holding a LabelPill at the top and a centered
+ * description at the bottom; the tall body between them is reserved for the
+ * design's (currently hidden) illustration. Generic — content comes from props.
+ */
+import LabelPill from "./LabelPill.astro";
+
+interface Props {
+  label: string;
+  description: string;
+  class?: string;
+}
+const { label, description, class: className = "" } = Astro.props;
+---
+
+<article
+  class={`flex min-h-[340px] flex-col items-center justify-between gap-10 overflow-hidden rounded-[24px] bg-white p-10 backdrop-blur-[12px] md:h-[600px] ${className}`}
+>
+  <LabelPill>{label}</LabelPill>
+  <p
+    class="text-center text-2xl leading-[1.2] tracking-[-0.02em] text-black"
+  >
+    {description}
+  </p>
+</article>

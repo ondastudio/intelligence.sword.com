@@ -1,0 +1,42 @@
+{
+  "heading": {
+    "line1": "The workforce care teams asked for:",
+    "line2": "Meet your ",
+    "highlight": "AI Care Managers",
+    "after": "."
+  },
+  "subheading": "Here's what they can do for you and your patients:",
+  "cards": [
+    {
+      "label": "Always on",
+      "description": "Work 24/7, answering every call and monitoring your population."
+    },
+    {
+      "label": "Multichannel communication",
+      "description": "Move between voice, text, chat, and email without losing context."
+    },
+    {
+      "label": "Hyper personalization",
+      "description": "Adapt tone, timing, and approach to each patient's context and needs."
+    },
+    {
+      "label": "Conversational AI",
+      "description": "Speak naturally in any language, adapting to local accents."
+    },
+    {
+      "label": "Document processing",
+      "description": "Extract and parse docs through computer vision and OCR."
+    },
+    {
+      "label": "Autonomous browsing",
+      "description": "Navigate and operate any platform, even legacy portals."
+    }
+  ],
+  "banner": {
+    "label": "Humans in the loop",
+    "before": "AI handles 99% of the busywork. Your care teams stay in control, stepping in whenever needed and owning the ",
+    "highlight": "1% that only humans can.",
+    "graphic": "/care/humans-globe.svg",
+    "graphicAlt": ""
+  }
+}

@@ -1,0 +1,78 @@
+---
+/**
+ * Care — the "AI Care Managers" capabilities section below the Intro.
+ * A faint mesh-gradient wash, a centered serif headline with a purple accent,
+ * a supporting line, a 3×2 grid of FeatureCards, and a full-width
+ * "Humans in the loop" banner with a decorative dotted-globe graphic.
+ * Content comes from src/data/care.json.
+ */
+import care from "../../data/care.json";
+import LabelPill from "../ui/LabelPill.astro";
+import FeatureCard from "../ui/FeatureCard.astro";
+---
+
+<section class="relative overflow-hidden bg-surface text-black">
+  <!-- Soft mesh-gradient wash bleeding from the top -->
+  <img
+    src="/intro/mesh-gradient.png"
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute left-1/2 top-0 z-0 w-[160%] max-w-none -translate-x-1/2 -translate-y-1/3 rotate-[150deg] opacity-80 blur-2xl"
+  />
+
+  <div class="relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
+    <div
+      class="mx-auto flex max-w-[1280px] flex-col gap-20 pb-32 pt-[120px] lg:gap-[120px]"
+    >
+      <!-- Heading + supporting line -->
+      <div class="flex flex-col items-center gap-8">
+        <h2
+          class="max-w-[923px] text-center font-serif font-normal leading-[1.15] tracking-[-0.02em] text-4xl md:text-display md:leading-[1.2]"
+        >
+          {care.heading.line1}<br />{care.heading.line2}<span
+            class="text-brand">{care.heading.highlight}</span
+          >{care.heading.after}
+        </h2>
+        <p class="text-center text-2xl leading-[1.2] text-black">
+          {care.subheading}
+        </p>
+      </div>
+
+      <!-- Cards + banner share a 16px gap (one container in the design) -->
+      <div class="flex flex-col gap-4">
+        <!-- Capability grid: 3 columns × 2 rows on desktop -->
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {
+            care.cards.map((card) => (
+              <FeatureCard label={card.label} description={card.description} />
+            ))
+          }
+        </div>
+
+        <!-- Humans-in-the-loop banner -->
+        <div
+          class="relative flex flex-col items-start justify-between gap-10 overflow-hidden rounded-[24px] bg-[image:var(--gradient-care-banner)] p-10 md:h-[300px] md:flex-row md:items-center"
+        >
+        <div
+          class="relative z-10 flex h-full flex-col items-start justify-between gap-10"
+        >
+          <LabelPill>{care.banner.label}</LabelPill>
+          <p
+            class="max-w-[778px] leading-[1.2] tracking-[-0.02em] text-2xl md:text-lead"
+          >
+            {care.banner.before}<span class="font-semibold"
+              >{care.banner.highlight}</span
+            >
+          </p>
+        </div>
+
+        <img
+          src={care.banner.graphic}
+          alt={care.banner.graphicAlt}
+          class="relative z-10 h-44 w-44 shrink-0 self-end md:h-[220px] md:w-[220px] md:self-center"
+        />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

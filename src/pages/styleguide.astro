@@ -7,12 +7,19 @@
 import Layout from "../layouts/Layout.astro";
 import Button from "../components/ui/Button.astro";
 import Eyebrow from "../components/ui/Eyebrow.astro";
+import LabelPill from "../components/ui/LabelPill.astro";
 import CircleButton from "../components/ui/CircleButton.astro";
+import FeatureCard from "../components/ui/FeatureCard.astro";
+import MediaFrame from "../components/ui/MediaFrame.astro";
 import Logo from "../components/layout/Logo.astro";
+import LogoStrip from "../components/layout/LogoStrip.astro";
+import intro from "../data/intro.json";
 
 const swatches = [
   { name: "brand", cls: "bg-brand", hex: "#7700ee" },
   { name: "coral", cls: "bg-coral", hex: "#ffedee" },
+  { name: "purple-100", cls: "bg-purple-100", hex: "#e1d6ff" },
+  { name: "surface", cls: "bg-surface border border-black/10", hex: "#f9f9f9" },
   { name: "black", cls: "bg-black", hex: "#000000" },
   { name: "white", cls: "bg-white border border-black/10", hex: "#ffffff" },
 ];
@@ -48,6 +55,9 @@ const swatches = [
         Typography
       </h2>
       <div class="mt-4 space-y-3">
+        <p class="font-serif text-display tracking-[-0.02em]">
+          Lora — display headline (56px)
+        </p>
         <p class="font-serif text-5xl tracking-[-0.02em]">
           Lora — editorial headline
         </p>
@@ -76,6 +86,30 @@ const swatches = [
       </div>
     </section>
 
+    <!-- LabelPill -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">
+        LabelPill
+      </h2>
+      <div class="mt-4 flex flex-wrap items-center gap-4">
+        <LabelPill>Always on</LabelPill>
+        <LabelPill>Humans in the loop</LabelPill>
+      </div>
+    </section>
+
+    <!-- FeatureCard -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">
+        FeatureCard
+      </h2>
+      <div class="mt-4 grid max-w-md grid-cols-1 sm:grid-cols-2">
+        <FeatureCard
+          label="Always on"
+          description="Work 24/7, answering every call and monitoring your population."
+        />
+      </div>
+    </section>
+
     <!-- CircleButton -->
     <section class="mt-14">
       <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">
@@ -91,6 +125,30 @@ const swatches = [
       <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">Logo</h2>
       <div class="mt-4">
         <Logo />
+      </div>
+    </section>
+
+    <!-- LogoStrip -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">
+        LogoStrip
+      </h2>
+      <div class="mt-4">
+        <LogoStrip logos={intro.logos} />
+      </div>
+    </section>
+
+    <!-- MediaFrame -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">
+        MediaFrame
+      </h2>
+      <div class="mt-4">
+        <MediaFrame
+          src={intro.media.src}
+          poster={intro.media.poster}
+          alt={intro.media.alt}
+        />
       </div>
     </section>
   </main>

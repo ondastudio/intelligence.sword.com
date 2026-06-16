@@ -1,0 +1,18 @@
+---
+/**
+ * LabelPill — outlined uppercase pill used as a category label.
+ * From the design's bordered "Label" element on every feature card
+ * (e.g. "ALWAYS ON", "HUMANS IN THE LOOP"). Distinct from Eyebrow, which is a
+ * borderless dot-prefixed label.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className = "" } = Astro.props;
+---
+
+<span
+  class={`inline-flex h-10 items-center justify-center rounded-full border border-black px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-black ${className}`}
+>
+  <slot />
+</span>
