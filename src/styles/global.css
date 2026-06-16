@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* ===========================================================================
+   DESIGN TOKENS  —  TO BE EXTRACTED FROM THE DESIGN
+   ---------------------------------------------------------------------------
+   Colors, fonts, spacing, and radius tokens will be added here once the
+   design link is provided. They are defined inside @theme so each becomes
+   both a CSS variable and a Tailwind utility class.
+   =========================================================================== */
+@theme {
+  /* Tokens go here after extraction from the design. */
+}
