@@ -32,7 +32,7 @@ const { navLabel, glow, cards, cta } = data;
     <!-- Expanding navigation (aligned with the cards below) -->
     <div
       data-care-nav
-      class="co-nav flex w-full shrink-0 flex-nowrap items-center justify-start gap-6 overflow-x-auto rounded-[40px] bg-black/[0.04] py-2 pl-8 pr-2 backdrop-blur-md"
+      class="co-nav flex w-full max-w-[1064px] shrink-0 flex-nowrap items-center justify-start gap-6 overflow-x-auto rounded-[40px] bg-black/[0.04] py-2 pl-8 pr-2 backdrop-blur-md"
     >
       <span class="shrink-0 text-sm font-semibold uppercase tracking-[-0.01em] text-black">
         {navLabel}
@@ -44,7 +44,7 @@ const { navLabel, glow, cards, cta } = data;
               type="button"
               data-tab
               data-idx={i}
-              class="co-tab flex max-w-[220px] shrink-0 items-center justify-center rounded-[40px] border border-gray-200 px-8 py-4 text-center text-sm font-semibold uppercase leading-tight tracking-[-0.01em] transition-colors"
+              class="co-tab flex shrink-0 items-center justify-center whitespace-pre-line rounded-[40px] border border-gray-200 px-8 py-4 text-center text-sm font-semibold uppercase leading-tight tracking-[-0.01em] transition-colors"
               style={`transition-delay:${120 + i * 90}ms`}
             >
               {c.tab}

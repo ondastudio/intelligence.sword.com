@@ -10,7 +10,7 @@
   "glow": "/triage/card-glow-purple.svg",
   "cards": [
     {
-      "tab": "No-show & waiting list reduction",
+      "tab": "No-show & waiting\nlist reduction",
       "title": "No-Show & Waiting List Reduction",
       "headline": "Fill every no-show and move your waiting list.",
       "points": [
@@ -25,7 +25,7 @@
       "statLabel": "Lost yearly to no-shows in the US"
     },
     {
-      "tab": "Preventive population campaigns",
+      "tab": "Preventive\npopulation campaigns",
       "title": "Preventive Population Campaigns",
       "headline": "Close population care gaps proactively.",
       "points": [
@@ -39,7 +39,7 @@
       "statLabel": "US autonomous appointment confirmation rate"
     },
     {
-      "tab": "Surgery prehab and rehab",
+      "tab": "Surgery prehab\nand rehab",
       "title": "Surgery Prehab and Rehab",
       "headline": "Improve outcomes before the surgery even starts.",
       "points": [
@@ -54,7 +54,7 @@
       "statLabel": "Reduction in surgical complications"
     },
     {
-      "tab": "Readmission prevention",
+      "tab": "Readmission\nprevention",
       "title": "Readmission Prevention",
       "headline": "Help more patients stay home after discharge.",
       "points": [
