@@ -1,0 +1,73 @@
+{
+  "eyebrow": "What will you achieve with an agentic workforce?",
+  "heading": {
+    "before": "Fix the ",
+    "highlight": "biggest operational",
+    "afterBreak": "challenges",
+    "after": " in your patient journey."
+  },
+  "navLabel": "Care Orchestration",
+  "glow": "/triage/card-glow-purple.svg",
+  "cards": [
+    {
+      "tab": "No-show & waiting list reduction",
+      "title": "No-Show & Waiting List Reduction",
+      "headline": "Fill every no-show and move your waiting list.",
+      "points": [
+        { "before": "Behavioral risk model ", "strong": "predicts DNAs", "rest": "." },
+        { "strong": "Adapts AI actions", "rest": " to risk scores." },
+        { "rest": "Handles outreach, callbacks, and scheduling." },
+        { "before": "Integrates with your ", "strong": "EHR in real-time", "rest": "." }
+      ],
+      "logo": "/triage/ministry-logo.png",
+      "logoAlt": "Hellenic Republic Ministry of Health",
+      "stat": "$150B",
+      "statLabel": "Lost yearly to no-shows in the US"
+    },
+    {
+      "tab": "Preventive population campaigns",
+      "title": "Preventive Population Campaigns",
+      "headline": "Close population care gaps proactively.",
+      "points": [
+        { "before": "Scans population data ", "strong": "securely", "rest": "." },
+        { "before": "Adapts to ", "strong": "patient responsiveness", "rest": "." },
+        { "before": "Manages ", "strong": "cross-clinic scheduling", "rest": "." },
+        { "rest": "Trained for screenings, vaccinations, med adherence, and other campaigns." }
+      ],
+      "logoText": "US Medicare-focused VBC Provider",
+      "stat": "69%",
+      "statLabel": "US autonomous appointment confirmation rate"
+    },
+    {
+      "tab": "Surgery prehab and rehab",
+      "title": "Surgery Prehab and Rehab",
+      "headline": "Improve outcomes before the surgery even starts.",
+      "points": [
+        { "before": "Turns waiting lists into ", "strong": "preparation lists", "rest": "." },
+        { "before": "Identifies ", "strong": "high-risk elective", "rest": " patients." },
+        { "strong": "Personalized prehabilitation", "rest": " at scale." },
+        { "before": "Multichannel ", "strong": "post-op journey", "rest": " assistance." }
+      ],
+      "logo": "/triage/nhs-logo.png",
+      "logoAlt": "NHS Cheshire and Merseyside",
+      "stat": "72%",
+      "statLabel": "Reduction in surgical complications"
+    },
+    {
+      "tab": "Readmission prevention",
+      "title": "Readmission Prevention",
+      "headline": "Help more patients stay home after discharge.",
+      "points": [
+        { "before": "End-to-end automated ", "strong": "care pathways", "rest": "." },
+        { "before": "Hyper-personalized ", "strong": "post-discharge journeys", "rest": "." },
+        { "strong": "Escalates urgent cases", "rest": " to the right team." },
+        { "before": "Integrates with your ", "strong": "EHR in real-time", "rest": "." }
+      ],
+      "logo": "/triage/nhs-logo.png",
+      "logoAlt": "NHS Cheshire and Merseyside",
+      "stat": "-34%",
+      "statLabel": "Reduction in 30-day readmissions"
+    }
+  ],
+  "cta": { "label": "Learn More", "href": "#" }
+}

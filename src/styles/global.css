@@ -18,10 +18,18 @@
 @theme {
   /* ---- Brand colors ---- */
   --color-brand: #7700ee; /* primary purple — CTAs, accents */
+  --color-purple-200: #a684ff; /* mid purple — Care Orchestration card border */
   --color-purple-100: #e1d6ff; /* soft purple — tints, chips */
+  --color-purple-tint: #eee8ff; /* faint lavender — Care case-bar background */
   --color-coral: #ffedee; /* soft page background tint */
   --color-surface: #f9f9f9; /* neutral section background */
-  --color-accent: #ccff33; /* lime accent — active video control */
+  --color-ink: #1f1f1f; /* near-black — editorial headlines (Figma Black/900) */
+  --color-gray-200: #dcdde4; /* hairline borders on light chips */
+
+  /* ---- Lime ramp (Figma color/lime/*) ---- */
+  --color-accent: #ccff33; /* lime/Default — CTAs, active controls, accents */
+  --color-lime-400: #d9ff66; /* lime/Lime 400 — gradient mid-stop */
+  --color-lime-tint: #f7ffe8; /* lime/Lime 200 — faint lime section tint */
 
   /* ---- Typography ---- */
   /* Figtree: UI + body. Lora: editorial headlines. Loaded in Layout.astro. */
@@ -31,6 +39,8 @@
 
   /* display — section headline (Figma size/1400 = 56px) */
   --text-display: 3.5rem;
+  /* title — card / stat headline (Figma size/1200 = 48px) */
+  --text-title: 3rem;
   /* lead — large supporting statement (Figma size/800 = 32px) */
   --text-lead: 2rem;
 

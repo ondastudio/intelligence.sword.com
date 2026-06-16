@@ -11,15 +11,26 @@ import LabelPill from "../components/ui/LabelPill.astro";
 import CircleButton from "../components/ui/CircleButton.astro";
 import FeatureCard from "../components/ui/FeatureCard.astro";
 import MediaFrame from "../components/ui/MediaFrame.astro";
+import SolutionCard from "../components/ui/SolutionCard.astro";
 import Logo from "../components/layout/Logo.astro";
 import LogoStrip from "../components/layout/LogoStrip.astro";
 import intro from "../data/intro.json";
+import careOrchestration from "../data/care-orchestration.json";
+
+const demoCard = careOrchestration.cards[0];
 
 const swatches = [
   { name: "brand", cls: "bg-brand", hex: "#7700ee" },
   { name: "coral", cls: "bg-coral", hex: "#ffedee" },
+  { name: "purple-200", cls: "bg-purple-200", hex: "#a684ff" },
   { name: "purple-100", cls: "bg-purple-100", hex: "#e1d6ff" },
+  { name: "purple-tint", cls: "bg-purple-tint border border-black/10", hex: "#eee8ff" },
+  { name: "accent (lime)", cls: "bg-accent", hex: "#ccff33" },
+  { name: "lime-400", cls: "bg-lime-400", hex: "#d9ff66" },
+  { name: "lime-tint", cls: "bg-lime-tint border border-black/10", hex: "#f7ffe8" },
   { name: "surface", cls: "bg-surface border border-black/10", hex: "#f9f9f9" },
+  { name: "ink", cls: "bg-ink", hex: "#1f1f1f" },
+  { name: "gray-200", cls: "bg-gray-200 border border-black/10", hex: "#dcdde4" },
   { name: "black", cls: "bg-black", hex: "#000000" },
   { name: "white", cls: "bg-white border border-black/10", hex: "#ffffff" },
 ];
@@ -57,6 +68,9 @@ const swatches = [
       <div class="mt-4 space-y-3">
         <p class="font-serif text-display tracking-[-0.02em]">
           Lora — display headline (56px)
+        </p>
+        <p class="font-serif text-title tracking-[-0.02em]">
+          Lora — title / stat (48px)
         </p>
         <p class="font-serif text-5xl tracking-[-0.02em]">
           Lora — editorial headline
@@ -135,6 +149,31 @@ const swatches = [
       </h2>
       <div class="mt-4">
         <LogoStrip logos={intro.logos} />
+      </div>
+    </section>
+
+    <!-- SolutionCard -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">
+        SolutionCard
+      </h2>
+      <p class="mt-1 text-sm text-black/50">
+        Theme <code>purple</code> (Care Orchestration). The <code>lime</code> theme
+        (with an MDR badge) powers the Triage card.
+      </p>
+      <div class="mt-4">
+        <SolutionCard
+          theme="purple"
+          title={demoCard.title}
+          headline={demoCard.headline}
+          points={demoCard.points}
+          glow={careOrchestration.glow}
+          logo={demoCard.logo}
+          logoAlt={demoCard.logoAlt}
+          stat={demoCard.stat}
+          statLabel={demoCard.statLabel}
+          cta={careOrchestration.cta}
+        />
       </div>
     </section>
 

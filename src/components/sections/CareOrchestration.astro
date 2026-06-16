@@ -1,0 +1,202 @@
+---
+/**
+ * CareOrchestration — the "agentic workforce" continuation below Triage.
+ * As the user scrolls in, the navigation expands to reveal the four solution
+ * names; the first card rises up from below (overlapping the Triage card as it
+ * scales down + fades out, handled in Triage.astro), and each subsequent card
+ * reveals with a horizontal slide. The active nav tab tracks the card in view.
+ * Content comes from src/data/care-orchestration.json.
+ */
+import data from "../../data/care-orchestration.json";
+import SolutionCard from "../ui/SolutionCard.astro";
+
+const { navLabel, glow, cards, cta } = data;
+---
+
+<section
+  data-care
+  class="relative z-10 -mt-[38vh] overflow-hidden bg-surface text-black"
+>
+  <div
+    class="mx-auto flex w-full max-w-[1440px] flex-col items-center gap-12 px-4 pb-40 pt-[8vh] sm:px-6 lg:px-20"
+  >
+    <!-- Expanding navigation -->
+    <div
+      data-care-nav
+      class="co-nav sticky top-6 z-30 flex max-w-full flex-wrap items-center justify-center gap-1 rounded-[40px] bg-black/[0.04] p-2 backdrop-blur-md"
+    >
+      <span class="px-6 py-3 text-sm font-semibold uppercase tracking-[-0.01em]">
+        {navLabel}
+      </span>
+      {
+        cards.map((c, i) => (
+          <button
+            type="button"
+            data-tab
+            data-idx={i}
+            class="co-tab max-w-[168px] rounded-[40px] px-6 py-3 text-center text-sm font-semibold uppercase leading-tight tracking-[-0.01em] transition-colors"
+            style={`transition-delay:${120 + i * 90}ms`}
+          >
+            {c.tab}
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- Cards: first rises, the rest reveal horizontally -->
+    <div class="flex w-full max-w-[1064px] flex-col gap-[12vh]">
+      {
+        cards.map((c, i) => (
+          <div
+            data-care-card
+            data-idx={i}
+            class:list={["w-full", i === 0 ? "co-rise" : "co-slide"]}
+          >
+            <SolutionCard
+              theme="purple"
+              title={c.title}
+              headline={c.headline}
+              points={c.points}
+              glow={glow}
+              logo={c.logo}
+              logoAlt={c.logoAlt}
+              logoText={c.logoText}
+              stat={c.stat}
+              statLabel={c.statLabel}
+              cta={cta}
+            />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Nav tabs fade/slide in (staggered) once the nav is revealed. */
+  .co-tab {
+    opacity: 0;
+    transform: translateX(-12px);
+    transition:
+      opacity 0.6s ease-out,
+      transform 0.6s cubic-bezier(0.33, 1, 0.68, 1),
+      color 0.3s ease,
+      background-color 0.3s ease;
+  }
+  .co-nav.is-visible .co-tab {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .co-tab.is-active {
+    background-color: var(--color-brand);
+    color: #fff;
+  }
+
+  /* First card rises from below. */
+  .co-rise {
+    opacity: 0;
+    transform: translateY(120px);
+    transition:
+      opacity 1s ease-out,
+      transform 1.1s cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: transform, opacity;
+  }
+  /* Subsequent cards reveal horizontally. */
+  .co-slide {
+    opacity: 0;
+    transform: translateX(260px);
+    transition:
+      opacity 0.9s ease-out,
+      transform 1.2s cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: transform, opacity;
+  }
+  .co-rise.is-visible,
+  .co-slide.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .co-tab,
+    .co-rise,
+    .co-slide {
+      opacity: 1;
+      transform: none;
+      transition: color 0.3s ease, background-color 0.3s ease;
+    }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const nav = document.querySelector<HTMLElement>("[data-care-nav]");
+  const cards = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-care-card]"),
+  );
+  const tabs = Array.from(document.querySelectorAll<HTMLElement>("[data-tab]"));
+
+  // Reveal the nav (expands its tabs) once it scrolls into view.
+  if (nav) {
+    if (!("IntersectionObserver" in window) || reduce) {
+      nav.classList.add("is-visible");
+    } else {
+      const navObs = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              nav.classList.add("is-visible");
+              obs.disconnect();
+            }
+          });
+        },
+        { threshold: 0.6 },
+      );
+      navObs.observe(nav);
+    }
+  }
+
+  // Reveal each card once, and track which one is centered for the active tab.
+  const setActive = (idx: number) => {
+    tabs.forEach((t, i) => t.classList.toggle("is-active", i === idx));
+  };
+
+  if (!("IntersectionObserver" in window) || reduce) {
+    cards.forEach((c) => c.classList.add("is-visible"));
+    setActive(0);
+  } else {
+    const revealObs = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.25 },
+    );
+    cards.forEach((c) => revealObs.observe(c));
+
+    // Active-tab tracking: whichever card is nearest the viewport center.
+    const activeObs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            const idx = Number((e.target as HTMLElement).dataset.idx);
+            setActive(idx);
+          }
+        });
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 },
+    );
+    cards.forEach((c) => activeObs.observe(c));
+    setActive(0);
+  }
+
+  // Clicking a tab scrolls to its card.
+  tabs.forEach((tab, i) => {
+    tab.addEventListener("click", () => {
+      cards[i]?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  });
+</script>

@@ -1,0 +1,39 @@
+{
+  "eyebrow": "What will you achieve with an agentic workforce?",
+  "heading": {
+    "before": "Fix the ",
+    "highlight": "biggest operational",
+    "afterBreak": "challenges",
+    "after": " in your patient journey."
+  },
+  "tabs": {
+    "label": "Triage",
+    "active": "Clinical Triage"
+  },
+  "card": {
+    "icon": "/triage/logo-icon.svg",
+    "title": "Clinical Triage",
+    "badge": {
+      "icon": "/triage/mdr-badge-icon.svg",
+      "text": "/triage/mdr-badge-text.svg",
+      "alt": "MDR Class IIa Compliant"
+    },
+    "headline": {
+      "highlight": "Health hotline",
+      "rest": " that guides every patient to the right care."
+    },
+    "points": [
+      { "strong": "Certified", "rest": " for clinical use." },
+      { "strong": "Multi-channel", "rest": ", 24/7, never off shift." },
+      { "before": "Trained on ", "strong": "14M+ real triage interactions", "rest": "." },
+      { "strong": "Human in command", "rest": ", when needed." }
+    ]
+  },
+  "case": {
+    "logo": "/triage/ministry-logo.png",
+    "logoAlt": "Hellenic Republic Ministry of Health",
+    "stat": "10M",
+    "statLabel": "citizens served by a free, always-on hotline",
+    "cta": { "label": "Learn More", "href": "#" }
+  }
+}

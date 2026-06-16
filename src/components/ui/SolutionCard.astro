@@ -1,0 +1,205 @@
+---
+/**
+ * SolutionCard — a use-case capability card extracted from the design.
+ * Two themes: "lime" (Triage / Clinical) and "purple" (Care Orchestration).
+ * Composes a logo + title row (with an optional certification badge), a Lora
+ * headline, a list of proof points, a white media panel, and a "case" bar with
+ * a partner logo (image or text), a stat + highlight bar, and a Learn More CTA.
+ * Content-free: everything comes through props (fed from data/*.json).
+ */
+interface Point {
+  before?: string;
+  strong?: string;
+  rest?: string;
+}
+interface Props {
+  theme?: "lime" | "purple";
+  title: string;
+  headline: string;
+  points: Point[];
+  glow: string;
+  badge?: { icon: string; text: string; alt: string };
+  logo?: string;
+  logoAlt?: string;
+  logoText?: string;
+  stat: string;
+  statLabel: string;
+  cta: { label: string; href: string };
+  class?: string;
+}
+
+const {
+  theme = "lime",
+  title,
+  headline,
+  points,
+  glow,
+  badge,
+  logo,
+  logoAlt = "",
+  logoText,
+  stat,
+  statLabel,
+  cta,
+  class: className = "",
+} = Astro.props;
+
+// Per-theme token lookups (semantic utilities defined in global.css)
+const t = {
+  lime: {
+    border: "border-accent",
+    caseBg: "bg-lime-tint",
+    statBar: "bg-accent",
+    ctaBg: "bg-accent",
+    ctaText: "text-black",
+  },
+  purple: {
+    border: "border-purple-200",
+    caseBg: "bg-purple-tint",
+    statBar: "bg-white",
+    ctaBg: "bg-brand",
+    ctaText: "text-white",
+  },
+}[theme];
+---
+
+<div class={`flex w-full flex-col gap-1 ${className}`}>
+  <!-- Capability card -->
+  <div
+    class:list={[
+      "relative overflow-hidden rounded-[24px] border p-6 md:p-16",
+      t.border,
+    ]}
+  >
+    <!-- Glow bloom (SVG is stretch-fit, so give it an explicit size) -->
+    <img
+      src={glow}
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute -top-24 left-1/2 z-0 h-[820px] w-[110%] max-w-none -translate-x-1/2"
+    />
+
+    <div
+      class="relative z-10 flex flex-col gap-10 md:flex-row md:items-stretch md:justify-between"
+    >
+      <!-- Left: text content -->
+      <div class="flex flex-1 flex-col justify-between gap-10 md:max-w-[472px]">
+        <!-- Header row: logo + title / optional certification badge -->
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <img
+              src="/triage/logo-icon.svg"
+              alt=""
+              aria-hidden="true"
+              class="h-[29px] w-[16px] shrink-0"
+            />
+            <span class="text-[28px] leading-[1.1] tracking-[-0.02em]"
+              >{title}</span
+            >
+          </div>
+          {
+            badge && (
+              <div class="flex shrink-0 items-center gap-2">
+                <img src={badge.icon} alt="" aria-hidden="true" class="h-9 w-9 shrink-0" />
+                <img src={badge.text} alt={badge.alt} class="h-[26px] w-[79px]" />
+              </div>
+            )
+          }
+        </div>
+
+        <!-- Headline -->
+        <p
+          class="font-serif font-normal leading-[1.1] tracking-[-0.02em] text-3xl md:text-title"
+        >
+          {headline}
+        </p>
+
+        <!-- Proof points -->
+        <ul class="flex flex-col gap-3">
+          {
+            points.map((point, i) => (
+              <li
+                class:list={[
+                  "pb-2 text-lg tracking-[-0.01em]",
+                  i < points.length - 1 && "border-b border-black/15",
+                ]}
+              >
+                <Fragment
+                  set:html={`${point.before ?? ""}${point.strong ? `<span class="font-semibold">${point.strong}</span>` : ""}${point.rest ?? ""}`}
+                />
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Right: media panel -->
+      <div class="h-[470px] w-full shrink-0 rounded-[40px] bg-white md:w-[376px]">
+      </div>
+    </div>
+  </div>
+
+  <!-- Case bar -->
+  <div
+    class:list={[
+      "flex flex-col items-center justify-between gap-8 overflow-hidden rounded-[24px] px-6 py-8 md:flex-row md:px-16 md:py-10",
+      t.caseBg,
+    ]}
+  >
+    {
+      logo ? (
+        <img src={logo} alt={logoAlt} class="h-[54px] w-auto shrink-0" />
+      ) : (
+        <p class="max-w-[180px] shrink-0 text-sm font-semibold leading-[1.25] tracking-[-0.01em]">
+          {logoText}
+        </p>
+      )
+    }
+
+    <div class="flex items-center gap-4">
+      <span
+        class="relative inline-block font-serif leading-[1.1] tracking-[-0.02em] text-title"
+      >
+        <span
+          class:list={["absolute inset-x-0 bottom-2.5 z-0 h-2", t.statBar]}
+          aria-hidden="true"></span>
+        <span class="relative z-10">{stat}</span>
+      </span>
+      <p
+        class="max-w-[16rem] text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em]"
+      >
+        {statLabel}
+      </p>
+    </div>
+
+    <a
+      href={cta.href}
+      class="flex shrink-0 items-center rounded-full"
+    >
+      <span
+        class:list={[
+          "-mr-px rounded-[50px] px-6 py-3 text-sm font-semibold uppercase tracking-[-0.01em]",
+          t.ctaBg,
+          t.ctaText,
+        ]}
+        >{cta.label}</span
+      >
+      <span
+        class:list={[
+          "flex size-10 items-center justify-center rounded-full",
+          t.ctaBg,
+          t.ctaText,
+        ]}
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="M5 12h14M13 6l6 6-6 6"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </span>
+    </a>
+  </div>
+</div>
