@@ -1,0 +1,136 @@
+---
+/**
+ * Scaling — "Scaling care with AI: been there, done that."
+ *
+ * Editorial proof section: an Eyebrow label over a two-column row (Lora display
+ * headline with a purple "done that" accent on the left, supporting paragraph on
+ * the right), followed by a four-up row of company stats. Each stat is a column
+ * with a left hairline rule, a lime icon disc, a big Lora number with a frosted
+ * "+" chip, and a caption. A white→lime mesh gradient blooms from the right.
+ *
+ * Columns collapse to a stack on mobile, 2-up at sm, 4-up at lg. Content comes
+ * from src/data/scaling.json. Blocks fade up on first view.
+ */
+import Eyebrow from "../ui/Eyebrow.astro";
+import data from "../../data/scaling.json";
+
+const { eyebrow, heading, body, stats } = data;
+---
+
+<section class="scaling relative overflow-hidden bg-surface py-[120px] text-black">
+  <!-- White → lime mesh-gradient bloom: oversized and anchored to the left so the
+       lime bloom concentrates toward the right edge (partly off-canvas), leaving
+       the white region under the heading — matching the Figma framing. -->
+  <img
+    src="/scaling/mesh-gradient.png"
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute left-0 top-0 z-0 h-full w-[150%] object-fill"
+  />
+
+  <div class="relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
+    <!-- Heading block -->
+    <div data-reveal class="reveal flex flex-col gap-6">
+      <Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow>
+
+      <div
+        class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-[133px]"
+      >
+        <h2
+          class="font-serif text-3xl font-normal leading-[1.05] tracking-[-0.02em] sm:text-4xl lg:text-display"
+        >
+          {heading.line1}<br />{heading.line2}<span class="text-brand"
+            >{heading.accent}</span
+          >{heading.after}
+        </h2>
+
+        <p
+          class="max-w-[628px] text-base leading-[1.3] tracking-[-0.01em] sm:text-lg"
+        >
+          {body}
+        </p>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div
+      class="mt-20 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:mt-[120px] lg:grid-cols-4"
+    >
+      {
+        stats.map((stat, i) => (
+          <div
+            data-reveal
+            class="reveal flex min-h-[260px] flex-col justify-between border-l border-black px-6"
+            style={`transition-delay:${120 + i * 100}ms`}
+          >
+            <span class="flex size-12 items-center justify-center rounded-full bg-accent">
+              <img src={stat.icon} alt="" aria-hidden="true" class="size-8" />
+            </span>
+
+            <div class="flex flex-col gap-4">
+              <div class="flex items-start gap-2">
+                <span class="font-serif text-[clamp(2.75rem,7vw,64px)] font-normal leading-[1.2] tracking-[-0.02em]">
+                  {stat.value}
+                </span>
+                {stat.plus && (
+                  <span class="mt-[11px] flex size-6 shrink-0 items-center justify-center rounded-[24px] bg-ink-wash-strong text-base leading-none">
+                    +
+                  </span>
+                )}
+              </div>
+              <p class="min-h-[44px] max-w-[254px] text-lg leading-[1.2] tracking-[-0.01em]">
+                {stat.label}
+              </p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+      opacity 0.8s ease-out,
+      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reveals = Array.from(
+    document.querySelectorAll<HTMLElement>(".scaling .reveal"),
+  );
+  if (reduce || !("IntersectionObserver" in window)) {
+    reveals.forEach((el) => el.classList.add("is-visible"));
+  } else {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.2 },
+    );
+    reveals.forEach((el) => obs.observe(el));
+  }
+</script>

@@ -1,0 +1,36 @@
+{
+  "eyebrow": "Built inside Sword Health, the #1 AI Care company",
+  "heading": {
+    "line1": "Scaling care with AI:",
+    "line2": "been there, ",
+    "accent": "done that",
+    "after": "."
+  },
+  "body": "On the journey to freeing over 1M people from pain, Sword Health hit the same wall every healthcare organization does: non-clinical work. Instead of throwing more staff at the problem, we built AI in-house to take on operations safely, effectively, and at scale.",
+  "stats": [
+    {
+      "icon": "/scaling/award-05.svg",
+      "value": "10M",
+      "plus": true,
+      "label": "All sessions delivered"
+    },
+    {
+      "icon": "/scaling/calendar-05.svg",
+      "value": "100M",
+      "plus": true,
+      "label": "Lives covered"
+    },
+    {
+      "icon": "/scaling/document-validation.svg",
+      "value": "108",
+      "plus": true,
+      "label": "Clinical papers published & patents granted"
+    },
+    {
+      "icon": "/scaling/coins-01.svg",
+      "value": "$4B",
+      "plus": true,
+      "label": "Company valuation"
+    }
+  ]
+}

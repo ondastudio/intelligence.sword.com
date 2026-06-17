@@ -1,0 +1,11 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="coins-01">
+<path id="Vector" d="M20.6667 17.3333C25.4531 17.3333 29.3333 16.1394 29.3333 14.6667C29.3333 13.1939 25.4531 12 20.6667 12C15.8802 12 12 13.1939 12 14.6667C12 16.1394 15.8802 17.3333 20.6667 17.3333Z" stroke="var(--stroke-0, black)" stroke-width="1.5"/>
+<path id="Vector_2" d="M29.3333 20.6641C29.3333 22.1369 25.4532 23.3307 20.6667 23.3307C15.8801 23.3307 12 22.1369 12 20.6641" stroke="var(--stroke-0, black)" stroke-width="1.5"/>
+<path id="Vector_3" d="M29.3333 14.6641V26.3974C29.3333 28.0174 25.4532 29.3307 20.6667 29.3307C15.8801 29.3307 12 28.0174 12 26.3974V14.6641" stroke="var(--stroke-0, black)" stroke-width="1.5"/>
+<path id="Vector_4" d="M11.3385 7.9974C16.125 7.9974 20.0052 6.80349 20.0052 5.33073C20.0052 3.85797 16.125 2.66406 11.3385 2.66406C6.55207 2.66406 2.67188 3.85797 2.67188 5.33073C2.67188 6.80349 6.55207 7.9974 11.3385 7.9974Z" stroke="var(--stroke-0, black)" stroke-width="1.5"/>
+<path id="Vector_5" d="M8.00521 14.6667C5.4828 14.3597 3.16509 13.566 2.67188 12M8.00521 21.3333C5.4828 21.0264 3.16509 20.2327 2.67188 18.6667" stroke="var(--stroke-0, black)" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_6" d="M8.00521 28.0026C5.4828 27.6957 3.16509 26.9019 2.67188 25.3359V5.33594" stroke="var(--stroke-0, black)" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_7" d="M20 8.0026V5.33594" stroke="var(--stroke-0, black)" stroke-width="1.5" stroke-linecap="round"/>
+</g>
+</svg>
