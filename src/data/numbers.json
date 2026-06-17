@@ -1,0 +1,38 @@
+{
+  "stats": {
+    "intake": {
+      "value": "4x",
+      "label": "Your intake while staff focuses on higher-value care",
+      "href": "#"
+    },
+    "roi": {
+      "value": "5.2x ROI",
+      "label": "Decrease costs while driving new revenue",
+      "href": "#"
+    },
+    "readmissions": {
+      "value": "34%",
+      "label": "Up to 34% reduction in 30-day readmissions",
+      "href": "#"
+    },
+    "workdays": {
+      "value": "686",
+      "label": "Admin workdays saved in one year.",
+      "href": "#"
+    }
+  },
+  "testimonial": {
+    "logo": "/numbers/logo-hellenic.png",
+    "logoAlt": "Hellenic Republic — Ministry of Health",
+    "quote": "We believe Sword can help us rise to this challenge. This partnership will rebuild how care flows through our system, making it faster, clearer, and more centered on people.",
+    "name": "Adonis Georgiadis",
+    "role": "Minister of Health (Greece)",
+    "photo": "/numbers/photo-georgiadis.png",
+    "photoAlt": "Adonis Georgiadis, Minister of Health (Greece)",
+    "href": "#"
+  },
+  "cta": {
+    "label": "Book a Meeting",
+    "href": "#"
+  }
+}

@@ -29,7 +29,10 @@
   --color-coral: #ffedee; /* soft page background tint */
   --color-surface: #f9f9f9; /* neutral section background */
   --color-ink: #1f1f1f; /* near-black — editorial headlines (Figma Black/900) */
-  --color-gray-200: #dcdde4; /* hairline borders on light chips */
+  --color-gray-200: #dcdde4; /* hairline borders on light chips; Numbers stat-panel tint */
+  --color-gray-400: #85889c; /* mid gray — Numbers bar-chart dots (Figma Gray 400) */
+  --color-periwinkle: #8baee4; /* soft blue — Numbers "4x" intake card background */
+  --color-blue-green: #bae0eb; /* pale teal — Numbers "34%" readmissions card background */
 
   /* ---- Lime ramp (Figma color/lime/*) ---- */
   --color-accent: #ccff33; /* lime/Default — CTAs, active controls, accents */

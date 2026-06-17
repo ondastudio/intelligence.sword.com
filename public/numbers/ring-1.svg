@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Group 2117761341">
+<circle id="Ellipse 2606" cx="100" cy="100" r="100" fill="url(#pattern0_8316_506)"/>
+<circle id="Ellipse 2607_2" cx="100" cy="100" r="100" fill="url(#paint0_radial_8316_506)"/>
+</g>
+<defs>
+<radialGradient id="paint0_radial_8316_506" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(100 100) rotate(90) scale(100)">
+<stop offset="0.586538" stop-color="#FAFFEB" stop-opacity="0"/>
+<stop offset="1" stop-color="#CCFF33"/>
+</radialGradient>
+<pattern id="pattern0_8316_506" patternUnits="userSpaceOnUse" patternTransform="matrix(12 0 0 12 0 0)" preserveAspectRatio="none" viewBox="0 0 12 12" width="1" height="1">
+<g id="pattern0_8316_506_inner">
+<circle id="Ellipse 2607" cx="1.5" cy="1.5" r="1.5" fill="var(--fill-0, #D8F95D)"/>
+</g>
+</pattern></defs>
+</svg>

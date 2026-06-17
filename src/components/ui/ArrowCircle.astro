@@ -1,0 +1,83 @@
+---
+/**
+ * ArrowCircle — small 40px circular arrow button used across the Numbers
+ * stat cards and the closing CTA. Faithful to the design export: a 40×40
+ * dotted ring (round-capped dashes, `0.01 8`) enclosing a right-arrow glyph.
+ *
+ * variants:
+ *   dotted — transparent fill, dotted black ring, dark arrow (default; all cards)
+ *   filled — solid brand-purple fill, white arrow, no ring (CTA)
+ * `rotate` spins the glyph (e.g. 45 for the CTA's down-right arrow).
+ * Renders an <a> when `href` is set, otherwise a <button>.
+ */
+interface Props {
+  variant?: "dotted" | "filled";
+  rotate?: number;
+  href?: string;
+  label?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+const {
+  variant = "dotted",
+  rotate = 0,
+  href,
+  label = "Learn more",
+  class: className = "",
+  ...rest
+} = Astro.props;
+
+const classes = [
+  "inline-grid size-10 shrink-0 place-items-center rounded-full",
+  "transition-opacity hover:opacity-70",
+  variant === "filled" ? "bg-brand text-white" : "text-black",
+  className,
+].join(" ");
+
+const Tag = href ? "a" : "button";
+---
+
+<Tag class={classes} href={href} aria-label={label} {...rest}>
+  {
+    variant !== "filled" && (
+      <svg
+        class="col-start-1 row-start-1 size-full"
+        viewBox="0 0 40 40"
+        fill="none"
+        aria-hidden="true"
+      >
+        <rect
+          x="1"
+          y="1"
+          width="38"
+          height="38"
+          rx="19"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-dasharray="0.01 8"
+        />
+      </svg>
+    )
+  }
+  <svg
+    class="col-start-1 row-start-1 size-6 self-center justify-self-center"
+    viewBox="0 0 24 24"
+    fill="none"
+    aria-hidden="true"
+    style={rotate ? `transform:rotate(${rotate}deg)` : undefined}
+  >
+    <path
+      d="M18.5 12H5"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+    <path
+      d="M13 18C13 18 19 13.5811 19 12C19 10.4188 13 6 13 6"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+  </svg>
+</Tag>

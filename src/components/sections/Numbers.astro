@@ -1,0 +1,282 @@
+---
+/**
+ * Numbers — proof-point bento grid.
+ *
+ * An asymmetric grid of stat cards (4x intake, 5.2x ROI, 34% readmissions,
+ * 686 workdays), a customer photo, and a ministerial testimonial, closed by a
+ * "Book a Meeting" CTA. Faithful to the Figma "Numbers" frame (1440 wide).
+ *
+ * Layout: cards stack in a single column on mobile; at md+ they snap into the
+ * design's exact bento via absolute positioning on a 1280×877 canvas (each
+ * card carries its left/top/width/height as --l/--t/--w/--h custom props).
+ * Decorative-only graphics (radar rings, portrait, logos) are images; every
+ * number, label and quote is real, editable text from src/data/numbers.json.
+ */
+import ArrowCircle from "../ui/ArrowCircle.astro";
+import data from "../../data/numbers.json";
+
+const { stats, testimonial, cta } = data;
+---
+
+<section class="numbers bg-surface px-4 py-[120px]">
+  <div class="mx-auto flex max-w-[1280px] flex-col items-center gap-16 md:gap-20">
+    <!-- Bento canvas -->
+    <div data-reveal class="reveal nb-canvas flex w-full flex-col gap-4">
+      <!-- 4x — intake capacity -->
+      <article
+        class="nb-card flex flex-col items-center justify-center overflow-hidden rounded-card bg-periwinkle/45 px-8 py-10 text-center"
+        style="--l:13.44%;--t:0%;--w:23.44%;--h:47.89%"
+      >
+        <div class="relative aspect-square w-[clamp(150px,15vw,200px)] shrink-0">
+          <img src="/numbers/ring-1.svg" alt="" aria-hidden="true" class="absolute inset-0 size-full" />
+          <img
+            src="/numbers/ring-2.svg"
+            alt=""
+            aria-hidden="true"
+            class="absolute left-1/2 top-[62.5%] aspect-square w-3/4 -translate-x-1/2 -translate-y-1/2"
+          />
+          <img
+            src="/numbers/ring-3.svg"
+            alt=""
+            aria-hidden="true"
+            class="absolute left-1/2 top-[75%] aspect-square w-1/2 -translate-x-1/2 -translate-y-1/2"
+          />
+          <img
+            src="/numbers/ring-4.svg"
+            alt=""
+            aria-hidden="true"
+            class="absolute left-1/2 top-[87.5%] aspect-square w-1/4 -translate-x-1/2 -translate-y-1/2"
+          />
+        </div>
+        <!-- "4x" + arrow, centered as a group; arrow bottom sits on the text
+             baseline so its centre lines up with the "x" -->
+        <div class="mt-6 flex items-end justify-center gap-[17px]">
+          <span class="font-serif text-[clamp(3rem,6vw,76px)] font-normal leading-none tracking-[-0.02em] text-black">
+            {stats.intake.value}
+          </span>
+          <ArrowCircle href={stats.intake.href} label="More on intake capacity" />
+        </div>
+        <p class="mt-7 max-w-[232px] text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-black">
+          {stats.intake.label}
+        </p>
+      </article>
+
+      <!-- Customer portrait -->
+      <figure
+        class="nb-card overflow-hidden rounded-card"
+        style="--l:41.95%;--t:0%;--w:17.73%;--h:37.74%"
+      >
+        <img
+          src={testimonial.photo}
+          alt={testimonial.photoAlt}
+          class="h-full min-h-[300px] w-full object-cover"
+        />
+      </figure>
+
+      <!-- Ministerial testimonial -->
+      <article
+        class="nb-card flex flex-col justify-between gap-6 overflow-hidden rounded-card bg-purple-tint p-10"
+        style="--l:59.69%;--t:0%;--w:40.31%;--h:37.74%"
+      >
+        <img
+          src={testimonial.logo}
+          alt={testimonial.logoAlt}
+          class="h-[43px] w-auto max-w-[200px] self-start object-contain object-left"
+        />
+        <p class="text-[clamp(1rem,1.6vw,20px)] leading-[1.2] tracking-[-0.01em] text-black">
+          &ldquo;{testimonial.quote}&rdquo;
+        </p>
+        <div class="flex items-end justify-between gap-4">
+          <div class="flex flex-col gap-1 leading-[1.3] text-black">
+            <span class="text-sm font-semibold uppercase">{testimonial.name}</span>
+            <span class="text-base tracking-[-0.01em]">{testimonial.role}</span>
+          </div>
+          <ArrowCircle href={testimonial.href} label="Read the partnership story" />
+        </div>
+      </article>
+
+      <!-- 686 — admin workdays saved -->
+      <article
+        class="nb-card relative min-h-[280px] overflow-hidden rounded-card bg-accent"
+        style="--l:0%;--t:51.54%;--w:36.91%;--h:34.09%"
+      >
+        <!-- perforated dot grid (top band) -->
+        <div class="nb-dots pointer-events-none absolute inset-x-10 top-10 h-[155px]"></div>
+
+        <div class="relative flex h-full flex-col p-10 text-center">
+          <div class="flex flex-1 items-center justify-center">
+            <span class="inline-block bg-accent px-1 font-serif text-[clamp(3.5rem,6.5vw,80px)] font-normal leading-[0.78] tracking-[-0.02em] text-black">
+              {stats.workdays.value}
+            </span>
+          </div>
+          <p class="mx-auto max-w-[200px] text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-ink">
+            {stats.workdays.label}
+          </p>
+        </div>
+
+        <ArrowCircle
+          href={stats.workdays.href}
+          label="See admin workdays saved"
+          class="absolute bottom-10 right-10"
+        />
+      </article>
+
+      <!-- 5.2x ROI — bar chart -->
+      <article
+        class="nb-card flex flex-col items-center justify-center gap-8 overflow-hidden rounded-card bg-gray-200/35 px-6 py-10 text-center backdrop-blur-[20px]"
+        style="--l:39.14%;--t:41.39%;--w:36.91%;--h:58.56%"
+      >
+        <div class="flex items-end justify-center gap-6">
+          <span class="whitespace-nowrap font-serif text-[clamp(2.75rem,6vw,76px)] font-normal leading-[1.1] tracking-[-0.02em] text-black">
+            {stats.roi.value}
+          </span>
+          <ArrowCircle href={stats.roi.href} label="See the ROI breakdown" class="mb-2" />
+        </div>
+        <div class="flex h-[clamp(150px,17vw,268px)] w-full max-w-[362px] items-end justify-center gap-[2.2%]">
+          <span class="nb-bar" style="height:19.2%"></span>
+          <span class="nb-bar" style="height:38.5%"></span>
+          <span class="nb-bar" style="height:57.7%"></span>
+          <span class="nb-bar" style="height:76.9%"></span>
+          <span class="nb-bar" style="height:100%"></span>
+        </div>
+        <p class="text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-ink">
+          {stats.roi.label}
+        </p>
+      </article>
+
+      <!-- 34% — readmissions reduction -->
+      <article
+        class="nb-card flex flex-col items-center justify-center gap-8 overflow-hidden rounded-card px-6 py-10 text-center"
+        style="--l:78.36%;--t:41.39%;--w:21.56%;--h:41.31%;background:radial-gradient(120% 95% at 50% 100%, rgba(186,224,235,0.75), rgba(220,221,228,0.26))"
+      >
+        <img src="/numbers/logo-nhs.svg" alt="NHS" class="h-[26px] w-auto" />
+        <div class="flex items-start gap-1">
+          <span class="font-serif text-[clamp(2.75rem,6vw,76px)] font-normal leading-[1.1] tracking-[-0.02em] text-black">
+            {stats.readmissions.value}
+          </span>
+          <span class="mt-3 grid size-6 place-items-center rounded-[24px] bg-[rgba(77,79,96,0.1)] text-ink">
+            <svg viewBox="0 0 16 16" class="size-4" fill="none" aria-hidden="true">
+              <path
+                d="M8 3.33V12.67M12.67 8H3.33"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </span>
+        </div>
+        <p class="max-w-[222px] text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-black">
+          {stats.readmissions.label}
+        </p>
+        <ArrowCircle href={stats.readmissions.href} label="See readmissions impact" />
+      </article>
+    </div>
+
+    <!-- CTA -->
+    <div data-reveal class="reveal flex items-center">
+      <a
+        href={cta.href}
+        class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white transition-opacity hover:opacity-90"
+      >
+        {cta.label}
+      </a>
+      <ArrowCircle variant="filled" rotate={45} href={cta.href} label={cta.label} class="-ml-px" />
+    </div>
+  </div>
+</section>
+
+<style>
+  /* --- Bento: stacked on mobile, exact design canvas at md+ --- */
+  @media (min-width: 768px) {
+    .nb-canvas {
+      display: block;
+      position: relative;
+      aspect-ratio: 1280 / 877;
+    }
+    .nb-canvas .nb-card {
+      position: absolute;
+      left: var(--l);
+      top: var(--t);
+      width: var(--w);
+      height: var(--h);
+      margin: 0;
+    }
+  }
+
+  /* --- Perforated dot grid (686 card top band; Figma pattern0) --- */
+  .nb-dots {
+    background-image: radial-gradient(
+      circle,
+      var(--color-gray-400) 1.35px,
+      transparent 1.55px
+    );
+    background-size: 16.2px 16.2px;
+  }
+
+  /* --- Bar-chart bars: lime gradient fill with a perforated dot grid --- */
+  .nb-bar {
+    flex: 1 0 0;
+    min-width: 0;
+    border-radius: 9999px;
+    background-image: radial-gradient(
+        circle,
+        var(--color-gray-400) 1.4px,
+        transparent 1.6px
+      ),
+      linear-gradient(to top, rgba(191, 192, 204, 0.05), var(--color-accent));
+    background-size:
+      18px 18px,
+      100% 100%;
+    background-position:
+      center bottom,
+      center;
+  }
+
+  /* --- Reveal-on-scroll (house pattern) --- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+      opacity 0.8s ease-out,
+      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal:nth-child(2) {
+    transition-delay: 120ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reveals = Array.from(
+    document.querySelectorAll<HTMLElement>(".numbers .reveal"),
+  );
+  if (reduce || !("IntersectionObserver" in window)) {
+    reveals.forEach((el) => el.classList.add("is-visible"));
+  } else {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.15 },
+    );
+    reveals.forEach((el) => obs.observe(el));
+  }
+</script>
