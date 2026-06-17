@@ -45,11 +45,14 @@ import FeatureCard from "../ui/FeatureCard.astro";
 
       <!-- Cards + banner share a 16px gap (one container in the design) -->
       <div class="flex flex-col gap-4">
-        <!-- Capability grid: 3 columns × 2 rows on desktop -->
-        <div data-reveal class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <!-- Capability grid: 3 columns × 2 rows on desktop. Each card carries
+             its own reveal with a stepped delay so they cascade in. -->
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
           {
-            care.cards.map((card) => (
-              <FeatureCard label={card.label} description={card.description} />
+            care.cards.map((card, i) => (
+              <div data-reveal style={`transition-delay:${i * 110}ms`}>
+                <FeatureCard label={card.label} description={card.description} />
+              </div>
             ))
           }
         </div>
