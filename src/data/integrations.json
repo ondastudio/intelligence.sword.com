@@ -1,0 +1,23 @@
+{
+  "heading": {
+    "before": "The ",
+    "accent": "clinical intelligence layer",
+    "after": " between your patients and your tech stack."
+  },
+  "card": {
+    "label": "Ready to integrate",
+    "body": ["Work 24/7, answering every call", "and monitoring your population."]
+  },
+  "avatars": [
+    { "alt": "Patient" },
+    { "alt": "Patient" },
+    { "alt": "Patient" }
+  ],
+  "channels": [
+    { "label": "SMS", "icon": "/clinical/ic-sms.svg" },
+    { "label": "Phone calls", "icon": "/clinical/ic-call.svg" },
+    { "label": "Chat apps", "icon": "/clinical/ic-message.svg" },
+    { "label": "Calendar invite", "icon": "/clinical/ic-calendar.svg" },
+    { "label": "E-mail", "icon": "/clinical/ic-mail.svg" }
+  ]
+}

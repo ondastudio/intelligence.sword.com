@@ -1,0 +1,222 @@
+---
+/**
+ * Integrations — "the clinical intelligence layer between your patients and
+ * your tech stack."
+ *
+ * A centered Lora headline over a fixed-canvas (1440×920) isometric diagram:
+ * three patient avatars drop dotted lines into a perspective grid plane, where
+ * the AI layer fans out to every channel it answers on — SMS, Phone calls,
+ * Chat apps, Calendar invite, E-mail — each a purple pill + frosted icon chip.
+ * A "Ready to integrate" card anchors the left. A soft purple→blue→lavender
+ * bloom sits behind everything.
+ *
+ * The diagram is authored at its native Figma size and scaled to fit the
+ * container width by a tiny ResizeObserver (never upscaled past 1×) — the same
+ * pattern as the Platform section. Content comes from src/data/integrations.json.
+ */
+import data from "../../data/integrations.json";
+
+const { heading, card, avatars, channels } = data;
+
+// Per-channel placement on the 1440×920 stage (centre-x, top), matching the
+// channels[] order in the data file (SMS, Phone, Chat, Calendar, E-mail).
+const pillPos = [
+  { cx: 876.5, top: 367.8 },
+  { cx: 667.5, top: 487.8 },
+  { cx: 946, top: 528.8 },
+  { cx: 1225, top: 567.8 },
+  { cx: 1016.5, top: 688.8 },
+];
+
+// Avatar centres + the dotted line beneath each (stage coords).
+const avatarX = [807, 947, 1087];
+---
+
+<section class="integrations relative overflow-x-clip bg-surface py-[120px] text-black">
+  <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
+    <!-- Heading -->
+    <div data-reveal class="reveal mx-auto max-w-[900px] text-center">
+      <h2 class="font-serif text-3xl font-normal leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-display">
+        {heading.before}<span class="text-brand">{heading.accent}</span>{heading.after}
+      </h2>
+    </div>
+
+    <!-- Diagram (scaled to fit) -->
+    <div data-stage-wrap class="reveal relative mt-12" style="transition-delay:120ms">
+      <div
+        data-stage
+        class="absolute left-1/2 top-0 h-[920px] w-[1440px]"
+        style="transform-origin: top center; transform: translateX(-50%);"
+      >
+        <!-- Soft background bloom -->
+        <img
+          src="/clinical/glow.svg"
+          alt=""
+          aria-hidden="true"
+          class="pointer-events-none absolute h-[1084px] w-[1316px] -translate-x-1/2 -translate-y-1/2"
+          style="left:723.5px;top:274px"
+        />
+
+        <!-- Isometric grid plane (with baked-in flow ribbons) -->
+        <img
+          src="/clinical/grid.svg"
+          alt=""
+          aria-hidden="true"
+          class="absolute"
+          style="left:524px;top:402.8px;width:846px;height:495px"
+        />
+
+        <!-- Purple flow accents over the grid -->
+        <div
+          class="absolute flex items-center justify-center"
+          style="left:929.63px;top:522.6px;width:195.9px;height:153.6px"
+        >
+          <img
+            src="/clinical/ribbon.svg"
+            alt=""
+            aria-hidden="true"
+            class="rotate-[60deg]"
+            style="width:70.099px;height:185.753px"
+          />
+        </div>
+        <img src="/clinical/arc-1.svg" alt="" aria-hidden="true" class="absolute" style="left:806px;top:445.8px;width:70.1px;height:40.5px" />
+        <img src="/clinical/arc-1.svg" alt="" aria-hidden="true" class="absolute" style="left:598px;top:565.8px;width:70.1px;height:40.5px" />
+        <img src="/clinical/arc-2.svg" alt="" aria-hidden="true" class="absolute" style="left:1225.1px;top:643.4px;width:74.4px;height:42.9px" />
+
+        <!-- Dotted lines dropping from each avatar to its endpoint dot -->
+        {
+          avatarX.map((x) => (
+            <img
+              src="/clinical/dline-vert.svg"
+              alt=""
+              aria-hidden="true"
+              class="absolute"
+              style={`left:${x - 1}px;top:139.8px;width:2px;height:209px`}
+            />
+          ))
+        }
+        <!-- Endpoint dots -->
+        {
+          avatarX.map((x) => (
+            <img
+              src="/clinical/dot.svg"
+              alt=""
+              aria-hidden="true"
+              class="absolute size-2"
+              style={`left:${x - 4}px;top:343.8px`}
+            />
+          ))
+        }
+
+        <!-- Channel pills: purple label + frosted icon chip + connector -->
+        {
+          channels.map((ch, i) => (
+            <div
+              class="absolute flex -translate-x-1/2 flex-col items-center"
+              style={`left:${pillPos[i].cx}px;top:${pillPos[i].top}px`}
+            >
+              <span class="flex items-center rounded-[24px] bg-brand px-4 py-2 text-sm font-semibold uppercase leading-[1.2] tracking-[-0.01em] text-surface">
+                {ch.label}
+              </span>
+              <span class="flex size-[58px] items-center justify-center rounded-[16px] bg-ink-wash backdrop-blur-[4px]">
+                <img src={ch.icon} alt="" aria-hidden="true" class="size-6" />
+              </span>
+              <span class="flex h-[27px] w-0 items-center justify-center">
+                <img src="/clinical/connector-short.svg" alt="" aria-hidden="true" class="w-[27px] rotate-90" />
+              </span>
+            </div>
+          ))
+        }
+
+        <!-- Patient avatars -->
+        <div class="absolute flex items-center gap-[60px]" style="left:767px;top:51.8px">
+          {
+            avatars.map((a) => (
+              <span class="flex size-20 items-start justify-start rounded-[40px] border border-brand p-5">
+                <img src="/clinical/ic-user.svg" alt={a.alt} class="size-10" />
+              </span>
+            ))
+          }
+        </div>
+
+        <!-- "Ready to integrate" card -->
+        <div
+          class="absolute flex flex-col items-center gap-5 rounded-card bg-ink-wash p-8 text-center backdrop-blur-[20px]"
+          style="left:80px;top:51.8px;width:340px"
+        >
+          <span class="rounded-[40px] border border-black px-4 py-2 text-sm font-semibold uppercase tracking-[-0.01em]">
+            {card.label}
+          </span>
+          <p class="max-w-[248px] text-lg font-normal leading-[1.1] tracking-[-0.02em]">
+            {card.body[0]}<br />{card.body[1]}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+      opacity 0.8s ease-out,
+      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const wrap = document.querySelector<HTMLElement>(".integrations [data-stage-wrap]");
+  const stage = document.querySelector<HTMLElement>(".integrations [data-stage]");
+
+  // Scale the fixed 1440-wide diagram down to the container width (never up).
+  const fit = () => {
+    if (!wrap || !stage) return;
+    const scale = Math.min(1, wrap.clientWidth / 1440);
+    stage.style.transform = `translateX(-50%) scale(${scale})`;
+    wrap.style.height = `${920 * scale}px`;
+  };
+
+  if (wrap) {
+    const ro = new ResizeObserver(fit);
+    ro.observe(wrap);
+  }
+  window.addEventListener("load", fit);
+  fit();
+
+  // One-shot fade-up reveal.
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reveals = Array.from(
+    document.querySelectorAll<HTMLElement>(".integrations .reveal"),
+  );
+  if (reduce || !("IntersectionObserver" in window)) {
+    reveals.forEach((el) => el.classList.add("is-visible"));
+  } else {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.15 },
+    );
+    reveals.forEach((el) => obs.observe(el));
+  }
+</script>

@@ -15,12 +15,14 @@ const { eyebrow, heading } = data;
   class="operations relative flex min-h-[clamp(620px,62.5vw,900px)] items-center justify-center overflow-hidden bg-surface px-4 py-[120px]"
 >
   <!-- Decorative blurred bloom — full-bleed, keeps the design's 1440×900
-       framing/scale and crops to the section via object-cover. -->
+       framing/scale and crops to the section via object-cover. The bloom is
+       faded to fully transparent before the bottom edge so it dissolves into
+       the surface instead of cutting off in a hard line at the Numbers seam. -->
   <img
     src="/operations/bloom.svg"
     alt=""
     aria-hidden="true"
-    class="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
+    class="bloom pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
   />
 
   <div
@@ -38,6 +40,25 @@ const { eyebrow, heading } = data;
 </section>
 
 <style>
+  /* Dissolve the bloom into the surface at the top & bottom edges so it never
+     ends in a hard horizontal line where the section meets its neighbours. */
+  .bloom {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 18%,
+      #000 78%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 18%,
+      #000 78%,
+      transparent 100%
+    );
+  }
+
   .reveal {
     opacity: 0;
     transform: translateY(40px);
