@@ -29,8 +29,9 @@ import CircleButton from "../ui/CircleButton.astro";
   >
     <!-- Headline block -->
     <div class="max-w-[1160px] pt-[160px] lg:pt-[200px]">
-      <Eyebrow>{hero.eyebrow}</Eyebrow>
+      <div data-reveal><Eyebrow>{hero.eyebrow}</Eyebrow></div>
       <h1
+        data-reveal="title"
         class="mt-8 font-serif font-normal leading-[1.03] tracking-[-0.02em] text-[clamp(2.75rem,6vw,88px)]"
       >
         {hero.headline}
@@ -39,12 +40,16 @@ import CircleButton from "../ui/CircleButton.astro";
 
     <!-- Divider cross + lower content -->
     <div class="mt-auto pb-10">
-      <div class="border-t border-black"></div>
+      <div data-reveal="line" class="border-t border-black"></div>
       <div class="grid grid-cols-1 md:grid-cols-2">
-        <div class="flex items-center py-10">
+        <div data-reveal class="flex items-center py-10" style="transition-delay:120ms">
           <CircleButton href={hero.cta.href} label={hero.cta.label} />
         </div>
-        <div class="py-10 md:border-l md:border-black md:pl-12">
+        <div
+          data-reveal
+          class="py-10 md:border-l md:border-black md:pl-12"
+          style="transition-delay:200ms"
+        >
           <p class="max-w-[540px] text-2xl leading-[1.2] tracking-[-0.01em]">
             {hero.paragraph}
           </p>

@@ -30,14 +30,14 @@ const { heading, badges, points } = data;
     >
       <!-- Heading -->
       <h2
-        data-reveal
-        class="reveal max-w-[816px] text-center font-serif text-3xl font-normal leading-[1.2] tracking-[-0.02em] text-black sm:text-4xl lg:text-display"
+        data-reveal="title"
+        class="max-w-[816px] text-center font-serif text-3xl font-normal leading-[1.2] tracking-[-0.02em] text-black sm:text-4xl lg:text-display"
       >
         {heading}
       </h2>
 
       <!-- Badge grid -->
-      <div data-reveal class="reveal flex w-full flex-wrap justify-center gap-5">
+      <div data-reveal class="flex w-full flex-wrap justify-center gap-5" style="transition-delay:100ms">
         {
           badges.map((badge) => (
             <div class="relative flex h-20 w-60 shrink-0 items-center justify-center overflow-hidden rounded-[40px] backdrop-blur-[2px]">
@@ -62,7 +62,8 @@ const { heading, badges, points } = data;
       <!-- Supporting points -->
       <div
         data-reveal
-        class="reveal grid w-full grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-3"
+        class="grid w-full grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-3"
+        style="transition-delay:200ms"
       >
         {
           points.map((p) => (
@@ -81,54 +82,3 @@ const { heading, badges, points } = data;
     </div>
   </div>
 </section>
-
-<style>
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition:
-      opacity 0.8s ease-out,
-      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
-    will-change: opacity, transform;
-  }
-  .reveal.is-visible {
-    opacity: 1;
-    transform: none;
-  }
-  /* Stagger the three blocks slightly as they enter. */
-  .reveal:nth-child(2) {
-    transition-delay: 100ms;
-  }
-  .reveal:nth-child(3) {
-    transition-delay: 200ms;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .reveal {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-  }
-</style>
-
-<script>
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const reveals = Array.from(document.querySelectorAll<HTMLElement>(".trust .reveal"));
-  if (reduce || !("IntersectionObserver" in window)) {
-    reveals.forEach((el) => el.classList.add("is-visible"));
-  } else {
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("is-visible");
-            obs.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.15 },
-    );
-    reveals.forEach((el) => obs.observe(el));
-  }
-</script>

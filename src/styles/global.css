@@ -89,3 +89,55 @@
     color: #000;
   }
 }
+
+/* ===========================================================================
+   SCROLL REVEAL  —  site-wide entrance animations
+   ---------------------------------------------------------------------------
+   A single IntersectionObserver (in Layout.astro) adds `.in-view` to every
+   element carrying a `data-reveal` attribute the first time it scrolls into
+   view. Drive an element by adding the attribute in markup:
+
+     data-reveal           fade + rise  → paragraphs, labels, cards, media
+     data-reveal="title"   resolve from blur → big h1 / h2 headlines
+     data-reveal="line"    grow from the left → horizontal rules / dividers
+
+   Stagger an element slightly after its neighbour with an inline
+   `style="transition-delay:120ms"`.
+
+   The hidden start-state is gated behind BOTH `prefers-reduced-motion:
+   no-preference` (motion-averse users see the final state immediately, no
+   animation) AND a `.js` flag on <html> (if JS never runs, nothing stays
+   hidden). House easing curve: cubic-bezier(0.33, 1, 0.68, 1).
+   =========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    transition:
+      opacity 0.8s ease-out,
+      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1),
+      filter 0.9s ease-out;
+    will-change: opacity, transform, filter;
+  }
+
+  /* default — fade up */
+  .js [data-reveal]:not(.in-view) {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  /* big headlines resolve out of a blur, holding position */
+  .js [data-reveal="title"]:not(.in-view) {
+    opacity: 0;
+    transform: none;
+    filter: blur(12px);
+  }
+
+  /* horizontal rules draw in from the left */
+  .js [data-reveal="line"] {
+    transform-origin: left center;
+    transition: transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: transform;
+  }
+  .js [data-reveal="line"]:not(.in-view) {
+    transform: scaleX(0);
+  }
+}

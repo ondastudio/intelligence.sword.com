@@ -31,8 +31,9 @@ const { heading, cta } = data;
   <!-- Live dotted mesh; sizing/colors handled in the script -->
   <canvas class="cta__mesh pointer-events-none absolute inset-0 z-0 h-full w-full" aria-hidden="true"></canvas>
 
-  <div class="reveal relative z-10 flex flex-col items-center gap-10 text-center">
+  <div class="relative z-10 flex flex-col items-center gap-10 text-center">
     <h2
+      data-reveal="title"
       class="font-serif text-4xl font-normal leading-[1.05] tracking-[-0.02em] sm:text-5xl lg:text-display"
     >
       {heading.line1}<br />{heading.line2Before}<span class="text-brand"
@@ -40,7 +41,7 @@ const { heading, cta } = data;
       >{heading.after}
     </h2>
 
-    <div class="group flex items-center">
+    <div data-reveal class="group flex items-center" style="transition-delay:140ms">
       <a
         href={cta.href}
         class="flex h-10 items-center rounded-full bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white"
@@ -58,33 +59,11 @@ const { heading, cta } = data;
   </div>
 </section>
 
-<style>
-  .reveal {
-    opacity: 0;
-    transform: translateY(24px);
-    transition:
-      opacity 0.8s ease-out,
-      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
-    will-change: opacity, transform;
-  }
-  .reveal.is-visible {
-    opacity: 1;
-    transform: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .reveal {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-  }
-</style>
-
 <script>
+  // The headline/CTA entrance is handled site-wide via [data-reveal]
+  // (see Layout.astro); this script only drives the live dotted mesh.
   const section = document.querySelector<HTMLElement>(".cta");
   const canvas = section?.querySelector<HTMLCanvasElement>(".cta__mesh");
-  const content = section?.querySelector<HTMLElement>(".reveal");
   const ctx = canvas?.getContext("2d");
   if (!section || !canvas || !ctx) {
     // Nothing to animate; bail quietly.
@@ -92,26 +71,6 @@ const { heading, cta } = data;
     const reduce = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-
-    // Reveal the headline/CTA on first view.
-    if (content) {
-      if (reduce || !("IntersectionObserver" in window)) {
-        content.classList.add("is-visible");
-      } else {
-        const obs = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((e) => {
-              if (e.isIntersecting) {
-                content.classList.add("is-visible");
-                obs.unobserve(e.target);
-              }
-            });
-          },
-          { threshold: 0.3 },
-        );
-        obs.observe(content);
-      }
-    }
 
     // ---- Static mesh (matches the Figma design exactly) ----
     const REF_W = 1440; // design frame width the model was measured against

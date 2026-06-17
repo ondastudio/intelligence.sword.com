@@ -41,17 +41,17 @@ const dot = "/platform/dot.svg";
 <section class="platform relative overflow-x-clip bg-surface py-[120px] text-black">
   <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
     <!-- Heading -->
-    <div data-reveal class="reveal mx-auto flex max-w-[820px] flex-col items-center gap-6 text-center">
-      <h2 class="font-serif text-3xl font-normal leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-display">
+    <div class="mx-auto flex max-w-[820px] flex-col items-center gap-6 text-center">
+      <h2 data-reveal="title" class="font-serif text-3xl font-normal leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-display">
         {heading}
       </h2>
-      <p class="max-w-[600px] text-lg leading-[1.2] text-black sm:text-2xl">
+      <p data-reveal class="max-w-[600px] text-lg leading-[1.2] text-black sm:text-2xl" style="transition-delay:120ms">
         {subheading}
       </p>
     </div>
 
     <!-- Diagram (scaled to fit) -->
-    <div data-stage-wrap class="reveal relative mt-20" style="transition-delay:120ms">
+    <div data-stage-wrap data-reveal class="relative mt-20" style="transition-delay:160ms">
       <div
         data-stage
         class="absolute left-1/2 top-0 h-[781px] w-[1280px]"
@@ -146,34 +146,12 @@ const dot = "/platform/dot.svg";
   </div>
 </section>
 
-<style>
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition:
-      opacity 0.8s ease-out,
-      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
-    will-change: opacity, transform;
-  }
-  .reveal.is-visible {
-    opacity: 1;
-    transform: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .reveal {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-  }
-</style>
-
 <script>
-  const wrap = document.querySelector<HTMLElement>("[data-stage-wrap]");
-  const stage = document.querySelector<HTMLElement>("[data-stage]");
-
   // Scale the fixed 1280-wide diagram down to the container width (never up).
+  // Entrance reveal is handled site-wide via [data-reveal] (see Layout.astro).
+  const wrap = document.querySelector<HTMLElement>(".platform [data-stage-wrap]");
+  const stage = document.querySelector<HTMLElement>(".platform [data-stage]");
+
   const fit = () => {
     if (!wrap || !stage) return;
     const scale = Math.min(1, wrap.clientWidth / 1280);
@@ -187,24 +165,4 @@ const dot = "/platform/dot.svg";
   }
   window.addEventListener("load", fit);
   fit();
-
-  // One-shot fade-up reveal.
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const reveals = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
-  if (reduce || !("IntersectionObserver" in window)) {
-    reveals.forEach((el) => el.classList.add("is-visible"));
-  } else {
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("is-visible");
-            obs.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.15 },
-    );
-    reveals.forEach((el) => obs.observe(el));
-  }
 </script>

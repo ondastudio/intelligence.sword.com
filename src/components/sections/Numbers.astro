@@ -21,7 +21,7 @@ const { stats, testimonial, cta } = data;
 <section class="numbers bg-surface px-4 py-[120px]">
   <div class="mx-auto flex max-w-[1280px] flex-col items-center gap-16 md:gap-20">
     <!-- Bento canvas -->
-    <div data-reveal class="reveal nb-canvas flex w-full flex-col gap-4">
+    <div data-reveal class="nb-canvas flex w-full flex-col gap-4">
       <!-- 4x — intake capacity -->
       <article
         class="nb-card flex flex-col items-center overflow-hidden rounded-card bg-periwinkle/45 px-8 py-10 text-center"
@@ -191,7 +191,7 @@ const { stats, testimonial, cta } = data;
     </div>
 
     <!-- CTA -->
-    <div data-reveal class="reveal group flex items-center">
+    <div data-reveal class="group flex items-center" style="transition-delay:120ms">
       <a
         href={cta.href}
         class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white"
@@ -220,53 +220,4 @@ const { stats, testimonial, cta } = data;
       margin: 0;
     }
   }
-
-
-  /* --- Reveal-on-scroll (house pattern) --- */
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition:
-      opacity 0.8s ease-out,
-      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
-    will-change: opacity, transform;
-  }
-  .reveal.is-visible {
-    opacity: 1;
-    transform: none;
-  }
-  .reveal:nth-child(2) {
-    transition-delay: 120ms;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .reveal {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-  }
 </style>
-
-<script>
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const reveals = Array.from(
-    document.querySelectorAll<HTMLElement>(".numbers .reveal"),
-  );
-  if (reduce || !("IntersectionObserver" in window)) {
-    reveals.forEach((el) => el.classList.add("is-visible"));
-  } else {
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("is-visible");
-            obs.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.15 },
-    );
-    reveals.forEach((el) => obs.observe(el));
-  }
-</script>

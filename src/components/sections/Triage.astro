@@ -22,8 +22,9 @@ const { eyebrow, heading, tabs, card, case: useCase } = triage;
   >
     <!-- Heading -->
     <div class="flex flex-col items-center gap-10">
-      <Eyebrow>{eyebrow}</Eyebrow>
+      <div data-reveal><Eyebrow>{eyebrow}</Eyebrow></div>
       <h2
+        data-reveal="title"
         class="max-w-[952px] text-center font-serif font-normal leading-[1.2] tracking-[-0.02em] text-4xl md:text-display text-ink"
       >
         {heading.before}<span class="text-brand">{heading.highlight}</span><br

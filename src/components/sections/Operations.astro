@@ -25,14 +25,13 @@ const { eyebrow, heading } = data;
     class="bloom pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
   />
 
-  <div
-    data-reveal
-    class="reveal relative z-10 flex flex-col items-center gap-6 text-center"
-  >
-    <Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow>
+  <div class="relative z-10 flex flex-col items-center gap-6 text-center">
+    <div data-reveal><Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow></div>
 
     <h2
+      data-reveal="title"
       class="font-serif font-normal leading-[1.1] tracking-[-0.02em] text-black text-[clamp(2.5rem,6vw,80px)]"
+      style="transition-delay:120ms"
     >
       {heading[0]}<br />{heading[1]}
     </h2>
@@ -58,48 +57,4 @@ const { eyebrow, heading } = data;
       transparent 100%
     );
   }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition:
-      opacity 0.8s ease-out,
-      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
-    will-change: opacity, transform;
-  }
-  .reveal.is-visible {
-    opacity: 1;
-    transform: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .reveal {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-  }
 </style>
-
-<script>
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const reveals = Array.from(
-    document.querySelectorAll<HTMLElement>(".operations .reveal"),
-  );
-  if (reduce || !("IntersectionObserver" in window)) {
-    reveals.forEach((el) => el.classList.add("is-visible"));
-  } else {
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("is-visible");
-            obs.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.3 },
-    );
-    reveals.forEach((el) => obs.observe(el));
-  }
-</script>

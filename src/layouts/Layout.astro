@@ -21,6 +21,11 @@ const { title, description = '' } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <!-- Flag JS as available so the scroll-reveal start-states only hide
+         content when the observer can actually reveal it (see global.css). -->
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
@@ -36,5 +41,33 @@ const { title, description = '' } = Astro.props;
   </head>
   <body>
     <slot />
+
+    <!-- Site-wide scroll reveal: one observer toggles `.in-view` on every
+         [data-reveal] element the first time it enters the viewport. Variants
+         (title / line / default) and prefers-reduced-motion handling live in
+         global.css. -->
+    <script>
+      const items = Array.from(
+        document.querySelectorAll<HTMLElement>("[data-reveal]"),
+      );
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reduce || !("IntersectionObserver" in window)) {
+        items.forEach((el) => el.classList.add("in-view"));
+      } else {
+        const obs = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add("in-view");
+                obs.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.2 },
+        );
+        items.forEach((el) => obs.observe(el));
+      }
+    </script>
   </body>
 </html>
