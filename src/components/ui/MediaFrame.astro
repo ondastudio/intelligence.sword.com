@@ -10,6 +10,10 @@
  * circular buttons overlay the bottom corners — a play/pause toggle (white,
  * 4px backdrop blur) on the left and a mute toggle (lime accent) on the right —
  * faithfully matching the Figma design (no drop shadow).
+ *
+ * `fill` makes the frame stretch to its parent's box (no intrinsic aspect ratio
+ * or radius of its own) so a wrapper can size, clip, and scale it — used by the
+ * Intro's scroll-driven fullscreen video stage.
  */
 interface Props {
   src: string;
@@ -17,6 +21,7 @@ interface Props {
   aspect?: string;
   poster?: string;
   controls?: boolean;
+  fill?: boolean;
   class?: string;
 }
 const {
@@ -25,11 +30,19 @@ const {
   aspect = "1920/1080",
   poster,
   controls = true,
+  fill = false,
   class: className = "",
 } = Astro.props;
 
 const isVideo = /\.(webm|mp4|mov|m4v|ogg)$/i.test(src);
 const showControls = isVideo && controls;
+
+// `fill` defers sizing + radius to the parent; otherwise the frame owns its
+// aspect ratio and the design's large card radius.
+const containerClass = fill
+  ? `relative size-full overflow-hidden bg-white ${className}`
+  : `relative overflow-hidden rounded-card bg-white ${className}`;
+const containerStyle = fill ? undefined : `aspect-ratio:${aspect};`;
 
 // 40px round button; stroke icons inherit currentColor (black). No shadow.
 const btnBase =
@@ -38,8 +51,8 @@ const iconBase = "size-6";
 ---
 
 <div
-  class={`relative overflow-hidden rounded-card bg-white ${className}`}
-  style={`aspect-ratio:${aspect};`}
+  class={containerClass}
+  style={containerStyle}
   data-video-player={showControls ? "" : undefined}
 >
   {

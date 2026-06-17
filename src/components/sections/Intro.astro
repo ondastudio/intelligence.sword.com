@@ -38,14 +38,106 @@ import MediaFrame from "../ui/MediaFrame.astro";
         <LogoStrip logos={intro.logos} class="w-full" />
       </div>
     </div>
+  </div>
 
-    <!-- Product screenshot: spans the full block width (1408px @ 1440) -->
-    <div data-reveal class="pb-20 pt-[120px]">
+  <!-- Product video: a scroll-driven stage. With JS + motion enabled the frame
+       fills the viewport (100vw × 100vh) and is scaled down toward its edges,
+       peaking edge-to-edge when the section is dead-centred (scrubber below).
+       Without JS / with reduced motion it falls back to the design's contained
+       rounded 16:9 product frame. -->
+  <div data-reveal data-video-scroll class="video-scroll relative z-10 w-full">
+    <div
+      data-video-frame
+      class="video-frame mx-auto overflow-hidden bg-white will-change-transform"
+    >
       <MediaFrame
         src={intro.media.src}
         poster={intro.media.poster}
         alt={intro.media.alt}
+        fill
       />
     </div>
   </div>
 </section>
+
+<style>
+  /* Fallback (no JS / reduced motion): the design's contained product frame. */
+  .video-scroll {
+    padding: 120px 16px 80px;
+  }
+  .video-frame {
+    width: 100%;
+    max-width: 1408px;
+    aspect-ratio: 1920 / 1080;
+    border-radius: var(--radius-card);
+  }
+
+  /* Enhanced: full-bleed stage the scrubber scales between 0.82 → 1 → 0.82. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .video-scroll {
+      padding: 80px 0;
+    }
+    :global(html.js) .video-frame {
+      max-width: none;
+      width: 100%;
+      height: 100svh;
+      aspect-ratio: auto;
+      transform-origin: center center;
+      transform: scale(0.82);
+      /* radius + scale are driven per-frame by the scrubber; no CSS easing. */
+    }
+  }
+</style>
+
+<script>
+  // Scroll-driven fullscreen scaling for the product video. The frame's base
+  // size is the viewport, so scale(1) == edge-to-edge. We map the distance from
+  // the frame's centre to the viewport's centre into a 0→1 proximity, ease it,
+  // and drive scale (0.82 → 1) and corner radius (40px → 0). Symmetric about
+  // centre, so the video peaks fullscreen exactly when the section is centred
+  // and compresses back as it leaves.
+  function initVideoScroll(stage: HTMLElement) {
+    const frame = stage.querySelector<HTMLElement>("[data-video-frame]");
+    if (!frame) return;
+    if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches)
+      return;
+
+    const MIN_SCALE = 0.82;
+    const MAX_RADIUS = 40; // px — matches --radius-card
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    let ticking = false;
+
+    const render = () => {
+      ticking = false;
+      const rect = frame.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // transform-origin is centre, so the transformed rect's centre equals the
+      // layout centre — reading it back is stable (no feedback loop).
+      const frameCenter = rect.top + rect.height / 2;
+      const distance = Math.abs(frameCenter - vh / 2);
+      // Full effect within one viewport height of dead centre.
+      const proximity = Math.max(0, 1 - distance / vh);
+      const eased = easeOutCubic(proximity);
+
+      const scale = MIN_SCALE + (1 - MIN_SCALE) * eased;
+      const radius = MAX_RADIUS * (1 - eased);
+      frame.style.transform = `scale(${scale})`;
+      frame.style.borderRadius = `${radius}px`;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    };
+
+    render();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+  }
+
+  document
+    .querySelectorAll<HTMLElement>("[data-video-scroll]")
+    .forEach(initVideoScroll);
+</script>
