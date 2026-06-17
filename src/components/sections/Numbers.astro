@@ -24,7 +24,7 @@ const { stats, testimonial, cta } = data;
     <div data-reveal class="reveal nb-canvas flex w-full flex-col gap-4">
       <!-- 4x — intake capacity -->
       <article
-        class="nb-card flex flex-col items-center justify-center overflow-hidden rounded-card bg-periwinkle/45 px-8 py-10 text-center"
+        class="nb-card flex flex-col items-center overflow-hidden rounded-card bg-periwinkle/45 px-8 py-10 text-center"
         style="--l:13.44%;--t:0%;--w:23.44%;--h:47.89%"
       >
         <div class="relative aspect-square w-[clamp(150px,15vw,200px)] shrink-0">
@@ -48,15 +48,20 @@ const { stats, testimonial, cta } = data;
             class="absolute left-1/2 top-[87.5%] aspect-square w-1/4 -translate-x-1/2 -translate-y-1/2"
           />
         </div>
-        <!-- "4x" + arrow, centered as a group; arrow bottom sits on the text
-             baseline so its centre lines up with the "x" -->
-        <div class="mt-6 flex items-end justify-center gap-[17px]">
+        <!-- "4x" + arrow, centered as a group; the arrow is lifted by the line
+             box's descender space (~10.5px at 76px) so the bottom of the circle
+             sits exactly on the bottom of the "4x" glyphs (Figma). -->
+        <div class="mt-[10px] flex items-end justify-center gap-[16px]">
           <span class="font-serif text-[clamp(3rem,6vw,76px)] font-normal leading-none tracking-[-0.02em] text-black">
             {stats.intake.value}
           </span>
-          <ArrowCircle href={stats.intake.href} label="More on intake capacity" />
+          <ArrowCircle
+            href={stats.intake.href}
+            label="More on intake capacity"
+            class="mb-[10.5px]"
+          />
         </div>
-        <p class="mt-7 max-w-[232px] text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-black">
+        <p class="mt-6 max-w-[232px] text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-black">
           {stats.intake.label}
         </p>
       </article>
@@ -64,19 +69,19 @@ const { stats, testimonial, cta } = data;
       <!-- Customer portrait -->
       <figure
         class="nb-card overflow-hidden rounded-card"
-        style="--l:41.95%;--t:0%;--w:17.73%;--h:37.74%"
+        style="--l:39.17%;--t:0%;--w:17.75%;--h:37.74%"
       >
         <img
           src={testimonial.photo}
           alt={testimonial.photoAlt}
-          class="h-full min-h-[300px] w-full object-cover"
+          class="h-full min-h-[300px] w-full object-cover object-[59%_50%]"
         />
       </figure>
 
       <!-- Ministerial testimonial -->
       <article
         class="nb-card flex flex-col justify-between gap-6 overflow-hidden rounded-card bg-purple-tint p-10"
-        style="--l:59.69%;--t:0%;--w:40.31%;--h:37.74%"
+        style="--l:56.92%;--t:0%;--w:43.08%;--h:37.74%"
       >
         <img
           src={testimonial.logo}
@@ -100,16 +105,29 @@ const { stats, testimonial, cta } = data;
         class="nb-card relative min-h-[280px] overflow-hidden rounded-card bg-accent"
         style="--l:0%;--t:51.54%;--w:36.91%;--h:34.09%"
       >
-        <!-- perforated dot grid (top band) -->
-        <div class="nb-dots pointer-events-none absolute inset-x-10 top-10 h-[155px]"></div>
+        <!-- perforated dot mesh — exact Figma pattern (16.2px grid), clipped
+             like the design's 391.5×155 rect so it never cuts on the edges -->
+        <img
+          src="/numbers/dot-mesh.svg"
+          alt=""
+          aria-hidden="true"
+          class="pointer-events-none absolute left-[8.571%] top-[13.378%] h-[51.839%] w-[82.86%]"
+        />
+        <!-- lime mask that clears the dots behind "686" — sized to the digit
+             ink with an equal margin on all four sides -->
+        <div
+          class="pointer-events-none absolute left-[34.84%] top-[27.32%] h-[21.61%] w-[27.89%] bg-accent"
+        >
+        </div>
+        <!-- 686 — ink centered in the mask, overlapping the mesh -->
+        <span
+          class="absolute left-[48.57%] top-[37.76%] -translate-x-1/2 -translate-y-1/2 font-serif text-[clamp(3.5rem,6.5vw,80px)] font-normal leading-none tracking-[-0.02em] text-black"
+        >
+          {stats.workdays.value}
+        </span>
 
         <div class="relative flex h-full flex-col p-10 text-center">
-          <div class="flex flex-1 items-center justify-center">
-            <span class="inline-block bg-accent px-1 font-serif text-[clamp(3.5rem,6.5vw,80px)] font-normal leading-[0.78] tracking-[-0.02em] text-black">
-              {stats.workdays.value}
-            </span>
-          </div>
-          <p class="mx-auto max-w-[200px] text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-ink">
+          <p class="mx-auto mt-auto max-w-[200px] text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-ink">
             {stats.workdays.label}
           </p>
         </div>
@@ -126,19 +144,19 @@ const { stats, testimonial, cta } = data;
         class="nb-card flex flex-col items-center justify-center gap-8 overflow-hidden rounded-card bg-gray-200/35 px-6 py-10 text-center backdrop-blur-[20px]"
         style="--l:39.14%;--t:41.39%;--w:36.91%;--h:58.56%"
       >
-        <div class="flex items-end justify-center gap-6">
+        <div class="flex items-center justify-center gap-6">
           <span class="whitespace-nowrap font-serif text-[clamp(2.75rem,6vw,76px)] font-normal leading-[1.1] tracking-[-0.02em] text-black">
             {stats.roi.value}
           </span>
-          <ArrowCircle href={stats.roi.href} label="See the ROI breakdown" class="mb-2" />
+          <ArrowCircle href={stats.roi.href} label="See the ROI breakdown" />
         </div>
-        <div class="flex h-[clamp(150px,17vw,268px)] w-full max-w-[362px] items-end justify-center gap-[2.2%]">
-          <span class="nb-bar" style="height:19.2%"></span>
-          <span class="nb-bar" style="height:38.5%"></span>
-          <span class="nb-bar" style="height:57.7%"></span>
-          <span class="nb-bar" style="height:76.9%"></span>
-          <span class="nb-bar" style="height:100%"></span>
-        </div>
+        <!-- Center-aligned bar chart with perforated dot mesh, exact from Figma -->
+        <img
+          src="/numbers/roi-bars.svg"
+          alt=""
+          aria-hidden="true"
+          class="h-[clamp(150px,17vw,268px)] w-full max-w-[362px] object-contain"
+        />
         <p class="text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-ink">
           {stats.roi.label}
         </p>
@@ -157,7 +175,7 @@ const { stats, testimonial, cta } = data;
           <span class="mt-3 grid size-6 place-items-center rounded-[24px] bg-[rgba(77,79,96,0.1)] text-ink">
             <svg viewBox="0 0 16 16" class="size-4" fill="none" aria-hidden="true">
               <path
-                d="M8 3.33V12.67M12.67 8H3.33"
+                d="M12.67 8H3.33"
                 stroke="currentColor"
                 stroke-width="1.5"
                 stroke-linecap="round"
@@ -180,7 +198,7 @@ const { stats, testimonial, cta } = data;
       >
         {cta.label}
       </a>
-      <ArrowCircle variant="filled" rotate={45} href={cta.href} label={cta.label} class="-ml-px" />
+      <ArrowCircle variant="filled" href={cta.href} label={cta.label} class="-ml-px" />
     </div>
   </div>
 </section>
@@ -203,34 +221,6 @@ const { stats, testimonial, cta } = data;
     }
   }
 
-  /* --- Perforated dot grid (686 card top band; Figma pattern0) --- */
-  .nb-dots {
-    background-image: radial-gradient(
-      circle,
-      var(--color-gray-400) 1.35px,
-      transparent 1.55px
-    );
-    background-size: 16.2px 16.2px;
-  }
-
-  /* --- Bar-chart bars: lime gradient fill with a perforated dot grid --- */
-  .nb-bar {
-    flex: 1 0 0;
-    min-width: 0;
-    border-radius: 9999px;
-    background-image: radial-gradient(
-        circle,
-        var(--color-gray-400) 1.4px,
-        transparent 1.6px
-      ),
-      linear-gradient(to top, rgba(191, 192, 204, 0.05), var(--color-accent));
-    background-size:
-      18px 18px,
-      100% 100%;
-    background-position:
-      center bottom,
-      center;
-  }
 
   /* --- Reveal-on-scroll (house pattern) --- */
   .reveal {
