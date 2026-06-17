@@ -1,0 +1,84 @@
+---
+/**
+ * Operations — closing statement banner.
+ * "Unbreakable operations. Undeniable outcomes." A soft, heavily-blurred
+ * purple→lime→lavender bloom sits centered behind a small eyebrow label and a
+ * large two-line Lora headline. Content comes from src/data/operations.json.
+ */
+import Eyebrow from "../ui/Eyebrow.astro";
+import data from "../../data/operations.json";
+
+const { eyebrow, heading } = data;
+---
+
+<section
+  class="operations relative flex min-h-[clamp(620px,62.5vw,900px)] items-center justify-center overflow-hidden bg-surface px-4 py-[120px]"
+>
+  <!-- Decorative blurred bloom — full-bleed, keeps the design's 1440×900
+       framing/scale and crops to the section via object-cover. -->
+  <img
+    src="/operations/bloom.svg"
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
+  />
+
+  <div
+    data-reveal
+    class="reveal relative z-10 flex flex-col items-center gap-6 text-center"
+  >
+    <Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow>
+
+    <h2
+      class="font-serif font-normal leading-[1.1] tracking-[-0.02em] text-black text-[clamp(2.5rem,6vw,80px)]"
+    >
+      {heading[0]}<br />{heading[1]}
+    </h2>
+  </div>
+</section>
+
+<style>
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+      opacity 0.8s ease-out,
+      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reveals = Array.from(
+    document.querySelectorAll<HTMLElement>(".operations .reveal"),
+  );
+  if (reduce || !("IntersectionObserver" in window)) {
+    reveals.forEach((el) => el.classList.add("is-visible"));
+  } else {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.3 },
+    );
+    reveals.forEach((el) => obs.observe(el));
+  }
+</script>

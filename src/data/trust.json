@@ -1,0 +1,124 @@
+{
+  "heading": "Trusted by the most regulated industry in the world.",
+  "badges": [
+    {
+      "alt": "ISO 13485 Accredited",
+      "w": 116.791,
+      "h": 45,
+      "layers": [{ "src": "/trust/logo-01.svg", "w": 116.791, "h": 45, "x": 0, "y": 0 }]
+    },
+    {
+      "alt": "MDR Class IIa Compliant",
+      "w": 128.073,
+      "h": 45.002,
+      "layers": [
+        { "src": "/trust/logo-02-mark.svg", "w": 44.074, "h": 45.002, "x": 0, "y": 0 },
+        { "src": "/trust/logo-02-text.svg", "w": 72.523, "h": 23.508, "x": 55.55, "y": 16.46 }
+      ]
+    },
+    {
+      "alt": "ISO 27001 Accredited",
+      "w": 115.988,
+      "h": 45,
+      "layers": [{ "src": "/trust/logo-03.svg", "w": 115.988, "h": 45, "x": 0, "y": 0 }]
+    },
+    {
+      "alt": "AICPA SOC 2 Compliant",
+      "w": 112.287,
+      "h": 45,
+      "layers": [{ "src": "/trust/logo-04.svg", "w": 112.287, "h": 45, "x": 0, "y": 0 }]
+    },
+    {
+      "alt": "NHS Compliant",
+      "w": 122.58,
+      "h": 23.766,
+      "layers": [{ "src": "/trust/logo-05.svg", "w": 122.58, "h": 23.766, "x": 0, "y": 0 }]
+    },
+    {
+      "alt": "DTAC Certified",
+      "w": 106.48,
+      "h": 45,
+      "layers": [{ "src": "/trust/logo-06.svg", "w": 106.48, "h": 45, "x": 0, "y": 0 }]
+    },
+    {
+      "alt": "MHRA Class I & IIa",
+      "w": 117.125,
+      "h": 44.999,
+      "layers": [
+        { "src": "/trust/logo-07-mark.svg", "w": 45.109, "h": 44.999, "x": 0, "y": 0 },
+        { "src": "/trust/logo-07-text.svg", "w": 59.785, "h": 20.998, "x": 57.34, "y": 14.19 }
+      ]
+    },
+    {
+      "alt": "Health Canada Class I",
+      "w": 92.208,
+      "h": 45,
+      "layers": [{ "src": "/trust/logo-08.svg", "w": 92.208, "h": 45, "x": 0, "y": 0 }]
+    },
+    {
+      "alt": "FDA Class 2 Certification",
+      "w": 132.678,
+      "h": 22.913,
+      "layers": [
+        { "src": "/trust/logo-09-mark.svg", "w": 53.003, "h": 21.513, "x": 0, "y": 1.4 },
+        { "src": "/trust/logo-09-text.svg", "w": 68.628, "h": 22.001, "x": 64.05, "y": 0 }
+      ]
+    },
+    {
+      "alt": "HITRUST Certified",
+      "w": 89.348,
+      "h": 45,
+      "layers": [
+        { "src": "/trust/logo-10-mark.svg", "w": 74.65, "h": 21.769, "x": 7.349, "y": 3.905 },
+        { "src": "/trust/logo-10-text.svg", "w": 55.549, "h": 7.584, "x": 16.9, "y": 33.512 }
+      ]
+    },
+    {
+      "alt": "HIPAA Compliant",
+      "w": 128.152,
+      "h": 47.875,
+      "layers": [{ "src": "/trust/logo-11.svg", "w": 128.152, "h": 47.875, "x": 0, "y": 0 }]
+    },
+    {
+      "alt": "GDPR Compliant",
+      "w": 108.055,
+      "h": 45.002,
+      "layers": [
+        { "src": "/trust/logo-12-mark.svg", "w": 44.074, "h": 45.002, "x": 0, "y": 0 },
+        { "src": "/trust/logo-12-text.svg", "w": 52.105, "h": 21.996, "x": 55.95, "y": 12.07 }
+      ]
+    },
+    {
+      "alt": "NHS DCB0129 DCB0160",
+      "w": 137.615,
+      "h": 30.598,
+      "layers": [{ "src": "/trust/logo-13.svg", "w": 137.615, "h": 30.598, "x": 0, "y": 0 }]
+    },
+    {
+      "alt": "Cyber Essentials Plus",
+      "w": 131.078,
+      "h": 41.906,
+      "layers": [
+        { "src": "/trust/logo-14-maskimg.svg", "w": 53.639, "h": 41.906, "x": 0, "y": 0 },
+        { "src": "/trust/logo-14-text.svg", "w": 68.828, "h": 39.997, "x": 62.25, "y": 0.95 }
+      ]
+    }
+  ],
+  "points": [
+    {
+      "icon": "/trust/icon-proven.svg",
+      "title": "Proven in practice",
+      "body": "Our AI has been tested and certified across the world's most demanding regulatory frameworks."
+    },
+    {
+      "icon": "/trust/icon-validated.svg",
+      "title": "Clinically validated",
+      "body": "Every decision our AI makes has been scrutinized by clinical experts."
+    },
+    {
+      "icon": "/trust/icon-privacy.svg",
+      "title": "Built for privacy",
+      "body": "Your patients' data is protected by the strictest standards in existence."
+    }
+  ]
+}

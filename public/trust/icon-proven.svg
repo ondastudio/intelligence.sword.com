@@ -1,0 +1,9 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="workflow-circle-05">
+<path id="Vector" d="M12 6.67188C12 8.88101 10.2091 10.6719 8 10.6719C5.79087 10.6719 4 8.88101 4 6.67188C4 4.46274 5.79087 2.67188 8 2.67188C10.2091 2.67188 12 4.46274 12 6.67188Z" stroke="var(--stroke-0, black)" stroke-width="1.5"/>
+<path id="Vector_2" d="M28 6.67188C28 8.88101 26.2092 10.6719 24 10.6719C21.7908 10.6719 20 8.88101 20 6.67188C20 4.46274 21.7908 2.67188 24 2.67188C26.2092 2.67188 28 4.46274 28 6.67188Z" stroke="var(--stroke-0, black)" stroke-width="1.5"/>
+<path id="Vector_3" d="M12 25.3281C12 27.5373 10.2091 29.3281 8 29.3281C5.79087 29.3281 4 27.5373 4 25.3281C4 23.1189 5.79087 21.3281 8 21.3281C10.2091 21.3281 12 23.1189 12 25.3281Z" stroke="var(--stroke-0, black)" stroke-width="1.5"/>
+<path id="Vector_4" d="M8 10.6719V21.3385" stroke="var(--stroke-0, black)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_5" d="M8 16.0052H18.6667C20.5335 16.0052 21.4669 16.0052 22.18 15.6419C22.8072 15.3223 23.3171 14.8124 23.6367 14.1852C24 13.4721 24 12.5387 24 10.6719" stroke="var(--stroke-0, black)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

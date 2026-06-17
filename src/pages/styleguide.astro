@@ -21,9 +21,11 @@ const demoCard = careOrchestration.cards[0];
 
 const swatches = [
   { name: "brand", cls: "bg-brand", hex: "#7700ee" },
+  { name: "purple-500", cls: "bg-purple-500", hex: "#4d0099" },
   { name: "coral", cls: "bg-coral", hex: "#ffedee" },
   { name: "purple-300", cls: "bg-purple-300", hex: "#8c4aff" },
   { name: "purple-200", cls: "bg-purple-200", hex: "#a684ff" },
+  { name: "purple-150", cls: "bg-purple-150", hex: "#d3c2ff" },
   { name: "purple-100", cls: "bg-purple-100", hex: "#e1d6ff" },
   { name: "purple-tint", cls: "bg-purple-tint border border-black/10", hex: "#eee8ff" },
   { name: "lavender", cls: "bg-lavender border border-black/10", hex: "#ede7fe" },
@@ -98,8 +100,9 @@ const swatches = [
     <!-- Eyebrow -->
     <section class="mt-14">
       <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">Eyebrow</h2>
-      <div class="mt-4">
+      <div class="mt-4 flex flex-col gap-3">
         <Eyebrow>Built by the #1 AI Care company.</Eyebrow>
+        <Eyebrow dotClass="bg-purple-500">Scale capacity without scaling costs</Eyebrow>
       </div>
     </section>
 

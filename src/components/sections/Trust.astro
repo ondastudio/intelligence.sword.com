@@ -1,0 +1,134 @@
+---
+/**
+ * Trust — "Trusted by the most regulated industry in the world."
+ *
+ * A rounded lavender panel (with a soft blurred purple bloom) holding a centered
+ * editorial headline, a wrapping grid of certification/compliance badges, and
+ * three supporting points along the bottom. Each badge is a transparent pill
+ * with an inner purple glow ring; its logo is composed from one or more SVG
+ * layers positioned at their native Figma offsets. Content comes from
+ * src/data/trust.json.
+ */
+import data from "../../data/trust.json";
+
+const { heading, badges, points } = data;
+---
+
+<section class="trust bg-surface px-4 py-[120px]">
+  <!-- panel runs to a 16px gutter; it sits BEHIND the 1280-wide content -->
+  <div class="relative mx-auto">
+    <!-- Decorative panel fill + blurred bloom (rounded, stretched to fit) -->
+    <img
+      src="/trust/bg-frame.svg"
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 h-full w-full rounded-card"
+    />
+
+    <div
+      class="relative mx-auto flex max-w-[1280px] flex-col items-center gap-20 pb-[120px] pt-[88px] lg:gap-[120px] lg:pb-[168px]"
+    >
+      <!-- Heading -->
+      <h2
+        data-reveal
+        class="reveal max-w-[816px] text-center font-serif text-3xl font-normal leading-[1.2] tracking-[-0.02em] text-black sm:text-4xl lg:text-display"
+      >
+        {heading}
+      </h2>
+
+      <!-- Badge grid -->
+      <div data-reveal class="reveal flex w-full flex-wrap justify-center gap-5">
+        {
+          badges.map((badge) => (
+            <div class="relative flex h-20 w-60 shrink-0 items-center justify-center overflow-hidden rounded-[40px] backdrop-blur-[2px]">
+              {/* inner purple glow ring (blurred border, clipped by the pill) */}
+              <span class="pointer-events-none absolute left-1/2 top-0 h-20 w-60 -translate-x-1/2 rounded-[40px] border-[15px] border-purple-200 blur-[8px]" />
+              {/* logo, composed from its native-sized layers */}
+              <div class="relative" style={`width:${badge.w}px;height:${badge.h}px`}>
+                {badge.layers.map((l, i) => (
+                  <img
+                    src={l.src}
+                    alt={i === 0 ? badge.alt : ""}
+                    class="absolute block max-w-none"
+                    style={`left:${l.x}px;top:${l.y}px;width:${l.w}px;height:${l.h}px`}
+                  />
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- Supporting points -->
+      <div
+        data-reveal
+        class="reveal grid w-full grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-3"
+      >
+        {
+          points.map((p) => (
+            <div class="flex min-h-[218px] flex-col justify-between gap-10 border-l border-black px-6">
+              <span class="flex size-12 shrink-0 items-center justify-center rounded-[40px] bg-purple-150 p-2">
+                <img src={p.icon} alt="" aria-hidden="true" class="size-8" />
+              </span>
+              <div class="flex flex-col gap-6 leading-[1.2] text-black">
+                <p class="text-xl font-semibold tracking-[-0.02em]">{p.title}</p>
+                <p class="text-lg tracking-[-0.02em]">{p.body}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+      opacity 0.8s ease-out,
+      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  /* Stagger the three blocks slightly as they enter. */
+  .reveal:nth-child(2) {
+    transition-delay: 100ms;
+  }
+  .reveal:nth-child(3) {
+    transition-delay: 200ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reveals = Array.from(document.querySelectorAll<HTMLElement>(".trust .reveal"));
+  if (reduce || !("IntersectionObserver" in window)) {
+    reveals.forEach((el) => el.classList.add("is-visible"));
+  } else {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.15 },
+    );
+    reveals.forEach((el) => obs.observe(el));
+  }
+</script>
