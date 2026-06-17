@@ -1,0 +1,309 @@
+---
+/**
+ * Cta — closing call-to-action band (Figma "CTA" frame, 1440×519).
+ *
+ * The dotted mesh is a STATIC design (Figma node 8366:497): a ~26.5px grid of
+ * purple-200 dots whose radius grows with distance from a focal point at
+ * (40.3%, 11.6%) of the band. Dots vanish at the focal point (upper-center-
+ * left, keeping the headline area clear) and bloom to ~2.5px, solid purple, at
+ * the far edges. This frozen field is ALWAYS drawn exactly as designed —
+ * `r = clamp((dist − 115·s)·0.00427, 0, 2.5·s)`, `s = width/1440`.
+ *
+ * The pointer ADDS a blur on top: while the cursor moves over the band, a soft
+ * blurred purple bloom is generated under it (a blurred halo + blurred,
+ * brightened dots), easing in on enter and out on leave. The static mesh never
+ * changes — only this overlay does.
+ *
+ * Colors come from the design tokens (--color-purple-200, --color-brand,
+ * --color-surface) via getComputedStyle, so the mesh stays token-driven.
+ * Honors prefers-reduced-motion (no pointer blur — just the static field).
+ * Content comes from src/data/cta.json.
+ */
+import ArrowCircle from "../ui/ArrowCircle.astro";
+import data from "../../data/cta.json";
+
+const { heading, cta } = data;
+---
+
+<section
+  class="cta relative flex min-h-[420px] items-center justify-center overflow-hidden bg-surface px-6 py-24 text-black md:min-h-[519px]"
+>
+  <!-- Live dotted mesh; sizing/colors handled in the script -->
+  <canvas class="cta__mesh pointer-events-none absolute inset-0 z-0 h-full w-full" aria-hidden="true"></canvas>
+
+  <div class="reveal relative z-10 flex flex-col items-center gap-10 text-center">
+    <h2
+      class="font-serif text-4xl font-normal leading-[1.05] tracking-[-0.02em] sm:text-5xl lg:text-display"
+    >
+      {heading.line1}<br />{heading.line2Before}<span class="text-brand"
+        >{heading.accent}</span
+      >{heading.after}
+    </h2>
+
+    <div class="group flex items-center">
+      <a
+        href={cta.href}
+        class="flex h-10 items-center rounded-full bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white"
+      >
+        {cta.label}
+      </a>
+      <ArrowCircle
+        variant="filled"
+        href={cta.href}
+        label={cta.label}
+        detach
+        class="-ml-px"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.8s ease-out,
+      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const section = document.querySelector<HTMLElement>(".cta");
+  const canvas = section?.querySelector<HTMLCanvasElement>(".cta__mesh");
+  const content = section?.querySelector<HTMLElement>(".reveal");
+  const ctx = canvas?.getContext("2d");
+  if (!section || !canvas || !ctx) {
+    // Nothing to animate; bail quietly.
+  } else {
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    // Reveal the headline/CTA on first view.
+    if (content) {
+      if (reduce || !("IntersectionObserver" in window)) {
+        content.classList.add("is-visible");
+      } else {
+        const obs = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                content.classList.add("is-visible");
+                obs.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.3 },
+        );
+        obs.observe(content);
+      }
+    }
+
+    // ---- Static mesh (matches the Figma design exactly) ----
+    const REF_W = 1440; // design frame width the model was measured against
+    const SPACING_D = 26.5; // px between dots in the design grid
+    const FOCAL_FX = 0.403; // focal point x as a fraction of the band (≈580/1440)
+    const FOCAL_FY = 0.116; // focal point y as a fraction of the band (≈60/517)
+    const DEAD_D = 115; // design-px radius around the focal point where dots vanish
+    const SLOPE_D = 0.00427; // dot radius gained per design-px of distance
+    const MAX_R_D = 2.5; // largest dot radius in design px (far edges)
+
+    // ---- Pointer bloom (the blur generated on interaction) ----
+    const INFLUENCE_D = 200; // design-px reach of the cursor bloom
+    const BLOOM_GROW = 2.4; // extra radius (× design max) a dot gains under the cursor
+    const BLUR_D = 7; // design-px blur radius of the bloom
+    const EASE_POS = 0.14; // bloom focal-point follow speed
+    const EASE_STR = 0.07; // bloom fade in/out speed
+
+    // ---- Colors pulled from the design tokens ----
+    const root = getComputedStyle(document.documentElement);
+    const readColor = (name: string, fallback: string) => {
+      const v = root.getPropertyValue(name).trim();
+      return /^#[0-9a-f]{6}$/i.test(v) ? v : fallback;
+    };
+    const toRGB = (hex: string): [number, number, number] => [
+      parseInt(hex.slice(1, 3), 16),
+      parseInt(hex.slice(3, 5), 16),
+      parseInt(hex.slice(5, 7), 16),
+    ];
+    const DOT = toRGB(readColor("--color-purple-200", "#a684ff")); // static dots
+    const BLOOM = toRGB(readColor("--color-brand", "#7700ee")); // pointer glow
+    const dotRGB = `${DOT[0]}, ${DOT[1]}, ${DOT[2]}`;
+    const bloomRGB = `${BLOOM[0]}, ${BLOOM[1]}, ${BLOOM[2]}`;
+
+    let w = 0;
+    let h = 0;
+    let dpr = 1;
+    let s = 1; // scale = width / design width
+    let cols = 0;
+    let rows = 0;
+    let offX = 0;
+    let offY = 0;
+    let focalX = 0; // static-field focal point (px)
+    let focalY = 0;
+
+    // Pointer bloom state: eased position + strength (0 idle → 1 active).
+    let bx = 0;
+    let by = 0;
+    let tx = 0;
+    let ty = 0;
+    let str = 0; // current bloom strength
+    let targetStr = 0; // where strength is easing to
+    let pointerInside = false;
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      w = rect.width;
+      h = rect.height;
+      s = w / REF_W;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const spacing = SPACING_D * s;
+      // Center the grid so it stays balanced at any width.
+      cols = Math.ceil(w / spacing) + 1;
+      rows = Math.ceil(h / spacing) + 1;
+      offX = (w - (cols - 1) * spacing) / 2;
+      offY = (h - (rows - 1) * spacing) / 2;
+      focalX = w * FOCAL_FX;
+      focalY = h * FOCAL_FY;
+    }
+
+    // Static dot radius at canvas distance `dist` from the focal point.
+    function staticRadius(dist: number) {
+      const r = (dist - DEAD_D * s) * SLOPE_D;
+      const max = MAX_R_D * s;
+      return r < 0 ? 0 : r > max ? max : r;
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      const spacing = SPACING_D * s;
+      const maxR = MAX_R_D * s;
+
+      // Ease the bloom toward the pointer + ease its strength in/out.
+      bx += (tx - bx) * EASE_POS;
+      by += (ty - by) * EASE_POS;
+      str += (targetStr - str) * EASE_STR;
+
+      // ---- Pass 1: the static designed field (always drawn, crisp) ----
+      for (let r = 0; r < rows; r++) {
+        const y = offY + r * spacing;
+        for (let c = 0; c < cols; c++) {
+          const x = offX + c * spacing;
+          const dx = x - focalX;
+          const dy = y - focalY;
+          const radius = staticRadius(Math.sqrt(dx * dx + dy * dy));
+          if (radius < 0.05) continue;
+          const t = radius / maxR; // 0 (faint, center) → 1 (solid, edge)
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${dotRGB}, ${t})`;
+          ctx.fill();
+        }
+      }
+
+      // ---- Pass 2: the pointer bloom — a generated blur over the mesh ----
+      if (str > 0.01) {
+        const influence = INFLUENCE_D * s;
+        const inflSq = influence * influence;
+        ctx.save();
+        ctx.filter = `blur(${BLUR_D * s}px)`;
+
+        // Soft blurred halo centered on the cursor.
+        const halo = ctx.createRadialGradient(bx, by, 0, bx, by, influence);
+        halo.addColorStop(0, `rgba(${bloomRGB}, ${0.22 * str})`);
+        halo.addColorStop(1, `rgba(${bloomRGB}, 0)`);
+        ctx.fillStyle = halo;
+        ctx.beginPath();
+        ctx.arc(bx, by, influence, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Blurred, brightened dots near the cursor (one batched fill).
+        ctx.beginPath();
+        for (let r = 0; r < rows; r++) {
+          const y = offY + r * spacing;
+          for (let c = 0; c < cols; c++) {
+            const x = offX + c * spacing;
+            const dx = x - bx;
+            const dy = y - by;
+            const distSq = dx * dx + dy * dy;
+            if (distSq > inflSq) continue;
+            const d = 1 - Math.sqrt(distSq) / influence;
+            const p = d * d * (3 - 2 * d); // smoothstep proximity
+            const radius = maxR * (0.4 + BLOOM_GROW * p);
+            ctx.moveTo(x + radius, y);
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+          }
+        }
+        ctx.fillStyle = `rgba(${bloomRGB}, ${0.55 * str})`;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      raf = requestAnimationFrame(draw);
+    }
+
+    let raf = 0;
+
+    function onPointerMove(e: PointerEvent) {
+      const rect = canvas.getBoundingClientRect();
+      tx = e.clientX - rect.left;
+      ty = e.clientY - rect.top;
+      if (!pointerInside) {
+        // Start the bloom where the cursor entered (no slide-in from old spot).
+        bx = tx;
+        by = ty;
+        pointerInside = true;
+      }
+      targetStr = 1;
+    }
+    function onPointerLeave() {
+      pointerInside = false;
+      targetStr = 0; // fade the bloom out
+    }
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    if (!reduce) {
+      section.addEventListener("pointermove", onPointerMove);
+      section.addEventListener("pointerleave", onPointerLeave);
+    }
+
+    // Only animate while the band is on screen.
+    if ("IntersectionObserver" in window) {
+      const vis = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting && !raf) {
+              raf = requestAnimationFrame(draw);
+            } else if (!e.isIntersecting && raf) {
+              cancelAnimationFrame(raf);
+              raf = 0;
+            }
+          });
+        },
+        { threshold: 0 },
+      );
+      vis.observe(section);
+    } else {
+      raf = requestAnimationFrame(draw);
+    }
+  }
+</script>
