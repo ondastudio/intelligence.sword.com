@@ -1,0 +1,12 @@
+{
+  "tagline": "Built with care, by people who truly understand it.",
+  "social": [
+    { "label": "LinkedIn", "href": "https://www.linkedin.com/company/sword-intelligence" },
+    { "label": "Sword.com", "href": "https://www.sword.com/" }
+  ],
+  "copyright": "©2025 Sword Intelligence, Inc.",
+  "legal": [
+    { "label": "Cookie Settings", "href": "#" },
+    { "label": "Privacy Policy", "href": "#" }
+  ]
+}
