@@ -18,9 +18,12 @@
 @theme {
   /* ---- Brand colors ---- */
   --color-brand: #7700ee; /* primary purple — CTAs, accents */
-  --color-purple-200: #a684ff; /* mid purple — Care Orchestration card border */
+  --color-purple-300: #8c4aff; /* deep purple — Platform orb glow core */
+  --color-purple-200: #a684ff; /* mid purple — Care Orchestration card border, Platform ring */
   --color-purple-100: #e1d6ff; /* soft purple — tints, chips */
   --color-purple-tint: #eee8ff; /* faint lavender — Care case-bar background */
+  --color-lavender: #ede7fe; /* Platform pills + stat cards background */
+  --color-glow-blue: #4a89e8; /* Platform orb glow halo */
   --color-coral: #ffedee; /* soft page background tint */
   --color-surface: #f9f9f9; /* neutral section background */
   --color-ink: #1f1f1f; /* near-black — editorial headlines (Figma Black/900) */
@@ -43,6 +46,8 @@
   --text-title: 3rem;
   /* lead — large supporting statement (Figma size/800 = 32px) */
   --text-lead: 2rem;
+  /* stat — Platform big metric numbers (Figma size/1900 = 76px) */
+  --text-stat: 4.75rem;
 
   /* ---- Radii ---- */
   --radius-card: 40px; /* large rounded media frames */

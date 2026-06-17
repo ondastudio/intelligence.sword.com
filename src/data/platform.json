@@ -1,0 +1,30 @@
+{
+  "heading": "Clinical Intelligence runs underneath every interaction.",
+  "subheading": "Certified, auditable, and built so your operations meet the same standard as the care you deliver.",
+  "orb": {
+    "title": "Clinical Intelligence",
+    "badgeLine1": "MDR Class IIa",
+    "badgeLine2": "Compliant"
+  },
+  "learnsLabel": "Continuously learns from",
+  "governedLabel": "Governed by",
+  "patients": {
+    "label": "Patients",
+    "icons": [
+      { "src": "/platform/icon-mic.svg", "alt": "Voice" },
+      { "src": "/platform/icon-web.svg", "alt": "Web" },
+      { "src": "/platform/icon-chat.svg", "alt": "Chat" }
+    ]
+  },
+  "audits": { "icon": "/platform/icon-search.svg", "label": "Full audits" },
+  "stats": [
+    { "value": "85K", "plus": true, "label": "Physician invested" },
+    { "value": "14M", "plus": true, "label": "Care interactions" }
+  ],
+  "memory": { "icon": "/platform/icon-brain.svg", "label": "Unified Clinical Memory" },
+  "governance": [
+    { "icon": "/platform/icon-certificate.svg", "label": "Medical certifications" },
+    { "icon": "/platform/icon-arrange.svg", "label": "Hybrid Deterministic Logic" },
+    { "icon": "/platform/icon-legal.svg", "label": "Clinical protocols" }
+  ]
+}

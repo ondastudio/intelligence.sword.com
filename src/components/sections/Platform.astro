@@ -1,0 +1,210 @@
+---
+/**
+ * Platform — the "Clinical Intelligence" system diagram.
+ *
+ * A centered headline + subhead over a fixed-canvas (1280×781) diagram: a
+ * glowing "Clinical Intelligence" orb in the middle, fed on the left by the
+ * data it learns from (stat cards + Unified Clinical Memory) and governed on
+ * the right (certifications, deterministic logic, protocols), with Patients in
+ * at the top and Full audits out the bottom. Flowing connector lines sweep in
+ * from the page edges.
+ *
+ * The diagram is authored at its native Figma size and scaled to fit the
+ * container width by a tiny ResizeObserver (never upscaled past 1×). Content
+ * comes from src/data/platform.json.
+ */
+import data from "../../data/platform.json";
+
+const {
+  heading,
+  subheading,
+  orb,
+  learnsLabel,
+  governedLabel,
+  patients,
+  audits,
+  stats,
+  memory,
+  governance,
+} = data;
+
+// Shared styling for the top/bottom flow pills (Patients, Full audits).
+const iconDisc =
+  "flex shrink-0 items-center justify-center rounded-[40px] bg-white p-2";
+const pillLabel =
+  "whitespace-nowrap text-sm font-semibold uppercase leading-none tracking-[-0.01em] text-black";
+const labelTag =
+  "rounded-[40px] border border-black px-4 py-2 text-sm font-semibold uppercase tracking-[-0.01em] text-black";
+const dot = "/platform/dot.svg";
+---
+
+<section class="platform relative overflow-x-clip bg-surface py-[120px] text-black">
+  <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
+    <!-- Heading -->
+    <div data-reveal class="reveal mx-auto flex max-w-[820px] flex-col items-center gap-6 text-center">
+      <h2 class="font-serif text-3xl font-normal leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-display">
+        {heading}
+      </h2>
+      <p class="max-w-[600px] text-lg leading-[1.2] text-black sm:text-2xl">
+        {subheading}
+      </p>
+    </div>
+
+    <!-- Diagram (scaled to fit) -->
+    <div data-stage-wrap class="reveal relative mt-20" style="transition-delay:120ms">
+      <div
+        data-stage
+        class="absolute left-1/2 top-0 h-[781px] w-[1280px]"
+        style="transform-origin: top center; transform: translateX(-50%);"
+      >
+        <!-- ============ Connector lines (behind everything) ============ -->
+        <!-- Top sweeping curves from the page edges -->
+        <img src="/platform/curve-r-out.svg" alt="" aria-hidden="true"
+          class="absolute h-[84px] w-[777px]" style="left:-216px;top:62px" />
+        <img src="/platform/curve-l-out.svg" alt="" aria-hidden="true"
+          class="absolute h-[84px] w-[777px]" style="left:719px;top:62px;transform:scaleX(-1)" />
+        <!-- Bottom sweeping curves -->
+        <img src="/platform/curve-br.svg" alt="" aria-hidden="true"
+          class="absolute h-[84px] w-[777px]" style="left:720px;top:697px;transform:rotate(180deg)" />
+        <img src="/platform/curve-bl.svg" alt="" aria-hidden="true"
+          class="absolute h-[84px] w-[777px]" style="left:-215px;top:697px;transform:scaleY(-1)" />
+
+        <!-- Short dotted connectors into the orb -->
+        <img src="/platform/line-left.svg" alt="" aria-hidden="true"
+          class="absolute h-2 w-[116px]" style="left:306px;top:417px" />
+        <img src="/platform/line-right.svg" alt="" aria-hidden="true"
+          class="absolute h-2 w-[81px]" style="left:874px;top:417px" />
+        <img src="/platform/line-down.svg" alt="" aria-hidden="true"
+          class="absolute h-2 w-[74px]" style="left:603px;top:161px;transform:rotate(90deg)" />
+
+        <!-- Endpoint dots -->
+        <img src={dot} alt="" aria-hidden="true" class="absolute size-2" style="left:907px;top:418px" />
+        <img src={dot} alt="" aria-hidden="true" class="absolute size-2" style="left:358px;top:417px" />
+        <img src={dot} alt="" aria-hidden="true" class="absolute size-2" style="left:636px;top:161px" />
+        <img src={dot} alt="" aria-hidden="true" class="absolute size-2" style="left:149px;top:777px" />
+        <img src={dot} alt="" aria-hidden="true" class="absolute size-2" style="left:1127px;top:777px" />
+
+        <!-- Top rounded caps under the section labels -->
+        <span class="absolute h-[10px] w-[60px] rounded-full bg-black" style="left:120px;top:57px"></span>
+        <span class="absolute h-[10px] w-[60px] rounded-full bg-black" style="left:1096px;top:57px"></span>
+
+        <!-- ============ Section labels ============ -->
+        <span class={`absolute ${labelTag}`} style="left:35px;top:0">{learnsLabel}</span>
+        <span class={`absolute ${labelTag}`} style="left:1061px;top:0">{governedLabel}</span>
+
+        <!-- ============ Center orb (ring + glow + label + MDR seal, one asset) ============ -->
+        <img
+          src="/platform/orb.svg"
+          alt={`${orb.title} — ${orb.badgeLine1} ${orb.badgeLine2}`}
+          class="absolute h-[442px] w-[439px]"
+          style="left:420px;top:200px"
+        />
+
+        <!-- Arrow buttons pointing into the orb -->
+        <span class="absolute flex size-8 items-center justify-center rounded-[40px] bg-brand" style="left:406px;top:405px">
+          <img src="/platform/icon-arrow-right.svg" alt="" aria-hidden="true" class="size-4" />
+        </span>
+        <span class="absolute flex size-8 items-center justify-center rounded-[40px] bg-brand" style="left:842px;top:405px">
+          <img src="/platform/icon-arrow-left.svg" alt="" aria-hidden="true" class="size-4" />
+        </span>
+
+        <!-- ============ Left column: continuously learns from ============ -->
+        <!-- Dotted container + stat cards + Unified Clinical Memory (one asset) -->
+        <img
+          src="/platform/column-left.svg"
+          alt={`${stats[0].value}+ ${stats[0].label}. ${memory.label}. ${stats[1].value}+ ${stats[1].label}.`}
+          class="absolute h-[542px] w-[308px]"
+          style="left:-1px;top:150px"
+        />
+
+        <!-- ============ Right column: governed by ============ -->
+        <!-- Dotted container + governance pills (one asset) -->
+        <img
+          src="/platform/column-right.svg"
+          alt={governance.map((g) => g.label).join(". ")}
+          class="absolute h-[242px] w-[327px]"
+          style="left:953px;top:300px"
+        />
+
+        <!-- ============ Top: Patients ============ -->
+        <div class="absolute -translate-x-1/2 flex h-16 w-[282px] items-center gap-4 overflow-hidden rounded-[50px] bg-lavender pl-2 pr-8" style="left:640px;top:45px">
+          <span class="flex shrink-0 items-center gap-2.5 rounded-[40px] bg-white p-2">
+            {patients.icons.map((ic) => (
+              <img src={ic.src} alt={ic.alt} class="size-8" />
+            ))}
+          </span>
+          <span class={pillLabel}>{patients.label}</span>
+        </div>
+
+        <!-- ============ Bottom: Full audits ============ -->
+        <div class="absolute -translate-x-1/2 flex h-16 items-center gap-4 overflow-hidden rounded-[50px] bg-lavender pl-2 pr-8" style="left:640px;top:663px">
+          <span class={iconDisc}><img src={audits.icon} alt="" aria-hidden="true" class="size-8" /></span>
+          <span class={pillLabel}>{audits.label}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+      opacity 0.8s ease-out,
+      transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const wrap = document.querySelector<HTMLElement>("[data-stage-wrap]");
+  const stage = document.querySelector<HTMLElement>("[data-stage]");
+
+  // Scale the fixed 1280-wide diagram down to the container width (never up).
+  const fit = () => {
+    if (!wrap || !stage) return;
+    const scale = Math.min(1, wrap.clientWidth / 1280);
+    stage.style.transform = `translateX(-50%) scale(${scale})`;
+    wrap.style.height = `${781 * scale}px`;
+  };
+
+  if (wrap) {
+    const ro = new ResizeObserver(fit);
+    ro.observe(wrap);
+  }
+  window.addEventListener("load", fit);
+  fit();
+
+  // One-shot fade-up reveal.
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reveals = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
+  if (reduce || !("IntersectionObserver" in window)) {
+    reveals.forEach((el) => el.classList.add("is-visible"));
+  } else {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.15 },
+    );
+    reveals.forEach((el) => obs.observe(el));
+  }
+</script>
