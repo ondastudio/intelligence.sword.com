@@ -1,0 +1,25 @@
+<svg width="1064" height="598" viewBox="0 0 1064 598" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="triage-card-clip">
+      <rect width="1064" height="598" rx="40" />
+    </clipPath>
+    <radialGradient id="triage-card-bloom" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-357.828 -210.479 266.779 -260.471 670.38 304.438)">
+      <stop stop-color="#CCFF33" />
+      <stop offset="0.235577" stop-color="#D9FF66" />
+      <stop offset="0.884615" stop-color="#D1E0F8" stop-opacity="0.5" />
+    </radialGradient>
+    <filter id="triage-card-blur" x="-57.3843" y="-338.384" width="1414.92" height="1141.52" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="65.6922" />
+    </filter>
+  </defs>
+  <g clip-path="url(#triage-card-clip)">
+    <rect width="1064" height="598" rx="40" fill="#F9F9F9" />
+    <rect width="1064" height="598" rx="40" fill="#D8F95D" fill-opacity="0.4" />
+    <path
+      d="M748.427 248.743C1156.81 -74.3712 1366.04 159.782 1121.95 323.305C982.063 630.695 885.366 630.697 491.066 665.289C96.7649 699.88 15.0883 592.961 109.908 406.639C204.728 220.317 74.2334 156.637 318.324 -147.609C562.415 -451.856 398.319 525.749 748.427 248.743Z"
+      fill="url(#triage-card-bloom)"
+      fill-opacity="0.85"
+      filter="url(#triage-card-blur)"
+    />
+  </g>
+</svg>

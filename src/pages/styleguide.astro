@@ -16,9 +16,24 @@ import SolutionCard from "../components/ui/SolutionCard.astro";
 import Logo from "../components/layout/Logo.astro";
 import LogoStrip from "../components/layout/LogoStrip.astro";
 import intro from "../data/intro.json";
-import careOrchestration from "../data/care-orchestration.json";
 
-const demoCard = careOrchestration.cards[0];
+// Self-contained demo content for the purple SolutionCard variant.
+const demoCard = {
+  title: "No-Show & Waiting List Reduction",
+  headline: "Fill every no-show and move your waiting list.",
+  points: [
+    { before: "Behavioral risk model ", strong: "predicts DNAs", rest: "." },
+    { strong: "Adapts AI actions", rest: " to risk scores." },
+    { rest: "Handles outreach, callbacks, and scheduling." },
+    { before: "Integrates with your ", strong: "EHR in real-time", rest: "." },
+  ],
+  logo: "/triage/ministry-logo.png",
+  logoAlt: "Hellenic Republic Ministry of Health",
+  stat: "$150B",
+  statLabel: "Lost yearly to no-shows in the US",
+  glow: "/triage/card-glow-purple.svg",
+  cta: { label: "Learn More", href: "#" },
+};
 
 const swatches = [
   { name: "brand", cls: "bg-brand", hex: "#7700ee" },
@@ -185,12 +200,12 @@ const swatches = [
           title={demoCard.title}
           headline={demoCard.headline}
           points={demoCard.points}
-          glow={careOrchestration.glow}
+          glow={demoCard.glow}
           logo={demoCard.logo}
           logoAlt={demoCard.logoAlt}
           stat={demoCard.stat}
           statLabel={demoCard.statLabel}
-          cta={careOrchestration.cta}
+          cta={demoCard.cta}
         />
       </div>
     </section>
