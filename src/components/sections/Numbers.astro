@@ -191,14 +191,14 @@ const { stats, testimonial, cta } = data;
     </div>
 
     <!-- CTA -->
-    <div data-reveal class="reveal flex items-center">
+    <div data-reveal class="reveal group flex items-center">
       <a
         href={cta.href}
-        class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white transition-opacity hover:opacity-90"
+        class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white"
       >
         {cta.label}
       </a>
-      <ArrowCircle variant="filled" href={cta.href} label={cta.label} class="-ml-px" />
+      <ArrowCircle variant="filled" href={cta.href} label={cta.label} detach class="-ml-px" />
     </div>
   </div>
 </section>

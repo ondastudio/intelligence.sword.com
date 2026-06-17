@@ -15,8 +15,7 @@ const { href, label = "Scroll to explore", class: className = "", ...rest } =
   Astro.props;
 
 const classes = [
-  "inline-flex size-[134px] items-center justify-center text-black",
-  "transition-opacity hover:opacity-60",
+  "group inline-flex size-[134px] items-center justify-center text-black",
   className,
 ].join(" ");
 const Tag = href ? "a" : "button";
@@ -39,7 +38,8 @@ const Tag = href ? "a" : "button";
       stroke="currentColor"
       stroke-width="2"
       stroke-linecap="round"
-      stroke-dasharray="0.01 8"></rect>
+      stroke-dasharray="0.01 8"
+      class="group-hover:[stroke-dasharray:420_0] group-hover:[stroke-width:1]"></rect>
     <mask
       id="circlebtn-arrow"
       style="mask-type:alpha"

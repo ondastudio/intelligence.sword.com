@@ -31,8 +31,8 @@ const base =
   "inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-full px-6 text-sm font-semibold uppercase tracking-[-0.01em] transition-colors";
 
 const variants: Record<string, string> = {
-  solid: "bg-brand text-white hover:bg-brand/90",
-  glass: "text-black backdrop-blur-md hover:bg-white/40",
+  solid: "bg-brand text-white",
+  glass: "text-black backdrop-blur-md hover:bg-ink-wash-hover",
 };
 
 const classes = [base, variants[variant], className].join(" ");

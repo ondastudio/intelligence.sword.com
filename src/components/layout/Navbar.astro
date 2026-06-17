@@ -7,6 +7,7 @@
 import site from "../../data/site.json";
 import Logo from "./Logo.astro";
 import Button from "../ui/Button.astro";
+import ArrowCircle from "../ui/ArrowCircle.astro";
 ---
 
 <header class="absolute inset-x-0 top-0 z-20">
@@ -28,6 +29,15 @@ import Button from "../ui/Button.astro";
       }
     </div>
 
-    <Button variant="solid" href={site.cta.href}>{site.cta.label}</Button>
+    <div class="group flex items-center">
+      <Button variant="solid" href={site.cta.href}>{site.cta.label}</Button>
+      <ArrowCircle
+        variant="filled"
+        href={site.cta.href}
+        label={site.cta.label}
+        detach
+        class="-ml-px"
+      />
+    </div>
   </nav>
 </header>

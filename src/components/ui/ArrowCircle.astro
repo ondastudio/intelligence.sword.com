@@ -8,6 +8,8 @@
  *   dotted — transparent fill, dotted black ring, dark arrow (default; all cards)
  *   filled — solid brand-purple fill, white arrow, no ring (CTA)
  * `rotate` spins the glyph (e.g. 45 for the CTA's down-right arrow).
+ * `detach` slides the circle slightly away from an adjoining pill on hover —
+ *   set it when the circle sits next to a CTA pill and wrap the pair in `group`.
  * Renders an <a> when `href` is set, otherwise a <button>.
  */
 interface Props {
@@ -15,6 +17,7 @@ interface Props {
   rotate?: number;
   href?: string;
   label?: string;
+  detach?: boolean;
   class?: string;
   [key: string]: unknown;
 }
@@ -23,13 +26,14 @@ const {
   rotate = 0,
   href,
   label = "Learn more",
+  detach = false,
   class: className = "",
   ...rest
 } = Astro.props;
 
 const classes = [
-  "inline-grid size-10 shrink-0 place-items-center rounded-full",
-  "transition-opacity hover:opacity-70",
+  "group inline-grid size-10 shrink-0 place-items-center rounded-full",
+  detach ? "transition-transform duration-300 ease-out group-hover:translate-x-1" : "",
   variant === "filled" ? "bg-brand text-white" : "text-black",
   className,
 ].join(" ");
@@ -56,6 +60,7 @@ const Tag = href ? "a" : "button";
           stroke-width="1.5"
           stroke-linecap="round"
           stroke-dasharray="0.01 8"
+          class="group-hover:[stroke-dasharray:120_0] group-hover:[stroke-width:1]"
         />
       </svg>
     )

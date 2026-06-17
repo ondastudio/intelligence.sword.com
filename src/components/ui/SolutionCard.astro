@@ -174,7 +174,7 @@ const t = {
 
     <a
       href={cta.href}
-      class="flex shrink-0 items-center rounded-full"
+      class="group flex shrink-0 items-center rounded-full"
     >
       <span
         class:list={[
@@ -187,6 +187,7 @@ const t = {
       <span
         class:list={[
           "flex size-10 items-center justify-center rounded-full",
+          "transition-transform duration-300 ease-out group-hover:translate-x-1",
           t.ctaBg,
           t.ctaText,
         ]}

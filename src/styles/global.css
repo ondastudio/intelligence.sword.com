@@ -32,6 +32,7 @@
   --color-gray-200: #dcdde4; /* hairline borders on light chips; Numbers stat-panel tint */
   --color-gray-400: #85889c; /* mid gray — Numbers bar-chart dots (Figma Gray 400) */
   --color-ink-wash: rgba(77, 79, 96, 0.05); /* faint frosted fill — Integrations icon chips + integrate card */
+  --color-ink-wash-hover: rgba(77, 79, 96, 0.08); /* nav glass pill hover fill (#4D4F60 @ 8%) */
   --color-ink-wash-strong: rgba(77, 79, 96, 0.1); /* slightly stronger frosted fill — Scaling stat "+" chips */
   --color-periwinkle: #8baee4; /* soft blue — Numbers "4x" intake card background */
   --color-blue-green: #bae0eb; /* pale teal — Numbers "34%" readmissions card background */
