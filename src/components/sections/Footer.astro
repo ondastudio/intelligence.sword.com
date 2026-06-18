@@ -10,10 +10,27 @@
  */
 import data from "../../data/footer.json";
 
+/**
+ * `variant` sets the panel theme:
+ *   lime   — default: lime (bg-accent) panel, black ink + wordmark.
+ *   purple — purple-300 panel, white ink; the wordmark (which renders black) is
+ *            inverted to white. Used on the Customers page.
+ */
+interface Props {
+  variant?: "lime" | "purple";
+}
+const { variant = "lime" } = Astro.props;
+const isPurple = variant === "purple";
+
 const { tagline, social, copyright, legal } = data;
 ---
 
-<footer class="footer relative overflow-hidden bg-accent px-6 pb-10 pt-16 text-black md:px-20 md:pb-10 md:pt-20">
+<footer
+  class:list={[
+    "footer relative overflow-hidden px-6 pb-10 pt-16 md:px-20 md:pb-10 md:pt-20",
+    isPurple ? "bg-purple-300 text-white" : "bg-accent text-black",
+  ]}
+>
   <div class="mx-auto flex w-full max-w-[1280px] flex-col">
     <!-- Top: tagline + social links -->
     <div class="flex flex-col gap-10 md:flex-row md:items-start md:gap-[clamp(4rem,18vw,365px)]">
@@ -62,7 +79,10 @@ const { tagline, social, copyright, legal } = data;
     <!-- Legal bar -->
     <div
       data-reveal
-      class="mt-14 flex flex-col gap-3 border-y-[1.5px] border-black py-6 text-sm font-semibold uppercase tracking-tight sm:flex-row sm:items-center sm:justify-between md:mt-[113px]"
+      class:list={[
+        "mt-14 flex flex-col gap-3 border-y-[1.5px] py-6 text-sm font-semibold uppercase tracking-tight sm:flex-row sm:items-center sm:justify-between md:mt-[113px]",
+        isPurple ? "border-white" : "border-black",
+      ]}
     >
       <span>{copyright}</span>
       {
@@ -84,7 +104,10 @@ const { tagline, social, copyright, legal } = data;
       data-reveal
       src="/footer/logotype-wordmark.svg"
       alt="Sword Intelligence"
-      class="mt-12 w-full md:mt-20"
+      class:list={[
+        "mt-12 w-full md:mt-20",
+        isPurple && "[filter:brightness(0)_invert(1)]",
+      ]}
       width="1279"
       height="160"
     />

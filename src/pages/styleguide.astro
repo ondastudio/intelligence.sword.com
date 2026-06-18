@@ -13,6 +13,7 @@ import ArrowCircle from "../components/ui/ArrowCircle.astro";
 import FeatureCard from "../components/ui/FeatureCard.astro";
 import MediaFrame from "../components/ui/MediaFrame.astro";
 import SolutionCard from "../components/ui/SolutionCard.astro";
+import StoryCard from "../components/ui/StoryCard.astro";
 import Logo from "../components/layout/Logo.astro";
 import LogoStrip from "../components/layout/LogoStrip.astro";
 import intro from "../data/intro.json";
@@ -220,6 +221,48 @@ const swatches = [
           src={intro.media.src}
           poster={intro.media.poster}
           alt={intro.media.alt}
+        />
+      </div>
+    </section>
+
+    <!-- StoryCard -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase tracking-[-0.01em]">
+        StoryCard
+      </h2>
+      <p class="mt-1 text-sm text-black/50">
+        Customer-story tile from the "Our Customers" grid. Variants: <code>story</code>
+        (logo + title + stat + CTA, <code>tone</code> white/lavender/outline), <code>quote</code>,
+        <code>logo</code>, and <code>highlighted</code> (full-width hero). Pass <code>photo</code> to
+        a story/quote for the composite text+photo layout.
+      </p>
+      <div class="mt-4 grid gap-4 md:grid-cols-3">
+        <StoryCard
+          type="story"
+          tone="white"
+          logo="/logos/nhs.svg"
+          logoAlt="NHS"
+          title="Cutting Hospital Stays with AI-driven Prehabilitation"
+          stat={{ value: "£405K", label: "saved for one NHS Trust in 3 months" }}
+          cta={{ label: "Read more", href: "#" }}
+        />
+        <StoryCard
+          type="story"
+          tone="outline"
+          logo="/logos/ne-london.png"
+          logoAlt="North East London"
+          title="Intelligence Helps the NHS Prevent Surgical Complications"
+          stat={{ value: "72%", label: "reduction in surgical complications" }}
+          cta={{ label: "Read more", href: "#" }}
+        />
+        <StoryCard
+          type="quote"
+          tone="lavender"
+          logo="/logos/hellenic-health.png"
+          logoAlt="Hellenic Ministry of Health"
+          quote="This partnership will rebuild how care flows through our system, making it faster, clearer, and more centered on people."
+          author="Adonis Georgiadis"
+          role="Minister of Health (Greece)"
         />
       </div>
     </section>

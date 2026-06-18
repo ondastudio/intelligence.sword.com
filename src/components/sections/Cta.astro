@@ -22,7 +22,24 @@
 import ArrowCircle from "../ui/ArrowCircle.astro";
 import data from "../../data/cta.json";
 
-const { heading, cta } = data;
+/**
+ * `heading` is split into a first line, then a second line whose middle word is
+ * a purple accent (`line2Before` + `accent` + `after`). It defaults to the
+ * shared cta.json copy, but a page can pass its own to retitle the band without
+ * touching the global data (e.g. the Customers page).
+ */
+interface Heading {
+  line1: string;
+  line2Before?: string;
+  accent?: string;
+  after?: string;
+}
+interface Props {
+  heading?: Heading;
+}
+
+const { heading = data.heading } = Astro.props;
+const { cta } = data;
 ---
 
 <section

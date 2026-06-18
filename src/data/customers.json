@@ -1,0 +1,129 @@
+{
+  "title": "Our Customers",
+  "rows": [
+    {
+      "layout": "full",
+      "cells": [
+        {
+          "type": "highlighted",
+          "logo": "/logos/nhs.svg",
+          "logoAlt": "NHS",
+          "title": "Improving Surgery Readiness at Scale with the NHS",
+          "stats": [
+            { "value": "57%", "label": "more patients ready for surgery" },
+            { "value": "0.71 d", "label": "average reduction in length of stay" }
+          ],
+          "photo": "/customers/photo-686.png",
+          "photoAlt": "Doctors Surgeries signpost",
+          "cta": { "label": "Read more", "href": "#" }
+        }
+      ]
+    },
+    {
+      "layout": "half",
+      "cells": [
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/cheshire-merseyside.png",
+          "logoAlt": "Cheshire & Merseyside",
+          "title": "Cutting Hospital Stays with AI-driven Prehabilitation",
+          "stat": { "value": "£405K", "label": "saved for one NHS Trust in 3 months" },
+          "cta": { "label": "Read more", "href": "#" }
+        },
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/hellenic-health.png",
+          "logoAlt": "Hellenic Ministry of Health",
+          "title": "Bringing Intelligent Triage to Greece",
+          "stat": { "value": "10M", "label": "citizens served" },
+          "cta": { "label": "Read more", "href": "#" }
+        }
+      ]
+    },
+    {
+      "layout": "logo-wide",
+      "cells": [
+        {
+          "type": "logo",
+          "tone": "lavender",
+          "logo": "/logos/vivamas.svg",
+          "logoAlt": "VivaMas"
+        },
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/nhs.svg",
+          "logoAlt": "NHS",
+          "title": "Improving Surgery Readiness at Scale with the NHS",
+          "stat": { "value": "57%", "label": "more patients ready for surgery" },
+          "ctas": [
+            { "label": "Read more", "href": "#" },
+            { "label": "Press release", "href": "#", "style": "outline" }
+          ],
+          "photo": "/customers/photo-surgery.png",
+          "photoAlt": "VivaMas clinic reception"
+        }
+      ]
+    },
+    {
+      "layout": "third",
+      "cells": [
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/ne-london.png",
+          "logoAlt": "North East London",
+          "title": "Intelligence Helps the NHS Prevent Surgical Complications",
+          "stat": { "value": "72%", "label": "reduction in surgical complications" },
+          "cta": { "label": "Read more", "href": "#" }
+        },
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/cheshire-merseyside.png",
+          "logoAlt": "Cheshire & Merseyside",
+          "title": "AI Surgical Readiness Closes the Gap for Deprived Communities",
+          "stat": { "value": "84%", "label": "improvement in patient-reported quality of life" },
+          "cta": { "label": "Read more", "href": "#" }
+        },
+        {
+          "type": "quote",
+          "tone": "lavender",
+          "logo": "/logos/hellenic-health.png",
+          "logoAlt": "Hellenic Ministry of Health",
+          "quote": "This partnership will rebuild how care flows through our system, making it faster, clearer, and more centered on people.",
+          "author": "Adonis Georgiadis",
+          "role": "Minister of Health (Greece)"
+        }
+      ]
+    },
+    {
+      "layout": "wide-third",
+      "cells": [
+        {
+          "type": "quote",
+          "tone": "lavender",
+          "logo": "/logos/hellenic-health.png",
+          "logoAlt": "Hellenic Ministry of Health",
+          "quote": "This partnership will rebuild how care flows through our system, making it faster, clearer, and more centered on people.",
+          "author": "Adonis Georgiadis",
+          "role": "Minister of Health (Greece)",
+          "photo": "/numbers/photo-georgiadis.png",
+          "photoAlt": "Adonis Georgiadis, Minister of Health (Greece)"
+        },
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/cheshire-merseyside.png",
+          "logoAlt": "Cheshire & Merseyside",
+          "title": "AI Surgical Readiness Closes the Gap for Deprived Communities",
+          "stat": { "value": "84%", "label": "improvement in patient-reported quality of life" },
+          "cta": { "label": "Read more", "href": "#" }
+        }
+      ]
+    }
+  ],
+  "loadMore": { "label": "load more", "href": "#" }
+}

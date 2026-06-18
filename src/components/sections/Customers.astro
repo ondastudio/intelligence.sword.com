@@ -1,0 +1,76 @@
+---
+/**
+ * Customers — the "Our Customers" story grid (Figma "CustomerStories", 1440).
+ *
+ * A centered Lora title over an editorial masonry of customer-story cards. Each
+ * row is a CSS grid whose column template is fixed by the design (full / half /
+ * thirds / 416+848 / 848+416); on mobile every card stacks into one column.
+ * Cards render through the generic ui/StoryCard component; all copy, logos and
+ * photos come from src/data/customers.json. Closed by a "load more" CTA.
+ *
+ * The row templates are spelled out as literal classes here (not in the JSON)
+ * so Tailwind can see and generate them.
+ */
+import StoryCard from "../ui/StoryCard.astro";
+import data from "../../data/customers.json";
+
+const { title, rows, loadMore } = data;
+
+// Per-row grid column templates — keyed by the row's `layout` in the data.
+const rowCols: Record<string, string> = {
+  full: "md:grid-cols-1",
+  half: "md:grid-cols-2",
+  third: "md:grid-cols-3",
+  "logo-wide": "md:grid-cols-[416fr_848fr]",
+  "wide-third": "md:grid-cols-[848fr_416fr]",
+};
+---
+
+<section class="relative bg-gradient-to-b from-purple-tint to-surface px-4 pb-[120px] pt-[140px] md:px-20 md:pt-[160px]">
+  <div class="mx-auto flex max-w-[1280px] flex-col items-center gap-10 md:gap-20">
+    <h1
+      data-reveal="title"
+      class="text-center font-serif text-[clamp(3rem,7vw,80px)] font-normal leading-[1.1] tracking-[-0.02em] text-black"
+    >
+      {title}
+    </h1>
+
+    <div class="flex w-full flex-col gap-4">
+      {
+        rows.map((row, i) => (
+          <div
+            data-reveal
+            style={`transition-delay:${i * 80}ms`}
+            class={`grid grid-cols-1 gap-4 ${rowCols[row.layout] ?? ""}`}
+          >
+            {row.cells.map((cell) => (
+              <StoryCard {...cell} />
+            ))}
+          </div>
+        ))
+      }
+    </div>
+
+    <div data-reveal class="group flex items-center justify-center">
+      <a
+        href={loadMore.href}
+        class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white"
+      >
+        {loadMore.label}
+      </a>
+      <span
+        class="-ml-px grid size-10 place-items-center rounded-full bg-brand text-white transition-transform duration-300 ease-out group-hover:translate-x-1"
+        aria-hidden="true"
+      >
+        <svg viewBox="0 0 24 24" class="size-6" fill="none">
+          <path
+            d="M12 5.5v13M5.5 12h13"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </span>
+    </div>
+  </div>
+</section>

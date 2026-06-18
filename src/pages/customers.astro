@@ -1,0 +1,28 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/layout/Navbar.astro";
+import Customers from "../components/sections/Customers.astro";
+import Cta from "../components/sections/Cta.astro";
+import Footer from "../components/sections/Footer.astro";
+---
+
+<Layout
+  title="Our Customers — Sword Intelligence"
+  description="How health systems and providers scale care with Sword Intelligence — real outcomes from the NHS, Greece, and beyond."
+>
+  {/* Same footer-reveal shell as the home page: content scrolls as one opaque
+      pane while the footer is pinned behind it (see .page-content in global.css). */}
+  <div class="page-content">
+    <Navbar />
+    <Customers />
+    <Cta
+      heading={{
+        line1: "Let’s make you",
+        line2Before: "",
+        accent: "AI-first",
+        after: " too.",
+      }}
+    />
+  </div>
+  <Footer variant="purple" />
+</Layout>
