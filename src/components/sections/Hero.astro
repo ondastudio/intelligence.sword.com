@@ -29,6 +29,13 @@ import CircleButton from "../ui/CircleButton.astro";
     class="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-0 transition-opacity duration-700"
   ></canvas>
 
+  <!-- Bottom fade: blends the swirl/mesh into the next section's surface tone so
+       the colour flows out instead of ending on a hard horizontal edge. -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-64 bg-gradient-to-b from-transparent to-surface"
+  ></div>
+
   <Navbar />
 
   <div
