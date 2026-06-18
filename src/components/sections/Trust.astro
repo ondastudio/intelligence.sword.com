@@ -14,20 +14,30 @@ import data from "../../data/trust.json";
 const { heading, badges, points } = data;
 ---
 
-<section class="trust bg-surface px-4 py-[120px]">
-  <!-- panel runs to a 16px gutter; it sits BEHIND the 1280-wide content -->
-  <div class="relative mx-auto">
-    <!-- Decorative panel fill + blurred bloom (rounded, stretched to fit) -->
-    <img
-      src="/trust/bg-frame.svg"
-      alt=""
-      aria-hidden="true"
-      class="pointer-events-none absolute inset-0 h-full w-full rounded-card"
-    />
-
+<section class="trust bg-surface overflow-hidden py-[120px]">
+  <!-- The panel is a scroll-driven stage: it begins slightly compressed (inset
+       with rounded corners), expands to full-bleed (edge-to-edge, square
+       corners) as the section reaches the centre of the viewport, then
+       compresses again as it scrolls away — same scrubber as the Intro video.
+       It sits BEHIND the 1280-wide content, which never moves. -->
+  <div data-trust-scroll class="relative mx-auto w-full">
+    <!-- The scrubber scales this frame (panel + content together) so the whole
+         block compresses and expands as one, then clips the bg's corners. -->
     <div
-      class="relative mx-auto flex max-w-[1280px] flex-col items-center gap-20 pb-[120px] pt-[88px] lg:gap-[120px] lg:pb-[168px]"
+      data-trust-frame
+      class="trust-frame relative overflow-hidden will-change-transform"
     >
+      <!-- Decorative panel fill + blurred bloom (stretched to fit) -->
+      <img
+        src="/trust/bg-frame.svg"
+        alt=""
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0 z-0 h-full w-full"
+      />
+
+      <div
+        class="relative z-10 mx-auto flex max-w-[1280px] flex-col items-center gap-20 px-4 pb-[120px] pt-[88px] lg:gap-[120px] lg:pb-[168px]"
+      >
       <!-- Heading -->
       <h2
         data-reveal="title"
@@ -79,6 +89,75 @@ const { heading, badges, points } = data;
           ))
         }
       </div>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* Fallback (no JS / reduced motion): the design's contained panel, inset to a
+     16px gutter with rounded corners. */
+  .trust-frame {
+    border-radius: var(--radius-card);
+    transform-origin: center center;
+    transform: scale(0.978); /* ≈ 16px gutter on a 1440 viewport */
+  }
+
+  /* Enhanced: the scrubber drives scale (0.82 → 1) and corner radius
+     (40px → 0) per frame; no CSS easing. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .trust-frame {
+      transform: scale(0.82);
+    }
+  }
+</style>
+
+<script>
+  // Scroll-driven full-bleed expansion for the Trust panel. Mirrors the Intro
+  // video scrubber: map the distance from the panel's centre to the viewport's
+  // centre into a 0→1 proximity, ease it, and drive scale (0.82 → 1) and corner
+  // radius (40px → 0). Symmetric about centre, so the panel peaks edge-to-edge
+  // exactly when the section is centred and compresses back as it leaves.
+  function initTrustScroll(stage: HTMLElement) {
+    const frame = stage.querySelector<HTMLElement>("[data-trust-frame]");
+    if (!frame) return;
+    if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches)
+      return;
+
+    const MIN_SCALE = 0.82;
+    const MAX_RADIUS = 40; // px — matches --radius-card
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    let ticking = false;
+
+    const render = () => {
+      ticking = false;
+      const rect = stage.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const center = rect.top + rect.height / 2;
+      const distance = Math.abs(center - vh / 2);
+      // Full effect within one viewport height of dead centre.
+      const proximity = Math.max(0, 1 - distance / vh);
+      const eased = easeOutCubic(proximity);
+
+      const scale = MIN_SCALE + (1 - MIN_SCALE) * eased;
+      const radius = MAX_RADIUS * (1 - eased);
+      frame.style.transform = `scale(${scale})`;
+      frame.style.borderRadius = `${radius}px`;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    };
+
+    render();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+  }
+
+  document
+    .querySelectorAll<HTMLElement>("[data-trust-scroll]")
+    .forEach(initTrustScroll);
+</script>
