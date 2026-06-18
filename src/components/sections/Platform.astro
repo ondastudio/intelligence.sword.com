@@ -35,7 +35,20 @@ const pillLabel =
   "whitespace-nowrap text-sm font-semibold uppercase leading-none tracking-[-0.01em] text-black";
 const labelTag =
   "rounded-[40px] border border-black/24 px-4 py-2 text-sm font-semibold uppercase tracking-[-0.01em] text-black";
-const dot = "/platform/dot.svg";
+// Shared geometry for the four sweeping connector curves (authored once, then
+// flipped/rotated per corner). A black "flow" circle travels this same path so
+// it stays glued to the visible stroke under any transform.
+const curvePath = "M0.5 0.5H543.472C676.834 0.5 624 84.5 778 84.5";
+
+// Per-curve flow timing. All four share the same duration and start, so the
+// dots run edge → centre in lockstep and reach the orb at the same instant.
+const FLOW_DUR = "5s";
+const curves = [
+  { pos: "left:-216px;top:62px", dur: FLOW_DUR, begin: "0s" },
+  { pos: "left:719px;top:62px;transform:scaleX(-1)", dur: FLOW_DUR, begin: "0s" },
+  { pos: "left:-215px;top:697px;transform:scaleY(-1)", dur: FLOW_DUR, begin: "0s" },
+  { pos: "left:720px;top:697px;transform:rotate(180deg)", dur: FLOW_DUR, begin: "0s" },
+];
 ---
 
 <section class="platform relative overflow-x-clip bg-surface py-[120px] text-black">
@@ -58,16 +71,35 @@ const dot = "/platform/dot.svg";
         style="transform-origin: top center; transform: translateX(-50%);"
       >
         <!-- ============ Connector lines (behind everything) ============ -->
-        <!-- Top sweeping curves from the page edges -->
-        <img src="/platform/curve-r-out.svg" alt="" aria-hidden="true"
-          class="absolute h-[84px] w-[777px]" style="left:-216px;top:62px" />
-        <img src="/platform/curve-l-out.svg" alt="" aria-hidden="true"
-          class="absolute h-[84px] w-[777px]" style="left:719px;top:62px;transform:scaleX(-1)" />
-        <!-- Bottom sweeping curves -->
-        <img src="/platform/curve-br.svg" alt="" aria-hidden="true"
-          class="absolute h-[84px] w-[777px]" style="left:720px;top:697px;transform:rotate(180deg)" />
-        <img src="/platform/curve-bl.svg" alt="" aria-hidden="true"
-          class="absolute h-[84px] w-[777px]" style="left:-215px;top:697px;transform:scaleY(-1)" />
+        <!-- Four sweeping curves from the page edges. Each is the same authored
+             path (flipped/rotated per corner) with a black flow dot endlessly
+             traveling edge → centre, so the diagram looks alive. -->
+        {
+          curves.map((c) => (
+            <svg
+              viewBox="0 0 778.5 85"
+              preserveAspectRatio="none"
+              overflow="visible"
+              fill="none"
+              aria-hidden="true"
+              class="absolute h-[84px] w-[777px]"
+              style={c.pos}
+            >
+              <path d={curvePath} stroke="black" stroke-linecap="round" />
+              <circle class="flow-dot" r="4" fill="black">
+                <animateMotion dur={c.dur} begin={c.begin} repeatCount="indefinite" path={curvePath} />
+                <animate
+                  attributeName="opacity"
+                  dur={c.dur}
+                  begin={c.begin}
+                  repeatCount="indefinite"
+                  values="0;1;1;1;0"
+                  keyTimes="0;0.1;0.5;0.88;1"
+                />
+              </circle>
+            </svg>
+          ))
+        }
 
         <!-- Short dotted connectors into the orb -->
         <img src="/platform/line-left.svg" alt="" aria-hidden="true"
@@ -77,12 +109,9 @@ const dot = "/platform/dot.svg";
         <img src="/platform/line-down.svg" alt="" aria-hidden="true"
           class="absolute h-2 w-[74px]" style="left:603px;top:161px;transform:rotate(90deg)" />
 
-        <!-- Endpoint dots -->
-        <img src={dot} alt="" aria-hidden="true" class="absolute size-2" style="left:907px;top:418px" />
-        <img src={dot} alt="" aria-hidden="true" class="absolute size-2" style="left:358px;top:417px" />
-        <img src={dot} alt="" aria-hidden="true" class="absolute size-2" style="left:636px;top:161px" />
-        <img src={dot} alt="" aria-hidden="true" class="absolute size-2" style="left:149px;top:777px" />
-        <img src={dot} alt="" aria-hidden="true" class="absolute size-2" style="left:1127px;top:777px" />
+        <!-- Black flow dot running down from Patients into the orb -->
+        <span class="flow-conn flow-conn--y absolute size-2 rounded-full bg-black"
+          style="left:636px;top:124px;--from:0px;--to:57px;animation-duration:2.4s;animation-delay:-0.8s"></span>
 
         <!-- Top rounded caps under the section labels -->
         <span class="absolute h-[10px] w-[60px] rounded-full bg-black" style="left:120px;top:57px"></span>
@@ -126,6 +155,38 @@ const dot = "/platform/dot.svg";
           style="left:953px;top:300px"
         />
 
+        <!-- Black flow dots that trace each lateral column's dotted border,
+             then dart into the orb. Drawn after the columns so they sit on top.
+             Paths are in stage (1280×781) coordinates. -->
+        <svg
+          viewBox="0 0 1280 781"
+          width="1280"
+          height="781"
+          fill="none"
+          overflow="visible"
+          aria-hidden="true"
+          class="pointer-events-none absolute left-0 top-0"
+        >
+          <circle class="flow-dot" r="4" fill="black">
+            <animateMotion
+              dur="9s"
+              repeatCount="indefinite"
+              path="M307 421 V652 A40 40 0 0 1 267 692 H39 A40 40 0 0 1 -1 652 V190 A40 40 0 0 1 39 150 H267 A40 40 0 0 1 307 190 V421 L416 421"
+            />
+            <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
+              values="0;1;1;1;0" keyTimes="0;0.04;0.5;0.93;1" />
+          </circle>
+          <circle class="flow-dot" r="4" fill="black">
+            <animateMotion
+              dur="6.5s"
+              repeatCount="indefinite"
+              path="M953 421 V340 A40 40 0 0 1 993 300 H1240 A40 40 0 0 1 1280 340 V502 A40 40 0 0 1 1240 542 H993 A40 40 0 0 1 953 502 V421 L863 421"
+            />
+            <animate attributeName="opacity" dur="6.5s" repeatCount="indefinite"
+              values="0;1;1;1;0" keyTimes="0;0.05;0.5;0.92;1" />
+          </circle>
+        </svg>
+
         <!-- ============ Top: Patients ============ -->
         <div class="absolute -translate-x-1/2 flex h-16 w-[282px] items-center gap-4 overflow-hidden rounded-[50px] bg-lavender pl-2 pr-8" style="left:640px;top:45px">
           <span class="flex shrink-0 items-center gap-2.5 rounded-[40px] bg-white p-2">
@@ -145,6 +206,30 @@ const dot = "/platform/dot.svg";
     </div>
   </div>
 </section>
+
+<style>
+  /* Black dot that flows down from Patients into the orb. */
+  .flow-conn {
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  .flow-conn--y {
+    animation: flow-y linear infinite;
+  }
+
+  @keyframes flow-y {
+    0%   { transform: translateY(var(--from)); opacity: 0; }
+    14%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { transform: translateY(var(--to)); opacity: 0; }
+  }
+
+  /* Respect users who prefer reduced motion — no traveling dots. */
+  @media (prefers-reduced-motion: reduce) {
+    .flow-dot { display: none; }
+    .flow-conn { animation: none; opacity: 0; }
+  }
+</style>
 
 <script>
   // Scale the fixed 1280-wide diagram down to the container width (never up).
