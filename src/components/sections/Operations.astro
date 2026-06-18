@@ -1,9 +1,14 @@
 ---
 /**
- * Operations — closing statement banner.
- * "Unbreakable operations. Undeniable outcomes." A soft, heavily-blurred
- * purple→lime→lavender bloom sits centered behind a small eyebrow label and a
- * large two-line Lora headline. Content comes from src/data/operations.json.
+ * Operations — closing statement banner that hands off to the Numbers grid.
+ * "Unbreakable operations. Undeniable outcomes." A small eyebrow label sits
+ * above a large two-line Lora headline, centered on the surface.
+ *
+ * Scroll choreography (desktop, motion-allowed only): the title is pinned at
+ * the centre of the viewport while the Numbers stat-cards below slide up toward
+ * it. Once the cards reach the title, the title is pushed up and faded out so
+ * the cards take its place. On mobile / reduced-motion it is a plain centered
+ * banner. Content comes from src/data/operations.json.
  */
 import Eyebrow from "../ui/Eyebrow.astro";
 import data from "../../data/operations.json";
@@ -12,49 +17,110 @@ const { eyebrow, heading } = data;
 ---
 
 <section
-  class="operations relative flex min-h-[clamp(620px,62.5vw,900px)] items-center justify-center overflow-hidden bg-surface px-4 py-[120px]"
+  data-merge-stage
+  class="operations relative px-4"
 >
-  <!-- Decorative blurred bloom — full-bleed, keeps the design's 1440×900
-       framing/scale and crops to the section via object-cover. The bloom is
-       faded to fully transparent before the bottom edge so it dissolves into
-       the surface instead of cutting off in a hard line at the Numbers seam. -->
-  <img
-    src="/operations/bloom.svg"
-    alt=""
-    aria-hidden="true"
-    class="bloom pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
-  />
+  <!-- Surface background on its own layer BELOW the rising cards (z-0), so the
+       Numbers grid (z-1) stays visible as it slides up into this stage, while
+       the title (z-2) still lifts away above the cards. -->
+  <div class="absolute inset-0 z-0 bg-surface" aria-hidden="true"></div>
 
-  <div class="relative z-10 flex flex-col items-center gap-6 text-center">
-    <div data-reveal><Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow></div>
-
-    <h2
-      data-reveal="title"
-      class="font-serif font-normal leading-[1.1] tracking-[-0.02em] text-black text-[clamp(2.5rem,6vw,80px)]"
-      style="transition-delay:120ms"
+  <div class="op-pin pointer-events-none relative z-[2] flex items-center justify-center">
+    <div
+      data-merge-title
+      class="pointer-events-auto flex flex-col items-center gap-6 text-center will-change-[transform,opacity]"
     >
-      {heading[0]}<br />{heading[1]}
-    </h2>
+      <div data-reveal><Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow></div>
+
+      <h2
+        data-reveal="title"
+        class="font-serif font-normal leading-[1.1] tracking-[-0.02em] text-black text-[clamp(2.5rem,6vw,80px)]"
+        style="transition-delay:120ms"
+      >
+        {heading[0]}<br />{heading[1]}
+      </h2>
+    </div>
   </div>
 </section>
 
 <style>
-  /* Dissolve the bloom into the surface at the top & bottom edges so it never
-     ends in a hard horizontal line where the section meets its neighbours. */
-  .bloom {
-    -webkit-mask-image: linear-gradient(
-      to bottom,
-      transparent 0%,
-      #000 18%,
-      #000 78%,
-      transparent 100%
-    );
-    mask-image: linear-gradient(
-      to bottom,
-      transparent 0%,
-      #000 18%,
-      #000 78%,
-      transparent 100%
-    );
+  /* Mobile / reduced-motion: a plain centered banner, no pinning. */
+  .operations {
+    min-height: clamp(620px, 62.5vw, 900px);
+    padding-block: 120px;
+  }
+  .op-pin {
+    min-height: inherit;
+  }
+
+  /* Desktop + motion-allowed: the title becomes a sticky pin over a tall
+     stage so it can hold centre while the Numbers cards rise into it. The
+     extra height below the 100vh pin is the scroll distance over which the
+     hand-off plays out. Numbers.astro pulls itself up (negative margin) so its
+     cards overlap this stage. */
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    .operations {
+      min-height: calc(100vh + var(--op-stage-extra, 70vh));
+      padding-block: 0;
+    }
+    .op-pin {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      min-height: 0;
+    }
   }
 </style>
+
+<script>
+  // Title hand-off: while the title is pinned at viewport centre, the Numbers
+  // section (pulled up to overlap this stage) slides its cards up. As the cards
+  // cross the middle of the screen the title is pushed up and faded out, so the
+  // cards settle into the space it vacated. Vanilla rAF + getBoundingClientRect;
+  // desktop + motion-allowed only (mobile keeps the plain banner).
+  function initTitleHandoff() {
+    const title = document.querySelector<HTMLElement>("[data-merge-title]");
+    const numbers = document.querySelector<HTMLElement>(".numbers");
+    if (!title || !numbers) return;
+
+    // Cards top crosses these fractions of the viewport height. The push runs
+    // over a wide window so the title drifts away gradually rather than
+    // snapping out as the cards arrive.
+    const PUSH_START = 0.7; // begin lifting the title (cards still low)
+    const PUSH_END = 0.14; // title fully gone (cards settled at centre)
+    const PUSH_DIST = 0.62; // how far up the title travels, in viewport heights
+
+    // Gentle symmetric ease — no hard mid-scroll acceleration.
+    const easeInOutSine = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2;
+
+    let ticking = false;
+
+    const render = () => {
+      ticking = false;
+      const vh = window.innerHeight;
+      const nbTop = numbers.getBoundingClientRect().top;
+      const start = PUSH_START * vh;
+      const end = PUSH_END * vh;
+      const p = Math.min(1, Math.max(0, (start - nbTop) / (start - end)));
+      // Travel uses the full progress; the fade finishes a touch earlier so the
+      // title dissolves before it reaches the top, never popping off the edge.
+      title.style.transform = `translate3d(0, ${-easeInOutSine(p) * PUSH_DIST * vh}px, 0)`;
+      title.style.opacity = `${1 - easeInOutSine(Math.min(1, p / 0.88))}`;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    };
+
+    render();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+  }
+
+  const motionOk = window.matchMedia(
+    "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
+  );
+  if (motionOk.matches) initTitleHandoff();
+</script>

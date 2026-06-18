@@ -18,13 +18,15 @@ import data from "../../data/numbers.json";
 const { stats, testimonial, cta } = data;
 ---
 
-<section class="numbers bg-surface px-4 py-[120px]">
+<section class="numbers relative z-[1] bg-surface px-4 py-[120px]">
   <div class="mx-auto flex max-w-[1280px] flex-col items-center gap-16 md:gap-20">
-    <!-- Bento canvas -->
+    <!-- Bento canvas — cards sit in their fixed grid positions (the whole
+         section slides up toward the Operations title as you scroll). -->
     <div data-reveal class="nb-canvas flex w-full flex-col gap-4">
       <!-- 4x — intake capacity -->
       <article
         class="nb-card flex flex-col items-center overflow-hidden rounded-card bg-periwinkle/45 px-8 py-10 text-center"
+        data-parallax="22"
         style="--l:13.44%;--t:0%;--w:23.44%;--h:47.89%"
       >
         <div class="relative aspect-square w-[clamp(150px,15vw,200px)] shrink-0">
@@ -69,6 +71,7 @@ const { stats, testimonial, cta } = data;
       <!-- Customer portrait -->
       <figure
         class="nb-card overflow-hidden rounded-card"
+        data-parallax="-16"
         style="--l:39.17%;--t:0%;--w:17.75%;--h:37.74%"
       >
         <img
@@ -81,6 +84,7 @@ const { stats, testimonial, cta } = data;
       <!-- Ministerial testimonial -->
       <article
         class="nb-card flex flex-col justify-between gap-6 overflow-hidden rounded-card bg-purple-tint p-10"
+        data-parallax="-20"
         style="--l:56.92%;--t:0%;--w:43.08%;--h:37.74%"
       >
         <img
@@ -103,6 +107,7 @@ const { stats, testimonial, cta } = data;
       <!-- 686 — admin workdays saved -->
       <article
         class="nb-card relative min-h-[280px] overflow-hidden rounded-card bg-accent"
+        data-parallax="14"
         style="--l:0%;--t:51.54%;--w:36.91%;--h:34.09%"
       >
         <!-- perforated dot mesh — exact Figma pattern (16.2px grid), clipped
@@ -142,6 +147,7 @@ const { stats, testimonial, cta } = data;
       <!-- 5.2x ROI — bar chart -->
       <article
         class="nb-card flex flex-col items-center justify-center gap-8 overflow-hidden rounded-card bg-gray-200/35 px-6 py-10 text-center backdrop-blur-[20px]"
+        data-parallax="30"
         style="--l:39.14%;--t:41.39%;--w:36.91%;--h:58.56%"
       >
         <div class="flex items-center justify-center gap-6">
@@ -165,6 +171,7 @@ const { stats, testimonial, cta } = data;
       <!-- 34% — readmissions reduction -->
       <article
         class="nb-card flex flex-col items-center justify-center gap-8 overflow-hidden rounded-card px-6 py-10 text-center"
+        data-parallax="-16"
         style="--l:78.36%;--t:41.39%;--w:21.56%;--h:41.31%;background:radial-gradient(120% 95% at 50% 100%, rgba(186,224,235,0.75), rgba(220,221,228,0.26))"
       >
         <img src="/numbers/logo-nhs.svg" alt="NHS" class="h-[26px] w-auto" />
@@ -204,6 +211,16 @@ const { stats, testimonial, cta } = data;
 </section>
 
 <style>
+  /* Pull the grid up so its cards overlap the Operations stage above and
+     "slide" up toward the pinned title as the page scrolls. Sits below the
+     title (z-1 < z-2) so the title can lift away over it. Desktop +
+     motion-allowed only — mobile keeps the sections cleanly stacked. */
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    .numbers {
+      margin-top: -70vh;
+    }
+  }
+
   /* --- Bento: stacked on mobile, exact design canvas at md+ --- */
   @media (min-width: 768px) {
     .nb-canvas {
@@ -221,3 +238,46 @@ const { stats, testimonial, cta } = data;
     }
   }
 </style>
+
+<script>
+  // Gentle parallax — as the grid slides up, each card drifts a few pixels
+  // relative to the viewport centre by its own [data-parallax] speed (mixed
+  // signs = columns float at slightly different rates). Symmetric around centre
+  // (offset → 0 when the card is centred) so the bento always reads as a grid;
+  // this is depth, not the old "assemble into place" reveal. Desktop + motion
+  // allowed only. Vanilla rAF + getBoundingClientRect.
+  function initGentleParallax(el: HTMLElement) {
+    const speed = Number(el.dataset.parallax);
+    if (!speed) return;
+
+    let ticking = false;
+    const render = () => {
+      ticking = false;
+      const vh = window.innerHeight;
+      const rect = el.getBoundingClientRect();
+      const center = rect.top + rect.height / 2;
+      // -1 (card a viewport above centre) … +1 (a viewport below) → small px.
+      const norm = Math.max(-1, Math.min(1, (center - vh / 2) / vh));
+      el.style.transform = `translate3d(0, ${norm * speed}px, 0)`;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    };
+
+    render();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+  }
+
+  const motionOk = window.matchMedia(
+    "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
+  );
+  if (motionOk.matches) {
+    document
+      .querySelectorAll<HTMLElement>(".numbers [data-parallax]")
+      .forEach(initGentleParallax);
+  }
+</script>
