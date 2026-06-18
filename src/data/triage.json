@@ -10,6 +10,15 @@
     "label": "Triage",
     "active": "Clinical Triage"
   },
+  "orchestration": {
+    "navLabel": "Care Orchestration",
+    "tabs": [
+      "No-show & waiting\nlist reduction",
+      "Preventive\npopulation campaigns",
+      "Surgery prehab\nand rehab",
+      "Readmission\nprevention"
+    ]
+  },
   "card": {
     "icon": "/triage/logo-icon.svg",
     "title": "Clinical Triage",

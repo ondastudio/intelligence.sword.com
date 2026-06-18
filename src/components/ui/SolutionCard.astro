@@ -47,7 +47,9 @@ const {
 // Per-theme token lookups (semantic utilities defined in global.css)
 const t = {
   lime: {
-    border: "border-accent",
+    // inset ring so the 1px stroke sits inside the card (matches the design's
+    // inset stroke) without adding to the 1064×598 box.
+    ring: "ring-accent",
     // lime background is a full-card SVG (base + lime wash + blurred bloom)
     glowFit: "inset-0 h-full w-full",
     caseBg: "bg-lime-tint",
@@ -56,7 +58,7 @@ const t = {
     ctaText: "text-black",
   },
   purple: {
-    border: "border-purple-200",
+    ring: "ring-purple-200",
     // purple is an oversized bloom overlay anchored top-left
     glowFit: "left-[-4.7%] top-[-57%] h-[191%] w-[115%] max-w-none",
     caseBg: "bg-purple-tint",
@@ -71,8 +73,8 @@ const t = {
   <!-- Capability card -->
   <div
     class:list={[
-      "relative overflow-hidden rounded-card border p-6 md:p-16",
-      t.border,
+      "relative overflow-hidden rounded-card p-6 ring-1 ring-inset md:p-16",
+      t.ring,
     ]}
   >
     <!-- Card background (per-theme): lime fills the card; purple is an overlay bloom -->

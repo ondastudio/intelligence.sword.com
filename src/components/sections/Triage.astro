@@ -10,63 +10,161 @@ import triage from "../../data/triage.json";
 import Eyebrow from "../ui/Eyebrow.astro";
 import SolutionCard from "../ui/SolutionCard.astro";
 
-const { eyebrow, heading, tabs, card, case: useCase } = triage;
+const { eyebrow, heading, tabs, card, case: useCase, orchestration } = triage;
 ---
 
 <section
-  class="relative overflow-hidden bg-surface text-black backdrop-blur-[20px]"
+  data-triage-section
+  class="triage-section relative overflow-x-clip bg-surface text-black backdrop-blur-[20px]"
 >
+  <!-- Heading -->
   <div
-    class="mx-auto flex w-full max-w-[1440px] flex-col items-center gap-20 px-4 pb-40 pt-[120px] sm:px-6 lg:px-20"
+    class="mx-auto flex w-full max-w-[1440px] flex-col items-center gap-10 px-4 pb-20 pt-[120px] sm:px-6 lg:px-20"
   >
-    <!-- Heading -->
-    <div class="flex flex-col items-center gap-10">
-      <div data-reveal><Eyebrow>{eyebrow}</Eyebrow></div>
-      <h2
-        data-reveal="title"
-        class="max-w-[952px] text-center font-serif font-normal leading-[1.2] tracking-[-0.02em] text-4xl md:text-display text-ink"
-      >
-        {heading.before}<span class="text-brand">{heading.highlight}</span><br
-        />{heading.afterBreak}{heading.after}
-      </h2>
-    </div>
+    <div data-reveal><Eyebrow>{eyebrow}</Eyebrow></div>
+    <h2
+      data-reveal="title"
+      class="max-w-[952px] text-center font-serif font-normal leading-[1.2] tracking-[-0.02em] text-4xl md:text-display text-ink"
+    >
+      {heading.before}<span class="text-brand">{heading.highlight}</span><br
+      />{heading.afterBreak}{heading.after}
+    </h2>
+  </div>
 
-    <!-- Card column -->
-    <div class="flex w-full max-w-[1064px] flex-col items-center gap-8">
-      <!-- Tab / segmented control -->
-      <div
-        class="flex items-center gap-6 rounded-[40px] bg-black/[0.04] py-2 pl-8 pr-2"
-      >
-        <span class="text-sm font-semibold uppercase tracking-[-0.01em]"
-          >{tabs.label}</span
-        >
-        <span
-          class="rounded-[40px] border border-gray-200 bg-accent px-8 py-4 text-center text-sm font-semibold uppercase leading-tight tracking-[-0.01em]"
-          >{tabs.active}</span
-        >
-      </div>
+  <!-- Pinned card column: on lg the track runs taller than the viewport so the
+       stage can stick. The stage sits in normal flow — so the headline → navbar
+       spacing is just the heading's bottom padding — and only offsets to
+       vertical-center once it sticks. The pinned scroll distance scrubs the
+       navbar morph (Triage → Care Orchestration) before it releases. -->
+  <div
+    data-triage-track
+    class="triage-track mx-auto w-full max-w-[1440px] px-4 pb-40 sm:px-6 lg:px-20 lg:pb-0"
+  >
+    <div
+      data-triage-stage
+      class="triage-stage mx-auto flex w-full max-w-[1064px] flex-col items-center gap-8"
+    >
+      <!-- Morphing nav (centered): starts as the Triage tab (state A) and
+           crossfades + expands into the Care Orchestration navbar (state B). Both
+           states are stacked in one grid cell so the wrapper sizes to the wider
+           B; JS interpolates the wrapper width and crossfades the two layers
+           against the pinned scroll progress. -->
+      <div class="flex w-full justify-center">
+          <div
+            data-nav-wrap
+            class="nav-wrap relative max-w-full rounded-[40px] bg-black/[0.04]"
+          >
+            <!-- State A — Triage (collapsed) -->
+            <div
+              data-nav-a
+              class="nav-layer flex items-center gap-6 py-2 pl-8 pr-2"
+            >
+              <span
+                class="shrink-0 text-sm font-semibold uppercase tracking-[-0.01em]"
+                >{tabs.label}</span
+              >
+              <span
+                class="shrink-0 rounded-[40px] border border-gray-200 bg-accent px-8 py-4 text-center text-sm font-semibold uppercase leading-tight tracking-[-0.01em]"
+                >{tabs.active}</span
+              >
+            </div>
 
-      <!-- triage-reveal = horizontal slide-in on first view. -->
-      <div class="triage-reveal w-full" data-triage-reveal>
-        <SolutionCard
-          theme="lime"
-          title={card.title}
-          headline={`${card.headline.highlight}${card.headline.rest}`}
-          points={card.points}
-          glow="/triage/card-bg.svg"
-          badge={card.badge}
-          logo={useCase.logo}
-          logoAlt={useCase.logoAlt}
-          stat={useCase.stat}
-          statLabel={useCase.statLabel}
-          cta={useCase.cta}
-        />
-      </div>
+            <!-- State B — Care Orchestration (expanded) -->
+            <div
+              data-nav-b
+              class="nav-layer flex items-center gap-6 py-2 pl-8 pr-2"
+            >
+              <span
+                class="shrink-0 text-sm font-semibold uppercase tracking-[-0.01em]"
+                >{orchestration.navLabel}</span
+              >
+              <div class="flex shrink-0 items-stretch gap-2">
+                {
+                  orchestration.tabs.map((t, i) => (
+                    <span
+                      class:list={[
+                        "flex shrink-0 items-center justify-center whitespace-pre-line rounded-[40px] border border-gray-200 px-8 py-4 text-center text-sm font-semibold uppercase leading-tight tracking-[-0.01em]",
+                        i === 0 && "bg-brand text-white",
+                      ]}
+                    >
+                      {t}
+                    </span>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- triage-reveal = horizontal slide-in on first view. -->
+        <div class="triage-reveal w-full" data-triage-reveal>
+          <SolutionCard
+            theme="lime"
+            title={card.title}
+            headline={`${card.headline.highlight}${card.headline.rest}`}
+            points={card.points}
+            glow="/triage/card-bg.svg"
+            badge={card.badge}
+            logo={useCase.logo}
+            logoAlt={useCase.logoAlt}
+            stat={useCase.stat}
+            statLabel={useCase.statLabel}
+            cta={useCase.cta}
+          />
+        </div>
     </div>
   </div>
+  <noscript>
+    <style>
+      .nav-wrap {
+        visibility: visible !important;
+      }
+    </style>
+  </noscript>
 </section>
 
 <style>
+  /* Morphing nav -----------------------------------------------------------
+     State A and State B share a single grid cell (stacked); the wrapper sizes
+     to the wider/taller B. JS interpolates `width` (clipping B's extra pills
+     while collapsed) and crossfades the two layers. Hidden until measured to
+     avoid a flash of the end-state on load; <noscript> reveals it for no-JS. */
+  .nav-wrap {
+    display: grid;
+    justify-items: start;
+    align-items: stretch;
+    width: max-content;
+    overflow: hidden;
+    visibility: hidden;
+  }
+  .nav-wrap.is-ready {
+    visibility: visible;
+  }
+  .nav-layer {
+    grid-area: 1 / 1;
+    white-space: nowrap;
+    will-change: opacity;
+  }
+  [data-nav-b] {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-wrap {
+      visibility: visible;
+    }
+  }
+
+  /* Pin: while morphing (lg, motion allowed), the stage sticks so the navbar
+     morph is scrubbed in place. The stage stays in normal flow (headline → navbar
+     spacing = the heading's padding); JS sets its `top` so it lands centered once
+     stuck, plus the track height (taller than the viewport) and is-pinned.
+     `overflow-x: clip` on the section clips the card slide-in without creating a
+     scroll container, so this sticky still resolves against the viewport. */
+  .triage-section.is-pinned .triage-stage {
+    position: sticky;
+  }
+
   /* Card slides in from the right and settles centered when scrolled into view. */
   .triage-reveal {
     opacity: 0;
@@ -108,5 +206,111 @@ const { eyebrow, heading, tabs, card, case: useCase } = triage;
       { threshold: 0.2 },
     );
     reveals.forEach((el) => observer.observe(el));
+  }
+
+  // --- Scroll-morphing nav -------------------------------------------------
+  // Once the card column is centered and pinned, continued scrolling toward the
+  // next section is scrubbed into the navbar morph: the Triage tab (A) expands
+  // and crossfades into the Care Orchestration navbar (B), then the pin releases.
+  // Reverses on scroll-up. The morph only runs while the section is pinned (lg
+  // and motion allowed); otherwise it settles to the collapsed/end state.
+  const wrap = document.querySelector<HTMLElement>("[data-nav-wrap]");
+  const layerA = document.querySelector<HTMLElement>("[data-nav-a]");
+  const layerB = document.querySelector<HTMLElement>("[data-nav-b]");
+  const section = document.querySelector<HTMLElement>("[data-triage-section]");
+  const track = document.querySelector<HTMLElement>("[data-triage-track]");
+  const stage = document.querySelector<HTMLElement>("[data-triage-stage]");
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+  const lgMQ = window.matchMedia("(min-width: 1024px)");
+
+  if (wrap && layerA && layerB && section && track && stage) {
+    let wA = 0; // collapsed (Triage) content width
+    let wB = 0; // expanded (Care Orchestration) content width
+    let scrub = 0; // pinned scroll distance the morph is scrubbed across
+    let stickTop = 0; // sticky `top` that lands the stage vertically centered
+    let morph = false;
+    let ticking = false;
+
+    const clamp = (n: number) => Math.min(1, Math.max(0, n));
+    // Smoothstep for an eased crossfade/expand.
+    const ease = (n: number) => n * n * (3 - 2 * n);
+
+    const apply = (p: number) => {
+      // p is already eased. Width interpolates A → B (clipping B's extra pills
+      // until it widens); the two layers dissolve so their sum stays ~1 (no
+      // mid-morph dip). The extra B pills stay clipped until the width reveals
+      // them, so the early faint B reads only as the label/first-pill crossfade.
+      wrap.style.width = `${wA + (wB - wA) * p}px`;
+      layerA.style.opacity = `${1 - p}`;
+      layerB.style.opacity = `${p}`;
+    };
+
+    const settle = () => {
+      // Non-morph states: end-state on reduced motion, collapsed otherwise.
+      if (reduceMotion) {
+        wrap.style.width = `${wB}px`;
+        layerA.style.opacity = "0";
+        layerB.style.opacity = "1";
+      } else {
+        wrap.style.width = `${wA}px`;
+        layerA.style.opacity = "1";
+        layerB.style.opacity = "0";
+      }
+    };
+
+    const measure = () => {
+      // Read both layers at their natural widths, then decide whether to pin.
+      section.classList.remove("is-pinned");
+      track.style.height = "";
+      stage.style.top = "";
+      wrap.style.width = "";
+      wA = layerA.offsetWidth;
+      wB = layerB.offsetWidth;
+      const vh = window.innerHeight;
+      morph = lgMQ.matches && !reduceMotion && wB > wA;
+      if (morph) {
+        scrub = Math.round(vh * 0.7);
+        // Land the stage centered when it fits; otherwise anchor near the top
+        // (min 24px) so the morphing nav stays on screen on shorter viewports
+        // (the card can run past the fold).
+        stickTop = Math.max(24, Math.round((vh - stage.offsetHeight) / 2));
+        stage.style.top = `${stickTop}px`;
+        section.classList.add("is-pinned");
+        track.style.height = `${stage.offsetHeight + scrub}px`;
+      }
+    };
+
+    const render = () => {
+      ticking = false;
+      if (!morph) return settle();
+      // The stage sticks at top:stickTop and holds for `scrub` px. Track top runs
+      // stickTop → stickTop − scrub across that span; map it to p 0 → 1.
+      const p = clamp((stickTop - track.getBoundingClientRect().top) / scrub);
+      apply(ease(p));
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    };
+
+    const init = () => {
+      measure();
+      render();
+      wrap.classList.add("is-ready");
+    };
+
+    const onResize = () => {
+      measure();
+      render();
+    };
+
+    init();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    lgMQ.addEventListener("change", onResize);
   }
 </script>
