@@ -67,7 +67,12 @@ const { tagline, social, copyright, legal } = data;
       <span>{copyright}</span>
       {
         legal.map((item) => (
-          <a href={item.href} class="transition-opacity hover:opacity-60">
+          <a
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="transition-opacity hover:opacity-60"
+          >
             {item.label}
           </a>
         ))
