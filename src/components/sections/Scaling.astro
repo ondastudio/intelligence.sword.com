@@ -40,9 +40,9 @@ const { eyebrow, heading, body, stats } = data;
           data-reveal="title"
           class="font-serif text-3xl font-normal leading-[1.05] tracking-[-0.02em] sm:text-4xl lg:text-display"
         >
-          {heading.line1}<br />{heading.line2}<span class="text-brand"
-            >{heading.accent}</span
-          >{heading.after}
+          {heading.line1}<br /><span class="whitespace-nowrap"
+            >{heading.line2}<span class="text-brand">{heading.accent}</span>{heading.after}</span
+          >
         </h2>
 
         <p
