@@ -14,13 +14,20 @@ import CircleButton from "../ui/CircleButton.astro";
 <section
   class="relative flex min-h-screen flex-col overflow-hidden bg-coral text-black"
 >
-  <!-- Background mesh gradient -->
+  <!-- Background: animated swirl (WebGL) over the static mesh gradient.
+       The image paints instantly and stays as the no-JS / fallback layer;
+       the canvas fades in once the swirl effect has mounted. -->
   <img
     src="/hero/mesh-gradient.png"
     alt=""
     aria-hidden="true"
     class="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
   />
+  <canvas
+    data-swirl
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-0 transition-opacity duration-700"
+  ></canvas>
 
   <Navbar />
 
@@ -58,6 +65,20 @@ import CircleButton from "../ui/CircleButton.astro";
     </div>
   </div>
 </section>
+
+<script>
+  import { initSwirl } from "../../lib/swirl";
+
+  const canvas = document.querySelector<HTMLCanvasElement>("canvas[data-swirl]");
+  const container = canvas?.closest("section");
+  if (canvas && container) {
+    initSwirl(canvas, container, {
+      grainUrl: "/hero/swirl/perlin1.png",
+    });
+    // Reveal the canvas once it's mounted so it overlays the static image.
+    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
+  }
+</script>
 
 <script>
   // Smooth-scroll the dotted circle button to the next section (one viewport down),
