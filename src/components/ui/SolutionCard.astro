@@ -51,6 +51,7 @@ const t = {
     // inset stroke) without adding to the 1064×598 box.
     ring: "ring-accent",
     // lime background is a full-card SVG (base + lime wash + blurred bloom)
+    cardBg: "",
     glowFit: "inset-0 h-full w-full",
     caseBg: "bg-lime-tint",
     statBar: "bg-accent",
@@ -59,7 +60,9 @@ const t = {
   },
   purple: {
     ring: "ring-purple-200",
-    // purple is an oversized bloom overlay anchored top-left
+    // purple base is a flat lavender wash; the glow is an oversized bloom
+    // overlay anchored top-left on top of it (matches the design).
+    cardBg: "bg-purple-150",
     glowFit: "left-[-4.7%] top-[-57%] h-[191%] w-[115%] max-w-none",
     caseBg: "bg-purple-tint",
     statBar: "bg-white",
@@ -74,6 +77,7 @@ const t = {
   <div
     class:list={[
       "relative overflow-hidden rounded-card p-6 ring-1 ring-inset md:p-16",
+      t.cardBg,
       t.ring,
     ]}
   >
