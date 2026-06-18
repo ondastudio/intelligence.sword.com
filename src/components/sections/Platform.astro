@@ -77,10 +77,6 @@ const dot = "/platform/dot.svg";
         <img src="/platform/line-down.svg" alt="" aria-hidden="true"
           class="absolute h-2 w-[74px]" style="left:603px;top:161px;transform:rotate(90deg)" />
 
-        <!-- Animated flow pulses traveling along the connectors into the orb -->
-        <span class="flow-pulse flow-pulse--left absolute" aria-hidden="true" style="left:300px;top:415px"></span>
-        <span class="flow-pulse flow-pulse--right absolute" aria-hidden="true" style="left:868px;top:415px"></span>
-
         <!-- Endpoint dots -->
         <img src={dot} alt="" aria-hidden="true" class="absolute size-2" style="left:907px;top:418px" />
         <img src={dot} alt="" aria-hidden="true" class="absolute size-2" style="left:358px;top:417px" />
@@ -149,47 +145,6 @@ const dot = "/platform/dot.svg";
     </div>
   </div>
 </section>
-
-<style>
-  /* Traveling pulses that flow along the connector lines toward the orb,
-     linking "Continuously learns from" → Clinical Intelligence → "Governed by". */
-  .flow-pulse {
-    width: 12px;
-    height: 12px;
-    border-radius: 9999px;
-    background: radial-gradient(circle, #a684ff 0%, rgba(166, 132, 255, 0.6) 35%, rgba(166, 132, 255, 0) 70%);
-    box-shadow: 0 0 8px 2px rgba(166, 132, 255, 0.7);
-    will-change: transform, opacity;
-    pointer-events: none;
-  }
-
-  .flow-pulse--left {
-    animation: flow-pulse-left 2.6s linear infinite;
-  }
-
-  .flow-pulse--right {
-    animation: flow-pulse-right 2.6s linear infinite;
-    animation-delay: 1.3s;
-  }
-
-  @keyframes flow-pulse-left {
-    0%   { transform: translateX(0); opacity: 0; }
-    12%  { opacity: 1; }
-    88%  { opacity: 1; }
-    100% { transform: translateX(116px); opacity: 0; }
-  }
-
-  @keyframes flow-pulse-right {
-    0%   { transform: translateX(81px); opacity: 0; }
-    12%  { opacity: 1; }
-    88%  { opacity: 1; }
-    100% { transform: translateX(0); opacity: 0; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .flow-pulse { animation: none; opacity: 0; }
-  }
-</style>
 
 <script>
   // Scale the fixed 1280-wide diagram down to the container width (never up).
