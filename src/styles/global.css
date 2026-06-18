@@ -141,3 +141,28 @@
     transform: scaleX(0);
   }
 }
+
+/* ===========================================================================
+   FOOTER REVEAL  —  page slides up to uncover the footer
+   ---------------------------------------------------------------------------
+   The footer is pinned to the bottom of the viewport (fixed, behind content),
+   while all sections above it live in `.page-content` — an opaque pane that
+   sits on top. The footer's own height is reserved as scroll space at the end
+   of `.page-content` (set as `margin-bottom` from Footer.astro), so the final
+   stretch of scroll lifts the pane off the footer, revealing it underneath.
+
+   Activation is gated behind a `.footer-reveal` flag that Footer.astro only
+   adds when the footer fits the viewport and motion is allowed — otherwise the
+   footer falls back to normal in-flow stacking.
+   =========================================================================== */
+.page-content {
+  position: relative;
+  z-index: 1;
+  background-color: #fff;
+}
+
+.footer-reveal .footer {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 0;
+}

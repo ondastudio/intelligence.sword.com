@@ -18,16 +18,21 @@ import Footer from "../components/sections/Footer.astro";
   title="Sword Intelligence — The clinical intelligence behind your care operations"
   description="AI Care Managers that scale your capacity, lift the admin load, and improve patient outcomes."
 >
-  <Hero />
-  <Intro />
-  <Care />
-  <Triage />
-  <Platform />
-  <Trust />
-  <Operations />
-  <Numbers />
-  <Integrations />
-  <Scaling />
-  <Cta />
+  {/* Everything above the footer scrolls as one opaque pane; the footer is
+      pinned behind it (see .page-content / .footer in global.css) so the page
+      slides up to reveal the footer underneath at the end of the scroll. */}
+  <div class="page-content">
+    <Hero />
+    <Intro />
+    <Care />
+    <Triage />
+    <Platform />
+    <Trust />
+    <Operations />
+    <Numbers />
+    <Integrations />
+    <Scaling />
+    <Cta />
+  </div>
   <Footer />
 </Layout>

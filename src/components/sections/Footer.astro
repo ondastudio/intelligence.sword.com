@@ -90,3 +90,36 @@ const { tagline, social, copyright, legal } = data;
     />
   </div>
 </footer>
+
+<script>
+  // Footer reveal: pin the footer behind the page and reserve its height as
+  // scroll space, so `.page-content` lifts off it at the end of the scroll.
+  // (Positioning lives in global.css under `.footer-reveal`.)
+  const footer = document.querySelector<HTMLElement>(".footer");
+  const page = document.querySelector<HTMLElement>(".page-content");
+  const root = document.documentElement;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (footer && page && !reduce) {
+    const sync = () => {
+      // Measure the footer's natural (in-flow) height. Temporarily drop the
+      // flag so a fixed footer reports its true layout height.
+      root.classList.remove("footer-reveal");
+      const h = footer.offsetHeight;
+
+      // Only reveal when the footer comfortably fits the viewport; otherwise a
+      // pinned footer would clip its own top. Fall back to normal stacking.
+      if (h < window.innerHeight) {
+        page.style.marginBottom = `${h}px`;
+        root.classList.add("footer-reveal");
+      } else {
+        page.style.marginBottom = "";
+      }
+    };
+
+    sync();
+    window.addEventListener("resize", sync);
+    // Re-measure once fonts/images (the full-bleed wordmark) settle.
+    window.addEventListener("load", sync);
+  }
+</script>
