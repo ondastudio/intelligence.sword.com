@@ -31,6 +31,7 @@ interface Props {
   tone?: "white" | "lavender" | "outline";
   logo?: string;
   logoAlt?: string;
+  confidential?: boolean;
   title?: string;
   stat?: Stat;
   stats?: Stat[];
@@ -48,6 +49,7 @@ const {
   tone = "white",
   logo,
   logoAlt = "",
+  confidential = false,
   title,
   stat,
   stats = [],
@@ -140,8 +142,18 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
       {/* Text pane */}
       <div class={composite ? "flex flex-1 flex-col justify-between gap-8 p-10 md:pr-4" : "contents"}>
         <header class="flex flex-col gap-6">
-          {logo && (
-            <img src={logo} alt={logoAlt} class="h-8 w-auto max-w-[185px] self-start object-contain object-left" />
+          {confidential ? (
+            <span class="flex items-center gap-2 self-start text-sm font-semibold uppercase tracking-[-0.01em] text-black">
+              <svg viewBox="0 0 24 24" class="size-6 shrink-0" fill="none" aria-hidden="true">
+                <path d="M19.439 15.439C20.364 14.521 21.078 13.609 21.544 12.955C21.848 12.529 22 12.316 22 12C22 11.685 21.848 11.471 21.544 11.045C20.178 9.129 16.689 5 12 5C11.092 5 10.229 5.155 9.418 5.418M6.747 6.747C4.731 8.107 3.242 9.943 2.456 11.045C2.152 11.471 2 11.685 2 12C2 12.316 2.152 12.529 2.456 12.955C3.822 14.871 7.311 19 12 19C13.991 19 15.738 18.256 17.181 17.181" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9.853 9.853C9.327 10.388 9 11.156 9 12C9 13.657 10.343 15 12 15C12.844 15 13.612 14.673 14.147 14.147M3 3L21 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Confidential
+            </span>
+          ) : (
+            logo && (
+              <img src={logo} alt={logoAlt} class="h-8 w-auto max-w-[185px] self-start object-contain object-left" />
+            )
           )}
           {type === "story" ? (
             <h3 class="font-serif text-[clamp(1.75rem,2.4vw,32px)] font-normal leading-[1.2] tracking-[-0.02em] text-black">

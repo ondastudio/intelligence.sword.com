@@ -19,10 +19,18 @@
  * positioned over the hero. Content-free — copy/photos come from the data.
  */
 import Eyebrow from "../ui/Eyebrow.astro";
+import StoryCard from "../ui/StoryCard.astro";
+import ArrowCircle from "../ui/ArrowCircle.astro";
 
 interface Stat {
   value: string;
   label: string;
+}
+interface ImpactCard {
+  category: string;
+  value: string;
+  label: string;
+  detail?: string;
 }
 interface Story {
   title: string;
@@ -56,6 +64,15 @@ interface Story {
       role?: string;
     }[];
   };
+  impact?: {
+    title: string;
+    cards: ImpactCard[];
+  };
+  related?: {
+    title: string;
+    seeAll: { label: string; href: string };
+    cards: Record<string, unknown>[];
+  };
 }
 
 interface Props {
@@ -63,7 +80,7 @@ interface Props {
 }
 
 const { story } = Astro.props;
-const { hero, id, overview, testimonial } = story;
+const { hero, id, overview, testimonial, impact, related } = story;
 
 // Index of the tab shown first (falls back to the first panel).
 const activeIndex = Math.max(
@@ -310,6 +327,127 @@ const chip =
       </div>
     </div>
   </section>
+
+  {/* ---- 4. Impact --------------------------------------------------------- */}
+  {
+    impact && (
+      <section class="bg-surface px-4 py-20 md:px-8 md:py-[120px]">
+        {/* lavender panel with a soft blurred purple→blue bloom (Figma bloom baked
+            into impact-bloom.svg). The panel colour is the bloom's outer stop so it
+            blends seamlessly. */}
+        <div class="relative mx-auto flex max-w-[1376px] flex-col gap-12 overflow-hidden rounded-card bg-purple-tint px-6 py-16 md:gap-20 md:px-20 md:py-[120px]">
+          <img
+            src="/customers/impact-bloom.svg"
+            alt=""
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 size-full object-cover"
+          />
+          <h2
+            data-reveal="title"
+            class="relative text-center font-serif text-[clamp(2.25rem,4.5vw,56px)] font-normal leading-[1.2] tracking-[-0.02em] text-black"
+          >
+            {impact.title}
+          </h2>
+
+          {/* Cards sit in an items-stretch row so they share a height. Clicking a
+              card's info button toggles [data-open]: the translucent detail panel
+              reveals below (grid-rows 0fr→1fr), and the row grows — the other
+              cards stretch to match, so the open card's white pane looks
+              compressed. See the <script> at the foot. */}
+          <div class="relative flex flex-col gap-4 md:flex-row md:items-stretch">
+            {impact.cards.map((card, i) => (
+              <div
+                data-reveal
+                data-impact-card
+                data-open="false"
+                style={`transition-delay:${i * 120}ms`}
+                class="impact-card flex flex-1 flex-col"
+              >
+                {/* white pane — flex-1 so it fills the (stretched) column height */}
+                <div class="impact-main flex flex-1 flex-col items-center justify-between gap-6 rounded-card bg-white px-8 py-10 text-center">
+                  <div class="flex items-start justify-center gap-2">
+                    <span class="rounded-[40px] border border-black/[0.24] px-4 py-2 text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-black">
+                      {card.category}
+                    </span>
+                    {/* info affordance — the site's dotted ArrowCircle with an "i" */}
+                    {card.detail && (
+                      <ArrowCircle
+                        variant="dotted"
+                        glyph="info"
+                        label="Show how this was measured"
+                        data-impact-toggle
+                        aria-expanded="false"
+                      />
+                    )}
+                  </div>
+                  <p class="font-serif text-[clamp(3rem,6vw,76px)] font-normal leading-[1.05] tracking-[-0.02em] text-black">
+                    {card.value}
+                  </p>
+                  <p class="max-w-[240px] text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-black">
+                    {card.label}
+                  </p>
+                </div>
+
+                {/* collapsible detail — a fully-rounded panel sitting flush
+                    under the white pane (no gap), sliding down + fading in as
+                    the row grows. See the <style> at the foot. */}
+                {card.detail && (
+                  <div class="impact-extra">
+                    <div class="impact-extra-inner flex items-start gap-2.5 rounded-card bg-white/45 px-8 py-8 text-left">
+                      <span class="mt-px grid size-6 shrink-0 place-items-center text-black" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" class="size-full" fill="none">
+                          <circle cx="12" cy="12" r="11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                          <path d="M12 16.5V11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                          <path d="M12 8.01V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </span>
+                      <p class="text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-black">
+                        {card.detail}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {/* ---- 5. Related stories ------------------------------------------------ */}
+  {
+    related && (
+      <section class="relative overflow-hidden bg-surface px-4 py-20 md:px-20 md:py-[120px]">
+        <div class="relative mx-auto flex max-w-[1280px] flex-col items-end gap-12 md:gap-20">
+          <h2
+            data-reveal="title"
+            class="w-full max-w-[714px] self-center text-center font-serif text-[clamp(2.25rem,4.5vw,56px)] font-normal leading-[1.2] tracking-[-0.02em] text-black"
+          >
+            {related.title}
+          </h2>
+
+          <div class="flex w-full flex-col gap-10">
+            <div
+              data-reveal
+              class="grid grid-cols-1 gap-4 md:grid-cols-2"
+            >
+              {related.cards.map((cell) => (
+                <StoryCard {...cell} />
+              ))}
+            </div>
+
+            <a
+              href={related.seeAll.href}
+              class="self-end rounded-[50px] border border-black px-6 py-3 text-sm font-semibold uppercase tracking-[-0.01em] text-black transition-colors hover:bg-black hover:text-white"
+            >
+              {related.seeAll.label}
+            </a>
+          </div>
+        </div>
+      </section>
+    )
+  }
 </article>
 
 <script>
@@ -351,6 +489,22 @@ const chip =
   };
 
   tabs.forEach((tab, i) => tab.addEventListener("click", () => activate(i)));
+
+  // Impact cards: the info "i" button expands a detail panel below the card.
+  // Toggling [data-open] on the card drives the CSS (grid-rows reveal); the row
+  // grows so the sibling cards stretch to match, compressing the open card's
+  // white pane. Each card is independent.
+  document
+    .querySelectorAll<HTMLButtonElement>("[data-impact-toggle]")
+    .forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const card = btn.closest<HTMLElement>("[data-impact-card]");
+        if (!card) return;
+        const open = card.getAttribute("data-open") === "true";
+        card.setAttribute("data-open", open ? "false" : "true");
+        btn.setAttribute("aria-expanded", open ? "false" : "true");
+      });
+    });
 </script>
 
 <style is:global>
@@ -382,6 +536,53 @@ const chip =
     }
     .js .cs-id.in-view .cs-hline {
       transform: scaleX(1);
+    }
+  }
+
+  /* Impact detail panel: collapsed by default (max-height 0, clipped). When the
+     card opens, the wrapper grows to reveal it while the inner card slides down
+     + fades in — a softer reveal than a straight height pop. max-height is a
+     ceiling above the panel's natural height; the row stays content-sized. */
+  .impact-extra {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.55s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .impact-extra-inner {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition:
+      opacity 0.45s ease 0.05s,
+      transform 0.55s cubic-bezier(0.33, 1, 0.68, 1) 0.05s;
+  }
+  .impact-card[data-open="true"] .impact-extra {
+    max-height: 16rem;
+  }
+  .impact-card[data-open="true"] .impact-extra-inner {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Open card: the info "i" ring morphs from dotted to a solid outline (same
+     dotted→solid morph the ArrowCircle plays on hover, here pinned to open). */
+  .impact-card [data-impact-toggle] rect {
+    transition:
+      stroke-dasharray 0.4s cubic-bezier(0.33, 1, 0.68, 1),
+      stroke-width 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .impact-card[data-open="true"] [data-impact-toggle] rect {
+    stroke-dasharray: 120 0;
+    stroke-width: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .impact-extra,
+    .impact-extra-inner,
+    .impact-card [data-impact-toggle] rect {
+      transition: none;
+    }
+    .impact-card[data-open="true"] .impact-extra-inner {
+      transform: none;
     }
   }
 </style>

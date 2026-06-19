@@ -47,6 +47,52 @@
           "role": "Deputy Divisional Manager of Anaesthetics\nBarking, Havering and Redbridge NHS Trust"
         }
       ]
+    },
+    "impact": {
+      "title": "Impact",
+      "cards": [
+        {
+          "category": "Readiness & Conversion",
+          "value": "57%",
+          "label": "of patients initially deemed “unfit for surgery” progressed to surgery",
+          "detail": "Comparator group (no program): 33% conversion"
+        },
+        {
+          "category": "Readiness & Conversion",
+          "value": "0.71 d",
+          "label": "average reduction in length of stay across all procedures",
+          "detail": "Measured across all surgical procedures during the program"
+        },
+        {
+          "category": "Readiness & Conversion",
+          "value": "8.9/10",
+          "label": "average patient satisfaction score",
+          "detail": "Based on post-discharge patient satisfaction surveys"
+        }
+      ]
+    },
+    "related": {
+      "title": "Other organizations changing with Intelligence.",
+      "seeAll": { "label": "See all stories", "href": "/customers" },
+      "cards": [
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/ne-london.png",
+          "logoAlt": "North East London",
+          "title": "Improving Surgery Readiness at Scale with the NHS",
+          "stat": { "value": "57%", "label": "more patients ready for surgery" },
+          "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
+        },
+        {
+          "type": "story",
+          "tone": "white",
+          "confidential": true,
+          "title": "How AI Eligibility Checks Found Hidden Revenue",
+          "stat": { "value": "$0.5M", "label": "recovered in 3 months" },
+          "cta": { "label": "Read more", "href": "#" }
+        }
+      ]
     }
   }
 }

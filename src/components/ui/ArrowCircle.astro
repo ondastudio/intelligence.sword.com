@@ -5,8 +5,10 @@
  * dotted ring (round-capped dashes, `0.01 8`) enclosing a right-arrow glyph.
  *
  * variants:
- *   dotted — transparent fill, dotted black ring, dark arrow (default; all cards)
- *   filled — solid brand-purple fill, white arrow, no ring (CTA)
+ *   dotted — transparent fill, dotted black ring, dark glyph (default; all cards)
+ *   filled — solid brand-purple fill, white glyph, no ring (CTA)
+ * `glyph` swaps the centered icon: "arrow" (default) or "info" (an "i", same
+ *   dotted ring — used by the Impact stat cards).
  * `rotate` spins the glyph (e.g. 45 for the CTA's down-right arrow).
  * `detach` slides the circle slightly away from an adjoining pill on hover —
  *   set it when the circle sits next to a CTA pill and wrap the pair in `group`.
@@ -14,6 +16,7 @@
  */
 interface Props {
   variant?: "dotted" | "filled";
+  glyph?: "arrow" | "info";
   rotate?: number;
   href?: string;
   label?: string;
@@ -23,6 +26,7 @@ interface Props {
 }
 const {
   variant = "dotted",
+  glyph = "arrow",
   rotate = 0,
   href,
   label = "Learn more",
@@ -72,17 +76,42 @@ const Tag = href ? "a" : "button";
     aria-hidden="true"
     style={rotate ? `transform:rotate(${rotate}deg)` : undefined}
   >
-    <path
-      d="M18.5 12H5"
-      stroke="currentColor"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"></path>
-    <path
-      d="M13 18C13 18 19 13.5811 19 12C19 10.4188 13 6 13 6"
-      stroke="currentColor"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"></path>
+    {
+      glyph === "info" ? (
+        <>
+          <path
+            d="M12 16.5V11.5"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M12 8.01V8"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </>
+      ) : (
+        <>
+          <path
+            d="M18.5 12H5"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M13 18C13 18 19 13.5811 19 12C19 10.4188 13 6 13 6"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </>
+      )
+    }
   </svg>
 </Tag>
