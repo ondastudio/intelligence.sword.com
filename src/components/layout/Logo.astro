@@ -8,10 +8,15 @@ import site from "../../data/site.json";
 
 interface Props {
   href?: string;
+  /** "dark" — native black wordmark (default); "light" — rendered white for dark backgrounds. */
+  tone?: "dark" | "light";
   class?: string;
 }
-const { href = "/", class: className = "" } = Astro.props;
+const { href = "/", tone = "dark", class: className = "" } = Astro.props;
 const { bold, regular } = site.logo;
+
+// The wordmark SVG is solid black; flip it to white on dark backgrounds.
+const toneClass = tone === "light" ? "[filter:brightness(0)_invert(1)]" : "";
 ---
 
 <a
@@ -24,6 +29,6 @@ const { bold, regular } = site.logo;
     width="168"
     height="21"
     alt={`${bold} ${regular}`}
-    class="block h-[21px] w-auto"
+    class={`block h-[21px] w-auto ${toneClass}`}
   />
 </a>

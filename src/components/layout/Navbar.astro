@@ -8,13 +8,19 @@ import site from "../../data/site.json";
 import Logo from "./Logo.astro";
 import Button from "../ui/Button.astro";
 import ArrowCircle from "../ui/ArrowCircle.astro";
+
+interface Props {
+  /** "dark" — black text on light backgrounds (default); "light" — white text + lime CTA for dark backgrounds. */
+  tone?: "dark" | "light";
+}
+const { tone = "dark" } = Astro.props;
 ---
 
 <header class="absolute inset-x-0 top-0 z-20">
   <nav
     class="mx-auto flex max-w-[1440px] items-center justify-between px-6 pb-5 pt-10 lg:px-20"
   >
-    <Logo />
+    <Logo tone={tone} />
 
     <!-- Centered menu (absolutely centered on large screens) -->
     <div
@@ -22,7 +28,7 @@ import ArrowCircle from "../ui/ArrowCircle.astro";
     >
       {
         site.nav.map((item) => (
-          <Button variant="glass" href={item.href} caret={item.caret}>
+          <Button variant="glass" tone={tone} href={item.href} caret={item.caret}>
             {item.label}
           </Button>
         ))
@@ -30,9 +36,10 @@ import ArrowCircle from "../ui/ArrowCircle.astro";
     </div>
 
     <div class="group flex items-center">
-      <Button variant="solid" href={site.cta.href}>{site.cta.label}</Button>
+      <Button variant="solid" tone={tone} href={site.cta.href}>{site.cta.label}</Button>
       <ArrowCircle
         variant="filled"
+        tone={tone}
         href={site.cta.href}
         label={site.cta.label}
         detach

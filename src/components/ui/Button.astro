@@ -11,6 +11,8 @@
  */
 interface Props {
   variant?: "solid" | "glass";
+  /** "dark" — for light backgrounds (default); "light" — for dark backgrounds. */
+  tone?: "dark" | "light";
   href?: string;
   caret?: boolean;
   type?: "button" | "submit" | "reset";
@@ -20,6 +22,7 @@ interface Props {
 
 const {
   variant = "solid",
+  tone = "dark",
   href,
   caret = false,
   type = "button",
@@ -30,12 +33,18 @@ const {
 const base =
   "inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-full px-6 text-sm font-semibold uppercase tracking-[-0.01em] transition-colors";
 
-const variants: Record<string, string> = {
-  solid: "bg-brand text-white",
-  glass: "text-black backdrop-blur-md hover:bg-ink-wash-hover",
+const variants: Record<string, Record<string, string>> = {
+  solid: {
+    dark: "bg-brand text-white",
+    light: "bg-accent text-ink",
+  },
+  glass: {
+    dark: "text-black hover:bg-ink-wash-hover hover:backdrop-blur-md",
+    light: "text-white hover:bg-white/10 hover:backdrop-blur-md",
+  },
 };
 
-const classes = [base, variants[variant], className].join(" ");
+const classes = [base, variants[variant][tone], className].join(" ");
 const Tag = href ? "a" : "button";
 ---
 

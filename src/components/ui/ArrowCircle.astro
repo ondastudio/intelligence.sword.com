@@ -16,6 +16,8 @@
  */
 interface Props {
   variant?: "dotted" | "filled";
+  /** "dark" — for light backgrounds (default); "light" — for dark backgrounds. */
+  tone?: "dark" | "light";
   glyph?: "arrow" | "info";
   rotate?: number;
   href?: string;
@@ -26,6 +28,7 @@ interface Props {
 }
 const {
   variant = "dotted",
+  tone = "dark",
   glyph = "arrow",
   rotate = 0,
   href,
@@ -35,10 +38,19 @@ const {
   ...rest
 } = Astro.props;
 
+const toneClass =
+  variant === "filled"
+    ? tone === "light"
+      ? "bg-accent text-ink"
+      : "bg-brand text-white"
+    : tone === "light"
+      ? "text-white"
+      : "text-black";
+
 const classes = [
   "group inline-grid size-10 shrink-0 place-items-center rounded-full",
   detach ? "transition-transform duration-300 ease-out group-hover:translate-x-1" : "",
-  variant === "filled" ? "bg-brand text-white" : "text-black",
+  toneClass,
   className,
 ].join(" ");
 
