@@ -331,17 +331,29 @@ const chip =
   {/* ---- 4. Impact --------------------------------------------------------- */}
   {
     impact && (
-      <section class="bg-surface px-4 py-20 md:px-8 md:py-[120px]">
-        {/* lavender panel with a soft blurred purple→blue bloom (Figma bloom baked
-            into impact-bloom.svg). The panel colour is the bloom's outer stop so it
-            blends seamlessly. */}
-        <div class="relative mx-auto flex max-w-[1376px] flex-col gap-12 overflow-hidden rounded-card bg-purple-tint px-6 py-16 md:gap-20 md:px-20 md:py-[120px]">
+      <section class="bg-surface overflow-hidden py-20 md:py-[120px]">
+        {/* Same scroll-driven full-bleed expansion as the home "Trusted by"
+            panel: the lavender frame begins slightly compressed (inset, rounded
+            corners), expands to edge-to-edge (square corners) as the section
+            reaches the centre of the viewport, then compresses again as it
+            scrolls away. The 1376-wide content never moves; only the frame
+            scales behind it. */}
+        <div data-impact-scroll class="relative mx-auto w-full">
+          {/* lavender panel with a soft blurred purple→blue bloom (Figma bloom
+              baked into impact-bloom.svg). The panel colour is the bloom's outer
+              stop so it blends seamlessly. The scrubber scales this frame
+              (panel + content together) and clips its corners. */}
+          <div
+            data-impact-frame
+            class="impact-frame relative flex flex-col gap-12 overflow-hidden bg-purple-tint will-change-transform md:gap-20"
+          >
           <img
             src="/customers/impact-bloom.svg"
             alt=""
             aria-hidden="true"
             class="pointer-events-none absolute inset-0 size-full object-cover"
           />
+          <div class="relative z-10 mx-auto flex w-full max-w-[1376px] flex-col gap-12 px-6 py-16 md:gap-20 md:px-20 md:py-[120px]">
           <h2
             data-reveal="title"
             class="relative text-center font-serif text-[clamp(2.25rem,4.5vw,56px)] font-normal leading-[1.2] tracking-[-0.02em] text-black"
@@ -393,8 +405,17 @@ const chip =
                     the row grows. See the <style> at the foot. */}
                 {card.detail && (
                   <div class="impact-extra">
-                    <div class="impact-extra-inner flex items-start gap-2.5 rounded-card bg-white/45 px-8 py-8 text-left">
-                      <span class="mt-px grid size-6 shrink-0 place-items-center text-black" aria-hidden="true">
+                    <div
+                      class={`impact-extra-inner flex gap-2.5 rounded-card bg-white/45 px-8 py-8 text-left ${
+                        i === 2 ? "items-center" : "items-start"
+                      }`}
+                    >
+                      <span
+                        class={`grid size-6 shrink-0 place-items-center text-black ${
+                          i === 2 ? "" : "mt-px"
+                        }`}
+                        aria-hidden="true"
+                      >
                         <svg viewBox="0 0 24 24" class="size-full" fill="none">
                           <circle cx="12" cy="12" r="11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
                           <path d="M12 16.5V11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -409,6 +430,8 @@ const chip =
                 )}
               </div>
             ))}
+          </div>
+          </div>
           </div>
         </div>
       </section>
@@ -505,6 +528,84 @@ const chip =
         btn.setAttribute("aria-expanded", open ? "false" : "true");
       });
     });
+
+  // ID fact-sheet hairlines: draw in only once the section has genuinely
+  // arrived in the viewport. The sheet is tall, so the shared reveal observer
+  // (threshold 0.2) fires while the lower rows are still off-screen below the
+  // fold. This dedicated observer requires the sheet to rise ~35% up the
+  // viewport before adding `.lines-in`, so the lines draw as the user reaches
+  // them. Falls back to drawn-in if motion is reduced or IO is unavailable.
+  document.querySelectorAll<HTMLElement>(".cs-id").forEach((sheet) => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      sheet.classList.add("lines-in");
+      return;
+    }
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            sheet.classList.add("lines-in");
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      // Shrink the viewport's bottom 35%: the sheet must scroll up into the
+      // top ~65% before it counts as "arrived".
+      { rootMargin: "0px 0px -35% 0px", threshold: 0 },
+    );
+    obs.observe(sheet);
+  });
+
+  // Impact panel: scroll-driven full-bleed expansion, identical scrubber to the
+  // home "Trusted by" panel. Map the distance from the panel's centre to the
+  // viewport's centre into a 0→1 proximity, ease it, and drive scale (0.82 → 1)
+  // and corner radius (40px → 0). Symmetric about centre, so the panel peaks
+  // edge-to-edge exactly when the section is centred and compresses as it leaves.
+  function initImpactScroll(stage: HTMLElement) {
+    const frame = stage.querySelector<HTMLElement>("[data-impact-frame]");
+    if (!frame) return;
+    if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches)
+      return;
+
+    const MIN_SCALE = 0.82;
+    const MAX_RADIUS = 40; // px — matches --radius-card
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    let ticking = false;
+
+    const render = () => {
+      ticking = false;
+      const rect = stage.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const center = rect.top + rect.height / 2;
+      const distance = Math.abs(center - vh / 2);
+      // Full effect within one viewport height of dead centre.
+      const proximity = Math.max(0, 1 - distance / vh);
+      const eased = easeOutCubic(proximity);
+
+      const scale = MIN_SCALE + (1 - MIN_SCALE) * eased;
+      const radius = MAX_RADIUS * (1 - eased);
+      frame.style.transform = `scale(${scale})`;
+      frame.style.borderRadius = `${radius}px`;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    };
+
+    render();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+  }
+
+  document
+    .querySelectorAll<HTMLElement>("[data-impact-scroll]")
+    .forEach(initImpactScroll);
 </script>
 
 <style is:global>
@@ -526,16 +627,38 @@ const chip =
       transform: scaleY(1);
     }
 
-    /* ID fact-sheet hairlines: draw in horizontally from the left when the
-       sheet reveals. Per-line transition-delay is set inline for the stagger. */
+    /* ID fact-sheet hairlines: draw in horizontally from the left. Gated on a
+       dedicated `.lines-in` flag (added by the observer in the <script> below)
+       rather than the sheet's own `.in-view` — the sheet is tall, so the shared
+       0.2 threshold fires while its lower rows are still below the fold. The
+       flag only lands once the section is properly within the viewport, so the
+       lines draw as the user actually arrives. Per-line transition-delay is set
+       inline for the top→bottom stagger. */
     .js .cs-id .cs-hline {
       transform: scaleX(0);
       transform-origin: left center;
       transition: transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
       will-change: transform;
     }
-    .js .cs-id.in-view .cs-hline {
+    .js .cs-id.lines-in .cs-hline {
       transform: scaleX(1);
+    }
+  }
+
+  /* Impact panel full-bleed scrubber — mirrors the home "Trusted by" frame.
+     Fallback (no JS / reduced motion): the design's contained panel, inset to a
+     16px gutter with rounded corners. */
+  .impact-frame {
+    border-radius: var(--radius-card);
+    transform-origin: center center;
+    transform: scale(0.978); /* ≈ 16px gutter on a 1440 viewport */
+  }
+
+  /* Enhanced: the scrubber drives scale (0.82 → 1) and corner radius
+     (40px → 0) per frame; no CSS easing. */
+  @media (prefers-reduced-motion: no-preference) {
+    .js .impact-frame {
+      transform: scale(0.82);
     }
   }
 
@@ -563,22 +686,14 @@ const chip =
     transform: translateY(0);
   }
 
-  /* Open card: the info "i" ring morphs from dotted to a solid outline (same
-     dotted→solid morph the ArrowCircle plays on hover, here pinned to open). */
-  .impact-card [data-impact-toggle] rect {
-    transition:
-      stroke-dasharray 0.4s cubic-bezier(0.33, 1, 0.68, 1),
-      stroke-width 0.4s cubic-bezier(0.33, 1, 0.68, 1);
-  }
-  .impact-card[data-open="true"] [data-impact-toggle] rect {
-    stroke-dasharray: 120 0;
-    stroke-width: 1;
-  }
+  /* The info "i" ring snaps between states with no morph: dotted at rest, solid
+     on hover (ArrowCircle's own group-hover utility), and no longer tied to the
+     card's open state. We simply don't apply a transition here, so the
+     dotted→solid change is instant rather than animated. */
 
   @media (prefers-reduced-motion: reduce) {
     .impact-extra,
-    .impact-extra-inner,
-    .impact-card [data-impact-toggle] rect {
+    .impact-extra-inner {
       transition: none;
     }
     .impact-card[data-open="true"] .impact-extra-inner {

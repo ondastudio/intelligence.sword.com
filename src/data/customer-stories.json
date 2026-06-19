@@ -61,13 +61,13 @@
           "category": "Readiness & Conversion",
           "value": "0.71 d",
           "label": "average reduction in length of stay across all procedures",
-          "detail": "Measured across all surgical procedures during the program"
+          "detail": "Larger reductions observed in major surgeries (total hip replacement: -4.27 days; total knee replacement: -1.32 days)"
         },
         {
           "category": "Readiness & Conversion",
           "value": "8.9/10",
           "label": "average patient satisfaction score",
-          "detail": "Based on post-discharge patient satisfaction surveys"
+          "detail": "29% patient uptake (569 of 1,960 invited)"
         }
       ]
     },
