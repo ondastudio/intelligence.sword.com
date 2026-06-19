@@ -19,6 +19,55 @@
       ]
     ]
   },
+  "operations": {
+    "intro": {
+      "statement": "We first built AI to improve our care delivery, but we unlocked scale by building it into our operations.",
+      "body": [
+        { "text": "Instead of throwing more humans at the problem, we built AI from the ground up and proved it could run the back-office, cutting costs, streamlining operations and freeing humans to focus on care. The results were too good to keep in-house." }
+      ]
+    },
+    "born": {
+      "statement": "So, Sword Intelligence was born.",
+      "body": [
+        { "text": "We’ve invested years of clinician time, millions of real care interactions, and hard-won certification to build " },
+        { "text": "certified Clinical Intelligence", "bold": true },
+        { "text": " trusted by the care teams of providers, payors, and national health around the world. Because when your care managers get the capacity boost they need, they can give your patients the attention they deserve." }
+      ],
+      "stats": [
+        { "value": "85K", "plus": true, "label": "Physician hours invested" },
+        { "value": "14M", "plus": true, "label": "Care interactions" }
+      ],
+      "certs": {
+        "label": "Medical certifications",
+        "badges": [
+          {
+            "alt": "ISO 13485 Accredited",
+            "w": 116.791,
+            "h": 45,
+            "layers": [{ "src": "/trust/logo-01.svg", "w": 116.791, "h": 45, "x": 0, "y": 0 }]
+          },
+          {
+            "alt": "MDR Class IIa Compliant",
+            "w": 128.073,
+            "h": 45.002,
+            "layers": [
+              { "src": "/trust/logo-02-mark.svg", "w": 44.074, "h": 45.002, "x": 0, "y": 0 },
+              { "src": "/trust/logo-02-text.svg", "w": 72.523, "h": 23.508, "x": 55.55, "y": 16.46 }
+            ]
+          },
+          {
+            "alt": "MHRA Class I & IIa",
+            "w": 117.125,
+            "h": 44.999,
+            "layers": [
+              { "src": "/trust/logo-07-mark.svg", "w": 45.109, "h": 44.999, "x": 0, "y": 0 },
+              { "src": "/trust/logo-07-text.svg", "w": 59.785, "h": 20.998, "x": 57.34, "y": 14.19 }
+            ]
+          }
+        ]
+      }
+    }
+  },
   "storySoFar": {
     "eyebrow": "the story so far",
     "title": "From care delivery to operational intelligence",
