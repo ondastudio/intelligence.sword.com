@@ -81,6 +81,12 @@
     },
     "cta": { "label": "Let’s make you AI-first, too", "href": "#" }
   },
+  "finalCta": {
+    "line1": "If that sounds like you,",
+    "line2Before": "",
+    "accent": "we should talk",
+    "after": "."
+  },
   "team": {
     "eyebrow": "meet the team",
     "title": "We show up. We build what’s next. We care, always.",

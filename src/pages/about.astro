@@ -8,6 +8,7 @@ import AboutCta from "../components/sections/AboutCta.astro";
 import AboutTeam from "../components/sections/AboutTeam.astro";
 import Cta from "../components/sections/Cta.astro";
 import Footer from "../components/sections/Footer.astro";
+import about from "../data/about.json";
 ---
 
 <Layout
@@ -22,7 +23,7 @@ import Footer from "../components/sections/Footer.astro";
     <AboutOperations />
     <AboutCta />
     <AboutTeam />
-    <Cta />
+    <Cta heading={about.finalCta} />
   </div>
   <Footer variant="purple" />
 </Layout>
