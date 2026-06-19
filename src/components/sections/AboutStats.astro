@@ -1,0 +1,114 @@
+---
+/**
+ * AboutStats — "The story so far" proof section on the About page
+ * (Figma node 8616:408, "Section-02").
+ *
+ * A header row — Eyebrow + Lora title on the left, a two-paragraph body (the
+ * second semibold) on the right — sits above a 3×2 grid of stat cards. Each
+ * card is a rounded outlined panel with a `purple-150` icon disc at the top and,
+ * pinned to the bottom, a big Lora number (optional frosted "+" chip) over an
+ * uppercase caption — the same number/chip vocabulary as Scaling, in card form.
+ * The grid is closed by a lavender "Trusted by" panel holding a wrapping row of
+ * partner logos.
+ *
+ * Header + cards fade up on first view (shared `data-reveal` observer). All copy
+ * and logos come from src/data/about.json (`storySoFar`).
+ */
+import Eyebrow from "../ui/Eyebrow.astro";
+import LabelPill from "../ui/LabelPill.astro";
+import about from "../../data/about.json";
+
+const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
+---
+
+<section class="about-stats relative bg-white py-[clamp(5rem,12vw,140px)] text-black">
+  <div
+    class="mx-auto w-full max-w-[1440px] px-[clamp(1.5rem,5.2vw,80px)]"
+  >
+    <!-- Header: title block (left) + body copy (right) -->
+    <div
+      class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-20"
+    >
+      <div class="flex max-w-[620px] flex-col gap-6">
+        <div data-reveal><Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow></div>
+        <h2
+          data-reveal="title"
+          class="font-serif text-[clamp(2.25rem,5vw,56px)] font-normal leading-[1.1] tracking-[-0.02em]"
+        >
+          {title}
+        </h2>
+      </div>
+
+      <div
+        data-reveal
+        class="flex max-w-[525px] flex-col gap-5 text-base leading-[1.2] tracking-[-0.01em] sm:text-lg"
+        style="transition-delay:160ms"
+      >
+        {
+          body.map((p) => (
+            <p class:list={[p.bold && "font-semibold"]}>{p.text}</p>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Stat cards + trusted-by panel -->
+    <div class="mt-16 flex flex-col gap-4 lg:mt-[120px]">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          stats.map((stat, i) => (
+            <div
+              data-reveal
+              style={`transition-delay:${i * 80}ms`}
+              class="flex min-h-[260px] flex-col justify-between rounded-card border border-black/24 p-6"
+            >
+              <span class="flex w-fit items-center rounded-card bg-purple-150 p-2">
+                <img src={stat.icon} alt="" aria-hidden="true" class="size-8" />
+              </span>
+
+              <div class="flex flex-col gap-4">
+                <div class="flex items-start gap-2">
+                  <span class="font-serif text-[clamp(2.75rem,7vw,64px)] font-normal leading-[1.2] tracking-[-0.02em]">
+                    {stat.value}
+                  </span>
+                  {stat.plus && (
+                    <span class="mt-[11px] flex size-6 shrink-0 items-center justify-center rounded-[24px] bg-ink-wash-strong text-base leading-none">
+                      +
+                    </span>
+                  )}
+                </div>
+                <p class="text-sm font-semibold uppercase leading-[1.2] tracking-[-0.01em]">
+                  {stat.label}
+                </p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- Trusted-by panel -->
+      <div
+        data-reveal
+        class="flex flex-col items-center gap-6 rounded-[50px] bg-purple-tint px-6 py-8"
+      >
+        <LabelPill>{trustedBy.label}</LabelPill>
+        <div
+          class="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 sm:gap-x-16"
+        >
+          {
+            trustedBy.logos.map((logo) => (
+              <img
+                src={logo.src}
+                alt={logo.alt}
+                width={logo.width}
+                height={logo.height}
+                class="block w-auto shrink-0"
+                style={`height:${logo.height}px`}
+              />
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
