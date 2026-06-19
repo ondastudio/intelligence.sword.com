@@ -2,7 +2,7 @@
   "logo": { "bold": "sword", "regular": "Intelligence" },
   "nav": [
     { "label": "Solution", "href": "#", "caret": true },
-    { "label": "About", "href": "#" },
+    { "label": "About", "href": "/about" },
     { "label": "Resources", "href": "#" },
     { "label": "Our customers", "href": "/customers" }
   ],

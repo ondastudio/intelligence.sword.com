@@ -14,6 +14,9 @@
  * `fill` makes the frame stretch to its parent's box (no intrinsic aspect ratio
  * or radius of its own) so a wrapper can size, clip, and scale it — used by the
  * Intro's scroll-driven fullscreen video stage.
+ *
+ * `progress` adds a 4px reproduction bar pinned to the bottom edge: a faint
+ * track with a `purple-200` fill that tracks playback and is click-to-seek.
  */
 interface Props {
   src: string;
@@ -22,6 +25,7 @@ interface Props {
   poster?: string;
   controls?: boolean;
   fill?: boolean;
+  progress?: boolean;
   class?: string;
 }
 const {
@@ -31,11 +35,13 @@ const {
   poster,
   controls = true,
   fill = false,
+  progress = false,
   class: className = "",
 } = Astro.props;
 
 const isVideo = /\.(webm|mp4|mov|m4v|ogg)$/i.test(src);
 const showControls = isVideo && controls;
+const showProgress = isVideo && progress;
 
 // `fill` defers sizing + radius to the parent; otherwise the frame owns its
 // aspect ratio and the design's large card radius.
@@ -45,15 +51,22 @@ const containerClass = fill
 const containerStyle = fill ? undefined : `aspect-ratio:${aspect};`;
 
 // 40px round button; stroke icons inherit currentColor (black). No shadow.
-const btnBase =
-  "absolute bottom-6 z-10 inline-flex size-10 items-center justify-center rounded-full text-black transition hover:opacity-80";
+// When the reproduction bar is shown, lift the controls to keep a 76px gap
+// above the 4px bar (bottom-20 = 80px → 80 − 4 = 76); otherwise sit at 24px.
+const btnBase = `absolute ${
+  showProgress ? "bottom-20" : "bottom-6"
+} z-10 inline-flex size-10 items-center justify-center rounded-full text-black transition hover:opacity-80`;
+// Horizontal inset from the frame edges: 80px in the reproduction-bar layout,
+// 24px otherwise.
+const btnLeft = showProgress ? "left-20" : "left-6";
+const btnRight = showProgress ? "right-20" : "right-6";
 const iconBase = "size-6";
 ---
 
 <div
   class={containerClass}
   style={containerStyle}
-  data-video-player={showControls ? "" : undefined}
+  data-video-player={showControls || showProgress ? "" : undefined}
 >
   {
     isVideo ? (
@@ -75,7 +88,7 @@ const iconBase = "size-6";
               type="button"
               data-vp-toggle
               aria-label="Pause video"
-              class={`${btnBase} left-6 bg-white backdrop-blur-[4px]`}
+              class={`${btnBase} ${btnLeft} bg-white backdrop-blur-[4px]`}
             >
               {/* pause (playing) */}
               <svg
@@ -110,7 +123,7 @@ const iconBase = "size-6";
               data-vp-mute
               aria-label="Unmute video"
               aria-pressed="true"
-              class={`${btnBase} right-6 bg-accent`}
+              class={`${btnBase} ${btnRight} bg-accent`}
             >
               {/* volume-mute-02 (muted) */}
               <svg
@@ -146,6 +159,22 @@ const iconBase = "size-6";
             </button>
           </>
         )}
+        {showProgress && (
+          <button
+            type="button"
+            data-vp-progress
+            aria-label="Seek video"
+            class="group absolute inset-x-0 bottom-0 z-10 flex h-4 items-end"
+          >
+            {/* 4px reproduction bar — faint track + purple-200 playback fill */}
+            <span class="relative block h-1 w-full bg-white/25">
+              <span
+                data-vp-fill
+                class="absolute inset-y-0 left-0 w-0 bg-purple-200"
+              />
+            </span>
+          </button>
+        )}
       </>
     ) : (
       <img src={src} alt={alt} loading="lazy" class="size-full object-cover" />
@@ -158,6 +187,8 @@ const iconBase = "size-6";
     const video = root.querySelector("video");
     const toggle = root.querySelector<HTMLButtonElement>("[data-vp-toggle]");
     const mute = root.querySelector<HTMLButtonElement>("[data-vp-mute]");
+    const progress = root.querySelector<HTMLButtonElement>("[data-vp-progress]");
+    const fill = root.querySelector<HTMLElement>("[data-vp-fill]");
     if (!video) return;
 
     const show = (btn: Element | null, name: string) => {
@@ -188,6 +219,22 @@ const iconBase = "size-6";
     });
     video.addEventListener("play", syncPlay);
     video.addEventListener("pause", syncPlay);
+
+    // Reproduction bar: reflect playback position and allow click-to-seek.
+    if (fill) {
+      const syncProgress = () => {
+        const pct = video.duration ? (video.currentTime / video.duration) * 100 : 0;
+        fill.style.width = `${pct}%`;
+      };
+      video.addEventListener("timeupdate", syncProgress);
+      video.addEventListener("loadedmetadata", syncProgress);
+      progress?.addEventListener("click", (e) => {
+        const rect = progress.getBoundingClientRect();
+        const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+        if (video.duration) video.currentTime = ratio * video.duration;
+      });
+      syncProgress();
+    }
 
     syncPlay();
     syncMute();

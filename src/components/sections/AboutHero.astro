@@ -1,0 +1,29 @@
+---
+/**
+ * AboutHero — the full-viewport manifesto hero for the About page.
+ * The manifesto film fills the entire viewport as a full-bleed background with
+ * the navbar overlaid. The video reuses the shared MediaFrame controls
+ * (play/pause + mute, bottom corners) and shows a reproduction bar pinned to
+ * the bottom edge. Media comes from src/data/about.json.
+ */
+import about from "../../data/about.json";
+import Navbar from "../layout/Navbar.astro";
+import MediaFrame from "../ui/MediaFrame.astro";
+---
+
+<section
+  class="relative flex min-h-screen flex-col overflow-hidden bg-ink text-black"
+>
+  <!-- Full-bleed manifesto film + shared controls + reproduction bar. -->
+  <div class="absolute inset-0 z-0">
+    <MediaFrame
+      src={about.hero.media.src}
+      alt={about.hero.media.alt}
+      fill
+      progress
+      class="bg-ink"
+    />
+  </div>
+
+  <Navbar />
+</section>
