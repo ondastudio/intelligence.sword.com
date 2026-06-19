@@ -94,18 +94,19 @@ const { intro, born } = about.operations;
             ))
           }
 
-          <!-- Medical certifications panel -->
+          <!-- Medical certifications panel — frosted neutral fill (the Figma
+               white/50 reads as a soft grey panel over the page). -->
           <div
             data-ops-card
             style={`--card-index:${born.stats.length}`}
-            class="flex min-h-[214px] flex-col items-center gap-5 rounded-[50px] border border-black/[0.12] bg-white/50 px-6 py-8 sm:col-span-2 lg:col-span-1"
+            class="flex min-h-[214px] flex-col items-center justify-center gap-5 rounded-[50px] bg-ink-wash-strong px-6 py-8 sm:col-span-2 lg:col-span-1"
           >
             <span
               class="flex items-center rounded-[16px] border border-black/24 px-4 py-2 text-sm font-semibold uppercase leading-none"
             >
               {born.certs.label}
             </span>
-            <div class="flex flex-1 flex-wrap items-center justify-center gap-x-3 gap-y-4">
+            <div class="flex flex-nowrap items-center justify-center gap-[11.7px]">
               {
                 born.certs.badges.map((badge) => (
                   <img
