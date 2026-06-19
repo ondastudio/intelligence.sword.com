@@ -1,0 +1,62 @@
+---
+/**
+ * SolutionsHero — the "Solution • Desktop" landing screen from the design
+ * (Figma node 8634:517). Light-lavender background with the navbar overlaid,
+ * an eyebrow label above a full-width hairline divider, then a large Lora
+ * headline + supporting paragraph on the left and a white media/illustration
+ * card on the right. The card is a placeholder meant to receive motion or
+ * illustrations later. Content comes from src/data/solutions.json.
+ */
+import solutions from "../../data/solutions.json";
+import Navbar from "../layout/Navbar.astro";
+import Eyebrow from "../ui/Eyebrow.astro";
+
+const { eyebrow, headline, paragraph } = solutions.hero;
+---
+
+<section
+  class="relative flex min-h-screen flex-col overflow-hidden bg-purple-tint text-black"
+>
+  <Navbar />
+
+  <div
+    class="relative z-10 mx-auto flex min-h-screen w-full max-w-[1440px] flex-col px-6 lg:px-20"
+  >
+    <!-- Eyebrow label + full-width hairline divider -->
+    <div class="pt-[140px] lg:pt-[200px]">
+      <div data-reveal class="lg:pl-[11px]"><Eyebrow>{eyebrow}</Eyebrow></div>
+      <div data-reveal="line" class="mt-5 border-t border-gray-200"></div>
+    </div>
+
+    <!-- Headline + paragraph (left) and media/illustration card (right) -->
+    <div
+      class="mt-auto flex flex-col gap-12 pb-20 lg:flex-row lg:items-stretch lg:justify-between lg:gap-16"
+    >
+      <div
+        class="flex max-w-[853px] flex-col justify-between gap-10 lg:gap-0"
+      >
+        <h1
+          data-reveal="title"
+          class="font-serif font-normal leading-[1.2] tracking-[-0.02em] text-[clamp(2.75rem,6vw,80px)]"
+        >
+          {headline}
+        </h1>
+        <p
+          data-reveal
+          class="max-w-[607px] text-2xl leading-[1.2] tracking-[-0.02em]"
+          style="transition-delay:120ms"
+        >
+          {paragraph}
+        </p>
+      </div>
+
+      <!-- Placeholder for motion / illustration (per design annotation). -->
+      <div
+        data-reveal
+        class="aspect-[305/381] w-full max-w-[305px] shrink-0 self-end rounded-[32px] bg-white"
+        style="transition-delay:200ms"
+      >
+      </div>
+    </div>
+  </div>
+</section>

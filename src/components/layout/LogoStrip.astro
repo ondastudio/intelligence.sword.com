@@ -14,8 +14,15 @@ interface LogoItem {
 interface Props {
   logos: LogoItem[];
   class?: string;
+  /** Top-divider color for each cell (default solid black; pass e.g.
+   *  `border-black/24` for the faint rule used on the Solutions page). */
+  borderClass?: string;
 }
-const { logos, class: className = "" } = Astro.props;
+const {
+  logos,
+  class: className = "",
+  borderClass = "border-black",
+} = Astro.props;
 ---
 
 <ul
@@ -23,7 +30,7 @@ const { logos, class: className = "" } = Astro.props;
 >
   {
     logos.map((logo) => (
-      <li class="flex h-20 items-center justify-center border-t border-black px-6">
+      <li class={`flex h-20 items-center justify-center border-t ${borderClass} px-6`}>
         <img
           src={logo.src}
           alt={logo.alt}
