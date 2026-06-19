@@ -4,13 +4,16 @@
  *
  * A `rounded-card` portrait photo (416×480, object-cover) stacked flush above a
  * white `rounded-card` panel holding the member's name (Figtree semibold 24) and
- * role (`ink-soft` 18) on the left, with a dashed-ring LinkedIn icon on the right.
- * The two rounded blocks touch (no gap), pinching a subtle waist — exactly the
- * design. Cards are fully clickable (per the site clickable-card rule): a single
- * stretched overlay `<a>` covers the card, the icon is decorative, and hovering
- * anywhere lights the icon (fills to brand, glyph inverts to white) and gently
- * zooms the photo.
+ * role (`ink-soft` 18) on the left, with a decorative `ArrowCircle`
+ * (`glyph="linkedin"`) on the right — same dotted ring + hover-to-solid morph as
+ * every other circle button on the site. The two rounded blocks touch (no gap),
+ * pinching a subtle waist — exactly the design. Cards are fully clickable (per the
+ * site clickable-card rule): a single stretched overlay `<a>` covers the card, the
+ * ring is decorative, and hovering anywhere morphs its dots into a solid ring and
+ * gently zooms the photo.
  */
+import ArrowCircle from "./ArrowCircle.astro";
+
 interface Props {
   name: string;
   role: string;
@@ -53,16 +56,7 @@ const {
       <p class="text-lg leading-[1.2] text-ink-soft">{role}</p>
     </div>
 
-    <span
-      aria-hidden="true"
-      class="grid size-10 shrink-0 place-items-center rounded-full border-[1.5px] border-dashed border-black transition-colors duration-300 group-hover:border-solid group-hover:border-brand group-hover:bg-brand"
-    >
-      <img
-        src="/about/icons/linkedin.svg"
-        alt=""
-        class="size-[18px] transition duration-300 group-hover:brightness-0 group-hover:invert"
-      />
-    </span>
+    <ArrowCircle glyph="linkedin" label={`${name} on LinkedIn`} decorative />
   </div>
 
   <!-- Whole-card link -->

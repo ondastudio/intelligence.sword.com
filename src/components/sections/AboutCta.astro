@@ -2,10 +2,13 @@
 /**
  * AboutCta — closing call-to-action on the About page (Figma "Platform",
  * node 8628:8). Unlike the home page `Cta` (a full-bleed dotted-mesh band),
- * this is a centered white `rounded-card` floating on the `surface` wash: a
+ * this is a centered white `rounded-card` on a `purple-tint` section: a
  * two-line Lora headline over a brand-purple pill ("Let's make you AI-first,
- * too") seamed to a `filled` `ArrowCircle`. The pill+arrow entrance rides the
- * shared `[data-reveal]` observer. Reads `data/about.json` (`cta`).
+ * too") seamed to a `filled` `ArrowCircle`. The whole card is clickable (site
+ * card rule): one stretched overlay link covers it, the pill + arrow are
+ * decorative, and the arrow's `detach` nudge fires on card hover. The pill+arrow
+ * entrance rides the shared `[data-reveal]` observer. Reads `data/about.json`
+ * (`cta`).
  */
 import ArrowCircle from "../ui/ArrowCircle.astro";
 import about from "../../data/about.json";
@@ -13,9 +16,9 @@ import about from "../../data/about.json";
 const { heading, cta } = about.cta;
 ---
 
-<section class="bg-surface px-4 py-16 text-black sm:px-6 md:py-24">
+<section class="bg-purple-tint px-4 py-16 text-black sm:px-6 md:py-24">
   <div
-    class="mx-auto flex max-w-[1040px] flex-col items-center justify-center gap-10 rounded-card bg-white px-6 py-16 text-center sm:px-12 md:py-20 lg:px-24"
+    class="group relative mx-auto flex max-w-[1040px] flex-col items-center justify-center gap-10 rounded-card bg-white px-6 py-16 text-center sm:px-12 md:py-20 lg:px-24"
   >
     <h2
       data-reveal="title"
@@ -24,20 +27,25 @@ const { heading, cta } = about.cta;
       {heading.line1}<br />{heading.line2}
     </h2>
 
-    <div data-reveal class="group flex items-center" style="transition-delay:140ms">
-      <a
-        href={cta.href}
+    <div data-reveal class="flex items-center" style="transition-delay:140ms">
+      <span
         class="flex h-10 items-center rounded-full bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white"
       >
         {cta.label}
-      </a>
+      </span>
       <ArrowCircle
         variant="filled"
-        href={cta.href}
         label={cta.label}
         detach
+        decorative
         class="-ml-px"
       />
     </div>
+
+    <!-- Whole-card link -->
+    <a
+      href={cta.href}
+      aria-label={cta.label}
+      class="absolute inset-0 z-20 rounded-card"></a>
   </div>
 </section>

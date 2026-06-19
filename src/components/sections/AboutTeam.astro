@@ -1,7 +1,7 @@
 ---
 /**
  * AboutTeam — "meet the team" section on the About page (Figma "Section-06",
- * node 8628:21). A centered `Eyebrow` (brand dot, `ink-soft` label) + large
+ * node 8628:21). A centered `Eyebrow` (brand dot, black label) + large
  * Lora title sits above a 3×2 grid of `TeamCard`s (portrait + name/role +
  * dashed LinkedIn ring). Cards stack 1-up on mobile, 2-up at sm, 3-up at lg;
  * header + cards fade up on first view via the shared `[data-reveal]` observer.
@@ -14,11 +14,11 @@ import about from "../../data/about.json";
 const { eyebrow, title, members } = about.team;
 ---
 
-<section class="bg-surface px-4 pb-[clamp(5rem,12vw,200px)] pt-[clamp(4rem,8vw,120px)] text-black sm:px-6">
+<section class="bg-purple-tint px-4 pb-[clamp(5rem,12vw,200px)] pt-[clamp(4rem,8vw,120px)] text-black sm:px-6">
   <div class="mx-auto flex w-full max-w-[1440px] flex-col items-center gap-[clamp(3.5rem,7vw,120px)] px-2 sm:px-[clamp(1.5rem,5.2vw,80px)]">
     <!-- Header -->
     <div class="flex max-w-[762px] flex-col items-center gap-8 text-center sm:gap-10">
-      <div data-reveal><Eyebrow dotClass="bg-brand" textClass="text-ink-soft">{eyebrow}</Eyebrow></div>
+      <div data-reveal><Eyebrow dotClass="bg-brand" textClass="text-black">{eyebrow}</Eyebrow></div>
       <h2
         data-reveal="title"
         class="font-serif text-[clamp(2.25rem,5vw,56px)] font-normal leading-[1.2] tracking-[-0.02em]"

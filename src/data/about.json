@@ -85,12 +85,12 @@
     "eyebrow": "meet the team",
     "title": "We show up. We build what’s next. We care, always.",
     "members": [
-      { "name": "Virgílio Bento", "role": "PhD — CEO", "photo": "/about/team/virgilio-bento.jpg", "linkedin": "#" },
-      { "name": "Rik Renard, RN", "role": "GM — Care Orchestration", "photo": "/about/team/rik-renard.jpg", "linkedin": "#" },
-      { "name": "Mark Ratnarajah", "role": "MD — Clinical Director", "photo": "/about/team/mark-ratnarajah.jpg", "linkedin": "#" },
-      { "name": "João Pereira", "role": "Head of Engineering", "photo": "/about/team/joao-pereira.jpg", "linkedin": "#" },
-      { "name": "Filipa Alcobia Ferreira", "role": "Head of Marketing", "photo": "/about/team/filipa-alcobia-ferreira.jpg", "linkedin": "#" },
-      { "name": "Selina Sachar", "role": "Sr. Sales Executive", "photo": "/about/team/selina-sachar.jpg", "linkedin": "#" }
+      { "name": "Virgílio Bento", "role": "PhD — CEO", "photo": "/about/team/virgilio-bento.jpg", "linkedin": "https://www.linkedin.com/in/vbento" },
+      { "name": "Rik Renard, RN", "role": "GM — Care Orchestration", "photo": "/about/team/rik-renard.jpg", "linkedin": "https://www.linkedin.com/in/rik-renard" },
+      { "name": "Mark Ratnarajah", "role": "MD — Clinical Director", "photo": "/about/team/mark-ratnarajah.jpg", "linkedin": "https://www.linkedin.com/in/mark-ratnarajah-b16432/" },
+      { "name": "João Pereira", "role": "Head of Engineering", "photo": "/about/team/joao-pereira.jpg", "linkedin": "https://www.linkedin.com/in/joaovpereira/" },
+      { "name": "Filipa Alcobia Ferreira", "role": "Head of Marketing", "photo": "/about/team/filipa-alcobia-ferreira.jpg", "linkedin": "https://www.linkedin.com/in/filipaalcobiaferreira/" },
+      { "name": "Selina Sachar", "role": "Sr. Sales Executive", "photo": "/about/team/selina-sachar.jpg", "linkedin": "https://www.linkedin.com/in/selinasachar/" }
     ]
   }
 }
