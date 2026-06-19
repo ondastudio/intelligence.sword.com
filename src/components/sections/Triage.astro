@@ -82,15 +82,17 @@ const orchCards = orchestration.cards;
               <div class="flex shrink-0 items-stretch gap-2">
                 {
                   orchestration.tabs.map((t, i) => (
-                    <span
+                    <button
+                      type="button"
                       data-orch-tab={i}
+                      aria-label={`Show ${orchCards[i].title}`}
                       class:list={[
-                        "orch-tab flex shrink-0 items-center justify-center whitespace-pre-line rounded-[40px] border border-gray-200 px-8 py-4 text-center text-sm font-semibold uppercase leading-tight tracking-[-0.01em] transition-colors",
+                        "orch-tab flex shrink-0 cursor-pointer items-center justify-center whitespace-pre-line rounded-[40px] border border-gray-200 px-8 py-4 text-center text-sm font-semibold uppercase leading-tight tracking-[-0.01em] transition-colors",
                         i === 0 && "is-active",
                       ]}
                     >
                       {t}
-                    </span>
+                    </button>
                   ))
                 }
               </div>
@@ -436,6 +438,23 @@ const orchCards = orchestration.cards;
       measure();
       render();
     };
+
+    // Clicking a Care Orchestration nav pill jumps to the scroll position where
+    // that card is fully revealed. Card 0 lands at the end of the morph segment;
+    // each later card i lands at the end of its own horizontal-reveal segment.
+    // Only meaningful while pinned (morph) — otherwise only the Triage card shows.
+    const offsetForCard = (i: number) => (i === 0 ? morphLen : morphLen + i * cardLen);
+
+    const scrollToCard = (i: number) => {
+      if (!morph) return;
+      const trackTop = window.scrollY + track.getBoundingClientRect().top;
+      const target = trackTop - stickTop + offsetForCard(i);
+      window.scrollTo({ top: target, behavior: "smooth" });
+    };
+
+    tabEls.forEach((tab, i) => {
+      tab.addEventListener("click", () => scrollToCard(i));
+    });
 
     init();
     window.addEventListener("scroll", onScroll, { passive: true });
