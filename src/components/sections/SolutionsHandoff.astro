@@ -1,0 +1,383 @@
+---
+/**
+ * SolutionsHandoff — the pinned "Problem → Solution" beat on the Solutions page.
+ *
+ * Two full panels that crossfade as one while the stage is pinned:
+ *   State A — "Problem" (Figma 8634:669): a lavender-grey panel of four stat
+ *     cards (e.g. "~1 in 5" elective surgeries cancelled). Each card's info "i"
+ *     button expands a white source-citation panel below it.
+ *   State B — "Solution" (Figma 8615:4005): a purple panel of four outcome
+ *     cards (57% more patients ready, 72% fewer complications, …) on a
+ *     white→purple gradient, each with a dotted arrow affordance.
+ *
+ * Mechanics (gated on motion + JS + md+, mirroring AboutOperations): the section
+ * is taller than the viewport and its stage is `sticky`, so it pins while a
+ * vanilla rAF scrubber maps scroll progress into the timeline — Problem fades +
+ * blurs out, Solution resolves out of a blur, then its cards stagger up. Without
+ * JS / with reduced motion / on small screens the two panels render as normal
+ * stacked flow, both fully legible.
+ *
+ * Content-free — copy comes from src/data/solutions.json (`problem`, `solution`).
+ */
+import Eyebrow from "../ui/Eyebrow.astro";
+import ArrowCircle from "../ui/ArrowCircle.astro";
+import solutions from "../../data/solutions.json";
+
+const { problem, solution } = solutions;
+---
+
+<section data-solutions-handoff class="solutions-handoff text-black">
+  <div data-handoff-stage class="handoff-stage">
+    <div class="handoff-inner relative mx-auto w-full max-w-[1440px] px-4 md:px-8">
+      {/* ---- State A — Problem ------------------------------------------------ */}
+      <div data-handoff-state="a" class="handoff-state">
+        <div class="relative flex flex-col overflow-hidden rounded-card bg-ink-wash">
+          <img
+            src="/solutions/problem-bloom.svg"
+            alt=""
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 size-full object-cover"
+          />
+          <div
+            class="relative z-10 mx-auto flex w-full max-w-[1376px] flex-col gap-10 px-6 py-12 md:gap-16 md:px-20 md:py-16"
+          >
+            <div class="flex flex-col items-center gap-6 text-center md:gap-8">
+              <Eyebrow>{problem.eyebrow}</Eyebrow>
+              <h2
+                class="max-w-[1152px] font-serif text-[clamp(2rem,4vw,48px)] font-normal leading-[1.2] tracking-[-0.02em] text-black"
+              >
+                {problem.heading}
+              </h2>
+              <p
+                class="text-[clamp(1.125rem,2vw,24px)] font-normal leading-[1.2] tracking-[-0.02em] text-black"
+              >
+                {problem.subheading}
+              </p>
+            </div>
+
+            {/* Cards share a height (items-stretch). A card's info "i" toggles
+                [data-open]: the white source panel reveals below and the row
+                grows, so siblings stretch to match. */}
+            <div class="relative flex flex-col gap-4 md:flex-row md:items-stretch">
+              {
+                problem.cards.map((card, i) => (
+                  <div
+                    data-problem-card
+                    data-open="false"
+                    class="problem-card flex flex-1 flex-col"
+                  >
+                    <div class="problem-main flex flex-1 flex-col items-center justify-between gap-6 rounded-card border border-black/15 bg-gray-200/50 px-8 py-10 text-center">
+                      {card.detail ? (
+                        <ArrowCircle
+                          variant="dotted"
+                          glyph="info"
+                          label="Show the source for this figure"
+                          data-problem-toggle
+                          aria-expanded="false"
+                        />
+                      ) : (
+                        <span class="h-10" aria-hidden="true" />
+                      )}
+                      <p class="font-serif text-[clamp(2.5rem,5vw,64px)] font-normal leading-[1.2] tracking-[-0.02em] text-gray-400">
+                        {card.value}
+                      </p>
+                      <p class="max-w-[244px] text-sm font-semibold uppercase leading-[1.2] tracking-[-0.01em] text-gray-400">
+                        {card.label}
+                      </p>
+                    </div>
+
+                    {card.detail && (
+                      <div class="problem-extra">
+                        {/* Short single-line sources (e.g. "PubMed Central")
+                            centre against the icon; longer sources that wrap stay
+                            top-aligned so the icon sits beside the first line. */}
+                        <div
+                          class={`problem-extra-inner flex gap-2.5 rounded-card bg-white px-8 py-10 text-left ${
+                            card.detail.label.length <= 18 ? "items-center" : "items-start"
+                          }`}
+                        >
+                          <span
+                            class={`grid size-6 shrink-0 place-items-center text-black ${
+                              card.detail.label.length <= 18 ? "" : "mt-px"
+                            }`}
+                            aria-hidden="true"
+                          >
+                            <svg viewBox="0 0 24 24" class="size-full" fill="none">
+                              <circle cx="12" cy="12" r="11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                              <path d="M12 16.5V11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                              <path d="M12 8.01V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                          </span>
+                          <a
+                            href={card.detail.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-sm font-semibold uppercase leading-[1.2] tracking-[-0.01em] text-black"
+                          >
+                            {card.detail.label}
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ---- State B — Solution ---------------------------------------------- */}
+      <div data-handoff-state="b" class="handoff-state">
+        <div class="relative flex flex-col overflow-hidden rounded-card bg-purple-tint">
+          <img
+            src="/solutions/solution-bloom.svg"
+            alt=""
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 size-full object-cover"
+          />
+          <div
+            class="relative z-10 mx-auto flex w-full max-w-[1376px] flex-col gap-10 px-6 py-12 md:gap-16 md:px-20 md:py-16"
+          >
+            <div class="flex flex-col items-center gap-6 text-center md:gap-8">
+              <Eyebrow>{solution.eyebrow}</Eyebrow>
+              <h2
+                class="max-w-[1152px] font-serif text-[clamp(2rem,4vw,48px)] font-normal leading-[1.2] tracking-[-0.02em] text-black"
+              >
+                {solution.headingLead}
+                <span class="text-brand">{solution.headingAccent}</span>
+              </h2>
+              <p
+                class="max-w-[1044px] text-[clamp(1.125rem,2vw,24px)] font-normal leading-[1.2] tracking-[-0.02em] text-black"
+              >
+                {solution.subheading}
+              </p>
+            </div>
+
+            <div class="relative flex flex-col gap-4 md:flex-row md:items-stretch">
+              {
+                solution.cards.map((card, i) => (
+                  <div
+                    data-solution-card
+                    style={`--card-index:${i}`}
+                    class="group relative flex flex-1 flex-col items-center justify-between gap-8 overflow-hidden rounded-card bg-white bg-[image:var(--gradient-solution-card)] px-8 pb-10 pt-[88px] text-center"
+                  >
+                    <ArrowCircle
+                      variant="dotted"
+                      glyph="arrow"
+                      decorative
+                      class="absolute right-6 top-6"
+                    />
+                    <p class="font-serif text-[clamp(3rem,6vw,76px)] font-normal leading-[1.2] tracking-[-0.02em] text-black">
+                      {card.value}
+                    </p>
+                    <p class="max-w-[244px] text-sm font-semibold uppercase leading-[1.2] tracking-[-0.01em] text-ink">
+                      {card.label}
+                    </p>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Problem cards: the info "i" button expands a source panel below the card.
+  // Toggling [data-open] drives the CSS (max-height reveal); the items-stretch
+  // row grows so the sibling cards stretch to match, compressing the open card's
+  // grey pane. Each card is independent.
+  document
+    .querySelectorAll<HTMLButtonElement>("[data-problem-toggle]")
+    .forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const card = btn.closest<HTMLElement>("[data-problem-card]");
+        if (!card) return;
+        const open = card.getAttribute("data-open") === "true";
+        card.setAttribute("data-open", open ? "false" : "true");
+        btn.setAttribute("aria-expanded", open ? "false" : "true");
+      });
+    });
+
+  // Pinned crossfade from the Problem panel (state A) to the Solution panel
+  // (state B). The stage is sticky inside a taller section; progress is how far
+  // the section has scrolled past the top, normalised to its scrub distance —
+  // the same mechanism AboutHero / AboutOperations use. Gated on motion + md+
+  // (matching the CSS); otherwise the panels stay in normal stacked flow.
+  function initHandoff(section: HTMLElement) {
+    const enabled = () =>
+      window.matchMedia(
+        "(prefers-reduced-motion: no-preference) and (min-width: 768px)",
+      ).matches;
+
+    const stateA = section.querySelector<HTMLElement>('[data-handoff-state="a"]');
+    const stateB = section.querySelector<HTMLElement>('[data-handoff-state="b"]');
+    const cards = Array.from(
+      section.querySelectorAll<HTMLElement>("[data-solution-card]"),
+    );
+    if (!stateA || !stateB) return;
+
+    // Timeline (named windows so the feel is easy to tune). Each pair is a
+    // progress window [start, end] over the section's scrub distance.
+    const A_OUT: [number, number] = [0.08, 0.46]; // Problem fades + blurs away
+    const B_IN: [number, number] = [0.42, 0.8]; // Solution resolves out of blur
+    const CARDS_IN: [number, number] = [0.62, 1]; // outcome cards stagger up last
+    const BLUR = 12; // px — start blur for each incoming/outgoing panel
+    const RISE = 32; // px — distance each card travels up as it appears
+    const STAGGER = 0.12; // share of the CARDS_IN window offset per card
+
+    const track = (p: number, [a, b]: [number, number]) =>
+      Math.min(1, Math.max(0, (p - a) / (b - a)));
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    const clearStyles = (el: HTMLElement) => {
+      el.style.opacity = "";
+      el.style.filter = "";
+      el.style.transform = "";
+    };
+
+    let ticking = false;
+
+    const render = () => {
+      ticking = false;
+
+      // Disabled (small screen / reduced motion): hand styling back to the CSS
+      // fallback so both panels render in normal stacked flow.
+      if (!enabled()) {
+        clearStyles(stateA);
+        clearStyles(stateB);
+        cards.forEach(clearStyles);
+        return;
+      }
+
+      const scrub = section.offsetHeight - window.innerHeight;
+      const p =
+        scrub > 0
+          ? Math.min(
+              1,
+              Math.max(0, -section.getBoundingClientRect().top / scrub),
+            )
+          : 0;
+
+      // Problem recedes into a blur.
+      const aOut = easeOutCubic(track(p, A_OUT));
+      stateA.style.opacity = String(1 - aOut);
+      stateA.style.filter = `blur(${aOut * BLUR}px)`;
+
+      // Solution resolves out of a blur (held centred via the CSS transform).
+      const bIn = easeOutCubic(track(p, B_IN));
+      stateB.style.opacity = String(bIn);
+      stateB.style.filter = `blur(${(1 - bIn) * BLUR}px)`;
+
+      // Outcome cards rise + fade in, staggered, after the text has arrived.
+      cards.forEach((card, i) => {
+        const idx = Number(card.style.getPropertyValue("--card-index")) || i;
+        const [a, b] = CARDS_IN;
+        const start = a + idx * STAGGER * (b - a);
+        const c = easeOutCubic(track(p, [start, b]));
+        card.style.opacity = String(c);
+        card.style.transform = `translateY(${(1 - c) * RISE}px)`;
+      });
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    };
+
+    render();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+  }
+
+  document
+    .querySelectorAll<HTMLElement>("[data-solutions-handoff]")
+    .forEach(initHandoff);
+</script>
+
+<style>
+  /* Base = no-JS / reduced-motion / small-screen fallback: the section is normal
+     flow and the two panels stack vertically, both fully legible. */
+  .solutions-handoff {
+    background-color: #fff;
+    padding-block: clamp(5rem, 12vw, 120px);
+  }
+  .handoff-state + .handoff-state {
+    margin-top: clamp(2.5rem, 6vw, 64px);
+  }
+
+  /* Enhanced: pin the stage and crossfade the two panels as one. Pre-setting the
+     start state here keeps the first paint flash-free before the rAF loop runs. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+    :global(html.js) .solutions-handoff {
+      height: calc(100svh + 130vh);
+      padding-block: 0;
+    }
+    :global(html.js) .handoff-stage {
+      position: sticky;
+      top: 0;
+      display: flex;
+      min-height: 100svh;
+      align-items: center;
+      overflow: hidden;
+      padding-block: clamp(1.5rem, 4vw, 48px);
+    }
+    /* Stack both panels in the same centred slot so they crossfade in place. */
+    :global(html.js) .handoff-state {
+      position: absolute;
+      inset-inline: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    :global(html.js) .handoff-state + .handoff-state {
+      margin-top: 0;
+    }
+    :global(html.js) [data-handoff-state="b"] {
+      opacity: 0;
+      filter: blur(12px);
+    }
+    :global(html.js) [data-solution-card] {
+      opacity: 0;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Problem source panel: collapsed by default (max-height 0, clipped). When the
+     card opens, the wrapper grows to reveal it while the inner card slides down
+     + fades in. max-height is a ceiling above the panel's natural height; the row
+     stays content-sized. */
+  .problem-extra {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.55s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .problem-extra-inner {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition:
+      opacity 0.45s ease 0.05s,
+      transform 0.55s cubic-bezier(0.33, 1, 0.68, 1) 0.05s;
+  }
+  .problem-card[data-open="true"] .problem-extra {
+    max-height: 16rem;
+  }
+  .problem-card[data-open="true"] .problem-extra-inner {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .problem-extra,
+    .problem-extra-inner {
+      transition: none;
+    }
+    .problem-card[data-open="true"] .problem-extra-inner {
+      transform: none;
+    }
+  }
+</style>

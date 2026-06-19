@@ -13,5 +13,56 @@
       { "src": "/logos/cheshire-merseyside.png", "alt": "Cheshire and Merseyside Health and Care Partnership" },
       { "src": "/logos/vivamas.svg", "alt": "VivaMás Medical Centers" }
     ]
+  },
+  "problem": {
+    "eyebrow": "Problem",
+    "heading": "The wait and the recovery are intervention windows. Most systems stay passive through both.",
+    "subheading": "Here’s what they can do for you and your patients:",
+    "cards": [
+      {
+        "value": "~1 in 5",
+        "label": "elective surgeries canceled on DOS",
+        "detail": {
+          "label": "International Journal of Surgery Open",
+          "href": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7440086/"
+        }
+      },
+      {
+        "value": "34%",
+        "label": "of all cancelations are due to inadequate patient preparation",
+        "detail": {
+          "label": "International Journal for Quality in Health Care",
+          "href": "https://www.oecd.org/en/publications/2025/11/health-at-a-glance-2025_a894f72e/full-report/waiting-times_3a1021fa.html"
+        }
+      },
+      {
+        "value": "~20%",
+        "label": "patients in high-income countries experience post-op complications",
+        "detail": {
+          "label": "British Journal of Anaesthesia",
+          "href": "https://www.bjanaesthesia.org/article/S0007-0912(17)30018-1/fulltext"
+        }
+      },
+      {
+        "value": "1 in 7",
+        "label": "patients readmitted within 30 days after major surgery",
+        "detail": {
+          "label": "PubMed Central",
+          "href": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12210902/"
+        }
+      }
+    ]
+  },
+  "solution": {
+    "eyebrow": "Solution",
+    "headingLead": "Our AI Care Managers turn your waiting list into ",
+    "headingAccent": "a preparation and recovery list.",
+    "subheading": "They enroll every patient autonomously, coach them through the crucial weeks, and keep supporting them through recovery, while your surgical team focuses on the clinical procedures.",
+    "cards": [
+      { "value": "57%", "label": "More patients ready for surgery" },
+      { "value": "72%", "label": "Reduction in surgical complications" },
+      { "value": "83%", "label": "Reduction in post-op pulmonary complications" },
+      { "value": "£405K", "label": "saved for one NHS Trust in 3 months" }
+    ]
   }
 }

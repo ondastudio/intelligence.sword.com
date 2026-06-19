@@ -79,6 +79,19 @@
       #d8dafc 70%,
       #cdc7fb 100%
     );
+
+  /* solution outcome card: white pane that blooms purple from the bottom edge.
+     Faithful to the Figma export (Card-01.svg): a #a684ff radial centred on the
+     bottom-middle, ellipse ~163%×100% of the card, solid for the first ~15% of
+     the radius then fading to nothing by ~52% (≈ the card's vertical middle), all
+     at 0.75 opacity. Layer over `bg-white`.
+     Use as: bg-[image:var(--gradient-solution-card)] */
+  --gradient-solution-card: radial-gradient(
+    163% 100% at 50% 100%,
+    rgba(166, 132, 255, 0.75) 0%,
+    rgba(166, 132, 255, 0.75) 15%,
+    rgba(255, 255, 255, 0) 52%
+  );
 }
 
 /* ===========================================================================

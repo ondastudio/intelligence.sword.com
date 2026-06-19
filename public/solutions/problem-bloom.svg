@@ -1,0 +1,15 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" viewBox="0 0 1376 824" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g filter="url(#problem_blur)">
+    <path d="M865.488 211.067C1603.92 -373.183 1982.24 50.2095 1540.88 345.889C1287.95 901.708 1113.1 901.712 400.132 964.259C-312.837 1026.81 -460.523 833.477 -289.071 496.573C-117.619 159.669 -353.578 44.5235 87.7837 -505.611C529.145 -1055.75 232.428 711.946 865.488 211.067Z" fill="url(#problem_grad)" fill-opacity="0.35"/>
+  </g>
+  <defs>
+    <filter id="problem_blur" x="-591.567" y="-850.567" width="2558.43" height="2064.07" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="118.784" result="blur"/>
+    </filter>
+    <radialGradient id="problem_grad" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-647.02 -380.586 482.386 -470.979 724.365 311.774)">
+      <stop stop-color="#7700EE"/>
+      <stop offset="0.235577" stop-color="#A5C5F5" stop-opacity="0.45"/>
+      <stop offset="0.884615" stop-color="#EEE8FF"/>
+    </radialGradient>
+  </defs>
+</svg>
