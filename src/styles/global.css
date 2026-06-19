@@ -61,10 +61,6 @@
   /* ---- Radii ---- */
   --radius-card: 40px; /* large rounded media frames */
 
-  /* ---- Shadows ---- */
-  /* soft lift for white cards sitting on a white surface (About "born" stats) */
-  --shadow-card: 0 18px 40px -12px rgba(15, 15, 20, 0.12);
-
   /* ---- Gradients ---- */
   /* care banner: lavender base that blooms bright center-left, with a soft
      purple bloom on the right (the design's #a684ff → #bae0eb → #ecf3fe wash).
