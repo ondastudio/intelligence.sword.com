@@ -1,0 +1,387 @@
+---
+/**
+ * CustomerStory — a single customer-story page body
+ * (Figma "CustomerStories>NHS", 1440).
+ *
+ * Three stacked sections, all fed from one `story` object (one entry of
+ * src/data/customer-stories.json):
+ *
+ *   1. Hero — a full-bleed photo behind a transparent→lavender→surface blur
+ *      wash, with the customer logo, an Eyebrow case-study label, a big Lora
+ *      title, and a 3-up row of left-hairline stat columns.
+ *   2. Overview — a two-column band: a left "ID" fact sheet (customer type,
+ *      patients served, location, use-case chips, all on hairline rules) and a
+ *      right Lora "Overview" heading over body paragraphs.
+ *   3. Testimonial — a centered Eyebrow, a Patient/Customer segmented control,
+ *      a large pull-quote, and an author block with an avatar.
+ *
+ * The page Navbar is rendered by the page (src/pages/customers/[slug].astro),
+ * positioned over the hero. Content-free — copy/photos come from the data.
+ */
+import Eyebrow from "../ui/Eyebrow.astro";
+
+interface Stat {
+  value: string;
+  label: string;
+}
+interface Story {
+  title: string;
+  hero: {
+    eyebrow: string;
+    logo: string;
+    logoAlt: string;
+    image: string;
+    imageAlt: string;
+    stats: Stat[];
+  };
+  id: {
+    customerType: string[];
+    patientsServed: string;
+    location: string;
+    useCases: string[];
+  };
+  overview: {
+    title: string;
+    paragraphs: string[];
+  };
+  testimonial: {
+    eyebrow: string;
+    activeTab: string;
+    panels: {
+      label: string;
+      quote: string;
+      avatar?: string;
+      avatarAlt?: string;
+      author: string;
+      role?: string;
+    }[];
+  };
+}
+
+interface Props {
+  story: Story;
+}
+
+const { story } = Astro.props;
+const { hero, id, overview, testimonial } = story;
+
+// Index of the tab shown first (falls back to the first panel).
+const activeIndex = Math.max(
+  0,
+  testimonial.panels.findIndex((p) => p.label === testimonial.activeTab),
+);
+
+// Outlined uppercase chip — reused for customer-type + use-case tags.
+const chip =
+  "rounded-[24px] border border-black/[0.24] px-4 py-2 text-base font-semibold uppercase leading-[1.3] tracking-[-0.01em] text-black";
+---
+
+<article>
+  {/* ---- 1. Hero ----------------------------------------------------------- */}
+  <header class="relative overflow-hidden">
+    {/* Full-bleed photo */}
+    <img
+      src={hero.image}
+      alt={hero.imageAlt}
+      class="pointer-events-none absolute inset-0 size-full object-cover"
+    />
+    {/* transparent → lavender → surface wash over the lower ~2/3 of the photo
+        (Figma: gradient at y=300, h=600 of the 900 hero). Gradient only — its
+        transparent top edge fades with no hard seam; the photo stays sharp up top. */}
+    <div
+      class="absolute inset-x-0 bottom-0 h-[67%] bg-gradient-to-b from-transparent via-lavender to-surface"
+    >
+    </div>
+
+    <div
+      class="relative mx-auto flex min-h-[640px] max-w-[1440px] flex-col justify-end gap-10 px-6 pb-0 pt-[180px] md:min-h-[900px] md:gap-[58px] md:px-20"
+    >
+      {/* logo + label + title. On md+ a 2-col grid places the eyebrow above the
+          title (right col) and drops the logo into the title's row, so the logo
+          top aligns with the top of the title line — not the eyebrow. */}
+      <div
+        class="flex flex-col gap-8 md:grid md:grid-cols-[273px_1fr] md:items-start md:gap-x-[162px] md:gap-y-3"
+      >
+        <img
+          src={hero.logo}
+          alt={hero.logoAlt}
+          data-reveal
+          class="h-auto w-[180px] shrink-0 object-contain object-left brightness-0 md:col-start-1 md:row-start-2 md:w-[273px]"
+        />
+        <div data-reveal class="md:col-start-2 md:row-start-1">
+          <Eyebrow>{hero.eyebrow}</Eyebrow>
+        </div>
+        <h1
+          data-reveal="title"
+          class="font-serif text-[clamp(2.5rem,5vw,64px)] font-normal leading-[1.2] tracking-[-0.02em] text-black md:col-start-2 md:row-start-2"
+        >
+          {story.title}
+        </h1>
+      </div>
+
+      {/* stat columns */}
+      <div class="flex flex-col gap-6 md:flex-row md:gap-6">
+        {
+          hero.stats.map((stat, i) => (
+            <div
+              data-reveal
+              style={`transition-delay:${i * 120}ms`}
+              class="cs-stat relative flex flex-1 flex-col gap-6 pl-6"
+            >
+              {/* divider draws in from the top, same effect as the home hero line */}
+              <span class="cs-stat-line absolute inset-y-0 left-0 w-px bg-black/[0.24]" aria-hidden="true" />
+              <p class="text-[clamp(2.25rem,4vw,48px)] font-normal leading-[1.2] tracking-[-0.02em] text-black">
+                {stat.value}
+              </p>
+              <p class="text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-black">
+                {stat.label}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </header>
+
+  {/* ---- 2. Overview ------------------------------------------------------- */}
+  <section
+    class="mx-auto flex max-w-[1440px] flex-col gap-12 bg-surface px-6 pb-20 pt-20 md:flex-row md:gap-[129px] md:px-20 md:pb-[80px] md:pt-[120px]"
+  >
+    {/* left — ID fact sheet. Hairlines draw in from the left (same effect as the
+        home hero line) when the sheet reveals; staggered top → bottom. */}
+    <dl
+      data-reveal
+      class="cs-id relative flex w-full flex-col gap-3 pt-6 md:w-[413px] md:shrink-0"
+    >
+      <span class="cs-hline absolute inset-x-0 top-0 h-px bg-black/15" style="transition-delay:0ms" aria-hidden="true"></span>
+
+      <div class="relative flex items-start justify-between gap-4 pb-3">
+        <span class="cs-hline absolute inset-x-0 bottom-0 h-px bg-black/15" style="transition-delay:90ms" aria-hidden="true"></span>
+        <dt class="text-sm font-semibold uppercase tracking-[-0.01em] text-black">
+          Customer Type
+        </dt>
+        <dd class="flex flex-col items-end gap-2">
+          {id.customerType.map((tag) => <span class={chip}>{tag}</span>)}
+        </dd>
+      </div>
+
+      <div class="relative flex items-center justify-between pb-3">
+        <span class="cs-hline absolute inset-x-0 bottom-0 h-px bg-black/15" style="transition-delay:180ms" aria-hidden="true"></span>
+        <dt class="text-sm font-semibold uppercase tracking-[-0.01em] text-black">
+          Patients served
+        </dt>
+        <dd
+          class="text-right text-xl font-normal leading-[1.3] tracking-[-0.01em] text-black"
+        >
+          {id.patientsServed}
+        </dd>
+      </div>
+
+      <div class="relative flex items-center justify-between pb-3">
+        <span class="cs-hline absolute inset-x-0 bottom-0 h-px bg-black/15" style="transition-delay:270ms" aria-hidden="true"></span>
+        <dt class="text-sm font-semibold uppercase tracking-[-0.01em] text-black">
+          Location
+        </dt>
+        <dd
+          class="text-right text-xl font-normal leading-[1.3] tracking-[-0.01em] text-black"
+        >
+          {id.location}
+        </dd>
+      </div>
+
+      <div class="relative flex items-start justify-between gap-6 pb-3">
+        <span class="cs-hline absolute inset-x-0 bottom-0 h-px bg-black/15" style="transition-delay:360ms" aria-hidden="true"></span>
+        <dt class="text-sm font-semibold uppercase tracking-[-0.01em] text-black">
+          Use cases
+        </dt>
+        <dd class="flex flex-1 flex-wrap justify-end gap-2">
+          {id.useCases.map((tag) => <span class={chip}>{tag}</span>)}
+        </dd>
+      </div>
+    </dl>
+
+    {/* right — heading + body */}
+    <div class="flex flex-1 flex-col gap-10">
+      <h2
+        data-reveal="title"
+        class="font-serif text-title font-normal leading-[1.05] tracking-[-0.005em] text-black"
+      >
+        {overview.title}
+      </h2>
+      <div class="flex max-w-[521px] flex-col gap-6">
+        {
+          overview.paragraphs.map((html, i) => (
+            <p
+              data-reveal
+              style={`transition-delay:${i * 80}ms`}
+              class="text-lg font-normal leading-[1.3] tracking-[-0.02em] text-black [&_a]:underline"
+              set:html={html}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ---- 3. Testimonial ---------------------------------------------------- */}
+  <section class="bg-surface px-6 py-20 md:px-20 md:py-[120px]">
+    <div class="mx-auto flex max-w-[1270px] flex-col items-center gap-10">
+      <div data-reveal>
+        <Eyebrow>{testimonial.eyebrow}</Eyebrow>
+      </div>
+
+      <div class="flex w-full flex-col items-center gap-12 md:gap-20">
+        {/* Patient / Customer segmented control — clickable tabs that switch
+            the testimonial panel below (see the <script> at the foot). */}
+        <div
+          data-reveal
+          role="tablist"
+          aria-label="Testimonial perspective"
+          class="flex items-center gap-2 rounded-[40px] bg-ink-wash p-2"
+        >
+          {
+            testimonial.panels.map((panel, i) => (
+              <button
+                type="button"
+                role="tab"
+                id={`cs-tab-${i}`}
+                data-cs-tab={i}
+                aria-controls={`cs-panel-${i}`}
+                aria-selected={i === activeIndex ? "true" : "false"}
+                class={`cs-tab cursor-pointer rounded-[40px] border border-gray-200 px-8 py-4 text-center text-sm font-semibold uppercase tracking-[-0.01em] transition-colors duration-500 ease-[cubic-bezier(0.33,1,0.68,1)] motion-reduce:transition-none ${
+                  i === activeIndex ? "bg-brand text-white" : "text-black"
+                }`}
+              >
+                {panel.label}
+              </button>
+            ))
+          }
+        </div>
+
+        {/* Panels are stacked in one grid cell so they overlap: the cell
+            reserves the taller panel's height (no layout jump) and switching
+            crossfades opacity — the outgoing panel fades out as the incoming
+            one fades in. */}
+        <div class="grid w-full">
+          {
+            testimonial.panels.map((panel, i) => (
+              <div
+                role="tabpanel"
+                id={`cs-panel-${i}`}
+                data-cs-panel={i}
+                aria-labelledby={`cs-tab-${i}`}
+                aria-hidden={i === activeIndex ? undefined : "true"}
+                class={`cs-panel col-start-1 row-start-1 flex w-full flex-col items-center justify-center gap-12 transition-opacity duration-500 ease-[cubic-bezier(0.33,1,0.68,1)] motion-reduce:transition-none md:gap-20 ${
+                  i === activeIndex
+                    ? "opacity-100"
+                    : "pointer-events-none opacity-0"
+                }`}
+              >
+                <blockquote
+                  data-reveal
+                  class="max-w-[1042px] text-center font-normal leading-[1.1] tracking-[-0.02em] text-black text-[clamp(1.75rem,3.5vw,40px)]"
+                >
+                  {panel.quote}
+                </blockquote>
+
+                <figure class="m-0 flex items-center gap-5">
+                  {panel.avatar && (
+                    <img
+                      src={panel.avatar}
+                      alt={panel.avatarAlt}
+                      class="h-[75px] w-[100px] shrink-0 rounded-[24px] object-cover"
+                    />
+                  )}
+                  <figcaption class="flex flex-col gap-1 leading-[1.3] text-black">
+                    <p class="text-sm font-medium uppercase tracking-[-0.01em]">
+                      {panel.author}
+                    </p>
+                    {panel.role && (
+                      <p class="whitespace-pre-line text-base font-medium tracking-[-0.01em]">
+                        {panel.role}
+                      </p>
+                    )}
+                  </figcaption>
+                </figure>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+</article>
+
+<script>
+  // Testimonial tabs: clicking Patient / Customer swaps the visible panel.
+  // Panels toggle the `flex`/`hidden` display utilities (not the [hidden]
+  // attribute, which Tailwind's display classes would override). Reveal
+  // elements inside a newly shown panel are forced visible since the observer
+  // never saw them while the panel was display:none.
+  const tabs = Array.from(
+    document.querySelectorAll<HTMLButtonElement>("[data-cs-tab]"),
+  );
+  const panels = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-cs-panel]"),
+  );
+
+  const activate = (idx: number) => {
+    tabs.forEach((tab, i) => {
+      const on = i === idx;
+      tab.setAttribute("aria-selected", on ? "true" : "false");
+      tab.classList.toggle("bg-brand", on);
+      tab.classList.toggle("text-white", on);
+      tab.classList.toggle("text-black", !on);
+    });
+    panels.forEach((panel, i) => {
+      const on = i === idx;
+      // Crossfade: both panels stay in the grid; only opacity changes.
+      panel.classList.toggle("opacity-100", on);
+      panel.classList.toggle("opacity-0", !on);
+      panel.classList.toggle("pointer-events-none", !on);
+      if (on) {
+        panel.removeAttribute("aria-hidden");
+        panel
+          .querySelectorAll("[data-reveal]")
+          .forEach((el) => el.classList.add("in-view"));
+      } else {
+        panel.setAttribute("aria-hidden", "true");
+      }
+    });
+  };
+
+  tabs.forEach((tab, i) => tab.addEventListener("click", () => activate(i)));
+</script>
+
+<style is:global>
+  /* Hero stat dividers draw in from the top — the same line effect as the home
+     hero rule. Driven off the column's own reveal (.in-view, added globally by
+     the Layout observer) rather than the thin line's own intersection, which a
+     zero-area transformed box can't trigger. Global block so the `.js` flag (on
+     <html>) and the global `.in-view` class match without Astro scope rewriting.
+     Gated behind motion-allowed + the .js flag, matching global.css. */
+  @media (prefers-reduced-motion: no-preference) {
+    .js .cs-stat .cs-stat-line {
+      transform: scaleY(0);
+      transform-origin: top center;
+      transition: transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
+      transition-delay: inherit;
+      will-change: transform;
+    }
+    .js .cs-stat.in-view .cs-stat-line {
+      transform: scaleY(1);
+    }
+
+    /* ID fact-sheet hairlines: draw in horizontally from the left when the
+       sheet reveals. Per-line transition-delay is set inline for the stagger. */
+    .js .cs-id .cs-hline {
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
+      will-change: transform;
+    }
+    .js .cs-id.in-view .cs-hline {
+      transform: scaleX(1);
+    }
+  }
+</style>

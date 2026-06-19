@@ -1,0 +1,52 @@
+{
+  "nhs-surgery-readiness": {
+    "title": "Improving Surgery Readiness at Scale with the NHS",
+    "metaTitle": "NHS Surgery Readiness — Sword Intelligence",
+    "metaDescription": "How NHS North East London used Sword Intelligence to make more patients surgery-ready, reduce length of stay, and relieve pressure across surgical pathways.",
+    "hero": {
+      "eyebrow": "Case Study: NHS North East London Health and Care Partnership",
+      "logo": "/customers/story-logo-ne-london.png",
+      "logoAlt": "North East London Health & Care Partnership",
+      "image": "/customers/story-hero-nhs.png",
+      "imageAlt": "Hospital reception waiting area",
+      "stats": [
+        { "value": "57%", "label": "All sessions delivered" },
+        { "value": "0.71 d", "label": "Lives covered" },
+        { "value": "8.9/10", "label": "Clinical papers published & patents granted" }
+      ]
+    },
+    "id": {
+      "customerType": ["Provider", "Government"],
+      "patientsServed": "+2,000,000",
+      "location": "London, UK",
+      "useCases": ["Surgery Readiness", "Proactive Engagement"]
+    },
+    "overview": {
+      "title": "Overview",
+      "paragraphs": [
+        "The <a href=\"#\" class=\"underline\">North East London Health &amp; Care Partnership</a> serves more than <strong class=\"font-semibold\">2 million people across 8 local authority areas</strong>. Following the COVID-19 pandemic, elective surgery backlogs became a system-wide constraint. Not due to lack of surgical capacity, but because many patients reached the pathway unprepared for surgery, leading to delays, cancellations, and extended hospital stays.",
+        "To address this, Sword Intelligence was deployed to identify, engage, and operationally prepare patients ahead of surgery, at scale and without adding clinical headcount. The program focused on improving patients’ physical and mental readiness through structured, ongoing engagement, while continuously generating readiness signals that informed operational decisions.",
+        "By shifting preparation upstream and standardizing how readiness was assessed and improved, NE London was able to convert more patients from “unfit” to surgery-ready, reduce length of stay, and relieve pressure across surgical pathways."
+      ]
+    },
+    "testimonial": {
+      "eyebrow": "In their words",
+      "activeTab": "Customer",
+      "panels": [
+        {
+          "label": "Patient",
+          "quote": "“This offered a safe space to share my experience without having to burden my family or make them feel worried. It was amazing for me to have that.”",
+          "author": "Vanessa"
+        },
+        {
+          "label": "Customer",
+          "quote": "“Working with Surgery Hero has revolutionised our preoperative care, significantly improving patient outcomes and reducing complication rates. Their dedicated support and innovative digital solutions have made a tangible difference in our patients’ recovery journeys.”",
+          "avatar": "/customers/story-avatar-lucy.svg",
+          "avatarAlt": "Lucy Gladman",
+          "author": "Lucy Gladman",
+          "role": "Deputy Divisional Manager of Anaesthetics\nBarking, Havering and Redbridge NHS Trust"
+        }
+      ]
+    }
+  }
+}

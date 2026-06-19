@@ -15,7 +15,7 @@
           ],
           "photo": "/customers/photo-686.png",
           "photoAlt": "Doctors Surgeries signpost",
-          "cta": { "label": "Read more", "href": "#" }
+          "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
         }
       ]
     },
@@ -29,7 +29,7 @@
           "logoAlt": "Cheshire & Merseyside",
           "title": "Cutting Hospital Stays with AI-driven Prehabilitation",
           "stat": { "value": "£405K", "label": "saved for one NHS Trust in 3 months" },
-          "cta": { "label": "Read more", "href": "#" }
+          "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
         },
         {
           "type": "story",
@@ -38,7 +38,7 @@
           "logoAlt": "Hellenic Ministry of Health",
           "title": "Bringing Intelligent Triage to Greece",
           "stat": { "value": "10M", "label": "citizens served" },
-          "cta": { "label": "Read more", "href": "#" }
+          "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
         }
       ]
     },
@@ -59,7 +59,7 @@
           "title": "Improving Surgery Readiness at Scale with the NHS",
           "stat": { "value": "57%", "label": "more patients ready for surgery" },
           "ctas": [
-            { "label": "Read more", "href": "#" },
+            { "label": "Read more", "href": "/customers/nhs-surgery-readiness" },
             { "label": "Press release", "href": "#", "style": "outline" }
           ],
           "photo": "/customers/photo-surgery.png",
@@ -77,7 +77,7 @@
           "logoAlt": "North East London",
           "title": "Intelligence Helps the NHS Prevent Surgical Complications",
           "stat": { "value": "72%", "label": "reduction in surgical complications" },
-          "cta": { "label": "Read more", "href": "#" }
+          "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
         },
         {
           "type": "story",
@@ -86,7 +86,7 @@
           "logoAlt": "Cheshire & Merseyside",
           "title": "AI Surgical Readiness Closes the Gap for Deprived Communities",
           "stat": { "value": "84%", "label": "improvement in patient-reported quality of life" },
-          "cta": { "label": "Read more", "href": "#" }
+          "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
         },
         {
           "type": "quote",
@@ -120,7 +120,7 @@
           "logoAlt": "Cheshire & Merseyside",
           "title": "AI Surgical Readiness Closes the Gap for Deprived Communities",
           "stat": { "value": "84%", "label": "improvement in patient-reported quality of life" },
-          "cta": { "label": "Read more", "href": "#" }
+          "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
         }
       ]
     }

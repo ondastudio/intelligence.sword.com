@@ -1,0 +1,41 @@
+---
+/**
+ * Customer story single page — /customers/<slug>.
+ *
+ * One page per entry in src/data/customer-stories.json. The "Read more" CTAs on
+ * the Our Customers grid (src/data/customers.json) link here. Reuses the same
+ * footer-reveal shell as the home + customers pages: the story body and closing
+ * CTA scroll as one opaque pane over the pinned purple footer.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/layout/Navbar.astro";
+import CustomerStory from "../../components/sections/CustomerStory.astro";
+import Cta from "../../components/sections/Cta.astro";
+import Footer from "../../components/sections/Footer.astro";
+import stories from "../../data/customer-stories.json";
+
+export function getStaticPaths() {
+  return Object.entries(stories).map(([slug, story]) => ({
+    params: { slug },
+    props: { story },
+  }));
+}
+
+const { story } = Astro.props;
+---
+
+<Layout title={story.metaTitle} description={story.metaDescription}>
+  <div class="page-content">
+    <Navbar />
+    <CustomerStory story={story} />
+    <Cta
+      heading={{
+        line1: "Let’s make you",
+        line2Before: "",
+        accent: "AI-first",
+        after: " too.",
+      }}
+    />
+  </div>
+  <Footer variant="purple" />
+</Layout>
