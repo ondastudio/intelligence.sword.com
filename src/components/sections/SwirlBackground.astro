@@ -1,0 +1,67 @@
+---
+/**
+ * SwirlBackground — the animated WebGL swirl, rendered as ONE continuous canvas
+ * that spans the hero and bleeds into the top of the following section before
+ * fading out (so the swirl is seamless across the section boundary rather than
+ * restarting). Sits behind page content; the static mesh PNG underneath is the
+ * no-JS / reduced-motion fallback.
+ *
+ * Place this as the first child of a `relative` wrapper that contains the hero
+ * and the section it should bleed into. The stage sizes itself to the hero
+ * height plus a bleed, and a bottom mask fades the bleed region away.
+ */
+---
+
+<div
+  data-swirl-stage
+  aria-hidden="true"
+  class="swirl-stage pointer-events-none absolute inset-x-0 top-0 z-0"
+>
+  <img
+    src="/hero/mesh-gradient.png"
+    alt=""
+    class="absolute inset-0 h-full w-full object-cover"
+  />
+  <canvas
+    data-swirl
+    class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+  ></canvas>
+</div>
+
+<script>
+  import { initSwirl } from "../../lib/swirl";
+
+  const stage = document.querySelector<HTMLElement>("[data-swirl-stage]");
+  const canvas = stage?.querySelector<HTMLCanvasElement>("canvas[data-swirl]");
+  // The hero is the first <section> in the shared wrapper. (Don't use
+  // nextElementSibling — Astro injects its bundled <script> right after the
+  // stage, so that would measure the script tag, not the hero.)
+  const hero = stage?.parentElement?.querySelector<HTMLElement>("section");
+
+  if (stage && canvas && hero) {
+    // How far the swirl bleeds into the next section, as a fraction of hero height.
+    const BLEED_RATIO = 0.45;
+
+    const sizeStage = () => {
+      const heroHeight = hero.offsetHeight;
+      const bleed = Math.round(heroHeight * BLEED_RATIO);
+      const total = heroHeight + bleed;
+      stage.style.height = `${total}px`;
+      // Solid across the hero, then a gradual fade so the swirl stays clearly
+      // visible as it carries into the next section before settling to surface.
+      const mask =
+        `linear-gradient(to bottom,` +
+        ` #000 ${heroHeight}px,` +
+        ` rgba(0,0,0,0.6) ${heroHeight + Math.round(bleed * 0.5)}px,` +
+        ` transparent ${total}px)`;
+      stage.style.maskImage = mask;
+      stage.style.webkitMaskImage = mask;
+    };
+
+    sizeStage();
+    window.addEventListener("resize", sizeStage);
+
+    initSwirl(canvas, stage, { grainUrl: "/hero/swirl/perlin1.png" });
+    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
+  }
+</script>

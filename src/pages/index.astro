@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import SwirlBackground from "../components/sections/SwirlBackground.astro";
 import Hero from "../components/sections/Hero.astro";
 import Intro from "../components/sections/Intro.astro";
 import Care from "../components/sections/Care.astro";
@@ -22,8 +23,14 @@ import Footer from "../components/sections/Footer.astro";
       pinned behind it (see .page-content / .footer in global.css) so the page
       slides up to reveal the footer underneath at the end of the scroll. */}
   <div class="page-content">
-    <Hero />
-    <Intro />
+    <!-- Hero + Intro share one swirl background that bleeds across the boundary.
+         `isolate` keeps the canvas (z-0) behind each section's z-10 content;
+         `bg-surface` shows through where the swirl fades out into Intro. -->
+    <div class="relative isolate bg-surface">
+      <SwirlBackground />
+      <Hero />
+      <Intro />
+    </div>
     <Care />
     <Triage />
     <Platform />

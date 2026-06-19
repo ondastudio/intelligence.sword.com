@@ -55,12 +55,12 @@ const SwirlPass = {
 
     // Brand purple palette (matches src/styles/global.css tokens):
     //   bgColor  ~ near-white lavender wash (outer field)
-    //   soft     ~ purple-200 #a684ff, low alpha (inner highlight)
+    //   soft     ~ purple-100 #e1d6ff (inner highlight — no pink bloom)
     //   purple   ~ brand #7700ee (dominant swirl body)
     //   lavender ~ purple-100 #e1d6ff
     //   white    ~ pure white (gradient crest)
     vec4 bgColor = vec4(0.965, 0.957, 1.0, 1.0);
-    vec4 soft = vec4(0.651, 0.518, 1.0, 0.1);
+    vec4 soft = vec4(0.882, 0.839, 1.0, 1.0);
     vec4 purple = vec4(0.467, 0.0, 0.933, 1.0);
     vec4 lavender = vec4(0.882, 0.839, 1.0, 1.0);
     vec4 white = vec4(0.95, 0.95, 0.95, 1.0);

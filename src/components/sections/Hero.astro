@@ -12,30 +12,10 @@ import CircleButton from "../ui/CircleButton.astro";
 ---
 
 <section
-  class="relative flex min-h-screen flex-col overflow-hidden bg-coral text-black"
+  class="relative flex min-h-screen flex-col overflow-hidden text-black"
 >
-  <!-- Background: animated swirl (WebGL) over the static mesh gradient.
-       The image paints instantly and stays as the no-JS / fallback layer;
-       the canvas fades in once the swirl effect has mounted. -->
-  <img
-    src="/hero/mesh-gradient.png"
-    alt=""
-    aria-hidden="true"
-    class="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
-  />
-  <canvas
-    data-swirl
-    aria-hidden="true"
-    class="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-0 transition-opacity duration-700"
-  ></canvas>
-
-  <!-- Bottom fade: blends the swirl/mesh into the next section's surface tone so
-       the colour flows out instead of ending on a hard horizontal edge. -->
-  <div
-    aria-hidden="true"
-    class="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-64 bg-gradient-to-b from-transparent to-surface"
-  ></div>
-
+  <!-- Background swirl lives in <SwirlBackground /> at the page level so it can
+       bleed into the next section; this section is transparent over it. -->
   <Navbar />
 
   <div
@@ -72,20 +52,6 @@ import CircleButton from "../ui/CircleButton.astro";
     </div>
   </div>
 </section>
-
-<script>
-  import { initSwirl } from "../../lib/swirl";
-
-  const canvas = document.querySelector<HTMLCanvasElement>("canvas[data-swirl]");
-  const container = canvas?.closest("section");
-  if (canvas && container) {
-    initSwirl(canvas, container, {
-      grainUrl: "/hero/swirl/perlin1.png",
-    });
-    // Reveal the canvas once it's mounted so it overlays the static image.
-    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
-  }
-</script>
 
 <script>
   // Smooth-scroll the dotted circle button to the next section (one viewport down),

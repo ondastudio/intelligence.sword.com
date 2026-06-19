@@ -10,7 +10,10 @@ import LogoStrip from "../layout/LogoStrip.astro";
 import MediaFrame from "../ui/MediaFrame.astro";
 ---
 
-<section class="relative overflow-hidden bg-surface text-black">
+<section class="relative overflow-hidden text-black">
+  <!-- The soft gradient wash at the top comes from <SwirlBackground />, which
+       bleeds the hero swirl down across this section's top edge. -->
+
   <!-- Outer block keeps the design's 16px gutters so the product frame can
        span near-full-width; the text/logos sit in a narrower column inside. -->
   <div class="relative z-10 mx-auto w-full max-w-[1440px] px-4 pt-[120px]">
