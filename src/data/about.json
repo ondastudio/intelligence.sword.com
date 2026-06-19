@@ -1,5 +1,7 @@
 {
   "hero": {
+    "eyebrow": "our mission",
+    "statement": "We’re bringing back healthcare’s most valuable resource: attention.",
     "media": {
       "src": "/about/manifesto.mp4",
       "alt": "Sword Intelligence manifesto film"

@@ -3,17 +3,26 @@
  * Eyebrow — small uppercase label preceded by a dot.
  * From the design's "Label" element (e.g. "Built by the #1 AI Care company.").
  * `dotClass` overrides the dot color (defaults to the brand purple).
+ * `textClass` overrides the label color (defaults to black) — pass `text-white`
+ * for the label on a dark/media background.
  */
 interface Props {
   class?: string;
   dotClass?: string;
+  textClass?: string;
 }
-const { class: className = "", dotClass = "bg-brand" } = Astro.props;
+const {
+  class: className = "",
+  dotClass = "bg-brand",
+  textClass = "text-black",
+} = Astro.props;
 ---
 
 <div class={`flex items-center gap-2 ${className}`}>
   <span class={`size-2 shrink-0 rounded-full ${dotClass}`}></span>
-  <span class="text-sm font-semibold uppercase tracking-[-0.01em] text-black">
+  <span
+    class={`text-sm font-semibold uppercase tracking-[-0.01em] ${textClass}`}
+  >
     <slot />
   </span>
 </div>
