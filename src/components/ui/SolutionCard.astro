@@ -72,7 +72,7 @@ const t = {
 }[theme];
 ---
 
-<div class={`flex w-full flex-col ${className}`}>
+<div class={`group relative flex w-full flex-col ${className}`}>
   <!-- Capability card -->
   <div
     class:list={[
@@ -182,10 +182,8 @@ const t = {
       </p>
     </div>
 
-    <a
-      href={cta.href}
-      class="group flex shrink-0 items-center rounded-full"
-    >
+    <!-- Visual CTA only — the whole card is the link (stretched <a> below). -->
+    <div class="flex shrink-0 items-center rounded-full" aria-hidden="true">
       <span
         class:list={[
           "-mr-px rounded-[50px] px-6 py-3 text-sm font-semibold uppercase tracking-[-0.01em]",
@@ -211,6 +209,9 @@ const t = {
             stroke-linejoin="round"></path>
         </svg>
       </span>
-    </a>
+    </div>
   </div>
+
+  <!-- Stretched link — makes the entire card clickable. -->
+  <a href={cta.href} aria-label={cta.label} class="absolute inset-0 z-20 rounded-card"></a>
 </div>

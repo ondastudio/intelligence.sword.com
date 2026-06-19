@@ -12,6 +12,10 @@
  * `rotate` spins the glyph (e.g. 45 for the CTA's down-right arrow).
  * `detach` slides the circle slightly away from an adjoining pill on hover —
  *   set it when the circle sits next to a CTA pill and wrap the pair in `group`.
+ * `decorative` renders an inert <span> (aria-hidden, not focusable) — use it
+ *   when the circle is the visual affordance inside a fully-clickable card whose
+ *   real link is a stretched overlay; the hover animations still fire via the
+ *   card's `group`.
  * Renders an <a> when `href` is set, otherwise a <button>.
  */
 interface Props {
@@ -23,6 +27,7 @@ interface Props {
   href?: string;
   label?: string;
   detach?: boolean;
+  decorative?: boolean;
   class?: string;
   [key: string]: unknown;
 }
@@ -34,6 +39,7 @@ const {
   href,
   label = "Learn more",
   detach = false,
+  decorative = false,
   class: className = "",
   ...rest
 } = Astro.props;
@@ -54,10 +60,13 @@ const classes = [
   className,
 ].join(" ");
 
-const Tag = href ? "a" : "button";
+const Tag = decorative ? "span" : href ? "a" : "button";
+const semanticAttrs = decorative
+  ? { "aria-hidden": "true" }
+  : { href, "aria-label": label };
 ---
 
-<Tag class={classes} href={href} aria-label={label} {...rest}>
+<Tag class={classes} {...semanticAttrs} {...rest}>
   {
     variant !== "filled" && (
       <svg

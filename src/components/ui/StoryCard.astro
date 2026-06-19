@@ -73,13 +73,18 @@ const toneClass: Record<string, string> = {
 };
 
 const ctaList: Cta[] = ctas ?? (cta ? [cta] : []);
+// The card's primary action (the solid CTA) becomes a stretched link that makes
+// the whole card clickable; any secondary "outline" CTA stays its own link on
+// top. `clickable` gates that behaviour to cards that actually have a target.
+const primary = ctaList.find((c) => c.style !== "outline") ?? ctaList[0];
+const clickable = !!primary?.href;
 const composite = !!photo && type !== "highlighted";
 const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[tone]} ${className}`;
 ---
 
 {
   type === "highlighted" && (
-    <article class={`flex flex-col bg-purple-200/40 md:h-[510px] md:flex-row ${className} relative overflow-hidden rounded-card`}>
+    <article class={`group flex flex-col bg-purple-200/40 md:h-[510px] md:flex-row ${className} relative overflow-hidden rounded-card`}>
       <img
         src="/customers/swoosh.svg"
         alt=""
@@ -112,18 +117,18 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
         <div class="relative h-60 w-full md:h-full md:flex-1">
           <img src={photo} alt={photoAlt} class="h-full w-full rounded-[24px] object-cover" />
           {ctaList[0] && (
-            <span class="group absolute bottom-4 right-4 inline-flex items-center">
-              <a
-                href={ctaList[0].href}
-                class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white"
-              >
+            <span class="absolute bottom-4 right-4 inline-flex items-center" aria-hidden="true">
+              <span class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white">
                 {ctaList[0].label}
-              </a>
-              <ArrowCircle variant="filled" href={ctaList[0].href} label={ctaList[0].label} detach class="-ml-px" />
+              </span>
+              <ArrowCircle variant="filled" label={ctaList[0].label} decorative detach class="-ml-px" />
             </span>
           )}
         </div>
       </div>
+      {clickable && (
+        <a href={primary.href} aria-label={primary.label} class="absolute inset-0 z-20 rounded-card" />
+      )}
     </article>
   )
 }
@@ -138,7 +143,7 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
 
 {
   (type === "story" || type === "quote") && (
-    <article class={composite ? `flex flex-col md:h-[510px] md:flex-row ${base}` : `flex flex-col justify-between gap-8 p-10 ${base}`}>
+    <article class={composite ? `group flex flex-col md:h-[510px] md:flex-row ${base}` : `group flex flex-col justify-between gap-8 p-10 ${base}`}>
       {/* Text pane */}
       <div class={composite ? "flex flex-1 flex-col justify-between gap-8 p-10 md:pr-4" : "contents"}>
         <header class="flex flex-col gap-6">
@@ -181,14 +186,26 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
             <div class="flex flex-wrap items-center justify-end gap-3">
               {ctaList.map((c) =>
                 c.style === "outline" ? (
+                  // Secondary action — its own link, kept above the stretched
+                  // overlay (z-30) so it stays independently clickable, and lit
+                  // on whole-card hover (group-hover) as well as direct hover.
                   <a
                     href={c.href}
-                    class="inline-flex h-10 items-center rounded-[40px] border border-black px-6 text-sm font-medium uppercase tracking-[-0.02em] text-black transition-colors hover:bg-black hover:text-white"
+                    class="relative z-30 inline-flex h-10 items-center rounded-[40px] border border-black px-6 text-sm font-medium uppercase tracking-[-0.02em] text-black transition-colors hover:bg-black hover:text-white group-hover:bg-black group-hover:text-white"
                   >
                     {c.label}
                   </a>
+                ) : clickable ? (
+                  // Primary action — visual only; the stretched <a> below is the
+                  // real link, so the entire card is clickable.
+                  <span class="inline-flex items-center" aria-hidden="true">
+                    <span class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white">
+                      {c.label}
+                    </span>
+                    <ArrowCircle variant="filled" label={c.label} decorative detach class="-ml-px" />
+                  </span>
                 ) : (
-                  <span class="group inline-flex items-center">
+                  <span class="inline-flex items-center">
                     <a
                       href={c.href}
                       class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white"
@@ -218,6 +235,11 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
             class="h-60 w-full rounded-[24px] object-cover md:h-full md:flex-1"
           />
         </div>
+      )}
+
+      {/* Stretched link — makes the entire card clickable (primary action). */}
+      {clickable && (
+        <a href={primary.href} aria-label={primary.label} class="absolute inset-0 z-20 rounded-card" />
       )}
     </article>
   )

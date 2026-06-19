@@ -25,7 +25,7 @@ const { stats, testimonial, cta } = data;
     <div data-reveal class="nb-canvas flex w-full flex-col gap-4">
       <!-- 4x — intake capacity -->
       <article
-        class="nb-card flex flex-col items-center overflow-hidden rounded-card bg-periwinkle/45 px-8 py-10 text-center"
+        class="nb-card group relative flex flex-col items-center overflow-hidden rounded-card bg-periwinkle/45 px-8 py-10 text-center"
         data-parallax="22"
         style="--l:13.44%;--t:0%;--w:23.44%;--h:47.89%"
       >
@@ -57,15 +57,12 @@ const { stats, testimonial, cta } = data;
           <span class="font-serif text-[clamp(3rem,6vw,76px)] font-normal leading-none tracking-[-0.02em] text-black">
             {stats.intake.value}
           </span>
-          <ArrowCircle
-            href={stats.intake.href}
-            label="More on intake capacity"
-            class="mb-[10.5px]"
-          />
+          <ArrowCircle decorative class="mb-[10.5px]" />
         </div>
         <p class="mt-6 max-w-[232px] text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-black">
           {stats.intake.label}
         </p>
+        <a href={stats.intake.href} aria-label="More on intake capacity" class="absolute inset-0 z-20 rounded-card"></a>
       </article>
 
       <!-- Customer portrait -->
@@ -83,7 +80,7 @@ const { stats, testimonial, cta } = data;
 
       <!-- Ministerial testimonial -->
       <article
-        class="nb-card flex flex-col justify-between gap-6 overflow-hidden rounded-card bg-purple-tint p-10"
+        class="nb-card group relative flex flex-col justify-between gap-6 overflow-hidden rounded-card bg-purple-tint p-10"
         data-parallax="-20"
         style="--l:56.92%;--t:0%;--w:43.08%;--h:37.74%"
       >
@@ -100,13 +97,14 @@ const { stats, testimonial, cta } = data;
             <span class="text-sm font-semibold uppercase">{testimonial.name}</span>
             <span class="text-base tracking-[-0.01em]">{testimonial.role}</span>
           </div>
-          <ArrowCircle href={testimonial.href} label="Read the partnership story" />
+          <ArrowCircle decorative />
         </div>
+        <a href={testimonial.href} aria-label="Read the partnership story" class="absolute inset-0 z-20 rounded-card"></a>
       </article>
 
       <!-- 686 — admin workdays saved -->
       <article
-        class="nb-card relative min-h-[280px] overflow-hidden rounded-card bg-accent"
+        class="nb-card group relative min-h-[280px] overflow-hidden rounded-card bg-accent"
         data-parallax="14"
         style="--l:0%;--t:51.54%;--w:36.91%;--h:34.09%"
       >
@@ -137,16 +135,13 @@ const { stats, testimonial, cta } = data;
           </p>
         </div>
 
-        <ArrowCircle
-          href={stats.workdays.href}
-          label="See admin workdays saved"
-          class="absolute bottom-10 right-10"
-        />
+        <ArrowCircle decorative class="absolute bottom-10 right-10 z-10" />
+        <a href={stats.workdays.href} aria-label="See admin workdays saved" class="absolute inset-0 z-20 rounded-card"></a>
       </article>
 
       <!-- 5.2x ROI — bar chart -->
       <article
-        class="nb-card flex flex-col items-center justify-center gap-8 overflow-hidden rounded-card bg-gray-200/35 px-6 py-10 text-center backdrop-blur-[20px]"
+        class="nb-card group relative flex flex-col items-center justify-center gap-8 overflow-hidden rounded-card bg-gray-200/35 px-6 py-10 text-center backdrop-blur-[20px]"
         data-parallax="30"
         style="--l:39.14%;--t:41.39%;--w:36.91%;--h:58.56%"
       >
@@ -154,7 +149,7 @@ const { stats, testimonial, cta } = data;
           <span class="whitespace-nowrap font-serif text-[clamp(2.75rem,6vw,76px)] font-normal leading-[1.1] tracking-[-0.02em] text-black">
             {stats.roi.value}
           </span>
-          <ArrowCircle href={stats.roi.href} label="See the ROI breakdown" />
+          <ArrowCircle decorative />
         </div>
         <!-- Center-aligned bar chart with perforated dot mesh, exact from Figma -->
         <img
@@ -166,11 +161,12 @@ const { stats, testimonial, cta } = data;
         <p class="text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-ink">
           {stats.roi.label}
         </p>
+        <a href={stats.roi.href} aria-label="See the ROI breakdown" class="absolute inset-0 z-20 rounded-card"></a>
       </article>
 
       <!-- 34% — readmissions reduction -->
       <article
-        class="nb-card flex flex-col items-center justify-center gap-8 overflow-hidden rounded-card px-6 py-10 text-center"
+        class="nb-card group relative flex flex-col items-center justify-center gap-8 overflow-hidden rounded-card px-6 py-10 text-center"
         data-parallax="-16"
         style="--l:78.36%;--t:41.39%;--w:21.56%;--h:41.31%;background:radial-gradient(120% 95% at 50% 100%, rgba(186,224,235,0.75), rgba(220,221,228,0.26))"
       >
@@ -193,7 +189,8 @@ const { stats, testimonial, cta } = data;
         <p class="max-w-[222px] text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-black">
           {stats.readmissions.label}
         </p>
-        <ArrowCircle href={stats.readmissions.href} label="See readmissions impact" />
+        <ArrowCircle decorative />
+        <a href={stats.readmissions.href} aria-label="See readmissions impact" class="absolute inset-0 z-20 rounded-card"></a>
       </article>
     </div>
 
