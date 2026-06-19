@@ -73,5 +73,24 @@
         { "src": "/about/logos/generali.svg", "alt": "Generali", "width": 65, "height": 53 }
       ]
     }
+  },
+  "cta": {
+    "heading": {
+      "line1": "Built inside Sword.",
+      "line2": "Proven at scale. Ready for your teams."
+    },
+    "cta": { "label": "Let’s make you AI-first, too", "href": "#" }
+  },
+  "team": {
+    "eyebrow": "meet the team",
+    "title": "We show up. We build what’s next. We care, always.",
+    "members": [
+      { "name": "Virgílio Bento", "role": "PhD — CEO", "photo": "/about/team/virgilio-bento.jpg", "linkedin": "#" },
+      { "name": "Rik Renard, RN", "role": "GM — Care Orchestration", "photo": "/about/team/rik-renard.jpg", "linkedin": "#" },
+      { "name": "Mark Ratnarajah", "role": "MD — Clinical Director", "photo": "/about/team/mark-ratnarajah.jpg", "linkedin": "#" },
+      { "name": "João Pereira", "role": "Head of Engineering", "photo": "/about/team/joao-pereira.jpg", "linkedin": "#" },
+      { "name": "Filipa Alcobia Ferreira", "role": "Head of Marketing", "photo": "/about/team/filipa-alcobia-ferreira.jpg", "linkedin": "#" },
+      { "name": "Selina Sachar", "role": "Sr. Sales Executive", "photo": "/about/team/selina-sachar.jpg", "linkedin": "#" }
+    ]
   }
 }

@@ -30,6 +30,7 @@
   --color-surface: #f9f9f9; /* neutral section background */
   --color-ink: #1f1f1f; /* near-black — editorial headlines (Figma Black/900) */
   --color-ink-muted: #bfc0cc; /* dimmed text — About manifesto word-reveal start color */
+  --color-ink-soft: #525252; /* muted label/role text — About team eyebrow + member role (Figma Black/700) */
   --color-gray-200: #dcdde4; /* hairline borders on light chips; Numbers stat-panel tint */
   --color-gray-400: #85889c; /* mid gray — Numbers bar-chart dots (Figma Gray 400) */
   --color-ink-wash: rgba(77, 79, 96, 0.05); /* faint frosted fill — Integrations icon chips + integrate card */

@@ -1,0 +1,43 @@
+---
+/**
+ * AboutCta — closing call-to-action on the About page (Figma "Platform",
+ * node 8628:8). Unlike the home page `Cta` (a full-bleed dotted-mesh band),
+ * this is a centered white `rounded-card` floating on the `surface` wash: a
+ * two-line Lora headline over a brand-purple pill ("Let's make you AI-first,
+ * too") seamed to a `filled` `ArrowCircle`. The pill+arrow entrance rides the
+ * shared `[data-reveal]` observer. Reads `data/about.json` (`cta`).
+ */
+import ArrowCircle from "../ui/ArrowCircle.astro";
+import about from "../../data/about.json";
+
+const { heading, cta } = about.cta;
+---
+
+<section class="bg-surface px-4 py-16 text-black sm:px-6 md:py-24">
+  <div
+    class="mx-auto flex max-w-[1040px] flex-col items-center justify-center gap-10 rounded-card bg-white px-6 py-16 text-center sm:px-12 md:py-20 lg:px-24"
+  >
+    <h2
+      data-reveal="title"
+      class="font-serif text-[clamp(1.5rem,3.4vw,32px)] font-normal leading-[1.2] tracking-[-0.02em]"
+    >
+      {heading.line1}<br />{heading.line2}
+    </h2>
+
+    <div data-reveal class="group flex items-center" style="transition-delay:140ms">
+      <a
+        href={cta.href}
+        class="flex h-10 items-center rounded-full bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white"
+      >
+        {cta.label}
+      </a>
+      <ArrowCircle
+        variant="filled"
+        href={cta.href}
+        label={cta.label}
+        detach
+        class="-ml-px"
+      />
+    </div>
+  </div>
+</section>
