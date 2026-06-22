@@ -27,6 +27,8 @@ import ClinicalDiagram03 from "../ui/ClinicalDiagram03.astro";
 import ClinicalDiagram31 from "../ui/ClinicalDiagram31.astro";
 import ClinicalDiagram04 from "../ui/ClinicalDiagram04.astro";
 import ClinicalDiagram05 from "../ui/ClinicalDiagram05.astro";
+import ClinicalDiagram06 from "../ui/ClinicalDiagram06.astro";
+import ClinicalCards06 from "../ui/ClinicalCards06.astro";
 import data from "../../data/clinical-layer.json";
 
 const { heading, steps, cards } = data;
@@ -50,27 +52,36 @@ const { heading, steps, cards } = data;
       <div
         class="clinical-row mt-12 flex flex-col items-center gap-16 lg:mt-[120px] lg:flex-row lg:items-start lg:justify-between lg:gap-0"
       >
-        <!-- Card column -->
-        <div class="flex w-full max-w-[340px] flex-col gap-4">
-          {
-            cards.map((card, i) => (
-              <div
-                data-reveal
-                class="flex flex-col items-center justify-center gap-5 rounded-card bg-ink-wash p-8"
-                style={`transition-delay:${120 + (cards.length - 1 - i) * 120}ms`}
-              >
-                <LabelPill>{card.label}</LabelPill>
-                <p class="text-center text-lg">
-                  {card.lines.map((line, j) => (
-                    <>
-                      {j > 0 && <br />}
-                      {line}
-                    </>
-                  ))}
-                </p>
-              </div>
-            ))
-          }
+        <!-- Card column: two layers share one slot. The original capability
+             cards (state "a") are held through beats A–F; on the final beat they
+             crossfade out to the alternate "Complex operations" card set
+             (state "b"), in sync with the diagram swapping to ClinicalDiagram06.
+             On mobile / no-JS both layers stack in normal flow. -->
+        <div class="clinical-cards relative w-full max-w-[340px]">
+          <div data-clinical-cards="a" class="flex flex-col gap-4">
+            {
+              cards.map((card, i) => (
+                <div
+                  data-reveal
+                  class="flex flex-col items-center justify-center gap-5 rounded-card bg-ink-wash p-8"
+                  style={`transition-delay:${120 + (cards.length - 1 - i) * 120}ms`}
+                >
+                  <LabelPill>{card.label}</LabelPill>
+                  <p class="text-center text-lg">
+                    {card.lines.map((line, j) => (
+                      <>
+                        {j > 0 && <br />}
+                        {line}
+                      </>
+                    ))}
+                  </p>
+                </div>
+              ))
+            }
+          </div>
+          <div data-clinical-cards="b" class="clinical-cards-alt">
+            <ClinicalCards06 />
+          </div>
         </div>
 
         <!-- Diagram stack: both states share one slot and crossfade. Each state
@@ -138,6 +149,12 @@ const { heading, steps, cards } = data;
               <ClinicalDiagram05 />
             </div>
           </div>
+          <!-- Closing beat: no step chip — pairs with the alternate card set. -->
+          <div data-clinical-state="g" class="clinical-state">
+            <div class="clinical-figure relative mx-auto w-full max-w-[827px]">
+              <ClinicalDiagram06 />
+            </div>
+          </div>
         </div>
       </div>
       </div>
@@ -163,27 +180,34 @@ const { heading, steps, cards } = data;
     const stateD = section.querySelector<HTMLElement>('[data-clinical-state="d"]');
     const stateE = section.querySelector<HTMLElement>('[data-clinical-state="e"]');
     const stateF = section.querySelector<HTMLElement>('[data-clinical-state="f"]');
+    const stateG = section.querySelector<HTMLElement>('[data-clinical-state="g"]');
+    const cardsA = section.querySelector<HTMLElement>('[data-clinical-cards="a"]');
+    const cardsB = section.querySelector<HTMLElement>('[data-clinical-cards="b"]');
     const title = section.querySelector<HTMLElement>('[data-reveal="title"]');
-    if (!stateA || !stateB || !stateC || !stateD || !stateE || !stateF) return;
+    if (!stateA || !stateB || !stateC || !stateD || !stateE || !stateF || !stateG)
+      return;
 
-    // Timeline windows over the section's scrub distance (easy to tune). Six
+    // Timeline windows over the section's scrub distance (easy to tune). Seven
     // beats chain through one slot: Channels (A) is held first, then crossfades
     // to Clinical intelligence (B) → AI Skills (C) → a second AI Skills view (D)
-    // → Integrations (E) → Clinical data foundation (F), each holding before
-    // crossfading on to the next; F settles and holds just before the pin
-    // releases. Each beat gets a hold so the reader sees the whole illustration
-    // before it resolves.
-    const TITLE_OUT: [number, number] = [0.02, 0.08]; // title fades up + out early
-    const A_OUT: [number, number] = [0.11, 0.2]; // Channels fades + blurs away
-    const B_IN: [number, number] = [0.13, 0.22]; // Clinical resolves out of blur
-    const B_OUT: [number, number] = [0.28, 0.37]; // Clinical fades + blurs away
-    const C_IN: [number, number] = [0.3, 0.39]; // AI Skills resolves out of blur
-    const C_OUT: [number, number] = [0.45, 0.54]; // AI Skills fades + blurs away
-    const D_IN: [number, number] = [0.47, 0.56]; // 2nd AI Skills resolves out of blur
-    const D_OUT: [number, number] = [0.62, 0.71]; // 2nd AI Skills fades + blurs away
-    const E_IN: [number, number] = [0.64, 0.73]; // Integrations resolves out of blur
-    const E_OUT: [number, number] = [0.79, 0.88]; // Integrations fades + blurs away
-    const F_IN: [number, number] = [0.81, 0.9]; // Data foundation resolves out of blur
+    // → Integrations (E) → Clinical data foundation (F) → the closing "Complex
+    // operations" view (G), each holding before crossfading on to the next; G
+    // settles and holds just before the pin releases. On the final beat the LEFT
+    // card column crossfades too (cardsA → cardsB), in sync with F→G. Each beat
+    // gets a hold so the reader sees the whole illustration before it resolves.
+    const TITLE_OUT: [number, number] = [0.02, 0.07]; // title fades up + out early
+    const A_OUT: [number, number] = [0.1, 0.17]; // Channels fades + blurs away
+    const B_IN: [number, number] = [0.12, 0.19]; // Clinical resolves out of blur
+    const B_OUT: [number, number] = [0.24, 0.31]; // Clinical fades + blurs away
+    const C_IN: [number, number] = [0.26, 0.33]; // AI Skills resolves out of blur
+    const C_OUT: [number, number] = [0.38, 0.45]; // AI Skills fades + blurs away
+    const D_IN: [number, number] = [0.4, 0.47]; // 2nd AI Skills resolves out of blur
+    const D_OUT: [number, number] = [0.52, 0.59]; // 2nd AI Skills fades + blurs away
+    const E_IN: [number, number] = [0.54, 0.61]; // Integrations resolves out of blur
+    const E_OUT: [number, number] = [0.66, 0.73]; // Integrations fades + blurs away
+    const F_IN: [number, number] = [0.68, 0.75]; // Data foundation resolves out of blur
+    const F_OUT: [number, number] = [0.8, 0.87]; // Data foundation fades + blurs away
+    const G_IN: [number, number] = [0.82, 0.89]; // Closing view resolves out of blur
     const BLUR = 12; // px — start blur for each incoming/outgoing state
 
     const track = (p: number, [a, b]: [number, number]) =>
@@ -209,6 +233,9 @@ const { heading, steps, cards } = data;
         clearStyles(stateD);
         clearStyles(stateE);
         clearStyles(stateF);
+        clearStyles(stateG);
+        if (cardsA) clearStyles(cardsA);
+        if (cardsB) clearStyles(cardsB);
         if (title) {
           title.style.transition = "";
           title.style.opacity = "";
@@ -268,9 +295,25 @@ const { heading, steps, cards } = data;
       stateE.style.opacity = String(eIn * (1 - eOut));
       stateE.style.filter = `blur(${((1 - eIn) + eOut) * BLUR}px)`;
 
+      // F resolves in (from E) then blurs out (to G) on the final beat.
       const fIn = easeOutCubic(track(p, F_IN));
-      stateF.style.opacity = String(fIn);
-      stateF.style.filter = `blur(${(1 - fIn) * BLUR}px)`;
+      const fOut = easeOutCubic(track(p, F_OUT));
+      stateF.style.opacity = String(fIn * (1 - fOut));
+      stateF.style.filter = `blur(${((1 - fIn) + fOut) * BLUR}px)`;
+
+      const gIn = easeOutCubic(track(p, G_IN));
+      stateG.style.opacity = String(gIn);
+      stateG.style.filter = `blur(${(1 - gIn) * BLUR}px)`;
+
+      // Left card column swaps in lockstep with the F→G diagram crossfade: the
+      // original cards (A) blur out over F_OUT, the alternate set (B) resolves in
+      // over G_IN.
+      if (cardsA && cardsB) {
+        cardsA.style.opacity = String(1 - fOut);
+        cardsA.style.filter = `blur(${fOut * BLUR}px)`;
+        cardsB.style.opacity = String(gIn);
+        cardsB.style.filter = `blur(${(1 - gIn) * BLUR}px)`;
+      }
     };
 
     const onScroll = () => {
@@ -301,13 +344,18 @@ const { heading, steps, cards } = data;
   .clinical-state + .clinical-state {
     margin-top: clamp(2.5rem, 6vw, 64px);
   }
+  /* Fallback (no-JS / reduced-motion / small screen): the alternate card set
+     simply stacks below the original cards, with a gap. */
+  .clinical-cards-alt {
+    margin-top: clamp(2.5rem, 6vw, 64px);
+  }
 
   /* Enhanced: pin the stage and crossfade the two diagram states as one.
      Pre-setting the start state keeps the first paint flash-free before the rAF
      loop runs. */
   @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
     :global(html.js) .clinical-layer {
-      height: calc(100svh + 450vh);
+      height: calc(100svh + 540vh);
     }
     /* Stage + its inner container span the whole tall section so the pin can
        stay stuck across the full scrub distance. */
@@ -354,9 +402,25 @@ const { heading, steps, cards } = data;
     :global(html.js) [data-clinical-state="c"],
     :global(html.js) [data-clinical-state="d"],
     :global(html.js) [data-clinical-state="e"],
-    :global(html.js) [data-clinical-state="f"] {
+    :global(html.js) [data-clinical-state="f"],
+    :global(html.js) [data-clinical-state="g"] {
       position: absolute;
       inset: 0;
+      opacity: 0;
+      filter: blur(12px);
+    }
+    /* Card column becomes a positioning context too: the original cards (A) stay
+       in flow and define the column height; the alternate set (B) overlays from
+       the top, starts hidden, and crossfades in on the final beat. Drop the
+       fallback stacking gap so B sits flush over A. */
+    :global(html.js) .clinical-cards-alt {
+      margin-top: 0;
+    }
+    :global(html.js) [data-clinical-cards="b"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
       opacity: 0;
       filter: blur(12px);
     }
