@@ -237,6 +237,7 @@ const { problem, solution } = solutions;
       el.style.opacity = "";
       el.style.filter = "";
       el.style.transform = "";
+      el.style.pointerEvents = "";
     };
 
     let ticking = false;
@@ -271,6 +272,13 @@ const { problem, solution } = solutions;
       const bIn = easeOutCubic(track(p, B_IN));
       stateB.style.opacity = String(bIn);
       stateB.style.filter = `blur(${(1 - bIn) * BLUR}px)`;
+
+      // Both panels share one absolutely-positioned slot, so the hidden one would
+      // still sit on top and swallow clicks (the Problem "i" source toggles would
+      // never fire). Only the dominant panel takes pointer events — Problem stays
+      // interactive (so sources can be opened) until it's more than half faded.
+      stateA.style.pointerEvents = 1 - aOut > 0.5 ? "auto" : "none";
+      stateB.style.pointerEvents = bIn > 0.5 ? "auto" : "none";
 
       // Outcome cards rise + fade in, staggered, after the text has arrived.
       cards.forEach((card, i) => {
@@ -339,6 +347,10 @@ const { problem, solution } = solutions;
     :global(html.js) [data-handoff-state="b"] {
       opacity: 0;
       filter: blur(12px);
+      /* Starts hidden on top of Problem; the rAF loop hands pointer events to
+         whichever panel is dominant. Until it runs, Solution must not eat the
+         clicks meant for the Problem cards' "i" source toggles. */
+      pointer-events: none;
     }
     :global(html.js) [data-solution-card] {
       opacity: 0;
