@@ -25,7 +25,7 @@ const orchCards = orchestration.cards;
     <div data-reveal><Eyebrow>{eyebrow}</Eyebrow></div>
     <h2
       data-reveal="title"
-      class="max-w-[952px] text-center font-serif font-normal leading-[1.2] tracking-[-0.02em] text-4xl md:text-display text-ink"
+      class="max-w-[952px] text-center font-serif font-normal text-4xl md:text-display text-ink"
     >
       {heading.before}<span class="text-brand">{heading.highlight}</span><br
       />{heading.afterBreak}{heading.after}
@@ -61,11 +61,11 @@ const orchCards = orchestration.cards;
               class="nav-layer flex items-center gap-6 py-2 pl-8 pr-2"
             >
               <span
-                class="shrink-0 text-sm font-semibold uppercase tracking-[-0.01em]"
+                class="shrink-0 text-sm font-semibold uppercase"
                 >{tabs.label}</span
               >
               <span
-                class="flex shrink-0 items-center justify-center whitespace-pre-line rounded-[40px] border border-gray-200 bg-accent px-8 py-4 text-center text-sm font-semibold uppercase leading-tight tracking-[-0.01em]"
+                class="flex shrink-0 items-center justify-center whitespace-pre-line rounded-[40px] border border-gray-200 bg-accent px-8 py-4 text-center text-sm font-semibold uppercase"
                 >{tabs.active}</span
               >
             </div>
@@ -76,7 +76,7 @@ const orchCards = orchestration.cards;
               class="nav-layer flex items-center gap-6 py-2 pl-8 pr-2"
             >
               <span
-                class="shrink-0 text-sm font-semibold uppercase tracking-[-0.01em]"
+                class="shrink-0 text-sm font-semibold uppercase"
                 >{orchestration.navLabel}</span
               >
               <div class="flex shrink-0 items-stretch gap-2">
@@ -87,7 +87,7 @@ const orchCards = orchestration.cards;
                       data-orch-tab={i}
                       aria-label={`Show ${orchCards[i].title}`}
                       class:list={[
-                        "orch-tab flex shrink-0 cursor-pointer items-center justify-center whitespace-pre-line rounded-[40px] border border-gray-200 px-8 py-4 text-center text-sm font-semibold uppercase leading-tight tracking-[-0.01em] transition-colors",
+                        "orch-tab flex shrink-0 cursor-pointer items-center justify-center whitespace-pre-line rounded-[40px] border border-gray-200 px-8 py-4 text-center text-sm font-semibold uppercase transition-colors",
                         i === 0 && "is-active",
                       ]}
                     >

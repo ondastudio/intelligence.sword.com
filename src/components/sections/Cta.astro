@@ -51,7 +51,7 @@ const { cta } = data;
   <div class="relative z-10 flex flex-col items-center gap-10 text-center">
     <h2
       data-reveal="title"
-      class="font-serif text-4xl font-normal leading-[1.05] tracking-[-0.02em] sm:text-5xl lg:text-display"
+      class="font-serif text-4xl font-normal sm:text-5xl lg:text-display"
     >
       {heading.line1}<br />{heading.line2Before}<span class="text-brand"
         >{heading.accent}</span
@@ -61,7 +61,7 @@ const { cta } = data;
     <div data-reveal class="group flex items-center" style="transition-delay:140ms">
       <a
         href={cta.href}
-        class="flex h-10 items-center rounded-full bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white"
+        class="flex h-10 items-center rounded-full bg-brand px-6 text-sm font-semibold uppercase text-white"
       >
         {cta.label}
       </a>

@@ -33,7 +33,7 @@ const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
         <div data-reveal><Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow></div>
         <h2
           data-reveal="title"
-          class="font-serif text-[clamp(2.25rem,5vw,56px)] font-normal leading-[1.1] tracking-[-0.02em]"
+          class="font-serif text-[clamp(2.25rem,5vw,56px)] font-normal"
         >
           {title}
         </h2>
@@ -41,7 +41,7 @@ const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
 
       <div
         data-reveal
-        class="flex max-w-[525px] flex-col gap-5 text-base leading-[1.2] tracking-[-0.01em] sm:text-lg"
+        class="flex max-w-[525px] flex-col gap-5 text-base sm:text-lg"
         style="transition-delay:160ms"
       >
         {
@@ -68,16 +68,16 @@ const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
 
               <div class="flex flex-col gap-4">
                 <div class="flex items-start gap-2">
-                  <span class="font-serif text-[clamp(2.75rem,7vw,64px)] font-normal leading-[1.2] tracking-[-0.02em]">
+                  <span class="font-serif text-[clamp(2.75rem,7vw,64px)] font-normal">
                     {stat.value}
                   </span>
                   {stat.plus && (
-                    <span class="mt-[11px] flex size-6 shrink-0 items-center justify-center rounded-[24px] bg-ink-wash-strong text-base leading-none">
+                    <span class="mt-[11px] flex size-6 shrink-0 items-center justify-center rounded-[24px] bg-ink-wash-strong text-base">
                       +
                     </span>
                   )}
                 </div>
-                <p class="text-sm font-semibold uppercase leading-[1.2] tracking-[-0.01em]">
+                <p class="text-sm font-semibold uppercase">
                   {stat.label}
                 </p>
               </div>

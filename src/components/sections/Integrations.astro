@@ -36,7 +36,7 @@ const avatarX = [807, 947, 1087];
   <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
     <!-- Heading -->
     <div class="mx-auto max-w-[900px] text-center">
-      <h2 data-reveal="title" class="font-serif text-3xl font-normal leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-display">
+      <h2 data-reveal="title" class="font-serif text-3xl font-normal sm:text-4xl lg:text-display">
         {heading.before}<span class="text-brand">{heading.accent}</span>{heading.after}
       </h2>
     </div>
@@ -106,7 +106,7 @@ const avatarX = [807, 947, 1087];
               class="absolute flex -translate-x-1/2 flex-col items-center"
               style={`left:${pillPos[i].cx}px;top:${pillPos[i].top}px`}
             >
-              <span class="flex items-center rounded-[24px] bg-brand px-4 py-2 text-sm font-semibold uppercase leading-[1.2] tracking-[-0.01em] text-surface">
+              <span class="flex items-center rounded-[24px] bg-brand px-4 py-2 text-sm font-semibold uppercase text-surface">
                 {ch.label}
               </span>
               <span class="flex size-[58px] items-center justify-center rounded-[16px] bg-ink-wash backdrop-blur-[4px]">
@@ -135,10 +135,10 @@ const avatarX = [807, 947, 1087];
           class="absolute flex flex-col items-center gap-5 rounded-card bg-ink-wash p-8 text-center backdrop-blur-[20px]"
           style="left:80px;top:51.8px;width:340px"
         >
-          <span class="rounded-[40px] border border-black/24 px-4 py-2 text-sm font-semibold uppercase tracking-[-0.01em]">
+          <span class="rounded-[40px] border border-black/24 px-4 py-2 text-sm font-semibold uppercase">
             {card.label}
           </span>
-          <p class="max-w-[248px] text-lg font-normal leading-[1.1] tracking-[-0.02em]">
+          <p class="max-w-[248px] text-lg font-normal">
             {card.body[0]}<br />{card.body[1]}
           </p>
         </div>

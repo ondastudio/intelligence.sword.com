@@ -96,17 +96,17 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
           {logo && (
             <img src={logo} alt={logoAlt} class="h-8 w-auto max-w-[185px] self-start object-contain object-left" />
           )}
-          <h2 class="font-serif text-[clamp(2rem,3.4vw,48px)] font-normal leading-[1.1] tracking-[-0.02em] text-black md:max-w-[486px]">
+          <h2 class="font-serif text-[clamp(2rem,3.4vw,48px)] font-normal text-black md:max-w-[486px]">
             {title}
           </h2>
         </header>
         <div class="flex flex-col gap-6 sm:flex-row sm:gap-4">
           {stats.map((s) => (
             <div class="flex flex-1 flex-col gap-4 border-t border-purple-200 pt-6">
-              <span class="font-sans text-[clamp(2.25rem,4vw,52px)] font-normal leading-[1.05] tracking-[-0.03em] text-black">
+              <span class="font-sans text-[clamp(2.25rem,4vw,52px)] font-normal text-black">
                 {s.value}
               </span>
-              <p class="max-w-[180px] text-sm font-semibold uppercase leading-[1.25] text-black">
+              <p class="max-w-[180px] text-sm font-semibold uppercase text-black">
                 {s.label}
               </p>
             </div>
@@ -118,7 +118,7 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
           <img src={photo} alt={photoAlt} class="h-full w-full rounded-[24px] object-cover" />
           {ctaList[0] && (
             <span class="absolute bottom-4 right-4 inline-flex items-center" aria-hidden="true">
-              <span class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white">
+              <span class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase text-white">
                 {ctaList[0].label}
               </span>
               <ArrowCircle variant="filled" label={ctaList[0].label} decorative detach class="-ml-px" />
@@ -148,7 +148,7 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
       <div class={composite ? "flex flex-1 flex-col justify-between gap-8 p-10 md:pr-4" : "contents"}>
         <header class="flex flex-col gap-6">
           {confidential ? (
-            <span class="flex items-center gap-2 self-start text-sm font-semibold uppercase tracking-[-0.01em] text-black">
+            <span class="flex items-center gap-2 self-start text-sm font-semibold uppercase text-black">
               <svg viewBox="0 0 24 24" class="size-6 shrink-0" fill="none" aria-hidden="true">
                 <path d="M19.439 15.439C20.364 14.521 21.078 13.609 21.544 12.955C21.848 12.529 22 12.316 22 12C22 11.685 21.848 11.471 21.544 11.045C20.178 9.129 16.689 5 12 5C11.092 5 10.229 5.155 9.418 5.418M6.747 6.747C4.731 8.107 3.242 9.943 2.456 11.045C2.152 11.471 2 11.685 2 12C2 12.316 2.152 12.529 2.456 12.955C3.822 14.871 7.311 19 12 19C13.991 19 15.738 18.256 17.181 17.181" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M9.853 9.853C9.327 10.388 9 11.156 9 12C9 13.657 10.343 15 12 15C12.844 15 13.612 14.673 14.147 14.147M3 3L21 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -161,11 +161,11 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
             )
           )}
           {type === "story" ? (
-            <h3 class="font-serif text-[clamp(1.75rem,2.4vw,32px)] font-normal leading-[1.2] tracking-[-0.02em] text-black">
+            <h3 class="font-serif text-[clamp(1.75rem,2.4vw,32px)] font-normal text-black">
               {title}
             </h3>
           ) : (
-            <p class="text-[clamp(1.125rem,1.6vw,20px)] font-normal leading-[1.2] tracking-[-0.01em] text-black">
+            <p class="text-[clamp(1.125rem,1.6vw,20px)] font-normal text-black">
               &ldquo;{quote}&rdquo;
             </p>
           )}
@@ -175,10 +175,10 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
           <div class="flex flex-col gap-8">
             {stat && (
               <div class="flex flex-col gap-4 border-t border-black/15 pt-6">
-                <span class="font-sans text-[clamp(2rem,3vw,40px)] font-normal leading-[1.05] tracking-[-0.02em] text-black">
+                <span class="font-sans text-[clamp(2rem,3vw,40px)] font-normal text-black">
                   {stat.value}
                 </span>
-                <p class="max-w-[260px] text-sm font-semibold uppercase leading-[1.25] text-black">
+                <p class="max-w-[260px] text-sm font-semibold uppercase text-black">
                   {stat.label}
                 </p>
               </div>
@@ -191,7 +191,7 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
                   // on whole-card hover (group-hover) as well as direct hover.
                   <a
                     href={c.href}
-                    class="relative z-30 inline-flex h-10 items-center rounded-[40px] border border-black px-6 text-sm font-medium uppercase tracking-[-0.02em] text-black transition-colors hover:bg-black hover:text-white group-hover:bg-black group-hover:text-white"
+                    class="relative z-30 inline-flex h-10 items-center rounded-[40px] border border-black px-6 text-sm font-medium uppercase text-black transition-colors hover:bg-black hover:text-white group-hover:bg-black group-hover:text-white"
                   >
                     {c.label}
                   </a>
@@ -199,7 +199,7 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
                   // Primary action — visual only; the stretched <a> below is the
                   // real link, so the entire card is clickable.
                   <span class="inline-flex items-center" aria-hidden="true">
-                    <span class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white">
+                    <span class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase text-white">
                       {c.label}
                     </span>
                     <ArrowCircle variant="filled" label={c.label} decorative detach class="-ml-px" />
@@ -208,7 +208,7 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
                   <span class="inline-flex items-center">
                     <a
                       href={c.href}
-                      class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase tracking-[-0.01em] text-white"
+                      class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase text-white"
                     >
                       {c.label}
                     </a>
@@ -219,9 +219,9 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
             </div>
           </div>
         ) : (
-          <div class="flex flex-col gap-1 font-medium leading-[1.3] text-black">
-            <span class="text-sm uppercase tracking-[-0.01em]">{author}</span>
-            <span class="text-base tracking-[-0.01em]">{role}</span>
+          <div class="flex flex-col gap-1 font-medium text-black">
+            <span class="text-sm uppercase">{author}</span>
+            <span class="text-base">{role}</span>
           </div>
         )}
       </div>

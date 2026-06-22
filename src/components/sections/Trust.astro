@@ -41,7 +41,7 @@ const { heading, badges, points } = data;
       <!-- Heading -->
       <h2
         data-reveal="title"
-        class="max-w-[816px] text-center font-serif text-3xl font-normal leading-[1.2] tracking-[-0.02em] text-black sm:text-4xl lg:text-display"
+        class="max-w-[816px] text-center font-serif text-3xl font-normal text-black sm:text-4xl lg:text-display"
       >
         {heading}
       </h2>
@@ -81,9 +81,9 @@ const { heading, badges, points } = data;
               <span class="flex size-12 shrink-0 items-center justify-center rounded-[40px] bg-purple-150 p-2">
                 <img src={p.icon} alt="" aria-hidden="true" class="size-8" />
               </span>
-              <div class="flex flex-col gap-6 leading-[1.2] text-black">
-                <p class="text-xl font-semibold tracking-[-0.02em]">{p.title}</p>
-                <p class="text-lg tracking-[-0.02em]">{p.body}</p>
+              <div class="flex flex-col gap-6 text-black">
+                <p class="text-xl font-semibold">{p.title}</p>
+                <p class="text-lg">{p.body}</p>
               </div>
             </div>
           ))

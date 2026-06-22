@@ -90,7 +90,7 @@ const activeIndex = Math.max(
 
 // Outlined uppercase chip — reused for customer-type + use-case tags.
 const chip =
-  "rounded-[24px] border border-black/[0.24] px-4 py-2 text-base font-semibold uppercase leading-[1.3] tracking-[-0.01em] text-black";
+  "rounded-[24px] border border-black/[0.24] px-4 py-2 text-base font-semibold uppercase text-black";
 ---
 
 <article>
@@ -130,7 +130,7 @@ const chip =
         </div>
         <h1
           data-reveal="title"
-          class="font-serif text-[clamp(2.5rem,5vw,64px)] font-normal leading-[1.2] tracking-[-0.02em] text-black md:col-start-2 md:row-start-2"
+          class="font-serif text-[clamp(2.5rem,5vw,64px)] font-normal text-black md:col-start-2 md:row-start-2"
         >
           {story.title}
         </h1>
@@ -147,10 +147,10 @@ const chip =
             >
               {/* divider draws in from the top, same effect as the home hero line */}
               <span class="cs-stat-line absolute inset-y-0 left-0 w-px bg-black/[0.24]" aria-hidden="true" />
-              <p class="text-[clamp(2.25rem,4vw,48px)] font-normal leading-[1.2] tracking-[-0.02em] text-black">
+              <p class="text-[clamp(2.25rem,4vw,48px)] font-normal leading-[1.15] text-black">
                 {stat.value}
               </p>
-              <p class="text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-black">
+              <p class="text-sm font-semibold uppercase text-black">
                 {stat.label}
               </p>
             </div>
@@ -174,7 +174,7 @@ const chip =
 
       <div class="relative flex items-start justify-between gap-4 pb-3">
         <span class="cs-hline absolute inset-x-0 bottom-0 h-px bg-black/15" style="transition-delay:90ms" aria-hidden="true"></span>
-        <dt class="text-sm font-semibold uppercase tracking-[-0.01em] text-black">
+        <dt class="text-sm font-semibold uppercase text-black">
           Customer Type
         </dt>
         <dd class="flex flex-col items-end gap-2">
@@ -184,11 +184,11 @@ const chip =
 
       <div class="relative flex items-center justify-between pb-3">
         <span class="cs-hline absolute inset-x-0 bottom-0 h-px bg-black/15" style="transition-delay:180ms" aria-hidden="true"></span>
-        <dt class="text-sm font-semibold uppercase tracking-[-0.01em] text-black">
+        <dt class="text-sm font-semibold uppercase text-black">
           Patients served
         </dt>
         <dd
-          class="text-right text-xl font-normal leading-[1.3] tracking-[-0.01em] text-black"
+          class="text-right text-xl font-normal text-black"
         >
           {id.patientsServed}
         </dd>
@@ -196,11 +196,11 @@ const chip =
 
       <div class="relative flex items-center justify-between pb-3">
         <span class="cs-hline absolute inset-x-0 bottom-0 h-px bg-black/15" style="transition-delay:270ms" aria-hidden="true"></span>
-        <dt class="text-sm font-semibold uppercase tracking-[-0.01em] text-black">
+        <dt class="text-sm font-semibold uppercase text-black">
           Location
         </dt>
         <dd
-          class="text-right text-xl font-normal leading-[1.3] tracking-[-0.01em] text-black"
+          class="text-right text-xl font-normal text-black"
         >
           {id.location}
         </dd>
@@ -208,7 +208,7 @@ const chip =
 
       <div class="relative flex items-start justify-between gap-6 pb-3">
         <span class="cs-hline absolute inset-x-0 bottom-0 h-px bg-black/15" style="transition-delay:360ms" aria-hidden="true"></span>
-        <dt class="text-sm font-semibold uppercase tracking-[-0.01em] text-black">
+        <dt class="text-sm font-semibold uppercase text-black">
           Use cases
         </dt>
         <dd class="flex flex-1 flex-wrap justify-end gap-2">
@@ -221,7 +221,7 @@ const chip =
     <div class="flex flex-1 flex-col gap-10">
       <h2
         data-reveal="title"
-        class="font-serif text-title font-normal leading-[1.05] tracking-[-0.005em] text-black"
+        class="font-serif text-title font-normal text-black"
       >
         {overview.title}
       </h2>
@@ -231,7 +231,7 @@ const chip =
             <p
               data-reveal
               style={`transition-delay:${i * 80}ms`}
-              class="text-lg font-normal leading-[1.3] tracking-[-0.02em] text-black [&_a]:underline"
+              class="text-lg font-normal text-black [&_a]:underline"
               set:html={html}
             />
           ))
@@ -265,7 +265,7 @@ const chip =
                 data-cs-tab={i}
                 aria-controls={`cs-panel-${i}`}
                 aria-selected={i === activeIndex ? "true" : "false"}
-                class={`cs-tab cursor-pointer rounded-[40px] border border-gray-200 px-8 py-4 text-center text-sm font-semibold uppercase tracking-[-0.01em] transition-colors duration-500 ease-[cubic-bezier(0.33,1,0.68,1)] motion-reduce:transition-none ${
+                class={`cs-tab cursor-pointer rounded-[40px] border border-gray-200 px-8 py-4 text-center text-sm font-semibold uppercase transition-colors duration-500 ease-[cubic-bezier(0.33,1,0.68,1)] motion-reduce:transition-none ${
                   i === activeIndex ? "bg-brand text-white" : "text-black"
                 }`}
               >
@@ -296,7 +296,7 @@ const chip =
               >
                 <blockquote
                   data-reveal
-                  class="max-w-[1042px] text-center font-normal leading-[1.1] tracking-[-0.02em] text-black text-[clamp(1.75rem,3.5vw,40px)]"
+                  class="max-w-[1042px] text-center font-normal text-black text-[clamp(1.75rem,3.5vw,40px)]"
                 >
                   {panel.quote}
                 </blockquote>
@@ -309,12 +309,12 @@ const chip =
                       class="h-[75px] w-[100px] shrink-0 rounded-[24px] object-cover"
                     />
                   )}
-                  <figcaption class="flex flex-col gap-1 leading-[1.3] text-black">
-                    <p class="text-sm font-medium uppercase tracking-[-0.01em]">
+                  <figcaption class="flex flex-col gap-1 text-black">
+                    <p class="text-sm font-medium uppercase">
                       {panel.author}
                     </p>
                     {panel.role && (
-                      <p class="whitespace-pre-line text-base font-medium tracking-[-0.01em]">
+                      <p class="whitespace-pre-line text-base font-medium">
                         {panel.role}
                       </p>
                     )}
@@ -356,7 +356,7 @@ const chip =
           <div class="relative z-10 mx-auto flex w-full max-w-[1376px] flex-col gap-12 px-6 py-16 md:gap-20 md:px-20 md:py-[120px]">
           <h2
             data-reveal="title"
-            class="relative text-center font-serif text-[clamp(2.25rem,4.5vw,56px)] font-normal leading-[1.2] tracking-[-0.02em] text-black"
+            class="relative text-center font-serif text-[clamp(2.25rem,4.5vw,56px)] font-normal text-black"
           >
             {impact.title}
           </h2>
@@ -378,7 +378,7 @@ const chip =
                 {/* white pane — flex-1 so it fills the (stretched) column height */}
                 <div class="impact-main flex flex-1 flex-col items-center justify-between gap-6 rounded-card bg-white px-8 py-10 text-center">
                   <div class="flex items-start justify-center gap-2">
-                    <span class="rounded-[40px] border border-black/[0.24] px-4 py-2 text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-black">
+                    <span class="rounded-[40px] border border-black/[0.24] px-4 py-2 text-sm font-semibold uppercase text-black">
                       {card.category}
                     </span>
                     {/* info affordance — the site's dotted ArrowCircle with an "i" */}
@@ -392,10 +392,10 @@ const chip =
                       />
                     )}
                   </div>
-                  <p class="font-serif text-[clamp(3rem,6vw,76px)] font-normal leading-[1.05] tracking-[-0.02em] text-black">
+                  <p class="font-serif text-[clamp(3rem,6vw,76px)] font-normal text-black">
                     {card.value}
                   </p>
-                  <p class="max-w-[240px] text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-black">
+                  <p class="max-w-[240px] text-sm font-semibold uppercase text-black">
                     {card.label}
                   </p>
                 </div>
@@ -422,7 +422,7 @@ const chip =
                           <path d="M12 8.01V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                       </span>
-                      <p class="text-sm font-semibold uppercase leading-[1.25] tracking-[-0.01em] text-black">
+                      <p class="text-sm font-semibold uppercase text-black">
                         {card.detail}
                       </p>
                     </div>
@@ -445,7 +445,7 @@ const chip =
         <div class="relative mx-auto flex max-w-[1280px] flex-col items-end gap-12 md:gap-20">
           <h2
             data-reveal="title"
-            class="w-full max-w-[714px] self-center text-center font-serif text-[clamp(2.25rem,4.5vw,56px)] font-normal leading-[1.2] tracking-[-0.02em] text-black"
+            class="w-full max-w-[714px] self-center text-center font-serif text-[clamp(2.25rem,4.5vw,56px)] font-normal text-black"
           >
             {related.title}
           </h2>
@@ -462,7 +462,7 @@ const chip =
 
             <a
               href={related.seeAll.href}
-              class="self-end rounded-[50px] border border-black px-6 py-3 text-sm font-semibold uppercase tracking-[-0.01em] text-black transition-colors hover:bg-black hover:text-white"
+              class="self-end rounded-[50px] border border-black px-6 py-3 text-sm font-semibold uppercase text-black transition-colors hover:bg-black hover:text-white"
             >
               {related.seeAll.label}
             </a>

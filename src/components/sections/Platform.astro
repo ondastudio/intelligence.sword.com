@@ -32,9 +32,9 @@ const {
 const iconDisc =
   "flex shrink-0 items-center justify-center rounded-[40px] bg-white p-2";
 const pillLabel =
-  "whitespace-nowrap text-sm font-semibold uppercase leading-none tracking-[-0.01em] text-black";
+  "whitespace-nowrap text-sm font-semibold uppercase text-black";
 const labelTag =
-  "rounded-[40px] border border-black/24 px-4 py-2 text-sm font-semibold uppercase tracking-[-0.01em] text-black";
+  "rounded-[40px] border border-black/24 px-4 py-2 text-sm font-semibold uppercase text-black";
 // Shared geometry for the four sweeping connector curves (authored once, then
 // flipped/rotated per corner). A black "flow" circle travels this same path so
 // it stays glued to the visible stroke under any transform.
@@ -55,10 +55,10 @@ const curves = [
   <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
     <!-- Heading -->
     <div class="mx-auto flex max-w-[820px] flex-col items-center gap-6 text-center">
-      <h2 data-reveal="title" class="font-serif text-3xl font-normal leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-display">
+      <h2 data-reveal="title" class="font-serif text-3xl font-normal sm:text-4xl lg:text-display">
         {heading}
       </h2>
-      <p data-reveal class="max-w-[600px] text-lg leading-[1.2] text-black sm:text-2xl" style="transition-delay:120ms">
+      <p data-reveal class="max-w-[600px] text-lg text-black sm:text-2xl" style="transition-delay:120ms">
         {subheading}
       </p>
     </div>

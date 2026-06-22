@@ -20,7 +20,7 @@ import FeatureCard from "../ui/FeatureCard.astro";
       <div class="flex flex-col items-center gap-8">
         <h2
           data-reveal="title"
-          class="max-w-[923px] text-center font-serif font-normal leading-[1.15] tracking-[-0.02em] text-4xl md:text-display md:leading-[1.2]"
+          class="max-w-[923px] text-center font-serif font-normal text-4xl md:text-display md:"
         >
           {care.heading.line1}<br />{care.heading.line2}<span
             class="text-brand">{care.heading.highlight}</span
@@ -28,7 +28,7 @@ import FeatureCard from "../ui/FeatureCard.astro";
         </h2>
         <p
           data-reveal
-          class="text-center text-2xl leading-[1.2] text-black"
+          class="text-center text-2xl text-black"
           style="transition-delay:120ms"
         >
           {care.subheading}
@@ -60,7 +60,7 @@ import FeatureCard from "../ui/FeatureCard.astro";
         >
           <LabelPill>{care.banner.label}</LabelPill>
           <p
-            class="max-w-[778px] leading-[1.2] tracking-[-0.02em] text-2xl md:text-lead"
+            class="max-w-[778px] text-2xl md:text-lead"
           >
             {care.banner.before}<span class="font-semibold"
               >{care.banner.highlight}</span

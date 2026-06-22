@@ -49,7 +49,7 @@ const icons: Record<string, string> = {
       </div>
       <h2
         data-reveal="title"
-        class="max-w-[952px] font-serif text-[clamp(2rem,5vw,56px)] font-normal leading-[1.2] tracking-[-0.02em]"
+        class="max-w-[952px] font-serif text-[clamp(2rem,5vw,56px)] font-normal"
       >
         {headline}
       </h2>
@@ -61,7 +61,7 @@ const icons: Record<string, string> = {
           capabilities.map((label, i) => (
             <span
               class:list={[
-                "px-4 text-sm font-semibold uppercase leading-[1.2] tracking-[-0.01em]",
+                "px-4 text-sm font-semibold uppercase",
                 i < capabilities.length - 1 && "border-r border-black/24",
               ]}
             >
@@ -125,13 +125,13 @@ const icons: Record<string, string> = {
               class="hiw-panel flex flex-col items-stretch gap-8 overflow-hidden rounded-card lg:flex-row lg:items-center lg:justify-between lg:gap-12"
             >
               <div class="flex flex-col gap-6 lg:max-w-[473px]">
-                <p class="text-sm font-semibold uppercase leading-[1.2] tracking-[-0.01em]">
+                <p class="text-sm font-semibold uppercase">
                   {step.eyebrow}
                 </p>
-                <h3 class="font-serif text-[clamp(1.75rem,4vw,48px)] font-normal leading-[1.2] tracking-[-0.02em]">
+                <h3 class="font-serif text-[clamp(1.75rem,4vw,48px)] font-normal">
                   {step.heading}
                 </h3>
-                <p class="text-[clamp(1.125rem,2vw,24px)] font-normal leading-[1.2] tracking-[-0.02em]">
+                <p class="text-[clamp(1.125rem,2vw,24px)] font-normal">
                   {step.body}
                 </p>
               </div>

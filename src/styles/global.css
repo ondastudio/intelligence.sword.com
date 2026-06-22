@@ -50,6 +50,33 @@
     Roboto, Helvetica, Arial, sans-serif;
   --font-serif: "Lora", ui-serif, Georgia, "Times New Roman", serif;
 
+  /* Line-height system (site-wide):
+       default            → 120%  (set on <body> + the size tokens below)
+       48px Figtree (sans) → 115%  (leading-[1.15] on those elements)
+       32px Figtree (sans) → 110%  (--text-lead--line-height, sans-only token)
+     Tailwind's built-in size utilities each ship their own line-height, so we
+     pin every size in use to 1.2 here; arbitrary `text-[clamp(…)]` sizes carry
+     no line-height and inherit the 1.2 from <body>. Type elements should NOT
+     carry their own `leading-*` utility — the only exception is the 48px
+     Figtree headings, which keep an explicit leading-[1.15]. */
+  --text-sm--line-height: 1.2;
+  --text-base--line-height: 1.2;
+  --text-lg--line-height: 1.2;
+  --text-xl--line-height: 1.2;
+  --text-2xl--line-height: 1.2;
+  --text-3xl--line-height: 1.2;
+  --text-4xl--line-height: 1.2;
+  --text-5xl--line-height: 1.2;
+  --text-lead--line-height: 1.1; /* 32px Figtree → 110% */
+
+  /* Letter-spacing system (site-wide):
+       default            → -2%       (set on <body>, inherited everywhere)
+       16px text-base     → +1%       (token below)
+       14px text-sm + semibold → natural (rule in BASE STYLES)
+     Type sizes should NOT carry their own `tracking-*` utility — they inherit
+     the -2% default unless they fall into one of the two exceptions above. */
+  --text-base--letter-spacing: 0.01em;
+
   /* display — section headline (Figma size/1400 = 56px) */
   --text-display: 3.5rem;
   /* title — card / stat headline (Figma size/1200 = 48px) */
@@ -98,10 +125,32 @@
    BASE STYLES
    =========================================================================== */
 @layer base {
+  /* Letter-spacing system — site-wide default of -2%, applied as a universal
+     rule (NOT inherited) so the `em` re-evaluates against EACH element's own
+     font-size. (A single value on <body> would compute to a fixed px and
+     inherit down, leaving large headings barely tracked.) Two exceptions:
+       16px (text-base + body copy) → +1%   — see token + body rule
+       14px semibold                → natural — see rule below */
+  *,
+  ::before,
+  ::after {
+    letter-spacing: -0.02em;
+  }
+
   body {
     font-family: var(--font-sans);
     background-color: #fff;
     color: #000;
+    /* body copy is 16px → +1% */
+    letter-spacing: 0.01em;
+    /* default line-height 120% — inherited by arbitrary `text-[clamp(…)]`
+       sizes (which carry no line-height of their own). */
+    line-height: 1.2;
+  }
+
+  /* 14px semibold → natural letter-spacing */
+  .text-sm.font-semibold {
+    letter-spacing: normal;
   }
 }
 
