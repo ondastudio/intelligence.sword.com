@@ -44,7 +44,7 @@ const { heading, steps, cards } = data;
            visible while the title scrolls away above it. Stacks on mobile. -->
       <div class="clinical-pin">
       <div
-        class="clinical-row mt-12 flex flex-col items-center gap-16 lg:mt-[116px] lg:flex-row lg:items-start lg:justify-between lg:gap-0"
+        class="clinical-row mt-12 flex flex-col items-center gap-16 lg:mt-[120px] lg:flex-row lg:items-start lg:justify-between lg:gap-0"
       >
         <!-- Card column -->
         <div class="flex w-full max-w-[340px] flex-col gap-4">
@@ -114,6 +114,7 @@ const { heading, steps, cards } = data;
 
     const stateA = section.querySelector<HTMLElement>('[data-clinical-state="a"]');
     const stateB = section.querySelector<HTMLElement>('[data-clinical-state="b"]');
+    const title = section.querySelector<HTMLElement>('[data-reveal="title"]');
     if (!stateA || !stateB) return;
 
     // Timeline windows over the section's scrub distance (easy to tune). Channels
@@ -121,6 +122,7 @@ const { heading, steps, cards } = data;
     // reader sees the entire illustration first; only as they keep scrolling
     // toward the next section does Clinical crossfade in over the final stretch,
     // settling just before the pin releases.
+    const TITLE_OUT: [number, number] = [0.05, 0.32]; // title fades up + out early
     const A_OUT: [number, number] = [0.7, 0.92]; // Channels fades + blurs away
     const B_IN: [number, number] = [0.74, 0.96]; // Clinical resolves out of blur
     const BLUR = 12; // px — start blur for each incoming/outgoing state
@@ -144,6 +146,10 @@ const { heading, steps, cards } = data;
       if (!enabled()) {
         clearStyles(stateA);
         clearStyles(stateB);
+        if (title) {
+          title.style.transition = "";
+          title.style.opacity = "";
+        }
         return;
       }
 
@@ -152,6 +158,22 @@ const { heading, steps, cards } = data;
         scrub > 0
           ? Math.min(1, Math.max(0, -section.getBoundingClientRect().top / scrub))
           : 0;
+
+      // Title: hold through its data-reveal entrance (blur resolve), then fade up
+      // + out as the reader scrolls on, handing the stage to the cards +
+      // illustration. Before the fade window we leave it to the CSS reveal so the
+      // entrance isn't clobbered; once it opens we kill the reveal's 0.8s opacity
+      // transition so the fade tracks scroll 1:1 instead of lagging behind it.
+      if (title) {
+        const tOut = track(p, TITLE_OUT);
+        if (tOut > 0) {
+          title.style.transition = "none";
+          title.style.opacity = String(1 - easeOutCubic(tOut));
+        } else {
+          title.style.transition = "";
+          title.style.opacity = "";
+        }
+      }
 
       const aOut = easeOutCubic(track(p, A_OUT));
       stateA.style.opacity = String(1 - aOut);
@@ -207,17 +229,16 @@ const { heading, steps, cards } = data;
     :global(html.js) .clinical-stage > div {
       height: 100%;
     }
-    /* The title scrolls away with the page; the cards + full-size (827×811)
-       diagram row pins CENTRED in a 100svh sticky frame, so the whole
-       illustration is visible (it fits any viewport taller than the diagram) and
-       held — you see the entire illustration, then it crossfades. */
+    /* The title appears in flow at the top, a fixed 120px above the cards +
+       full-size (827×811) diagram row. The row pins, centred in the viewport, so
+       the whole illustration is visible and held; as the reader scrolls the
+       title fades up and out (JS) while the pinned row stays put — you see the
+       title, it fades, then the cards + illustration, which crossfade 01→02.
+       margin-top sets the in-flow 120px gap; `top` is the centred stuck offset. */
     :global(html.js) .clinical-pin {
       position: sticky;
-      top: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-height: 100svh;
+      top: max(0px, calc((100svh - 811px) / 2));
+      margin-top: 120px;
     }
     :global(html.js) .clinical-row {
       margin-top: 0;
