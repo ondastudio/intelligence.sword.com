@@ -31,7 +31,7 @@ import ClinicalDiagram06 from "../ui/ClinicalDiagram06.astro";
 import ClinicalCards06 from "../ui/ClinicalCards06.astro";
 import data from "../../data/clinical-layer.json";
 
-const { heading, steps, cards } = data;
+const { heading, steps, cards, integrationLogos } = data;
 ---
 
 <section data-clinical-layer class="clinical-layer relative bg-surface text-black">
@@ -136,7 +136,7 @@ const { heading, steps, cards } = data;
                 label={steps[3].label}
                 class="absolute left-0 top-0 z-10"
               />
-              <ClinicalDiagram04 />
+              <ClinicalDiagram04 logos={integrationLogos} />
             </div>
           </div>
           <div data-clinical-state="f" class="clinical-state">

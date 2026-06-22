@@ -1,0 +1,118 @@
+---
+/**
+ * ClinicalLogoMarquee — the scrolling EHR / EMR logo wall that lives inside the
+ * "EHR" card of the 04 / Integrations diagram beat (ClinicalDiagram04). Each row
+ * is an infinite marquee: the logo list is rendered twice and the track is
+ * translated by -50% so the loop is seamless. Rows alternate direction. Logos
+ * sit 48px apart and are vertically centred (`align-items:center`), matching the
+ * Figma "Logos" frame (8714:262); they are forced to a uniform solid black via
+ * `brightness(0)` like LogoStrip. Authored at the source frame's native scale —
+ * the parent SVG <g transform> scales the whole wall down into the card, so the
+ * 48px gap is preserved proportionally.
+ *
+ * Content is passed in (rows of logos) so the component stays generic; the home
+ * page feeds it from src/data/clinical-layer.json → integrationLogos.
+ */
+interface LogoItem {
+  src: string;
+  alt: string;
+  /** Display height in px at the marquee's native scale (the logo's glyph
+   *  height, so wordmarks keep their true relative size). */
+  h: number;
+}
+interface Props {
+  rows: LogoItem[][];
+  class?: string;
+}
+const { rows, class: className = "" } = Astro.props;
+---
+
+<div class={`ehr-marquee ${className}`}>
+  {
+    rows.map((row, r) => (
+      <div class="ehr-marquee__row" data-dir={r % 2 === 0 ? "ltr" : "rtl"}>
+        <div class="ehr-marquee__track">
+          {[0, 1].map((copy) =>
+            row.map((logo) => (
+              <img
+                src={logo.src}
+                alt={copy === 0 ? logo.alt : ""}
+                aria-hidden={copy === 0 ? undefined : "true"}
+                loading="lazy"
+                class="ehr-marquee__logo"
+                style={`height:${logo.h}px`}
+              />
+            )),
+          )}
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .ehr-marquee {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 48px;
+    width: 100%;
+    height: 100%;
+  }
+  .ehr-marquee__row {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 9%,
+      #000 91%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 9%,
+      #000 91%,
+      transparent
+    );
+  }
+  .ehr-marquee__track {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    width: max-content;
+    animation: ehr-marquee-scroll 38s linear infinite;
+  }
+  .ehr-marquee__row[data-dir="rtl"] .ehr-marquee__track {
+    animation-name: ehr-marquee-scroll-rev;
+    animation-duration: 32s;
+  }
+  .ehr-marquee__logo {
+    display: block;
+    width: auto;
+    flex: none;
+    filter: brightness(0);
+  }
+  @keyframes ehr-marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      /* -50% of the doubled track + half the seam gap = one full set */
+      transform: translateX(calc(-50% - 24px));
+    }
+  }
+  @keyframes ehr-marquee-scroll-rev {
+    from {
+      transform: translateX(calc(-50% - 24px));
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ehr-marquee__track {
+      animation: none;
+    }
+  }
+</style>
