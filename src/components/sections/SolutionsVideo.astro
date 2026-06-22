@@ -1,0 +1,16 @@
+---
+/**
+ * SolutionsVideo — the same scroll-driven fullscreen product video that runs on
+ * the home page (the `Intro` demo film). Wraps the shared `ProductVideo` stage
+ * so the Solutions page reuses one scrubber and one media source. Content comes
+ * from src/data/solutions.json (`media`).
+ */
+import solutions from "../../data/solutions.json";
+import ProductVideo from "../ui/ProductVideo.astro";
+
+const { src, poster, alt } = solutions.media;
+---
+
+<section class="bg-surface text-black">
+  <ProductVideo src={src} poster={poster} alt={alt} />
+</section>

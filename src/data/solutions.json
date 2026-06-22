@@ -14,6 +14,11 @@
       { "src": "/logos/vivamas.svg", "alt": "VivaMás Medical Centers" }
     ]
   },
+  "media": {
+    "src": "/intro/product.webm",
+    "poster": "/intro/product.png",
+    "alt": "Sword Intelligence AI Care Manager handling a patient call"
+  },
   "problem": {
     "eyebrow": "Problem",
     "heading": "The wait and the recovery are intervention windows. Most systems stay passive through both.",
