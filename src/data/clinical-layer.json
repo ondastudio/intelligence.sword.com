@@ -31,20 +31,20 @@
   ],
   "integrationLogos": [
     [
-      { "src": "/clinical/integrations/epic.svg", "alt": "Epic", "h": 40 },
-      { "src": "/clinical/integrations/advancedmd.svg", "alt": "AdvancedMD", "h": 41 },
-      { "src": "/clinical/integrations/cerner.png", "alt": "Cerner", "h": 45 },
-      { "src": "/clinical/integrations/elation.png", "alt": "Elation", "h": 44 },
-      { "src": "/clinical/integrations/eclinicalworks.png", "alt": "eClinicalWorks", "h": 28 },
-      { "src": "/clinical/integrations/greenway.svg", "alt": "Greenway Health", "h": 37 }
+      { "src": "/clinical/integrations/epic.svg", "alt": "Epic", "h": 22 },
+      { "src": "/clinical/integrations/advancedmd.svg", "alt": "AdvancedMD", "h": 22 },
+      { "src": "/clinical/integrations/cerner.png", "alt": "Cerner", "h": 25 },
+      { "src": "/clinical/integrations/elation.png", "alt": "Elation", "h": 24 },
+      { "src": "/clinical/integrations/eclinicalworks.png", "alt": "eClinicalWorks", "h": 15 },
+      { "src": "/clinical/integrations/greenway.svg", "alt": "Greenway Health", "h": 20 }
     ],
     [
-      { "src": "/clinical/integrations/meditech.svg", "alt": "MEDITECH", "h": 51 },
-      { "src": "/clinical/integrations/nextech.svg", "alt": "Nextech", "h": 29 },
-      { "src": "/clinical/integrations/modmed.svg", "alt": "ModMed", "h": 44 },
-      { "src": "/clinical/integrations/athena.svg", "alt": "athenahealth", "h": 30 },
-      { "src": "/clinical/integrations/trubridge.svg", "alt": "TruBridge", "h": 42 },
-      { "src": "/clinical/integrations/veradigm.svg", "alt": "Veradigm", "h": 45 }
+      { "src": "/clinical/integrations/meditech.svg", "alt": "MEDITECH", "h": 28 },
+      { "src": "/clinical/integrations/nextech.svg", "alt": "Nextech", "h": 16 },
+      { "src": "/clinical/integrations/modmed.svg", "alt": "ModMed", "h": 24 },
+      { "src": "/clinical/integrations/athena.svg", "alt": "athenahealth", "h": 16 },
+      { "src": "/clinical/integrations/trubridge.svg", "alt": "TruBridge", "h": 23 },
+      { "src": "/clinical/integrations/veradigm.svg", "alt": "Veradigm", "h": 25 }
     ]
   ]
 }

@@ -297,15 +297,15 @@ const { class: className = "", logos = [] } = Astro.props;
 <rect x="654.505" y="24.5" width="59" height="32" rx="16" stroke="black" stroke-opacity="0.24"/>
 <path d="M671.167 45V35.2H677.201V36.684H672.791V39.288H676.683V40.744H672.791V43.516H677.243V45H671.167ZM679.425 45V35.2H681.049V39.232H685.977V35.2H687.601V45H685.977V40.716H681.049V45H679.425ZM689.925 45V35.2H693.383C694.055 35.2 694.647 35.3307 695.161 35.592C695.674 35.8533 696.075 36.2173 696.365 36.684C696.654 37.1413 696.799 37.6733 696.799 38.28C696.799 38.924 696.621 39.4933 696.267 39.988C695.912 40.4733 695.445 40.8327 694.867 41.066L697.191 45H695.357L693.257 41.374C693.201 41.3833 693.14 41.388 693.075 41.388C693.019 41.388 692.958 41.388 692.893 41.388H691.549V45H689.925ZM691.549 39.89H693.453C693.77 39.89 694.05 39.82 694.293 39.68C694.545 39.54 694.745 39.3487 694.895 39.106C695.053 38.8633 695.133 38.588 695.133 38.28C695.133 37.8133 694.965 37.4307 694.629 37.132C694.293 36.8333 693.859 36.684 693.327 36.684H691.549V39.89Z" fill="black"/>
 <!-- EHR logo wall: the static Figma logos are replaced by a scrolling
-     marquee (ClinicalLogoMarquee). Authored at the source frame's native
-     scale, then scaled into the card region (x 555.5..832.7, y 66..174). -->
-<g transform="translate(555.505 66) scale(0.72)">
-<foreignObject x="0" y="0" width="385" height="150" overflow="hidden">
-<div xmlns="http://www.w3.org/1999/xhtml" style="width:385px;height:150px">
+     marquee (ClinicalLogoMarquee), authored 1:1 in the card's own units.
+     Card is x 531.5..836.5, y 0..185; 24px margins inset the logo strip to
+     x 555.5..812.5 (w 257), and it starts 24px below the EHR pill (bottom
+     56.5) at y 80.5, ending 24px above the card bottom at y 161 (h 80.5). -->
+<foreignObject x="555.505" y="80.5" width="257" height="80.5" overflow="hidden">
+<div xmlns="http://www.w3.org/1999/xhtml" style="width:257px;height:80.5px">
 <ClinicalLogoMarquee rows={logos} />
 </div>
 </foreignObject>
-</g>
 </g>
 <defs>
 <clipPath id="bgblur_0_8711_880_clip_path" transform="translate(-527.505 4)"><rect x="531.505" width="305" height="185" rx="24"/>
