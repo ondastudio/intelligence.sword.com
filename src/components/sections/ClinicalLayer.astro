@@ -1,0 +1,73 @@
+---
+/**
+ * ClinicalLayer — "The clinical intelligence layer between your patients and
+ * your tech stack." (Figma "Clinical Intelligence Layer", 8718:1332).
+ *
+ * A centered Lora title (purple "clinical intelligence layer" accent) over a
+ * row that pairs a left-hugging column of three frosted (`bg-ink-wash`)
+ * capability cards — each a LabelPill above a short centered Figtree
+ * description — with the patients→tech-stack node diagram on the right
+ * (`/clinical-layer/diagram.svg`, native 827×810). The diagram top-aligns with
+ * the card column (so the section bottom lands at the design's 1191 frame).
+ * Title resolves from blur; the cards (staggered bottom-to-top) and the diagram
+ * fade up together on first view.
+ *
+ * Geometry matches the 1440-wide frame: 56px title, 340px cards, 32px card
+ * padding, 20px inner gap, 16px between cards, 40px radius, 827×810 diagram.
+ * Content comes from src/data/clinical-layer.json.
+ */
+import LabelPill from "../ui/LabelPill.astro";
+import ClinicalDiagram from "../ui/ClinicalDiagram.astro";
+import data from "../../data/clinical-layer.json";
+
+const { heading, cards } = data;
+---
+
+<section class="clinical-layer relative overflow-hidden bg-surface text-black">
+  <div
+    class="mx-auto w-full max-w-[1440px] px-4 py-20 sm:px-6 lg:px-20 lg:pt-[121px] lg:pb-[10px]"
+  >
+    <!-- Title -->
+    <h2
+      data-reveal="title"
+      class="mx-auto max-w-[980px] text-center font-serif text-3xl font-normal sm:text-4xl lg:text-display"
+    >
+      {heading.before}<span class="text-brand">{heading.accent}</span>{heading.after}
+    </h2>
+
+    <!-- Cards (left) + diagram (right). Top-aligned so the diagram bottom seats
+         at the design's 1191 frame; stacks on mobile. -->
+    <div
+      class="mt-12 flex flex-col items-center gap-16 lg:mt-[116px] lg:flex-row lg:items-start lg:justify-between lg:gap-0"
+    >
+      <!-- Card column -->
+      <div class="flex w-full max-w-[340px] flex-col gap-4">
+        {
+          cards.map((card, i) => (
+            <div
+              data-reveal
+              class="flex flex-col items-center justify-center gap-5 rounded-card bg-ink-wash p-8"
+              style={`transition-delay:${120 + (cards.length - 1 - i) * 120}ms`}
+            >
+              <LabelPill>{card.label}</LabelPill>
+              <p class="text-center text-lg">
+                {card.lines.map((line, j) => (
+                  <>
+                    {j > 0 && <br />}
+                    {line}
+                  </>
+                ))}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- Node diagram (inlined SVG, native 827×810 — inlined so its icon-disc
+           backdrop-filter blur chips render) -->
+      <div data-reveal class="w-full max-w-[827px]" style="transition-delay:240ms">
+        <ClinicalDiagram />
+      </div>
+    </div>
+  </div>
+</section>

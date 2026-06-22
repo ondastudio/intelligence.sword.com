@@ -1,0 +1,25 @@
+{
+  "heading": {
+    "before": "The ",
+    "accent": "clinical intelligence layer",
+    "after": " between your patients and your tech stack."
+  },
+  "cards": [
+    {
+      "label": "Ready to integrate",
+      "lines": ["Work 24/7, answering every call", "and monitoring your population."]
+    },
+    {
+      "label": "No API? No problem",
+      "lines": ["Browser agents navigate legacy", "systems just like your staff would."]
+    },
+    {
+      "label": "Never stops learning",
+      "lines": [
+        "Our memory system learns",
+        "from past interactions",
+        "to continuously improve performance over time."
+      ]
+    }
+  ]
+}
