@@ -1,0 +1,72 @@
+---
+/**
+ * Dashboards — "Complex operations? Complete control."
+ *
+ * A two-column section: on the left a centered heading + supporting line over a
+ * vertical stack of three frosted-lavender capability cards (icon disc + a short
+ * statement); on the right a large isometric dashboard illustration. Stacks to a
+ * single centered column below `lg`. Content comes from src/data/dashboards.json;
+ * the illustration + card icons live in public/dashboards/ (extracted from the
+ * design export).
+ */
+import data from "../../data/dashboards.json";
+
+const { heading, subheading, cards, illustration, illustrationAlt } = data;
+---
+
+<section class="relative overflow-hidden bg-surface text-black">
+  <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
+    <div
+      class="mx-auto flex max-w-[1280px] flex-col items-center gap-16 py-[120px] lg:flex-row lg:justify-between lg:gap-20"
+    >
+      <!-- Left: heading + supporting line + capability cards -->
+      <div class="flex w-full max-w-[380px] flex-col items-center gap-12">
+        <div class="flex flex-col items-center gap-5 text-center">
+          <h2
+            data-reveal="title"
+            class="font-sans font-medium text-3xl md:text-4xl"
+          >
+            {heading[0]}<br />{heading[1]}
+          </h2>
+          <p
+            data-reveal
+            class="text-center text-xl md:text-2xl"
+            style="transition-delay:120ms"
+          >
+            {subheading.before}<strong class="font-semibold"
+              >{subheading.highlight}</strong
+            >{subheading.after}
+          </p>
+        </div>
+
+        <div class="flex w-full flex-col gap-4">
+          {
+            cards.map((card, i) => (
+              <div
+                data-reveal
+                style={`transition-delay:${(i + 1) * 120}ms`}
+                class="flex h-[170px] flex-col items-center justify-center gap-5 rounded-card bg-purple-tint px-8 text-center"
+              >
+                <img src={card.icon} alt="" aria-hidden="true" class="size-10" />
+                <p class="text-lg">
+                  {card.before}
+                  <strong class="font-semibold">{card.highlight}</strong>
+                  {card.after}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Right: isometric dashboard illustration -->
+      <img
+        data-reveal
+        src={illustration}
+        alt={illustrationAlt}
+        style="transition-delay:160ms"
+        class="w-full max-w-[560px] lg:max-w-[700px]"
+      />
+    </div>
+  </div>
+</section>
