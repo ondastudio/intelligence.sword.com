@@ -60,19 +60,22 @@ const { rows, class: className = "" } = Astro.props;
   }
   .ehr-marquee__row {
     overflow: hidden;
+    /* Fade margins: opaque from 24px in (7.9% of the 305-wide card interior) to
+       24px from the right, transparent at the edges — the hard clip lands in
+       fully-transparent pixels so there's no edge sliver. */
     -webkit-mask-image: linear-gradient(
       to right,
-      transparent,
-      #000 9%,
-      #000 91%,
-      transparent
+      transparent 0,
+      #000 7.9%,
+      #000 92.1%,
+      transparent 100%
     );
     mask-image: linear-gradient(
       to right,
-      transparent,
-      #000 9%,
-      #000 91%,
-      transparent
+      transparent 0,
+      #000 7.9%,
+      #000 92.1%,
+      transparent 100%
     );
   }
   .ehr-marquee__track {
