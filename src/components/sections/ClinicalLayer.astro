@@ -230,14 +230,14 @@ const { heading, steps, cards } = data;
       height: 100%;
     }
     /* The title appears in flow at the top, a fixed 120px above the cards +
-       full-size (827×811) diagram row. The row pins, centred in the viewport, so
-       the whole illustration is visible and held; as the reader scrolls the
-       title fades up and out (JS) while the pinned row stays put — you see the
-       title, it fades, then the cards + illustration, which crossfade 01→02.
-       margin-top sets the in-flow 120px gap; `top` is the centred stuck offset. */
+       diagram row. The row pins 80px below the top of the viewport so the held
+       illustration sits with an 80px top + 32px bottom margin; as the reader
+       scrolls the title fades up and out (JS) while the pinned row stays put —
+       you see the title, it fades, then the cards + illustration, which crossfade
+       01→02. margin-top is the in-flow 120px gap; `top` is the pinned offset. */
     :global(html.js) .clinical-pin {
       position: sticky;
-      top: max(0px, calc((100svh - 811px) / 2));
+      top: 80px;
       margin-top: 120px;
     }
     :global(html.js) .clinical-row {
@@ -249,6 +249,12 @@ const { heading, steps, cards } = data;
        diagram is shown at the same dimensions as the un-pinned design. */
     :global(html.js) .clinical-diagrams {
       position: relative;
+      /* Keep the native 827×811 illustration whenever it fits; if the viewport is
+         too short to hold it under the 80px top + 32px bottom margins, scale it
+         down by width (the SVG's viewBox preserves the aspect ratio) so those
+         margins are honoured exactly. Both crossfade states are w-full of this
+         column, so constraining it here keeps them aligned. */
+      width: min(827px, calc((100svh - 112px) * 827 / 811));
     }
     /* Drop the fallback sibling gap so State B overlaps State A exactly (a
        leftover margin-top would push the absolute panel down + shrink it). */
