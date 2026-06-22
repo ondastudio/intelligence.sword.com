@@ -113,9 +113,13 @@ const { heading, steps, cards } = data;
     const stateB = section.querySelector<HTMLElement>('[data-clinical-state="b"]');
     if (!stateA || !stateB) return;
 
-    // Timeline windows over the section's scrub distance (easy to tune).
-    const A_OUT: [number, number] = [0.15, 0.55]; // Channels fades + blurs away
-    const B_IN: [number, number] = [0.45, 0.85]; // Clinical resolves out of blur
+    // Timeline windows over the section's scrub distance (easy to tune). The
+    // first stretch is a deliberate HOLD: Channels stays fully visible so the
+    // reader takes in the whole illustration before anything changes. Only once
+    // they keep scrolling (past ~45%) does Clinical resolve in; it then holds
+    // fully visible through the tail before the pin releases to the next section.
+    const A_OUT: [number, number] = [0.45, 0.72]; // Channels fades + blurs away
+    const B_IN: [number, number] = [0.5, 0.78]; // Clinical resolves out of blur
     const BLUR = 12; // px — start blur for each incoming/outgoing state
 
     const track = (p: number, [a, b]: [number, number]) =>
