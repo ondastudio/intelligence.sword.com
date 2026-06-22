@@ -103,12 +103,52 @@ const trackVh = steps.length * 100;
                 </div>
               ))
             }
+
+            <!-- EHR logo marquee — overlays the card's logo area on its step.
+                 The logos live in an external SVG strip, so they're rendered as
+                 real HTML <img> (external refs don't load inside an <img> SVG).
+                 Two copies scroll seamlessly (translateX -50% = one strip). -->
+            {
+              steps.map((s, i) =>
+                s.marquee ? (
+                  <div
+                    data-step-marquee
+                    data-index={i}
+                    class="absolute overflow-hidden transition-opacity duration-500 ease-out motion-reduce:transition-none"
+                    style={`left:1073px;top:82px;width:270px;height:78px;opacity:${i === 0 ? 1 : 0}`}
+                  >
+                    <div class="ehr-marquee flex h-full w-max">
+                      <img src={s.marquee} alt="" aria-hidden="true" class="h-full w-auto max-w-none" />
+                      <img src={s.marquee} alt="" aria-hidden="true" class="h-full w-auto max-w-none" />
+                    </div>
+                  </div>
+                ) : null,
+              )
+            }
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* EHR card logo marquee — continuous horizontal scroll. Two identical strips
+     sit side by side, so shifting by one strip width (-50%) loops seamlessly. */
+  .ehr-marquee {
+    animation: ehr-marquee 28s linear infinite;
+  }
+  @keyframes ehr-marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ehr-marquee {
+      animation: none;
+    }
+  }
+</style>
 
 <script>
   const section = document.querySelector<HTMLElement>(".integrations");
@@ -119,6 +159,7 @@ const trackVh = steps.length * 100;
     const stage = section.querySelector<HTMLElement>("[data-stage]")!;
     const imgs = Array.from(section.querySelectorAll<HTMLElement>("[data-step-img]"));
     const badges = Array.from(section.querySelectorAll<HTMLElement>("[data-step-badge]"));
+    const marquees = Array.from(section.querySelectorAll<HTMLElement>("[data-step-marquee]"));
     const steps = imgs.length;
 
     // Scale the fixed 1440×810 scene to fit BOTH the container width and the
@@ -139,6 +180,7 @@ const trackVh = steps.length * 100;
       current = i;
       imgs.forEach((el, idx) => (el.style.opacity = idx === i ? "1" : "0"));
       badges.forEach((el, idx) => (el.style.opacity = idx === i ? "1" : "0"));
+      marquees.forEach((el) => (el.style.opacity = Number(el.dataset.index) === i ? "1" : "0"));
     };
 
     const update = () => {

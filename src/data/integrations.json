@@ -21,6 +21,8 @@
   "steps": [
     { "number": "01", "label": "Channels", "illustration": "/clinical/layer-1.svg" },
     { "number": "02", "label": "Intelligence", "illustration": "/clinical/layer-2.svg" },
-    { "number": "03", "label": "Capabilities", "illustration": "/clinical/layer-3.svg" }
+    { "number": "03", "label": "AI skills", "illustration": "/clinical/layer-3.svg" },
+    { "number": "03", "label": "AI skills", "illustration": "/clinical/layer-3-1.svg" },
+    { "number": "04", "label": "Tech stack", "illustration": "/clinical/layer-4.svg", "marquee": "/clinical/ehr-logos.svg" }
   ]
 }
