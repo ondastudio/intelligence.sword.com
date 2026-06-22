@@ -14,7 +14,7 @@
     "navLabel": "Care Orchestration",
     "tabs": [
       "No-show & waiting\nlist reduction",
-      "Preventive\npopulation campaigns",
+      "Population\nhealth campaigns",
       "Surgery prehab\nand rehab",
       "Readmission\nprevention"
     ],
@@ -40,7 +40,7 @@
         }
       },
       {
-        "title": "Preventive Population Campaigns",
+        "title": "Population Health Campaigns",
         "headline": {
           "highlight": "Close population care gaps",
           "rest": " proactively."
@@ -110,8 +110,8 @@
       "alt": "MDR Class IIa Compliant"
     },
     "headline": {
-      "highlight": "Health hotline",
-      "rest": " that guides every patient to the right care."
+      "highlight": "Health Triage line that",
+      "rest": "\nguides every patient\nto the right care."
     },
     "points": [
       { "strong": "Certified", "rest": " for clinical use." },

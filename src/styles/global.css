@@ -81,6 +81,8 @@
   --text-display: 3.5rem;
   /* title — card / stat headline (Figma size/1200 = 48px) */
   --text-title: 3rem;
+  /* card-title — solution card headline; sized to fit the card column in 3 lines (42px) */
+  --text-card-title: 2.625rem;
   /* lead — large supporting statement (Figma size/800 = 32px) */
   --text-lead: 2rem;
   /* stat — Platform big metric numbers (Figma size/1900 = 76px) */

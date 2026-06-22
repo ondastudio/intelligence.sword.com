@@ -1,9 +1,9 @@
 {
   "logo": { "bold": "sword", "regular": "Intelligence" },
   "nav": [
-    { "label": "Solution", "href": "/solutions" },
+    { "label": "Solution", "href": "/solutions", "hidden": true },
     { "label": "About", "href": "/about" },
-    { "label": "Resources", "href": "#" },
+    { "label": "Resources", "href": "#", "hidden": true },
     { "label": "Our customers", "href": "/customers" }
   ],
   "cta": { "label": "Book a meeting", "href": "#" }

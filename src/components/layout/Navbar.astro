@@ -27,7 +27,7 @@ const { tone = "dark" } = Astro.props;
       class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex"
     >
       {
-        site.nav.map((item) => (
+        site.nav.filter((item) => !item.hidden).map((item) => (
           <Button variant="glass" tone={tone} href={item.href} caret={item.caret}>
             {item.label}
           </Button>
