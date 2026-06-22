@@ -11,10 +11,6 @@
  * Generic and content-free: pass the `MediaFrame` source (`src`/`poster`/`alt`).
  * Shared by the home `Intro` and the Solutions page so there's a single copy of
  * the scrubber script (querying every `[data-video-scroll]` once).
- *
- * `darken` (home `Intro` only) adds the Ramp "Introducing Stack" treatment: a
- * fixed backdrop dims the rest of the page as the frame grows toward centre and
- * lifts again as it leaves, so the video reads as stepping forward off the page.
  */
 import MediaFrame from "./MediaFrame.astro";
 
@@ -22,22 +18,19 @@ interface Props {
   src: string;
   poster?: string;
   alt: string;
-  darken?: boolean;
   class?: string;
 }
-const { src, poster, alt, darken = false, class: className = "" } = Astro.props;
+const { src, poster, alt, class: className = "" } = Astro.props;
 ---
 
 <div
   data-reveal
   data-video-scroll
-  data-video-darken={darken ? "" : undefined}
-  class:list={["video-scroll relative w-full", darken ? "z-30" : "z-10", className]}
+  class:list={["video-scroll relative z-10 w-full", className]}
 >
-  {darken && <div data-video-dim class="video-dim" aria-hidden="true"></div>}
   <div
     data-video-frame
-    class="video-frame relative mx-auto overflow-hidden bg-white will-change-transform"
+    class="video-frame mx-auto overflow-hidden bg-white will-change-transform"
   >
     <MediaFrame src={src} poster={poster} alt={alt} fill progress />
   </div>
@@ -53,19 +46,6 @@ const { src, poster, alt, darken = false, class: className = "" } = Astro.props;
     max-width: 1408px;
     aspect-ratio: 1920 / 1080;
     border-radius: var(--radius-card);
-  }
-
-  /* Ramp-style page dim: a fixed black backdrop that sits behind the frame
-     (the frame's z-index lifts it clear) but above the rest of the page. The
-     scrubber drives its opacity in lockstep with the scale. Hidden in the
-     fallback; only the enhanced path animates it. */
-  .video-dim {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    background-color: #000;
-    opacity: 0;
-    pointer-events: none;
   }
 
   /* Enhanced: full-bleed stage the scrubber scales between 0.82 → 1 → 0.82. */
@@ -98,12 +78,8 @@ const { src, poster, alt, darken = false, class: className = "" } = Astro.props;
     if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches)
       return;
 
-    // Ramp-style page dim (home Intro only): opt-in via [data-video-darken].
-    const dim = stage.querySelector<HTMLElement>("[data-video-dim]");
-
     const MIN_SCALE = 0.82;
     const MAX_RADIUS = 40; // px — matches --radius-card
-    const MAX_DIM = 0.55; // peak darkness of the rest of the page
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
     let ticking = false;
@@ -124,7 +100,6 @@ const { src, poster, alt, darken = false, class: className = "" } = Astro.props;
       const radius = MAX_RADIUS * (1 - eased);
       frame.style.transform = `scale(${scale})`;
       frame.style.borderRadius = `${radius}px`;
-      if (dim) dim.style.opacity = `${eased * MAX_DIM}`;
     };
 
     const onScroll = () => {
