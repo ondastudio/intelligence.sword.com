@@ -39,8 +39,10 @@ const { heading, steps, cards } = data;
         {heading.before}<span class="text-brand">{heading.accent}</span>{heading.after}
       </h2>
 
-      <!-- Cards (left) + crossfading diagram (right). Top-aligned; stacks on
-           mobile. -->
+      <!-- Cards (left) + crossfading diagram (right). On lg+ the row is pinned
+           centred in the viewport (.clinical-pin) so the whole illustration is
+           visible while the title scrolls away above it. Stacks on mobile. -->
+      <div class="clinical-pin">
       <div
         class="clinical-row mt-12 flex flex-col items-center gap-16 lg:mt-[116px] lg:flex-row lg:items-start lg:justify-between lg:gap-0"
       >
@@ -92,6 +94,7 @@ const { heading, steps, cards } = data;
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -195,19 +198,29 @@ const { heading, steps, cards } = data;
     :global(html.js) .clinical-layer {
       height: calc(100svh + 90vh);
     }
+    /* Stage + its inner container span the whole tall section so the pin can
+       stay stuck across the full scrub distance. */
     :global(html.js) .clinical-stage {
+      height: 100%;
+      padding-block: clamp(4rem, 9vw, 96px) 0;
+    }
+    :global(html.js) .clinical-stage > div {
+      height: 100%;
+    }
+    /* The title scrolls away with the page; the cards + full-size (827×811)
+       diagram row pins CENTRED in a 100svh sticky frame, so the whole
+       illustration is visible (it fits any viewport taller than the diagram) and
+       held — you see the entire illustration, then it crossfades. */
+    :global(html.js) .clinical-pin {
       position: sticky;
       top: 0;
       display: flex;
+      flex-direction: column;
+      justify-content: center;
       min-height: 100svh;
-      align-items: center;
-      padding-block: clamp(1rem, 3vw, 32px);
     }
-    /* Compress the title→diagram gap while pinned so the full-size (827×811)
-       diagram has as much vertical room as possible. The static/fallback view
-       keeps the design's 116px gap. */
     :global(html.js) .clinical-row {
-      margin-top: clamp(1.5rem, 5vh, 48px);
+      margin-top: 0;
     }
     /* The diagram column becomes a positioning context; both states overlap in
        one slot. State A stays in flow (defines the height); State B sits over it
