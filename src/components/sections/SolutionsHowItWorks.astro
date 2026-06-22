@@ -1,0 +1,226 @@
+---
+/**
+ * SolutionsHowItWorks — the "HOW IT WORKS / Enroll. Coach. Prepare. Recover."
+ * stepper on the Solutions page (Figma `8679:2`, "Triage" frame).
+ *
+ * A centered header (Eyebrow + Lora headline + a hairline-divided row of platform
+ * capabilities) sits above an interactive stepper: a lateral icon navbar (the
+ * design's `bg-ink-wash` pill of five `gray-200`-outlined 40px icon chips) selects
+ * one of five steps, each a card with a left text column (eyebrow / Lora heading /
+ * body) and a white media placeholder card on the right. The icons are line glyphs
+ * inlined with `currentColor` so the active chip can light up in the brand purple
+ * (per the design annotation, the icon set is meant to change per solution).
+ *
+ * All five panels are stacked in one CSS grid cell (`grid-area: 1/1`) so the area
+ * auto-sizes to the tallest step and panels crossfade in place with no layout jump;
+ * the navbar drives `[data-active]` on the section. Below `lg` the navbar becomes a
+ * horizontal row above the card and each panel stacks text over media. Gated on the
+ * shared `[data-reveal]` entrance; reduced motion gets instant swaps.
+ *
+ * Content-free — copy comes from src/data/solutions.json (`howItWorks`).
+ */
+import Eyebrow from "../ui/Eyebrow.astro";
+import solutions from "../../data/solutions.json";
+
+const { eyebrow, headline, capabilities, steps } = solutions.howItWorks;
+
+// Line glyphs for the navbar, keyed by `step.icon`. Sliced from the Figma export
+// and switched to `currentColor` so the chip colours them via text colour.
+const icons: Record<string, string> = {
+  "content-writing": `<path d="M14.4857 22H13V20.5142C13 20.0427 13.1873 19.5905 13.5206 19.2571L18.3875 14.3905C18.9082 13.8698 19.7523 13.8698 20.2729 14.3905L20.6095 14.7271C21.1301 15.2478 21.1301 16.092 20.6095 16.6127L15.7426 21.4793C15.4093 21.8127 14.9571 22 14.4857 22Z"/><path d="M19 10V9C19 5.70017 19 4.05025 17.9749 3.02513C16.9497 2 15.2998 2 12 2H10C6.70017 2 5.05025 2 4.02512 3.02513C3 4.05025 3 5.70017 3 9V16C3 18.3389 3 19.5083 3.53646 20.3621C3.81621 20.8073 4.19267 21.1838 4.63789 21.4635C5.49167 22 6.66111 22 9 22"/><path d="M11 6H15"/><path d="M7 10H15"/><path d="M7 14H13"/>`,
+  "bubble-chat": `<path d="M21.5 12C21.5 17.2467 17.2467 21.5 12 21.5C10.3719 21.5 8.8394 21.0904 7.5 20.3687C5.63177 19.362 4.37462 20.2979 3.26592 20.4658C3.09774 20.4913 2.93024 20.4302 2.80997 20.31C2.62741 20.1274 2.59266 19.8451 2.6935 19.6074C3.12865 18.5818 3.5282 16.6382 2.98341 15C2.6698 14.057 2.5 13.0483 2.5 12C2.5 6.75329 6.75329 2.5 12 2.5C17.2467 2.5 21.5 6.75329 21.5 12Z"/><path d="M12.1257 12H12.0007M8.125 12H8M16.125 12H16M12.2507 12C12.2507 12.1381 12.1388 12.25 12.0007 12.25C11.8627 12.25 11.7507 12.1381 11.7507 12C11.7507 11.8619 11.8627 11.75 12.0007 11.75C12.1388 11.75 12.2507 11.8619 12.2507 12ZM8.25 12C8.25 12.1381 8.13807 12.25 8 12.25C7.86193 12.25 7.75 12.1381 7.75 12C7.75 11.8619 7.86193 11.75 8 11.75C8.13807 11.75 8.25 11.8619 8.25 12ZM16.25 12C16.25 12.1381 16.1381 12.25 16 12.25C15.8619 12.25 15.75 12.1381 15.75 12C15.75 11.8619 15.8619 11.75 16 11.75C16.1381 11.75 16.25 11.8619 16.25 12Z"/>`,
+  "orthogonal-edge": `<path d="M8 6H9.78046C11.7968 6 12.8049 6 13.3136 6.24139C14.5399 6.82331 15.0779 8.27746 14.5255 9.51737C14.2963 10.0317 13.5309 10.6878 12 12C10.4691 13.3122 9.70366 13.9683 9.47452 14.4826C8.92213 15.7225 9.46006 17.1767 10.6864 17.7586C11.1951 18 12.2032 18 14.2195 18H16" stroke-linecap="round"/><path d="M2 6C2 7.65685 3.34315 9 5 9C6.65685 9 8 7.65685 8 6C8 4.34315 6.65685 3 5 3C3.34315 3 2 4.34315 2 6Z" stroke-linecap="round"/><path d="M16 18C16 19.6569 17.3431 21 19 21C20.6569 21 22 19.6569 22 18C22 16.3431 20.6569 15 19 15C17.3431 15 16 16.3431 16 18Z" stroke-linecap="round"/>`,
+  "ai-audio": `<path d="M11.5 6C7.02166 6 4.78249 6 3.39124 7.17157C2 8.34315 2 10.2288 2 14C2 17.7712 2 19.6569 3.39124 20.8284C4.78249 22 7.02166 22 11.5 22C15.9783 22 18.2175 22 19.6088 20.8284C21 19.6569 21 17.7712 21 14C21 12.8302 21 11.8419 20.9585 11"/><path d="M18.5 2L18.7579 2.69703C19.0961 3.61102 19.2652 4.06802 19.5986 4.40139C19.932 4.73477 20.389 4.90387 21.303 5.24208L22 5.5L21.303 5.75792C20.389 6.09613 19.932 6.26524 19.5986 6.59861C19.2652 6.93198 19.0961 7.38898 18.7579 8.30297L18.5 9L18.2421 8.30297C17.9039 7.38898 17.7348 6.93198 17.4014 6.59861C17.068 6.26524 16.611 6.09613 15.697 5.75792L15 5.5L15.697 5.24208C16.611 4.90387 17.068 4.73477 17.4014 4.40139C17.7348 4.06802 17.9039 3.61102 18.2421 2.69703L18.5 2Z"/><path d="M12 10V18"/><path d="M9 12V16"/><path d="M6 13V15"/><path d="M15 12V16"/><path d="M18 13V15"/>`,
+  "home-10": `<path d="M8.9412 6.34883L10.7549 8.90093C11.1244 9.42085 11.3092 9.68081 11.4046 9.98004C11.5 10.2793 11.5 10.5987 11.5 11.2377V20H5.5C3.61438 20 2.67157 20 2.08579 19.4112C1.5 18.8225 1.5 17.8749 1.5 15.9797V11.2377C1.5 10.5987 1.5 10.2793 1.59541 9.98004C1.69082 9.68081 1.87557 9.42085 2.24507 8.90093L4.0588 6.34883C5.17165 4.78294 5.72807 4 6.5 4C7.27193 4 7.82835 4.78294 8.9412 6.34883Z"/><path d="M8.5 20V16C8.5 15.2523 8.5 14.8785 8.33923 14.6C8.23391 14.4176 8.08242 14.2661 7.9 14.1608C7.62154 14 7.24769 14 6.5 14C5.75231 14 5.37846 14 5.1 14.1608C4.91758 14.2661 4.76609 14.4176 4.66077 14.6C4.5 14.8785 4.5 15.2523 4.5 16V20"/><path d="M8.5 20H18.5C20.3856 20 21.3284 20 21.9142 19.4142C22.5 18.8284 22.5 17.8856 22.5 16V11.4482C22.5 10.7315 22.5 10.3732 22.3805 10.0432C22.2611 9.7133 22.0317 9.43802 21.5729 8.88746L18.6994 5.43926C18.1096 4.73152 17.8147 4.37764 17.4116 4.18882C17.0084 4 16.5478 4 15.6265 4H6.5"/><path d="M22 10H11.5"/>`,
+};
+---
+
+<section
+  data-howitworks
+  class="bg-surface text-black"
+>
+  <div
+    class="mx-auto flex w-full max-w-[1440px] flex-col items-center gap-[clamp(3rem,8vw,80px)] px-4 pb-[clamp(5rem,12vw,120px)] pt-[clamp(5rem,14vw,200px)] md:px-8"
+  >
+    {/* ---- Header --------------------------------------------------------- */}
+    <header class="flex flex-col items-center gap-8 text-center md:gap-10">
+      <div data-reveal>
+        <Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow>
+      </div>
+      <h2
+        data-reveal="title"
+        class="max-w-[952px] font-serif text-[clamp(2rem,5vw,56px)] font-normal leading-[1.2] tracking-[-0.02em]"
+      >
+        {headline}
+      </h2>
+      <div
+        data-reveal
+        class="flex flex-wrap items-center justify-center gap-y-2"
+      >
+        {
+          capabilities.map((label, i) => (
+            <span
+              class:list={[
+                "px-4 text-sm font-semibold uppercase leading-[1.2] tracking-[-0.01em]",
+                i < capabilities.length - 1 && "border-r border-black/24",
+              ]}
+            >
+              {label}
+            </span>
+          ))
+        }
+      </div>
+    </header>
+
+    {/* ---- Stepper -------------------------------------------------------- */}
+    <div
+      data-reveal
+      class="relative flex w-full max-w-[1064px] flex-col gap-8 lg:max-w-[1208px] lg:flex-row lg:items-start lg:gap-[clamp(2rem,4vw,52px)]"
+    >
+      {/* Lateral icon navbar — horizontal row on mobile, vertical pill at lg+ */}
+      <nav
+        role="tablist"
+        aria-label="How it works steps"
+        class="flex shrink-0 flex-row gap-2 self-center rounded-card bg-ink-wash p-2 lg:flex-col lg:self-start"
+      >
+        {
+          steps.map((step, i) => (
+            <button
+              type="button"
+              role="tab"
+              data-step-btn={i}
+              id={`hiw-tab-${i}`}
+              aria-controls={`hiw-panel-${i}`}
+              aria-selected={i === 0 ? "true" : "false"}
+              aria-label={step.navLabel}
+              class="grid size-10 place-items-center rounded-3xl border transition-colors duration-300 ease-[cubic-bezier(0.33,1,0.68,1)] border-gray-200 text-black/40 hover:text-black/70 aria-selected:border-brand aria-selected:bg-white aria-selected:text-brand"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-6"
+                aria-hidden="true"
+                set:html={icons[step.icon]}
+              />
+            </button>
+          ))
+        }
+      </nav>
+
+      {/* Panels — stacked in one grid cell so the area sizes to the tallest
+          step and panels crossfade in place. */}
+      <div class="hiw-stack grid flex-1">
+        {
+          steps.map((step, i) => (
+            <div
+              data-step-panel={i}
+              role="tabpanel"
+              id={`hiw-panel-${i}`}
+              aria-labelledby={`hiw-tab-${i}`}
+              hidden={i !== 0}
+              class="hiw-panel flex flex-col items-stretch gap-8 overflow-hidden rounded-card lg:flex-row lg:items-center lg:justify-between lg:gap-12"
+            >
+              <div class="flex flex-col gap-6 lg:max-w-[473px]">
+                <p class="text-sm font-semibold uppercase leading-[1.2] tracking-[-0.01em]">
+                  {step.eyebrow}
+                </p>
+                <h3 class="font-serif text-[clamp(1.75rem,4vw,48px)] font-normal leading-[1.2] tracking-[-0.02em]">
+                  {step.heading}
+                </h3>
+                <p class="text-[clamp(1.125rem,2vw,24px)] font-normal leading-[1.2] tracking-[-0.02em]">
+                  {step.body}
+                </p>
+              </div>
+              <div class="aspect-square w-full shrink-0 rounded-card bg-white lg:aspect-auto lg:h-[616px] lg:w-[522px]" />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Icon navbar drives the active step: clicking a tab swaps aria-selected and
+  // reveals its panel. Panels share one grid cell (CSS), so this is just a
+  // visibility toggle — the stack handles the crossfade.
+  function initHowItWorks(section: HTMLElement) {
+    const tabs = Array.from(
+      section.querySelectorAll<HTMLButtonElement>("[data-step-btn]"),
+    );
+    const panels = Array.from(
+      section.querySelectorAll<HTMLElement>("[data-step-panel]"),
+    );
+    if (!tabs.length) return;
+
+    const select = (index: number) => {
+      tabs.forEach((tab, i) =>
+        tab.setAttribute("aria-selected", i === index ? "true" : "false"),
+      );
+      panels.forEach((panel, i) => {
+        // `[hidden]` drives both the crossfade (via CSS) and the a11y tree; the
+        // forced `display: grid` keeps every panel in the same grid cell so the
+        // area stays sized to the tallest step.
+        panel.toggleAttribute("hidden", i !== index);
+      });
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => select(i));
+      // Roving arrow-key navigation across the tablist.
+      tab.addEventListener("keydown", (e) => {
+        if (e.key !== "ArrowDown" && e.key !== "ArrowRight" &&
+            e.key !== "ArrowUp" && e.key !== "ArrowLeft") return;
+        e.preventDefault();
+        const dir = e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : -1;
+        const next = (i + dir + tabs.length) % tabs.length;
+        select(next);
+        tabs[next].focus();
+      });
+    });
+
+    select(0);
+  }
+
+  document
+    .querySelectorAll<HTMLElement>("[data-howitworks]")
+    .forEach(initHowItWorks);
+</script>
+
+<style>
+  /* All panels occupy the same grid cell so the area sizes to the tallest step
+     and the active one crossfades over the inactive ones — no layout jump on
+     switch. Inactive panels keep their box (forced `display`) so the grid stays
+     sized to the tallest step; `[hidden]` only fades + de-activates them. */
+  .hiw-stack > .hiw-panel {
+    grid-area: 1 / 1;
+    display: flex;
+  }
+  .hiw-panel {
+    transition:
+      opacity 0.5s ease-out,
+      transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .hiw-panel[hidden] {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(8px);
+    transition:
+      opacity 0.5s ease-out,
+      transform 0.6s cubic-bezier(0.33, 1, 0.68, 1),
+      visibility 0s linear 0.5s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hiw-panel,
+    .hiw-panel[hidden] {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>
