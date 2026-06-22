@@ -26,6 +26,7 @@ import ClinicalDiagram02 from "../ui/ClinicalDiagram02.astro";
 import ClinicalDiagram03 from "../ui/ClinicalDiagram03.astro";
 import ClinicalDiagram31 from "../ui/ClinicalDiagram31.astro";
 import ClinicalDiagram04 from "../ui/ClinicalDiagram04.astro";
+import ClinicalDiagram05 from "../ui/ClinicalDiagram05.astro";
 import data from "../../data/clinical-layer.json";
 
 const { heading, steps, cards } = data;
@@ -127,6 +128,16 @@ const { heading, steps, cards } = data;
               <ClinicalDiagram04 />
             </div>
           </div>
+          <div data-clinical-state="f" class="clinical-state">
+            <div class="clinical-figure relative mx-auto w-full max-w-[827px]">
+              <ClinicalStepPill
+                num={steps[4].num}
+                label={steps[4].label}
+                class="absolute left-0 top-0 z-10"
+              />
+              <ClinicalDiagram05 />
+            </div>
+          </div>
         </div>
       </div>
       </div>
@@ -151,24 +162,28 @@ const { heading, steps, cards } = data;
     const stateC = section.querySelector<HTMLElement>('[data-clinical-state="c"]');
     const stateD = section.querySelector<HTMLElement>('[data-clinical-state="d"]');
     const stateE = section.querySelector<HTMLElement>('[data-clinical-state="e"]');
+    const stateF = section.querySelector<HTMLElement>('[data-clinical-state="f"]');
     const title = section.querySelector<HTMLElement>('[data-reveal="title"]');
-    if (!stateA || !stateB || !stateC || !stateD || !stateE) return;
+    if (!stateA || !stateB || !stateC || !stateD || !stateE || !stateF) return;
 
-    // Timeline windows over the section's scrub distance (easy to tune). Five
+    // Timeline windows over the section's scrub distance (easy to tune). Six
     // beats chain through one slot: Channels (A) is held first, then crossfades
     // to Clinical intelligence (B) → AI Skills (C) → a second AI Skills view (D)
-    // → Integrations (E), each holding before crossfading on to the next; E
-    // settles and holds just before the pin releases. Each beat gets a hold so
-    // the reader sees the whole illustration before it resolves.
-    const TITLE_OUT: [number, number] = [0.02, 0.1]; // title fades up + out early
-    const A_OUT: [number, number] = [0.14, 0.24]; // Channels fades + blurs away
-    const B_IN: [number, number] = [0.16, 0.26]; // Clinical resolves out of blur
-    const B_OUT: [number, number] = [0.35, 0.45]; // Clinical fades + blurs away
-    const C_IN: [number, number] = [0.37, 0.47]; // AI Skills resolves out of blur
-    const C_OUT: [number, number] = [0.56, 0.66]; // AI Skills fades + blurs away
-    const D_IN: [number, number] = [0.58, 0.68]; // 2nd AI Skills resolves out of blur
-    const D_OUT: [number, number] = [0.77, 0.87]; // 2nd AI Skills fades + blurs away
-    const E_IN: [number, number] = [0.79, 0.89]; // Integrations resolves out of blur
+    // → Integrations (E) → Clinical data foundation (F), each holding before
+    // crossfading on to the next; F settles and holds just before the pin
+    // releases. Each beat gets a hold so the reader sees the whole illustration
+    // before it resolves.
+    const TITLE_OUT: [number, number] = [0.02, 0.08]; // title fades up + out early
+    const A_OUT: [number, number] = [0.11, 0.2]; // Channels fades + blurs away
+    const B_IN: [number, number] = [0.13, 0.22]; // Clinical resolves out of blur
+    const B_OUT: [number, number] = [0.28, 0.37]; // Clinical fades + blurs away
+    const C_IN: [number, number] = [0.3, 0.39]; // AI Skills resolves out of blur
+    const C_OUT: [number, number] = [0.45, 0.54]; // AI Skills fades + blurs away
+    const D_IN: [number, number] = [0.47, 0.56]; // 2nd AI Skills resolves out of blur
+    const D_OUT: [number, number] = [0.62, 0.71]; // 2nd AI Skills fades + blurs away
+    const E_IN: [number, number] = [0.64, 0.73]; // Integrations resolves out of blur
+    const E_OUT: [number, number] = [0.79, 0.88]; // Integrations fades + blurs away
+    const F_IN: [number, number] = [0.81, 0.9]; // Data foundation resolves out of blur
     const BLUR = 12; // px — start blur for each incoming/outgoing state
 
     const track = (p: number, [a, b]: [number, number]) =>
@@ -193,6 +208,7 @@ const { heading, steps, cards } = data;
         clearStyles(stateC);
         clearStyles(stateD);
         clearStyles(stateE);
+        clearStyles(stateF);
         if (title) {
           title.style.transition = "";
           title.style.opacity = "";
@@ -246,9 +262,15 @@ const { heading, steps, cards } = data;
       stateD.style.opacity = String(dIn * (1 - dOut));
       stateD.style.filter = `blur(${((1 - dIn) + dOut) * BLUR}px)`;
 
+      // E, like B–D, resolves in (from D) then later blurs out (to F).
       const eIn = easeOutCubic(track(p, E_IN));
-      stateE.style.opacity = String(eIn);
-      stateE.style.filter = `blur(${(1 - eIn) * BLUR}px)`;
+      const eOut = easeOutCubic(track(p, E_OUT));
+      stateE.style.opacity = String(eIn * (1 - eOut));
+      stateE.style.filter = `blur(${((1 - eIn) + eOut) * BLUR}px)`;
+
+      const fIn = easeOutCubic(track(p, F_IN));
+      stateF.style.opacity = String(fIn);
+      stateF.style.filter = `blur(${(1 - fIn) * BLUR}px)`;
     };
 
     const onScroll = () => {
@@ -285,7 +307,7 @@ const { heading, steps, cards } = data;
      loop runs. */
   @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
     :global(html.js) .clinical-layer {
-      height: calc(100svh + 360vh);
+      height: calc(100svh + 450vh);
     }
     /* Stage + its inner container span the whole tall section so the pin can
        stay stuck across the full scrub distance. */
@@ -331,7 +353,8 @@ const { heading, steps, cards } = data;
     :global(html.js) [data-clinical-state="b"],
     :global(html.js) [data-clinical-state="c"],
     :global(html.js) [data-clinical-state="d"],
-    :global(html.js) [data-clinical-state="e"] {
+    :global(html.js) [data-clinical-state="e"],
+    :global(html.js) [data-clinical-state="f"] {
       position: absolute;
       inset: 0;
       opacity: 0;
