@@ -15,7 +15,7 @@ interface Props {
 const { num, label, class: className = "" } = Astro.props;
 ---
 
-<div class={`flex items-center gap-px ${className}`}>
+<div class={`flex items-center ${className}`}>
   <span
     class="grid size-10 place-items-center rounded-full border border-black bg-ink-wash text-sm font-semibold text-black backdrop-blur-xl"
   >
