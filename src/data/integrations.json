@@ -23,6 +23,34 @@
     { "number": "02", "label": "Intelligence", "illustration": "/clinical/layer-2.svg" },
     { "number": "03", "label": "AI skills", "illustration": "/clinical/layer-3.svg" },
     { "number": "03", "label": "AI skills", "illustration": "/clinical/layer-3-1.svg" },
-    { "number": "04", "label": "Tech stack", "illustration": "/clinical/layer-4.svg", "marquee": "/clinical/ehr-logos.svg" }
+    {
+      "number": "04",
+      "label": "Tech stack",
+      "illustration": "/clinical/layer-4.svg",
+      "marquee": {
+        "src": "/clinical/ehr-logos.svg",
+        "stripW": 1572,
+        "stripH": 150,
+        "scale": 0.52,
+        "gap": 48,
+        "rows": [
+          [
+            { "x": 1.4, "y": 5.8, "w": 105.1, "h": 39.5 },
+            { "x": 154.5, "y": 5.2, "w": 199.5, "h": 40.6 },
+            { "x": 402, "y": 2.9, "w": 183.3, "h": 45 },
+            { "x": 633.3, "y": 3, "w": 145.9, "h": 44.7 },
+            { "x": 827.2, "y": 11.6, "w": 220.3, "h": 27.9 },
+            { "x": 1095.5, "y": 6.8, "w": 266.9, "h": 37.2 }
+          ],
+          [
+            { "x": 298.6, "y": 110.3, "w": 175.5, "h": 28.6 },
+            { "x": 522.2, "y": 102.7, "w": 152.6, "h": 43.9 },
+            { "x": 723.7, "y": 109.8, "w": 268.2, "h": 29.7 },
+            { "x": 1039.9, "y": 103.5, "w": 267.6, "h": 41.9 },
+            { "x": 1355.5, "y": 102.2, "w": 204.3, "h": 44.9 }
+          ]
+        ]
+      }
+    }
   ]
 }
