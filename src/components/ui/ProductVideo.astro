@@ -71,9 +71,7 @@ const { src, poster, alt, darken = false, class: className = "" } = Astro.props;
   /* Enhanced: full-bleed stage the scrubber scales between 0.82 → 1 → 0.82. */
   @media (prefers-reduced-motion: no-preference) {
     :global(html.js) .video-scroll {
-      /* 80px gutters keep the frame inset from the viewport edges even at peak,
-         so it never goes fully edge-to-edge. */
-      padding: 80px;
+      padding: 80px 0;
     }
     :global(html.js) .video-frame {
       max-width: none;
@@ -123,10 +121,9 @@ const { src, poster, alt, darken = false, class: className = "" } = Astro.props;
       const eased = easeOutCubic(proximity);
 
       const scale = MIN_SCALE + (1 - MIN_SCALE) * eased;
-      // The frame keeps its 80px gutters, so it never reaches the edges — hold
-      // the card radius throughout rather than squaring off at peak.
+      const radius = MAX_RADIUS * (1 - eased);
       frame.style.transform = `scale(${scale})`;
-      frame.style.borderRadius = `${MAX_RADIUS}px`;
+      frame.style.borderRadius = `${radius}px`;
       if (dim) dim.style.opacity = `${eased * MAX_DIM}`;
     };
 
