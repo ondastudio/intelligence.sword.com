@@ -4,6 +4,10 @@
     "accent": "clinical intelligence layer",
     "after": " between your patients and your tech stack."
   },
+  "steps": [
+    { "num": "01", "label": "Channels" },
+    { "num": "02", "label": "Clinical intelligence" }
+  ],
   "cards": [
     {
       "label": "Ready to integrate",

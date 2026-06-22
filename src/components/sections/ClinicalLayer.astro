@@ -6,68 +6,219 @@
  * A centered Lora title (purple "clinical intelligence layer" accent) over a
  * row that pairs a left-hugging column of three frosted (`bg-ink-wash`)
  * capability cards — each a LabelPill above a short centered Figtree
- * description — with the patients→tech-stack node diagram on the right
- * (`/clinical-layer/diagram.svg`, native 827×810). The diagram top-aligns with
- * the card column (so the section bottom lands at the design's 1191 frame).
- * Title resolves from blur; the cards (staggered bottom-to-top) and the diagram
- * fade up together on first view.
+ * description — with the patients→tech-stack node diagram on the right.
  *
- * Geometry matches the 1440-wide frame: 56px title, 340px cards, 32px card
- * padding, 20px inner gap, 16px between cards, 40px radius, 827×810 diagram.
+ * The diagram has two states that crossfade as the section pins: state A is the
+ * "01 / Channels" beat (`ClinicalDiagram`); as the reader scrolls on toward the
+ * next section the stage holds and the illustration resolves into the
+ * "02 / Clinical intelligence" beat (`ClinicalDiagram02`), the step chip
+ * swapping 01→02 with it. Both diagrams share one slot; a vanilla rAF scrubber
+ * maps scroll progress into the crossfade — the same mechanism SolutionsHandoff
+ * uses. Gated on motion + JS + lg+: without them the two states render as
+ * normal stacked figures (each with its own chip), both fully legible.
+ *
  * Content comes from src/data/clinical-layer.json.
  */
 import LabelPill from "../ui/LabelPill.astro";
+import ClinicalStepPill from "../ui/ClinicalStepPill.astro";
 import ClinicalDiagram from "../ui/ClinicalDiagram.astro";
+import ClinicalDiagram02 from "../ui/ClinicalDiagram02.astro";
 import data from "../../data/clinical-layer.json";
 
-const { heading, cards } = data;
+const { heading, steps, cards } = data;
 ---
 
-<section class="clinical-layer relative overflow-hidden bg-surface text-black">
-  <div
-    class="mx-auto w-full max-w-[1440px] px-4 py-20 sm:px-6 lg:px-20 lg:pt-[121px] lg:pb-[10px]"
-  >
-    <!-- Title -->
-    <h2
-      data-reveal="title"
-      class="mx-auto max-w-[980px] text-center font-serif text-3xl font-normal sm:text-4xl lg:text-display"
-    >
-      {heading.before}<span class="text-brand">{heading.accent}</span>{heading.after}
-    </h2>
+<section data-clinical-layer class="clinical-layer relative bg-surface text-black">
+  <div data-clinical-stage class="clinical-stage">
+    <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
+      <!-- Title -->
+      <h2
+        data-reveal="title"
+        class="mx-auto max-w-[980px] text-center font-serif text-3xl font-normal sm:text-4xl lg:text-display"
+      >
+        {heading.before}<span class="text-brand">{heading.accent}</span>{heading.after}
+      </h2>
 
-    <!-- Cards (left) + diagram (right). Top-aligned so the diagram bottom seats
-         at the design's 1191 frame; stacks on mobile. -->
-    <div
-      class="mt-12 flex flex-col items-center gap-16 lg:mt-[116px] lg:flex-row lg:items-start lg:justify-between lg:gap-0"
-    >
-      <!-- Card column -->
-      <div class="flex w-full max-w-[340px] flex-col gap-4">
-        {
-          cards.map((card, i) => (
-            <div
-              data-reveal
-              class="flex flex-col items-center justify-center gap-5 rounded-card bg-ink-wash p-8"
-              style={`transition-delay:${120 + (cards.length - 1 - i) * 120}ms`}
-            >
-              <LabelPill>{card.label}</LabelPill>
-              <p class="text-center text-lg">
-                {card.lines.map((line, j) => (
-                  <>
-                    {j > 0 && <br />}
-                    {line}
-                  </>
-                ))}
-              </p>
+      <!-- Cards (left) + crossfading diagram (right). Top-aligned; stacks on
+           mobile. -->
+      <div
+        class="clinical-row mt-12 flex flex-col items-center gap-16 lg:mt-[88px] lg:flex-row lg:items-start lg:justify-between lg:gap-0"
+      >
+        <!-- Card column -->
+        <div class="flex w-full max-w-[340px] flex-col gap-4">
+          {
+            cards.map((card, i) => (
+              <div
+                data-reveal
+                class="flex flex-col items-center justify-center gap-5 rounded-card bg-ink-wash p-8"
+                style={`transition-delay:${120 + (cards.length - 1 - i) * 120}ms`}
+              >
+                <LabelPill>{card.label}</LabelPill>
+                <p class="text-center text-lg">
+                  {card.lines.map((line, j) => (
+                    <>
+                      {j > 0 && <br />}
+                      {line}
+                    </>
+                  ))}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+
+        <!-- Diagram stack: both states share one slot and crossfade. Each state
+             carries its own top-left step chip (inlined SVGs so the icon-disc
+             backdrop-filter blur chips render). -->
+        <div class="clinical-diagrams w-full max-w-[827px]">
+          <div data-clinical-state="a" class="clinical-state">
+            <div class="clinical-figure relative mx-auto w-full max-w-[827px]">
+              <ClinicalStepPill
+                num={steps[0].num}
+                label={steps[0].label}
+                class="absolute left-0 top-0 z-10"
+              />
+              <ClinicalDiagram />
             </div>
-          ))
-        }
-      </div>
-
-      <!-- Node diagram (inlined SVG, native 827×810 — inlined so its icon-disc
-           backdrop-filter blur chips render) -->
-      <div data-reveal class="w-full max-w-[827px]" style="transition-delay:240ms">
-        <ClinicalDiagram />
+          </div>
+          <div data-clinical-state="b" class="clinical-state">
+            <div class="clinical-figure relative mx-auto w-full max-w-[827px]">
+              <ClinicalStepPill
+                num={steps[1].num}
+                label={steps[1].label}
+                class="absolute left-0 top-0 z-10"
+              />
+              <ClinicalDiagram02 />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  // Pinned crossfade between the two diagram states. The stage is sticky inside
+  // a taller section; progress is how far the section has scrolled past the top,
+  // normalised to its scrub distance (same mechanism as SolutionsHandoff /
+  // AboutOperations). Gated on motion + lg+ (matching the CSS); otherwise the
+  // two states stay in normal stacked flow.
+  function initClinicalLayer(section: HTMLElement) {
+    const enabled = () =>
+      window.matchMedia(
+        "(prefers-reduced-motion: no-preference) and (min-width: 1024px)",
+      ).matches;
+
+    const stateA = section.querySelector<HTMLElement>('[data-clinical-state="a"]');
+    const stateB = section.querySelector<HTMLElement>('[data-clinical-state="b"]');
+    if (!stateA || !stateB) return;
+
+    // Timeline windows over the section's scrub distance (easy to tune).
+    const A_OUT: [number, number] = [0.15, 0.55]; // Channels fades + blurs away
+    const B_IN: [number, number] = [0.45, 0.85]; // Clinical resolves out of blur
+    const BLUR = 12; // px — start blur for each incoming/outgoing state
+
+    const track = (p: number, [a, b]: [number, number]) =>
+      Math.min(1, Math.max(0, (p - a) / (b - a)));
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    const clearStyles = (el: HTMLElement) => {
+      el.style.opacity = "";
+      el.style.filter = "";
+    };
+
+    let ticking = false;
+
+    const render = () => {
+      ticking = false;
+
+      // Disabled (small screen / reduced motion): hand styling back to the CSS
+      // fallback so both states render in normal stacked flow.
+      if (!enabled()) {
+        clearStyles(stateA);
+        clearStyles(stateB);
+        return;
+      }
+
+      const scrub = section.offsetHeight - window.innerHeight;
+      const p =
+        scrub > 0
+          ? Math.min(1, Math.max(0, -section.getBoundingClientRect().top / scrub))
+          : 0;
+
+      const aOut = easeOutCubic(track(p, A_OUT));
+      stateA.style.opacity = String(1 - aOut);
+      stateA.style.filter = `blur(${aOut * BLUR}px)`;
+
+      const bIn = easeOutCubic(track(p, B_IN));
+      stateB.style.opacity = String(bIn);
+      stateB.style.filter = `blur(${(1 - bIn) * BLUR}px)`;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    };
+
+    render();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+  }
+
+  document
+    .querySelectorAll<HTMLElement>("[data-clinical-layer]")
+    .forEach(initClinicalLayer);
+</script>
+
+<style>
+  /* Base = no-JS / reduced-motion / small-screen fallback: normal flow, the two
+     diagram states stack vertically (each with its own chip), both legible. */
+  .clinical-stage {
+    padding-block: clamp(5rem, 12vw, 121px) clamp(2.5rem, 6vw, 10px);
+  }
+  .clinical-state {
+    position: relative;
+  }
+  .clinical-state + .clinical-state {
+    margin-top: clamp(2.5rem, 6vw, 64px);
+  }
+
+  /* Enhanced: pin the stage and crossfade the two diagram states as one.
+     Pre-setting the start state keeps the first paint flash-free before the rAF
+     loop runs. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+    :global(html.js) .clinical-layer {
+      height: calc(100svh + 90vh);
+    }
+    :global(html.js) .clinical-stage {
+      position: sticky;
+      top: 0;
+      display: flex;
+      min-height: 100svh;
+      align-items: center;
+      padding-block: clamp(1.5rem, 4vw, 48px);
+    }
+    /* The diagram column becomes a positioning context; both states overlap in
+       one slot. State A stays in flow (defines the height); State B sits over it
+       and starts hidden. Cap each figure by viewport height so the whole pinned
+       stage fits. */
+    :global(html.js) .clinical-diagrams {
+      position: relative;
+    }
+    :global(html.js) .clinical-figure {
+      max-width: min(827px, 62svh);
+    }
+    /* Drop the fallback sibling gap so State B overlaps State A exactly (a
+       leftover margin-top would push the absolute panel down + shrink it). */
+    :global(html.js) .clinical-state + .clinical-state {
+      margin-top: 0;
+    }
+    :global(html.js) [data-clinical-state="b"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      filter: blur(12px);
+    }
+  }
+</style>

@@ -1,0 +1,29 @@
+---
+/**
+ * ClinicalStepPill — the frosted "NN / LABEL" step chip that sits at the
+ * top-left of the ClinicalLayer node diagram (e.g. "01 / CHANNELS",
+ * "02 / CLINICAL INTELLIGENCE"). A number disc butted against a label pill,
+ * both frosted (`bg-ink-wash` over `backdrop-blur`) with a solid black hairline,
+ * mirroring the design's glass chips. Rendered as an HTML overlay rather than
+ * baked into each diagram so the label text stays editable in data.
+ */
+interface Props {
+  num: string;
+  label: string;
+  class?: string;
+}
+const { num, label, class: className = "" } = Astro.props;
+---
+
+<div class={`flex items-center gap-px ${className}`}>
+  <span
+    class="grid size-10 place-items-center rounded-full border border-black bg-ink-wash text-sm font-semibold text-black backdrop-blur-xl"
+  >
+    {num}
+  </span>
+  <span
+    class="flex h-10 items-center rounded-full border border-black bg-ink-wash px-4 text-sm font-semibold uppercase text-black backdrop-blur-xl"
+  >
+    {label}
+  </span>
+</div>

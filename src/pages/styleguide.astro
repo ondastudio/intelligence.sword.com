@@ -8,6 +8,7 @@ import Layout from "../layouts/Layout.astro";
 import Button from "../components/ui/Button.astro";
 import Eyebrow from "../components/ui/Eyebrow.astro";
 import LabelPill from "../components/ui/LabelPill.astro";
+import ClinicalStepPill from "../components/ui/ClinicalStepPill.astro";
 import CircleButton from "../components/ui/CircleButton.astro";
 import ArrowCircle from "../components/ui/ArrowCircle.astro";
 import FeatureCard from "../components/ui/FeatureCard.astro";
@@ -135,6 +136,17 @@ const swatches = [
       <div class="mt-4 flex flex-wrap items-center gap-4">
         <LabelPill>Always on</LabelPill>
         <LabelPill>Humans in the loop</LabelPill>
+      </div>
+    </section>
+
+    <!-- ClinicalStepPill -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase">
+        ClinicalStepPill
+      </h2>
+      <div class="mt-4 flex flex-wrap items-center gap-4">
+        <ClinicalStepPill num="01" label="Channels" />
+        <ClinicalStepPill num="02" label="Clinical intelligence" />
       </div>
     </section>
 
