@@ -4,20 +4,23 @@
     "accent": "clinical intelligence layer",
     "after": " between your patients and your tech stack."
   },
-  "card": {
-    "label": "Ready to integrate",
-    "body": ["Work 24/7, answering every call", "and monitoring your population."]
-  },
-  "avatars": [
-    { "alt": "Patient" },
-    { "alt": "Patient" },
-    { "alt": "Patient" }
+  "cards": [
+    {
+      "label": "Ready to integrate",
+      "body": ["Work 24/7, answering every call", "and monitoring your population."]
+    },
+    {
+      "label": "No API? No problem",
+      "body": ["Browser agents navigate legacy", "systems just like your staff would."]
+    },
+    {
+      "label": "Never stops learning",
+      "body": ["Our memory system learns", "from past interactions", "to continuously improve performance over time."]
+    }
   ],
-  "channels": [
-    { "label": "SMS", "icon": "/clinical/ic-sms.svg" },
-    { "label": "Phone calls", "icon": "/clinical/ic-call.svg" },
-    { "label": "Chat apps", "icon": "/clinical/ic-message.svg" },
-    { "label": "Calendar invite", "icon": "/clinical/ic-calendar.svg" },
-    { "label": "E-mail", "icon": "/clinical/ic-mail.svg" }
+  "steps": [
+    { "number": "01", "label": "Channels", "illustration": "/clinical/layer-1.svg" },
+    { "number": "02", "label": "Intelligence", "illustration": "/clinical/layer-2.svg" },
+    { "number": "03", "label": "Capabilities", "illustration": "/clinical/layer-3.svg" }
   ]
 }

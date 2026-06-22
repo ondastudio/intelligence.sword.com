@@ -3,144 +3,107 @@
  * Integrations — "the clinical intelligence layer between your patients and
  * your tech stack."
  *
- * A centered Lora headline over a fixed-canvas (1440×920) isometric diagram:
- * three patient avatars drop dotted lines into a perspective grid plane, where
- * the AI layer fans out to every channel it answers on — SMS, Phone calls,
- * Chat apps, Calendar invite, E-mail — each a purple pill + frosted icon chip.
- * A "Ready to integrate" card anchors the left. A soft purple→blue→lavender
- * bloom sits behind everything.
+ * A centered Lora headline + three benefit cards over an isometric data plane.
+ * The plane is a SCROLLYTELLING sequence: the section pins to the viewport and,
+ * as the user scrolls on toward the next section, the illustration + step badge
+ * cross-fade through the numbered steps (01 Channels → 02 Intelligence → …)
+ * before the page releases. Each step is one authored full-plane SVG
+ * (src/data → steps[].illustration); add a step there and it joins the sequence.
  *
- * The diagram is authored at its native Figma size and scaled to fit the
- * container width by a tiny ResizeObserver (never upscaled past 1×) — the same
- * pattern as the Platform section. Content comes from src/data/integrations.json.
+ * Mechanics:
+ *  - [data-track] is a tall runway (100vh per step) that creates the scroll
+ *    distance for the pin.
+ *  - [data-pin] is sticky/full-height and holds the heading + scene.
+ *  - The scene is authored at a fixed 1440×810 and scaled to fit BOTH the
+ *    container width and the pinned viewport height (never upscaled past 1×).
+ *  - A scroll listener maps runway progress → active step and toggles opacity on
+ *    the stacked [data-step-img] / [data-step-badge] layers.
+ *
+ * Content comes from src/data/integrations.json.
  */
 import data from "../../data/integrations.json";
 
-const { heading, card, avatars, channels } = data;
-
-// Per-channel placement on the 1440×920 stage (centre-x, top), matching the
-// channels[] order in the data file (SMS, Phone, Chat, Calendar, E-mail).
-const pillPos = [
-  { cx: 876.5, top: 367.8 },
-  { cx: 667.5, top: 487.8 },
-  { cx: 946, top: 528.8 },
-  { cx: 1225, top: 567.8 },
-  { cx: 1016.5, top: 688.8 },
-];
-
-// Avatar centres + the dotted line beneath each (stage coords).
-const avatarX = [807, 947, 1087];
+const { heading, cards, steps } = data;
+// One 100vh runway per step (first step shows while pinning in; each extra step
+// gets a viewport of scroll to cross-fade into).
+const trackVh = steps.length * 100;
 ---
 
-<section class="integrations relative overflow-x-clip bg-surface py-[120px] text-black">
-  <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
-    <!-- Heading -->
-    <div class="mx-auto max-w-[900px] text-center">
-      <h2 data-reveal="title" class="font-serif text-3xl font-normal sm:text-4xl lg:text-display">
-        {heading.before}<span class="text-brand">{heading.accent}</span>{heading.after}
-      </h2>
-    </div>
-
-    <!-- Diagram (scaled to fit) -->
-    <div data-stage-wrap data-reveal class="relative mt-12" style="transition-delay:120ms">
-      <div
-        data-stage
-        class="absolute left-1/2 top-0 h-[920px] w-[1440px]"
-        style="transform-origin: top center; transform: translateX(-50%);"
-      >
-        <!-- Isometric grid plane (with baked-in flow ribbons) -->
-        <img
-          src="/clinical/grid.svg"
-          alt=""
-          aria-hidden="true"
-          class="absolute"
-          style="left:524px;top:402.8px;width:846px;height:495px"
-        />
-
-        <!-- Purple flow accents over the grid -->
-        <div
-          class="absolute flex items-center justify-center"
-          style="left:929.63px;top:522.6px;width:195.9px;height:153.6px"
-        >
-          <img
-            src="/clinical/ribbon.svg"
-            alt=""
-            aria-hidden="true"
-            class="rotate-[60deg]"
-            style="width:70.099px;height:185.753px"
-          />
+<section class="integrations relative bg-surface text-black">
+  <div data-track class="relative" style={`height:${trackVh}vh`}>
+    <div data-pin class="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
+      <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
+        <!-- Heading -->
+        <div data-heading class="mx-auto max-w-[980px] text-center">
+          <h2 data-reveal="title" class="font-serif text-3xl font-normal sm:text-4xl lg:text-display">
+            {heading.before}<span class="text-brand">{heading.accent}</span>{heading.after}
+          </h2>
         </div>
-        <img src="/clinical/arc-1.svg" alt="" aria-hidden="true" class="absolute" style="left:806px;top:445.8px;width:70.1px;height:40.5px" />
-        <img src="/clinical/arc-1.svg" alt="" aria-hidden="true" class="absolute" style="left:598px;top:565.8px;width:70.1px;height:40.5px" />
-        <img src="/clinical/arc-2.svg" alt="" aria-hidden="true" class="absolute" style="left:1225.1px;top:643.4px;width:74.4px;height:42.9px" />
 
-        <!-- Dotted lines dropping from each avatar to its endpoint dot -->
-        {
-          avatarX.map((x) => (
-            <img
-              src="/clinical/dline-vert.svg"
-              alt=""
-              aria-hidden="true"
-              class="absolute"
-              style={`left:${x - 1}px;top:139.8px;width:2px;height:209px`}
-            />
-          ))
-        }
-        <!-- Endpoint dots -->
-        {
-          avatarX.map((x) => (
-            <img
-              src="/clinical/dot.svg"
-              alt=""
-              aria-hidden="true"
-              class="absolute size-2"
-              style={`left:${x - 4}px;top:343.8px`}
-            />
-          ))
-        }
-
-        <!-- Channel pills: purple label + frosted icon chip + connector -->
-        {
-          channels.map((ch, i) => (
-            <div
-              class="absolute flex -translate-x-1/2 flex-col items-center"
-              style={`left:${pillPos[i].cx}px;top:${pillPos[i].top}px`}
-            >
-              <span class="flex items-center rounded-[24px] bg-brand px-4 py-2 text-sm font-semibold uppercase text-surface">
-                {ch.label}
-              </span>
-              <span class="flex size-[58px] items-center justify-center rounded-[16px] bg-ink-wash backdrop-blur-[4px]">
-                <img src={ch.icon} alt="" aria-hidden="true" class="size-6" />
-              </span>
-              <span class="flex h-[27px] w-0 items-center justify-center">
-                <img src="/clinical/connector-short.svg" alt="" aria-hidden="true" class="w-[27px] rotate-90" />
-              </span>
+        <!-- Scene (scaled to fit width + height) -->
+        <div data-stage-wrap data-reveal class="relative mt-12" style="transition-delay:120ms">
+          <div
+            data-stage
+            class="absolute left-1/2 top-0 h-[810px] w-[1440px]"
+            style="transform-origin: top center; transform: translateX(-50%);"
+          >
+            <!-- Left: benefit cards -->
+            <div class="absolute flex w-[340px] flex-col gap-4" style="left:80px;top:0">
+              {
+                cards.map((c) => (
+                  <div class="flex flex-col items-center justify-center gap-5 rounded-card bg-ink-wash p-8 text-center backdrop-blur-[20px]">
+                    <span class="rounded-[40px] border border-black/24 px-4 py-2 text-sm font-semibold uppercase">
+                      {c.label}
+                    </span>
+                    <p class="text-lg font-normal">
+                      {c.body.map((line, i) => (
+                        <>
+                          {i > 0 && <br />}
+                          {line}
+                        </>
+                      ))}
+                    </p>
+                  </div>
+                ))
+              }
             </div>
-          ))
-        }
 
-        <!-- Patient avatars -->
-        <div class="absolute flex items-center gap-[60px]" style="left:767px;top:51.8px">
-          {
-            avatars.map((a) => (
-              <span class="flex size-20 items-start justify-start rounded-[40px] border border-brand p-5">
-                <img src="/clinical/ic-user.svg" alt={a.alt} class="size-10" />
-              </span>
-            ))
-          }
-        </div>
+            <!-- Right: isometric data plane — stacked step SVGs that cross-fade -->
+            <div class="absolute" style="left:524px;top:0;width:827px;height:810px">
+              {
+                steps.map((s, i) => (
+                  <img
+                    data-step-img
+                    data-index={i}
+                    src={s.illustration}
+                    alt=""
+                    aria-hidden="true"
+                    class="absolute inset-0 size-full transition-opacity duration-500 ease-out motion-reduce:transition-none"
+                    style={`opacity:${i === 0 ? 1 : 0}`}
+                  />
+                ))
+              }
+            </div>
 
-        <!-- "Ready to integrate" card -->
-        <div
-          class="absolute flex flex-col items-center gap-5 rounded-card bg-ink-wash p-8 text-center backdrop-blur-[20px]"
-          style="left:80px;top:51.8px;width:340px"
-        >
-          <span class="rounded-[40px] border border-black/24 px-4 py-2 text-sm font-semibold uppercase">
-            {card.label}
-          </span>
-          <p class="max-w-[248px] text-lg font-normal">
-            {card.body[0]}<br />{card.body[1]}
-          </p>
+            <!-- Step badges (one per step) — cross-fade in lockstep with the plane -->
+            {
+              steps.map((s, i) => (
+                <div
+                  data-step-badge
+                  data-index={i}
+                  class="absolute flex items-center gap-2 transition-opacity duration-500 ease-out motion-reduce:transition-none"
+                  style={`left:524px;top:0;opacity:${i === 0 ? 1 : 0}`}
+                >
+                  <span class="flex size-10 items-center justify-center rounded-[24px] border border-black bg-surface/5 text-sm font-semibold uppercase backdrop-blur-[50px]">
+                    {s.number}
+                  </span>
+                  <span class="flex h-10 items-center justify-center rounded-[24px] border border-black bg-surface/5 px-4 text-sm font-semibold uppercase backdrop-blur-[50px]">
+                    {s.label}
+                  </span>
+                </div>
+              ))
+            }
+          </div>
         </div>
       </div>
     </div>
@@ -148,22 +111,64 @@ const avatarX = [807, 947, 1087];
 </section>
 
 <script>
-  // Scale the fixed 1440-wide diagram down to the container width (never up).
-  // Entrance reveal is handled site-wide via [data-reveal] (see Layout.astro).
-  const wrap = document.querySelector<HTMLElement>(".integrations [data-stage-wrap]");
-  const stage = document.querySelector<HTMLElement>(".integrations [data-stage]");
+  const section = document.querySelector<HTMLElement>(".integrations");
+  if (section) {
+    const track = section.querySelector<HTMLElement>("[data-track]")!;
+    const heading = section.querySelector<HTMLElement>("[data-heading]")!;
+    const wrap = section.querySelector<HTMLElement>("[data-stage-wrap]")!;
+    const stage = section.querySelector<HTMLElement>("[data-stage]")!;
+    const imgs = Array.from(section.querySelectorAll<HTMLElement>("[data-step-img]"));
+    const badges = Array.from(section.querySelectorAll<HTMLElement>("[data-step-badge]"));
+    const steps = imgs.length;
 
-  const fit = () => {
-    if (!wrap || !stage) return;
-    const scale = Math.min(1, wrap.clientWidth / 1440);
-    stage.style.transform = `translateX(-50%) scale(${scale})`;
-    wrap.style.height = `${920 * scale}px`;
-  };
+    // Scale the fixed 1440×810 scene to fit BOTH the container width and the
+    // pinned viewport height — so the pinned panel never clips. Never upscaled.
+    const fit = () => {
+      const widthScale = Math.min(1, wrap.clientWidth / 1440);
+      const avail = window.innerHeight - heading.offsetHeight - 48 /* mt-12 */ - 80;
+      const heightScale = avail > 0 ? avail / 810 : widthScale;
+      const scale = Math.max(0.15, Math.min(widthScale, heightScale));
+      stage.style.transform = `translateX(-50%) scale(${scale})`;
+      wrap.style.height = `${810 * scale}px`;
+    };
 
-  if (wrap) {
-    const ro = new ResizeObserver(fit);
-    ro.observe(wrap);
+    // Map runway progress → active step, then cross-fade the matching layers.
+    let current = -1;
+    const setStep = (i: number) => {
+      if (i === current) return;
+      current = i;
+      imgs.forEach((el, idx) => (el.style.opacity = idx === i ? "1" : "0"));
+      badges.forEach((el, idx) => (el.style.opacity = idx === i ? "1" : "0"));
+    };
+
+    const update = () => {
+      const total = track.offsetHeight - window.innerHeight; // scroll runway
+      const scrolled = Math.min(Math.max(-track.getBoundingClientRect().top, 0), total);
+      const progress = total > 0 ? scrolled / total : 0;
+      setStep(Math.min(steps - 1, Math.floor(progress * steps)));
+    };
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        update();
+      });
+    };
+
+    new ResizeObserver(() => {
+      fit();
+      update();
+    }).observe(wrap);
+    window.addEventListener("resize", () => {
+      fit();
+      update();
+    });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("load", fit);
+    fit();
+    update();
   }
-  window.addEventListener("load", fit);
-  fit();
 </script>
