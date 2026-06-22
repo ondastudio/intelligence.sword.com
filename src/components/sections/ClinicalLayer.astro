@@ -23,6 +23,7 @@ import LabelPill from "../ui/LabelPill.astro";
 import ClinicalStepPill from "../ui/ClinicalStepPill.astro";
 import ClinicalDiagram from "../ui/ClinicalDiagram.astro";
 import ClinicalDiagram02 from "../ui/ClinicalDiagram02.astro";
+import ClinicalDiagram03 from "../ui/ClinicalDiagram03.astro";
 import data from "../../data/clinical-layer.json";
 
 const { heading, steps, cards } = data;
@@ -93,6 +94,16 @@ const { heading, steps, cards } = data;
               <ClinicalDiagram02 />
             </div>
           </div>
+          <div data-clinical-state="c" class="clinical-state">
+            <div class="clinical-figure relative mx-auto w-full max-w-[827px]">
+              <ClinicalStepPill
+                num={steps[2].num}
+                label={steps[2].label}
+                class="absolute left-0 top-0 z-10"
+              />
+              <ClinicalDiagram03 />
+            </div>
+          </div>
         </div>
       </div>
       </div>
@@ -114,17 +125,20 @@ const { heading, steps, cards } = data;
 
     const stateA = section.querySelector<HTMLElement>('[data-clinical-state="a"]');
     const stateB = section.querySelector<HTMLElement>('[data-clinical-state="b"]');
+    const stateC = section.querySelector<HTMLElement>('[data-clinical-state="c"]');
     const title = section.querySelector<HTMLElement>('[data-reveal="title"]');
-    if (!stateA || !stateB) return;
+    if (!stateA || !stateB || !stateC) return;
 
-    // Timeline windows over the section's scrub distance (easy to tune). Channels
-    // is HELD fully visible for the bulk of the pinned scroll (0 → ~70%) so the
-    // reader sees the entire illustration first; only as they keep scrolling
-    // toward the next section does Clinical crossfade in over the final stretch,
-    // settling just before the pin releases.
-    const TITLE_OUT: [number, number] = [0.05, 0.32]; // title fades up + out early
-    const A_OUT: [number, number] = [0.7, 0.92]; // Channels fades + blurs away
-    const B_IN: [number, number] = [0.74, 0.96]; // Clinical resolves out of blur
+    // Timeline windows over the section's scrub distance (easy to tune). Three
+    // beats chain through one slot: Channels (A) is held first, then crossfades
+    // to Clinical intelligence (B), which holds before crossfading on to AI
+    // Skills (C); C settles and holds just before the pin releases. Each beat
+    // gets a hold so the reader sees the whole illustration before it resolves.
+    const TITLE_OUT: [number, number] = [0.04, 0.16]; // title fades up + out early
+    const A_OUT: [number, number] = [0.24, 0.4]; // Channels fades + blurs away
+    const B_IN: [number, number] = [0.27, 0.43]; // Clinical resolves out of blur
+    const B_OUT: [number, number] = [0.62, 0.78]; // Clinical fades + blurs away
+    const C_IN: [number, number] = [0.65, 0.81]; // AI Skills resolves out of blur
     const BLUR = 12; // px — start blur for each incoming/outgoing state
 
     const track = (p: number, [a, b]: [number, number]) =>
@@ -146,6 +160,7 @@ const { heading, steps, cards } = data;
       if (!enabled()) {
         clearStyles(stateA);
         clearStyles(stateB);
+        clearStyles(stateC);
         if (title) {
           title.style.transition = "";
           title.style.opacity = "";
@@ -179,9 +194,17 @@ const { heading, steps, cards } = data;
       stateA.style.opacity = String(1 - aOut);
       stateA.style.filter = `blur(${aOut * BLUR}px)`;
 
+      // B both resolves in (from A) and later blurs back out (to C): opacity is
+      // the product of the two tracks, blur is the sum of the incoming +
+      // outgoing amounts (both 0 during B's hold).
       const bIn = easeOutCubic(track(p, B_IN));
-      stateB.style.opacity = String(bIn);
-      stateB.style.filter = `blur(${(1 - bIn) * BLUR}px)`;
+      const bOut = easeOutCubic(track(p, B_OUT));
+      stateB.style.opacity = String(bIn * (1 - bOut));
+      stateB.style.filter = `blur(${((1 - bIn) + bOut) * BLUR}px)`;
+
+      const cIn = easeOutCubic(track(p, C_IN));
+      stateC.style.opacity = String(cIn);
+      stateC.style.filter = `blur(${(1 - cIn) * BLUR}px)`;
     };
 
     const onScroll = () => {
@@ -218,7 +241,7 @@ const { heading, steps, cards } = data;
      loop runs. */
   @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
     :global(html.js) .clinical-layer {
-      height: calc(100svh + 90vh);
+      height: calc(100svh + 180vh);
     }
     /* Stage + its inner container span the whole tall section so the pin can
        stay stuck across the full scrub distance. */
@@ -261,7 +284,8 @@ const { heading, steps, cards } = data;
     :global(html.js) .clinical-state + .clinical-state {
       margin-top: 0;
     }
-    :global(html.js) [data-clinical-state="b"] {
+    :global(html.js) [data-clinical-state="b"],
+    :global(html.js) [data-clinical-state="c"] {
       position: absolute;
       inset: 0;
       opacity: 0;

@@ -6,7 +6,8 @@
   },
   "steps": [
     { "num": "01", "label": "Channels" },
-    { "num": "02", "label": "Clinical intelligence" }
+    { "num": "02", "label": "Clinical intelligence" },
+    { "num": "03", "label": "AI Skills" }
   ],
   "cards": [
     {
