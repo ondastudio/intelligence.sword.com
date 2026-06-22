@@ -51,6 +51,7 @@
           ]
         ]
       }
-    }
+    },
+    { "number": "05", "label": "Clinical data foundation", "illustration": "/clinical/layer-5.svg" }
   ]
 }
