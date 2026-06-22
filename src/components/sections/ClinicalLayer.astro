@@ -49,6 +49,21 @@ const { heading, steps, cards, integrationLogos } = data;
            centred in the viewport (.clinical-pin) so the whole illustration is
            visible while the title scrolls away above it. Stacks on mobile. -->
       <div class="clinical-pin">
+      <!-- Animated swirl bloom behind the diagram — the shared hero swirl in a
+           soft brand-blue palette. Lives inside the pin so it tracks the pinned
+           illustration across the beats; `-z-10` keeps it behind the row, over
+           the section surface. A CSS radial wash is the no-JS / reduced-motion
+           fallback. -->
+      <div
+        data-cl-swirl-stage
+        aria-hidden="true"
+        class="cl-swirl pointer-events-none absolute -z-10"
+      >
+        <canvas
+          data-cl-swirl
+          class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+        ></canvas>
+      </div>
       <div
         class="clinical-row mt-12 flex flex-col items-center gap-16 lg:mt-[120px] lg:flex-row lg:items-start lg:justify-between lg:gap-0"
       >
@@ -431,3 +446,78 @@ const { heading, steps, cards, integrationLogos } = data;
     }
   }
 </style>
+<style>
+  /* Swirl bloom — a soft blue glow behind the diagram. It lives inside
+     `.clinical-pin` so it tracks the pinned illustration; `top`/`left` mark the
+     bloom's centre (the layer is pulled back by half its own size) and a radial
+     mask keeps it a soft circular bloom. The background is the no-JS /
+     reduced-motion fallback wash. */
+  .clinical-pin {
+    position: relative; /* positioning context for the bloom (sticky overrides on lg+) */
+    /* Clip the bloom horizontally so its over-wide box can't add a scrollbar;
+       overflow-y stays visible so it still bleeds vertically. */
+    overflow-x: clip;
+  }
+  .cl-swirl {
+    left: 50%;
+    top: 50%;
+    width: 130%;
+    height: 90%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+      circle closest-side at 50% 50%,
+      color-mix(in srgb, var(--color-periwinkle) 55%, transparent),
+      transparent 70%
+    );
+    -webkit-mask-image: radial-gradient(
+      circle closest-side at 50% 50%,
+      #000 0%,
+      #000 16%,
+      transparent 72%
+    );
+    mask-image: radial-gradient(
+      circle closest-side at 50% 50%,
+      #000 0%,
+      #000 16%,
+      transparent 72%
+    );
+  }
+
+  /* Desktop: centre the bloom over the diagram column (right side of the pin). */
+  @media (min-width: 1024px) {
+    .cl-swirl {
+      left: 66%;
+      top: 46%;
+      width: 76%;
+      height: 116%;
+    }
+  }
+</style>
+
+<script>
+  // Animated swirl bloom behind the diagram — the shared hero swirl recoloured
+  // to a soft brand-blue glow (circular, gentle drift).
+  import { initSwirl } from "../../lib/swirl";
+
+  const stage = document.querySelector<HTMLElement>("[data-cl-swirl-stage]");
+  const canvas = stage?.querySelector<HTMLCanvasElement>("canvas[data-cl-swirl]");
+
+  if (stage && canvas) {
+    initSwirl(canvas, stage, {
+      grainUrl: "/hero/swirl/perlin1.png",
+      circular: true,
+      warp: 0.6, // gentle drift, cohesive blob
+      speed: 3.8, // faster drift than the hero swirl
+      falloffStart: 0.5,
+      falloffEnd: 0.92,
+      colors: {
+        bgColor: [0.97, 0.98, 1.0], // outer field — near-white
+        soft: [0.86, 0.9, 1.0], // inner core — pale blue
+        body: [0.5, 0.56, 0.97], // dominant bloom — blue-violet
+        lavender: [0.86, 0.9, 1.0], // secondary highlight — pale blue
+        crest: [0.97, 0.97, 0.97], // gradient crest — white
+      },
+    });
+    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
+  }
+</script>

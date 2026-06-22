@@ -17,7 +17,25 @@ import data from "../../data/scaling.json";
 const { eyebrow, heading, body, stats } = data;
 ---
 
-<section class="scaling relative overflow-hidden bg-surface py-[120px] text-black">
+<!-- overflow-x-clip (not overflow-hidden) so the bloom can bleed past the
+     section's top/bottom into the neighbouring sections without adding a
+     horizontal scrollbar. -->
+<section class="scaling relative overflow-x-clip bg-surface py-[120px] text-black">
+  <!-- Animated neon-lime swirl bloom blooming from the right, behind the copy
+       and stats. The shared hero swirl recoloured to the lime palette; a CSS
+       lime wash is the no-JS / reduced-motion fallback. Sits at z-0 below the
+       content (z-10). -->
+  <div
+    data-sc-swirl-stage
+    aria-hidden="true"
+    class="sc-swirl pointer-events-none absolute z-0"
+  >
+    <canvas
+      data-sc-swirl
+      class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+    ></canvas>
+  </div>
+
   <div class="relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
     <!-- Heading block -->
     <div class="flex flex-col gap-6">
@@ -81,3 +99,72 @@ const { eyebrow, heading, body, stats } = data;
     </div>
   </div>
 </section>
+
+<style>
+  /* Neon-lime bloom — blooms from the right, behind the copy and stats. `top`/
+     `left` mark the bloom's centre (the layer is pulled back by half its own
+     size); a radial mask keeps it a soft circular bloom. The background is the
+     no-JS / reduced-motion fallback wash. */
+  .sc-swirl {
+    left: 64%;
+    top: 56%;
+    width: 110%;
+    height: 118%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+      circle closest-side at 50% 50%,
+      color-mix(in srgb, var(--color-accent) 42%, transparent),
+      transparent 68%
+    );
+    -webkit-mask-image: radial-gradient(
+      circle closest-side at 50% 50%,
+      #000 0%,
+      #000 16%,
+      transparent 70%
+    );
+    mask-image: radial-gradient(
+      circle closest-side at 50% 50%,
+      #000 0%,
+      #000 16%,
+      transparent 70%
+    );
+  }
+
+  /* Desktop: shift the bloom toward the right edge (behind the paragraph). */
+  @media (min-width: 1024px) {
+    .sc-swirl {
+      left: 66%;
+      top: 56%;
+      width: 100%;
+      height: 165%;
+    }
+  }
+</style>
+
+<script>
+  // Animated neon-lime swirl bloom — the shared hero swirl recoloured to the
+  // lime palette, blooming from the right (circular, gentle drift).
+  import { initSwirl } from "../../lib/swirl";
+
+  const stage = document.querySelector<HTMLElement>("[data-sc-swirl-stage]");
+  const canvas = stage?.querySelector<HTMLCanvasElement>("canvas[data-sc-swirl]");
+
+  if (stage && canvas) {
+    initSwirl(canvas, stage, {
+      grainUrl: "/hero/swirl/perlin1.png",
+      circular: true,
+      warp: 0.6, // gentle drift, cohesive blob
+      speed: 4.6, // fast drift
+      falloffStart: 0.5,
+      falloffEnd: 0.94,
+      colors: {
+        bgColor: [0.98, 0.99, 0.96], // outer field — near-white
+        soft: [0.9, 0.99, 0.62], // inner core — bright lime
+        body: [0.8, 1.0, 0.22], // dominant bloom — neon lime (#ccff33)
+        lavender: [0.92, 0.99, 0.72], // secondary highlight — pale lime
+        crest: [0.97, 0.97, 0.97], // gradient crest — white
+      },
+    });
+    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
+  }
+</script>

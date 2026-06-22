@@ -29,6 +29,24 @@ const SwirlPass = {
     grainTexture: { value: null as THREE.Texture | null },
     showWaves: { value: false },
     showGrain: { value: false },
+    // Aspect of the render area (width / height). When set, the radial field is
+    // corrected so the swirl reads as circular in screen space rather than
+    // stretched across a wide canvas. Defaults to 1 (no correction → original
+    // hero look).
+    aspect: { value: 1.0 },
+    // Distortion intensity of the cosine warp. 1 = original hero swirl; lower
+    // values keep a more cohesive, rounder blob with a filled centre.
+    warp: { value: 1.0 },
+    // Animation speed multiplier (1 = original hero drift).
+    timeScale: { value: 1.0 },
+    // Palette (defaults = brand purple, see notes below). Overridable per
+    // instance via initSwirl's `colors` option so other sections can recolor
+    // the same animation (e.g. the operations lavender + lime bloom).
+    bgColor: { value: new THREE.Vector4(0.965, 0.957, 1.0, 1.0) },
+    soft: { value: new THREE.Vector4(0.882, 0.839, 1.0, 1.0) },
+    body: { value: new THREE.Vector4(0.467, 0.0, 0.933, 1.0) },
+    lavender: { value: new THREE.Vector4(0.882, 0.839, 1.0, 1.0) },
+    crest: { value: new THREE.Vector4(0.95, 0.95, 0.95, 1.0) },
   },
 
   vertexShader: /* glsl */ `
@@ -53,29 +71,36 @@ const SwirlPass = {
 
     varying vec2 vUv;
 
-    // Brand purple palette (matches src/styles/global.css tokens):
-    //   bgColor  ~ near-white lavender wash (outer field)
-    //   soft     ~ purple-100 #e1d6ff (inner highlight — no pink bloom)
-    //   purple   ~ brand #7700ee (dominant swirl body)
-    //   lavender ~ purple-100 #e1d6ff
-    //   white    ~ pure white (gradient crest)
-    vec4 bgColor = vec4(0.965, 0.957, 1.0, 1.0);
-    vec4 soft = vec4(0.882, 0.839, 1.0, 1.0);
-    vec4 purple = vec4(0.467, 0.0, 0.933, 1.0);
-    vec4 lavender = vec4(0.882, 0.839, 1.0, 1.0);
-    vec4 white = vec4(0.95, 0.95, 0.95, 1.0);
+    // Palette (set from JS uniforms; defaults are the brand purple wash):
+    //   bgColor  ~ near-white wash (outer field)
+    //   soft     ~ inner highlight
+    //   body     ~ dominant swirl body (the accent)
+    //   lavender ~ secondary highlight
+    //   crest    ~ gradient crest (near white)
+    uniform vec4 bgColor;
+    uniform vec4 soft;
+    uniform vec4 body;
+    uniform vec4 lavender;
+    uniform vec4 crest;
+    uniform float aspect;
+    uniform float warp;
+    uniform float timeScale;
 
     void main() {
       vec2 p = 2. * vUv - vec2(1.);
-      float timeSlow = time * 0.05;
+      // Stretch the longer screen axis in field space so equal screen distances
+      // map to equal radial distances — keeps the swirl circular on a wide canvas.
+      if (aspect >= 1.0) p.x *= aspect; else p.y /= aspect;
+      float timeSlow = time * 0.05 * timeScale;
 
-      // Waves — layered cosine warp gives the slow swirling drift
+      // Waves — layered cosine warp gives the slow swirling drift. The warp
+      // uniform scales the distortion: lower keeps a cohesive, rounder blob.
       float modScale = mix(scale, scale - 0.5, firstStageProgress);
       modScale = mix(modScale, modScale - 0.5, secondStageProgress);
 
-      p += 0.17 * cos(modScale * 3.7 * p.yx + 1.23 * timeSlow + delay * vec2(2.2,3.4));
-      p += 0.31 * cos(modScale * 2.3 * p.yx + 5.5 * timeSlow + delay * vec2(3.2,1.3));
-      p += 0.31 * cos(modScale * 4.3 * p.yx + 7.5 * timeSlow + delay * vec2(1.2,1.3));
+      p += warp * 0.17 * cos(modScale * 3.7 * p.yx + 1.23 * timeSlow + delay * vec2(2.2,3.4));
+      p += warp * 0.31 * cos(modScale * 2.3 * p.yx + 5.5 * timeSlow + delay * vec2(3.2,1.3));
+      p += warp * 0.31 * cos(modScale * 4.3 * p.yx + 7.5 * timeSlow + delay * vec2(1.2,1.3));
 
       // Grain — kept subtle so it doesn't dither the swirl's soft edges
       vec2 grainUv = vUv * vec2(25., 25.);
@@ -83,8 +108,8 @@ const SwirlPass = {
       grain *= smoothstep(0.3, 0.9, grain) * 0.03;
 
       // Interpolate colors by radial distance
-      vec4 inner = mix(soft, white, firstStageProgress);
-      vec4 intermediate = mix(purple, white, firstStageProgress);
+      vec4 inner = mix(soft, crest, firstStageProgress);
+      vec4 intermediate = mix(body, crest, firstStageProgress);
       vec4 outer = mix(bgColor, lavender, firstStageProgress);
       outer = mix(outer, lavender, secondStageProgress);
 
@@ -119,10 +144,29 @@ export interface SwirlHandle {
  * Mount the swirl effect onto `canvas`, sizing it to `container`.
  * Returns a handle whose `destroy()` tears everything down.
  */
+/** A palette colour as [r, g, b] floats in 0..1 (alpha is assumed 1). */
+export type SwirlColor = [number, number, number];
+
+export interface SwirlColors {
+  bgColor?: SwirlColor; // outer field (near-white wash)
+  soft?: SwirlColor; // inner highlight
+  body?: SwirlColor; // dominant swirl body (the accent)
+  lavender?: SwirlColor; // secondary highlight
+  crest?: SwirlColor; // gradient crest (near white)
+}
+
 export function initSwirl(
   canvas: HTMLCanvasElement,
   container: HTMLElement,
-  options: { grainUrl: string },
+  options: {
+    grainUrl: string;
+    colors?: SwirlColors;
+    circular?: boolean;
+    warp?: number; // cosine-warp intensity (default 1 = hero); lower = rounder blob
+    falloffStart?: number; // radial distance where the body starts fading to the outer wash
+    falloffEnd?: number; // radial distance where it's fully the outer wash
+    speed?: number; // animation speed multiplier (default 1 = hero drift)
+  },
 ): SwirlHandle {
   const reduceMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
@@ -165,6 +209,22 @@ export function initSwirl(
   const shaderPass = new ShaderPass(SwirlPass);
   shaderPass.uniforms.grainTexture.value = loadTexture(loader, options.grainUrl);
   shaderPass.uniforms.delay.value = 2 + Math.floor(Math.random() * 3);
+  if (options.colors) {
+    for (const [key, rgb] of Object.entries(options.colors)) {
+      const uniform = shaderPass.uniforms[key as keyof typeof shaderPass.uniforms];
+      if (uniform && rgb) (uniform.value as THREE.Vector4).set(rgb[0], rgb[1], rgb[2], 1);
+    }
+  }
+  if (options.warp !== undefined) shaderPass.uniforms.warp.value = options.warp;
+  if (options.speed !== undefined) shaderPass.uniforms.timeScale.value = options.speed;
+  if (options.falloffStart !== undefined)
+    shaderPass.uniforms.smoothStepStart.value = options.falloffStart;
+  if (options.falloffEnd !== undefined)
+    shaderPass.uniforms.smoothStepEnd.value = options.falloffEnd;
+  const updateAspect = () => {
+    if (options.circular) shaderPass.uniforms.aspect.value = width / height;
+  };
+  updateAspect();
   composer.addPass(shaderPass);
 
   const clock = new THREE.Clock();
@@ -203,6 +263,7 @@ export function initSwirl(
     const next = makeCamera();
     camera.copy(next);
     camera.updateProjectionMatrix();
+    updateAspect();
   };
 
   const resizeObserver = new ResizeObserver(onResize);

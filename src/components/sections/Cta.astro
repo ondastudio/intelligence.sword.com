@@ -42,8 +42,11 @@ const { heading = data.heading } = Astro.props;
 const { cta } = data;
 ---
 
+<!-- No own background: the page-content surface shows through, letting the
+     Scaling neon bloom above bleed down behind the dotted mesh instead of being
+     cut off at the section seam. -->
 <section
-  class="cta relative flex min-h-[420px] items-center justify-center overflow-hidden bg-surface px-6 py-24 text-black md:min-h-[519px]"
+  class="cta relative flex min-h-[420px] items-center justify-center overflow-hidden px-6 py-24 text-black md:min-h-[519px]"
 >
   <!-- Live dotted mesh; sizing/colors handled in the script -->
   <canvas class="cta__mesh pointer-events-none absolute inset-0 z-0 h-full w-full" aria-hidden="true"></canvas>

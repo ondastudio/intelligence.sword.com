@@ -33,26 +33,38 @@
 
   const stage = document.querySelector<HTMLElement>("[data-swirl-stage]");
   const canvas = stage?.querySelector<HTMLCanvasElement>("canvas[data-swirl]");
+  const wrapper = stage?.parentElement;
   // The hero is the first <section> in the shared wrapper. (Don't use
   // nextElementSibling — Astro injects its bundled <script> right after the
   // stage, so that would measure the script tag, not the hero.)
-  const hero = stage?.parentElement?.querySelector<HTMLElement>("section");
+  const hero = wrapper?.querySelector<HTMLElement>("section");
+  // The swirl carries down and fades out just as it touches this element (the
+  // heading of the section below the hero); marked with `data-swirl-end`.
+  const endEl = wrapper?.querySelector<HTMLElement>("[data-swirl-end]");
 
-  if (stage && canvas && hero) {
-    // How far the swirl bleeds into the next section, as a fraction of hero height.
-    const BLEED_RATIO = 0.45;
-
+  if (stage && canvas && hero && wrapper) {
     const sizeStage = () => {
       const heroHeight = hero.offsetHeight;
-      const bleed = Math.round(heroHeight * BLEED_RATIO);
-      const total = heroHeight + bleed;
+      // Distance from the top of the wrapper (= the stage's top) down to the
+      // fade-target element (the heading the swirl should reach). Falls back to
+      // a fraction of the hero height if the marker isn't present.
+      const reach = endEl
+        ? Math.round(
+            endEl.getBoundingClientRect().top - wrapper.getBoundingClientRect().top
+          )
+        : heroHeight + Math.round(heroHeight * 0.45);
+      // Solid across the hero, then a long gradual fade so the swirl softens to
+      // a faint lavender wash by the time it reaches the heading — it just
+      // *touches* the text rather than carrying the full purple down to it.
+      const tail = Math.round(heroHeight * 0.12);
+      const total = reach + tail;
+      const bleed = Math.max(1, reach - heroHeight);
       stage.style.height = `${total}px`;
-      // Solid across the hero, then a gradual fade so the swirl stays clearly
-      // visible as it carries into the next section before settling to surface.
       const mask =
         `linear-gradient(to bottom,` +
         ` #000 ${heroHeight}px,` +
-        ` rgba(0,0,0,0.6) ${heroHeight + Math.round(bleed * 0.5)}px,` +
+        ` rgba(0,0,0,0.4) ${heroHeight + Math.round(bleed * 0.55)}px,` +
+        ` rgba(0,0,0,0.12) ${reach}px,` +
         ` transparent ${total}px)`;
       stage.style.maskImage = mask;
       stage.style.webkitMaskImage = mask;

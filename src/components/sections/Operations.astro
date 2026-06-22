@@ -25,6 +25,27 @@ const { eyebrow, heading } = data;
        the title (z-2) still lifts away above the cards. -->
   <div class="absolute inset-0 z-0 bg-surface" aria-hidden="true"></div>
 
+  <!-- Animated swirl bloom behind the title — the hero swirl recoloured to the
+       section's lavender + lime palette (static bloom.svg is the no-JS /
+       reduced-motion fallback). It sits at z-0 (below the rising cards and the
+       title) and, on desktop, sticks with the pinned title so the bloom holds
+       centre through the hand-off. -->
+  <div
+    data-op-swirl-stage
+    aria-hidden="true"
+    class="op-swirl pointer-events-none z-0"
+  >
+    <img
+      src="/operations/bloom.svg"
+      alt=""
+      class="absolute inset-0 h-full w-full object-cover"
+    />
+    <canvas
+      data-op-swirl
+      class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+    ></canvas>
+  </div>
+
   <div class="op-pin pointer-events-none relative z-[2] flex items-center justify-center">
     <div
       data-merge-title
@@ -53,6 +74,26 @@ const { eyebrow, heading } = data;
     min-height: inherit;
   }
 
+  /* Swirl bloom layer — fills the banner behind the centered title. A radial
+     mask keeps it a soft centred bloom that fades to the surface at the edges
+     (matching the design's contained lavender + lime glow). */
+  .op-swirl {
+    position: absolute;
+    inset: 0;
+    -webkit-mask-image: radial-gradient(
+      circle closest-side at 50% 50%,
+      #000 0%,
+      #000 22%,
+      transparent 70%
+    );
+    mask-image: radial-gradient(
+      circle closest-side at 50% 50%,
+      #000 0%,
+      #000 22%,
+      transparent 70%
+    );
+  }
+
   /* Desktop + motion-allowed: the title becomes a sticky pin over a tall
      stage so it can hold centre while the Numbers cards rise into it. The
      extra height below the 100vh pin is the scroll distance over which the
@@ -68,6 +109,18 @@ const { eyebrow, heading } = data;
       top: 0;
       height: 100vh;
       min-height: 0;
+      /* Overlap the in-flow swirl layer above so both pin together without
+         adding a second 100vh to the stage's scroll length. */
+      margin-top: -100vh;
+    }
+
+    /* The bloom becomes an in-flow sticky layer so it tracks the pinned title
+       (its flow height is cancelled by .op-pin's negative margin above). */
+    .op-swirl {
+      position: sticky;
+      inset: auto;
+      top: 0;
+      height: 100vh;
     }
   }
 </style>
@@ -123,4 +176,33 @@ const { eyebrow, heading } = data;
     "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
   );
   if (motionOk.matches) initTitleHandoff();
+</script>
+
+<script>
+  // Animated swirl bloom behind the title — the shared hero swirl recoloured to
+  // this section's lavender + lime palette (bloom.svg colours: lime #ccff33,
+  // lavender #eee8ff, fading to near-white at the edges).
+  import { initSwirl } from "../../lib/swirl";
+
+  const stage = document.querySelector<HTMLElement>("[data-op-swirl-stage]");
+  const canvas = stage?.querySelector<HTMLCanvasElement>("canvas[data-op-swirl]");
+
+  if (stage && canvas) {
+    initSwirl(canvas, stage, {
+      grainUrl: "/hero/swirl/perlin1.png",
+      circular: true,
+      warp: 0.7, // distortion — more drift while staying a cohesive blob
+      speed: 2.4, // faster drift
+      falloffStart: 0.5, // keep the centre filled; only the outer edge fades to white
+      falloffEnd: 0.92,
+      colors: {
+        bgColor: [0.98, 0.99, 0.96], // outer field — near-white
+        soft: [0.92, 0.98, 0.72], // inner core — pale lime
+        body: [0.86, 0.96, 0.55], // dominant bloom — soft lime
+        lavender: [0.95, 0.98, 0.85], // secondary highlight — pale lime
+        crest: [0.97, 0.97, 0.97], // gradient crest — white
+      },
+    });
+    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
+  }
 </script>
