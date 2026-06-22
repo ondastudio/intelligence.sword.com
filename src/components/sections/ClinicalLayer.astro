@@ -42,7 +42,7 @@ const { heading, steps, cards } = data;
       <!-- Cards (left) + crossfading diagram (right). Top-aligned; stacks on
            mobile. -->
       <div
-        class="clinical-row mt-12 flex flex-col items-center gap-16 lg:mt-[88px] lg:flex-row lg:items-start lg:justify-between lg:gap-0"
+        class="clinical-row mt-12 flex flex-col items-center gap-16 lg:mt-[116px] lg:flex-row lg:items-start lg:justify-between lg:gap-0"
       >
         <!-- Card column -->
         <div class="flex w-full max-w-[340px] flex-col gap-4">
@@ -197,17 +197,20 @@ const { heading, steps, cards } = data;
       display: flex;
       min-height: 100svh;
       align-items: center;
-      padding-block: clamp(1.5rem, 4vw, 48px);
+      padding-block: clamp(1rem, 3vw, 32px);
+    }
+    /* Compress the title→diagram gap while pinned so the full-size (827×811)
+       diagram has as much vertical room as possible. The static/fallback view
+       keeps the design's 116px gap. */
+    :global(html.js) .clinical-row {
+      margin-top: clamp(1.5rem, 5vh, 48px);
     }
     /* The diagram column becomes a positioning context; both states overlap in
        one slot. State A stays in flow (defines the height); State B sits over it
-       and starts hidden. Cap each figure by viewport height so the whole pinned
-       stage fits. */
+       and starts hidden. The figure keeps its native max-w-[827px] sizing — the
+       diagram is shown at the same dimensions as the un-pinned design. */
     :global(html.js) .clinical-diagrams {
       position: relative;
-    }
-    :global(html.js) .clinical-figure {
-      max-width: min(827px, 62svh);
     }
     /* Drop the fallback sibling gap so State B overlaps State A exactly (a
        leftover margin-top would push the absolute panel down + shrink it). */
