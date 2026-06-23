@@ -323,7 +323,9 @@ const orchCards = orchestration.cards;
         const r = clamp((offset - i * cardLen) / cardLen);
         const e = ease(r);
         el.style.transform = `translateX(${110 * (1 - e)}%)`;
-        el.style.opacity = `${e}`;
+        // Stay fully opaque while sliding in — the card is parked off-screen at
+        // r=0 so it's hidden by the slide, not by transparency.
+        el.style.opacity = r > 0 ? "1" : "0";
         el.style.pointerEvents = "none";
         if (r >= 0.5) active = i;
       });
