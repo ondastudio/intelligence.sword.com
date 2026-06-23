@@ -1,0 +1,49 @@
+---
+/**
+ * TriageCta — closing call-to-action below the Triage use-case section on the
+ * home page (Figma "Frame 2147224346"). A centered white `rounded-card` (max
+ * 1064, matching the Triage stage width) on the surface background: a two-line
+ * Lora headline ("Looking for another use case? / We can custom-build a
+ * solution for you.") over a brand-purple "Book a meeting" pill seamed (`-ml-px`)
+ * to a `filled` `ArrowCircle`. The whole card is clickable (site card rule):
+ * one stretched overlay link covers it, the pill + arrow are decorative, and the
+ * arrow's `detach` nudge fires on card hover. The pill+arrow entrance rides the
+ * shared `[data-reveal]` observer. Reads `data/triage-cta.json`.
+ */
+import ArrowCircle from "../ui/ArrowCircle.astro";
+import { heading, cta } from "../../data/triage-cta.json";
+---
+
+<section class="bg-surface px-4 py-16 text-black sm:px-6 md:py-24">
+  <div
+    class="group relative mx-auto flex max-w-[1064px] flex-col items-center justify-center gap-10 rounded-card bg-white px-6 py-16 text-center sm:px-12 md:py-20 lg:px-24"
+  >
+    <h2
+      data-reveal="title"
+      class="font-serif text-[clamp(1.5rem,3.4vw,32px)] font-normal"
+    >
+      {heading.line1}<br />{heading.line2}
+    </h2>
+
+    <div data-reveal class="flex items-center" style="transition-delay:140ms">
+      <span
+        class="flex h-10 items-center rounded-full bg-brand px-6 text-sm font-semibold uppercase text-white"
+      >
+        {cta.label}
+      </span>
+      <ArrowCircle
+        variant="filled"
+        label={cta.label}
+        detach
+        decorative
+        class="-ml-px"
+      />
+    </div>
+
+    <!-- Whole-card link -->
+    <a
+      href={cta.href}
+      aria-label={cta.label}
+      class="absolute inset-0 z-20 rounded-card"></a>
+  </div>
+</section>
