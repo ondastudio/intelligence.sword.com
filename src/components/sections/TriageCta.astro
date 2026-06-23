@@ -8,15 +8,38 @@
  * to a `filled` `ArrowCircle`. The whole card is clickable (site card rule):
  * one stretched overlay link covers it, the pill + arrow are decorative, and the
  * arrow's `detach` nudge fires on card hover. The pill+arrow entrance rides the
- * shared `[data-reveal]` observer. Reads `data/triage-cta.json`.
+ * shared `[data-reveal]` observer.
+ *
+ * Behind the card sits the shared animated swirl (same WebGL bloom as the
+ * Operations banner) recoloured to a soft-purple palette — a centred bloom that
+ * haloes out from behind the opaque card and fades to the surface at the edges.
+ * A CSS radial-gradient is the no-JS / reduced-motion fallback. Reads
+ * `data/triage-cta.json`.
  */
 import ArrowCircle from "../ui/ArrowCircle.astro";
 import { heading, cta } from "../../data/triage-cta.json";
 ---
 
-<section class="bg-surface px-4 py-16 text-black sm:px-6 md:py-24">
+<section
+  class="relative isolate overflow-hidden bg-surface px-4 py-16 text-black sm:px-6 md:py-24"
+>
+  <!-- Soft-purple swirl bloom behind the card. z-0, below the card (z-10). The
+       static gradient is the no-JS / reduced-motion fallback; the canvas fades
+       in over it once the swirl mounts. -->
   <div
-    class="group relative mx-auto flex max-w-[1064px] flex-col items-center justify-center gap-10 rounded-card bg-white px-6 py-16 text-center sm:px-12 md:py-20 lg:px-24"
+    data-cta-swirl-stage
+    aria-hidden="true"
+    class="cta-swirl pointer-events-none absolute inset-0 z-0"
+  >
+    <div class="cta-swirl-fallback absolute inset-0"></div>
+    <canvas
+      data-cta-swirl
+      class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+    ></canvas>
+  </div>
+
+  <div
+    class="group relative z-10 mx-auto flex max-w-[1064px] flex-col items-center justify-center gap-10 rounded-card bg-white px-6 py-16 text-center sm:px-12 md:py-20 lg:px-24"
   >
     <h2
       data-reveal="title"
@@ -47,3 +70,64 @@ import { heading, cta } from "../../data/triage-cta.json";
       class="absolute inset-0 z-20 rounded-card"></a>
   </div>
 </section>
+
+<style>
+  /* Swirl bloom layer — fills the section behind the card. A soft elliptical
+     radial mask keeps it a contained centred bloom that fades to the surface
+     before the section edges, so the purple haloes out from behind the card. */
+  .cta-swirl {
+    -webkit-mask-image: radial-gradient(
+      ellipse 72% 92% at 50% 50%,
+      #000 0%,
+      #000 30%,
+      transparent 76%
+    );
+    mask-image: radial-gradient(
+      ellipse 72% 92% at 50% 50%,
+      #000 0%,
+      #000 30%,
+      transparent 76%
+    );
+  }
+
+  /* No-JS / reduced-motion fallback: a static soft-purple radial bloom. */
+  .cta-swirl-fallback {
+    background: radial-gradient(
+      ellipse 60% 75% at 50% 50%,
+      #d3c2ff 0%,
+      #e1d6ff 40%,
+      transparent 72%
+    );
+  }
+</style>
+
+<script>
+  // Animated swirl bloom behind the card — the shared hero swirl recoloured to a
+  // soft-purple palette (body ~#bda4ff, highlights from the purple-100 / tint
+  // tokens), matching the Operations banner's mechanism but in purple.
+  import { initSwirl } from "../../lib/swirl";
+
+  const stage = document.querySelector<HTMLElement>("[data-cta-swirl-stage]");
+  const canvas = stage?.querySelector<HTMLCanvasElement>(
+    "canvas[data-cta-swirl]",
+  );
+
+  if (stage && canvas) {
+    initSwirl(canvas, stage, {
+      grainUrl: "/hero/swirl/perlin1.png",
+      circular: true,
+      warp: 0.7, // cohesive, rounded blob with a filled centre
+      speed: 2.2,
+      falloffStart: 0.5, // keep the centre filled; only the outer edge fades out
+      falloffEnd: 0.92,
+      colors: {
+        bgColor: [0.976, 0.969, 1.0], // outer field — near-white with a faint lilac
+        soft: [0.882, 0.839, 1.0], // inner highlight — purple-100 (#e1d6ff)
+        body: [0.741, 0.643, 1.0], // dominant bloom — soft purple (~#bda4ff)
+        lavender: [0.933, 0.91, 1.0], // secondary highlight — purple-tint
+        crest: [0.97, 0.97, 0.97], // gradient crest — white
+      },
+    });
+    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
+  }
+</script>
