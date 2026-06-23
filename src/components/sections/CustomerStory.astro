@@ -442,7 +442,21 @@ const chip =
   {
     related && (
       <section class="relative overflow-hidden bg-surface px-4 py-20 md:px-20 md:py-[120px]">
-        <div class="relative mx-auto flex max-w-[1280px] flex-col items-end gap-12 md:gap-20">
+        {/* Animated swirl bloom behind the related grid — the shared hero swirl
+            in a softened brand-purple palette, masked to a contained centred
+            bloom that fades to the surface at the edges (Figma node 8642). */}
+        <div
+          data-related-swirl-stage
+          aria-hidden="true"
+          class="cs-related-swirl pointer-events-none absolute inset-0 z-0"
+        >
+          <canvas
+            data-related-swirl
+            class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+          ></canvas>
+        </div>
+
+        <div class="relative z-10 mx-auto flex max-w-[1280px] flex-col items-end gap-12 md:gap-20">
           <h2
             data-reveal="title"
             class="w-full max-w-[714px] self-center text-center font-serif text-[clamp(2.25rem,4.5vw,56px)] font-normal text-black"
@@ -608,6 +622,35 @@ const chip =
     .forEach(initImpactScroll);
 </script>
 
+<script>
+  // Related-stories bloom — the shared hero swirl in a softened brand-purple
+  // palette, fading to the section surface at the edges. Same engine as the
+  // home-page blooms (Operations / Scaling) and the About field.
+  import { initSwirl } from "../../lib/swirl";
+
+  const stage = document.querySelector<HTMLElement>("[data-related-swirl-stage]");
+  const canvas = stage?.querySelector<HTMLCanvasElement>("canvas[data-related-swirl]");
+
+  if (stage && canvas) {
+    initSwirl(canvas, stage, {
+      grainUrl: "/hero/swirl/perlin1.png",
+      circular: true, // reads as a cohesive round blob on the wide section
+      warp: 0.7, // drifts while staying a cohesive blob
+      speed: 2.0, // gentle drift
+      falloffStart: 0.5, // keep the centre filled; only the outer edge fades out
+      falloffEnd: 0.92,
+      colors: {
+        bgColor: [0.976, 0.976, 0.976], // outer field — section surface (#f9f9f9)
+        soft: [0.92, 0.89, 1.0], // inner core — pale lavender
+        body: [0.6, 0.42, 0.92], // dominant bloom — softened brand purple
+        lavender: [0.92, 0.89, 1.0], // secondary highlight — pale lavender
+        crest: [0.97, 0.97, 0.97], // gradient crest — white
+      },
+    });
+    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
+  }
+</script>
+
 <style is:global>
   /* Hero stat dividers draw in from the top — the same line effect as the home
      hero rule. Driven off the column's own reveal (.in-view, added globally by
@@ -643,6 +686,24 @@ const chip =
     .js .cs-id.lines-in .cs-hline {
       transform: scaleX(1);
     }
+  }
+
+  /* Related-stories swirl bloom — a wide centred radial mask keeps the animated
+     swirl a soft contained bloom that fades to the surface at the section's
+     edges (matching the design's lavender glow behind the related grid). */
+  .cs-related-swirl {
+    -webkit-mask-image: radial-gradient(
+      ellipse closest-side at 50% 50%,
+      #000 0%,
+      #000 30%,
+      transparent 78%
+    );
+    mask-image: radial-gradient(
+      ellipse closest-side at 50% 50%,
+      #000 0%,
+      #000 30%,
+      transparent 78%
+    );
   }
 
   /* Impact panel full-bleed scrubber — mirrors the home "Trusted by" frame.
