@@ -17,12 +17,12 @@ const { num, label, class: className = "" } = Astro.props;
 
 <div class={`flex items-center ${className}`}>
   <span
-    class="grid size-10 place-items-center rounded-full border border-black bg-ink-wash text-sm font-semibold text-black backdrop-blur-xl"
+    class="grid size-10 place-items-center rounded-full border border-black text-sm font-semibold text-black"
   >
     {num}
   </span>
   <span
-    class="flex h-10 items-center rounded-full border border-black bg-ink-wash px-4 text-sm font-semibold uppercase text-black backdrop-blur-xl"
+    class="flex h-10 items-center rounded-full border border-black px-4 text-sm font-semibold uppercase text-black"
   >
     {label}
   </span>
