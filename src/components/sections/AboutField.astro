@@ -1,0 +1,152 @@
+---
+/**
+ * AboutField — one continuous animated background behind the About page's
+ * "born → team" run (AboutOperations' State B, AboutCta and AboutTeam, passed in
+ * via the default slot).
+ *
+ * It layers a lavender wash (purple-tint) under a sticky, viewport-sized swirl
+ * bloom — the shared hero swirl recoloured to brand purple. The wash + a
+ * loosening radial mask are driven by AboutOperations' own scroll progress: at
+ * State A the field is white with a contained centred bloom (Figma Section-04);
+ * as the pinned stage shifts to State B the lavender fades up and the bloom
+ * spreads to a full-bleed glow that then holds — as one background — all the way
+ * down through the team grid.
+ *
+ * The swirl is `sticky` inside an out-of-flow layer, so a single viewport-sized
+ * canvas backs the whole run without stretching a tall canvas or pushing the
+ * content. Slotted sections render transparent above it (z-10); without JS /
+ * reduced motion the wash still resolves from scroll position and the swirl
+ * holds a single static frame.
+ */
+---
+
+<div class="about-field relative isolate overflow-x-clip bg-white">
+  <!-- Out-of-flow background layer spanning the whole run. -->
+  <div class="field-bg pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+    <!-- Lavender wash — scrubbed 0 (white State A) → 1 (lavender State B onward),
+         then held for AboutCta / AboutTeam below. -->
+    <div data-field-wash class="field-wash absolute inset-0 bg-purple-tint"></div>
+
+    <!-- Sticky swirl bloom — stays behind the viewport for the run's full height.
+         A radial mask (loosened by the scrubber) keeps it a contained bloom in
+         State A and a full-bleed glow from State B on. -->
+    <div data-field-swirl-stage class="field-swirl sticky top-0 h-screen w-full overflow-hidden">
+      <canvas
+        data-field-swirl
+        class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+      ></canvas>
+    </div>
+  </div>
+
+  <div class="relative z-10">
+    <slot />
+  </div>
+</div>
+
+<style>
+  /* Soft radial mask keeps the swirl a centred bloom; the scrubber scales the
+     whole layer up (transform) so it visibly grows from a contained State-A
+     glow into a full-bleed background that covers the run. */
+  .field-swirl {
+    transform-origin: center 45%;
+    transform: scale(0.7);
+    will-change: transform;
+    -webkit-mask-image: radial-gradient(
+      circle closest-side at 50% 50%,
+      #000 0%,
+      #000 30%,
+      transparent 78%
+    );
+    mask-image: radial-gradient(
+      circle closest-side at 50% 50%,
+      #000 0%,
+      #000 30%,
+      transparent 78%
+    );
+  }
+  .field-wash {
+    opacity: 0;
+  }
+</style>
+
+<script>
+  // Drive the wash opacity + swirl mask from AboutOperations' scroll progress so
+  // the field resolves in lockstep with its State A → State B transition, then
+  // holds for the sections below. Cheap scroll math — runs under reduced motion
+  // too (only the swirl animation itself is gated, inside initSwirl).
+  function initAboutField() {
+    const field = document.querySelector<HTMLElement>(".about-field");
+    const ops = document.querySelector<HTMLElement>("[data-about-ops]");
+    const wash = field?.querySelector<HTMLElement>("[data-field-wash]");
+    const swirl = field?.querySelector<HTMLElement>("[data-field-swirl-stage]");
+    if (!field || !ops || !wash || !swirl) return;
+
+    const WASH: [number, number] = [0.08, 0.5]; // wash fades over the A → B beat
+    const SCALE_MIN = 0.7; // contained State-A bloom
+    const SCALE_MAX = 2.6; // grown to blanket the whole run by the team's end
+    const track = (p: number, [a, b]: [number, number]) =>
+      Math.min(1, Math.max(0, (p - a) / (b - a)));
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+    const progress = (el: HTMLElement) => {
+      const scrub = el.offsetHeight - window.innerHeight;
+      return scrub > 0
+        ? Math.min(1, Math.max(0, -el.getBoundingClientRect().top / scrub))
+        : 0;
+    };
+
+    let ticking = false;
+    const render = () => {
+      ticking = false;
+
+      // Wash tracks AboutOperations precisely so the lavender lands with State B.
+      wash.style.opacity = String(easeOutCubic(track(progress(ops), WASH)));
+
+      // The bloom keeps growing across the entire run, so it's never a static
+      // backdrop — it expands continuously (linear) until it has covered the
+      // team grid.
+      const grow = progress(field);
+      swirl.style.transform = `scale(${SCALE_MIN + grow * (SCALE_MAX - SCALE_MIN)})`;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    };
+
+    render();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+  }
+
+  initAboutField();
+</script>
+
+<script>
+  // Animated swirl bloom — the shared hero swirl in a softened brand-purple
+  // palette so it reads as a gentle lavender glow on white (State A) and a
+  // brighter centre over the lavender wash (State B onward).
+  import { initSwirl } from "../../lib/swirl";
+
+  const stage = document.querySelector<HTMLElement>("[data-field-swirl-stage]");
+  const canvas = stage?.querySelector<HTMLCanvasElement>("canvas[data-field-swirl]");
+
+  if (stage && canvas) {
+    initSwirl(canvas, stage, {
+      grainUrl: "/hero/swirl/perlin1.png",
+      circular: true,
+      warp: 0.7, // drifts while staying a cohesive blob
+      speed: 2.0, // gentle drift
+      falloffStart: 0.5, // keep the centre filled; only the outer edge fades out
+      falloffEnd: 0.92,
+      colors: {
+        bgColor: [0.96, 0.96, 1.0], // outer field — near-white lavender
+        soft: [0.9, 0.86, 1.0], // inner core — pale lavender
+        body: [0.52, 0.28, 0.9], // dominant bloom — softened brand purple
+        lavender: [0.9, 0.86, 1.0], // secondary highlight — pale lavender
+        crest: [0.97, 0.97, 0.97], // gradient crest — white
+      },
+    });
+    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
+  }
+</script>

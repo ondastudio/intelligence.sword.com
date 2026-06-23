@@ -6,6 +6,7 @@ import AboutStats from "../components/sections/AboutStats.astro";
 import AboutOperations from "../components/sections/AboutOperations.astro";
 import AboutCta from "../components/sections/AboutCta.astro";
 import AboutTeam from "../components/sections/AboutTeam.astro";
+import AboutField from "../components/sections/AboutField.astro";
 import Cta from "../components/sections/Cta.astro";
 import Footer from "../components/sections/Footer.astro";
 import about from "../data/about.json";
@@ -20,9 +21,11 @@ import about from "../data/about.json";
     <AboutHero />
     <AboutStory />
     <AboutStats />
-    <AboutOperations />
-    <AboutCta />
-    <AboutTeam />
+    <AboutField>
+      <AboutOperations />
+      <AboutCta />
+      <AboutTeam />
+    </AboutField>
     <Cta heading={about.finalCta} />
   </div>
   <Footer variant="purple" />
