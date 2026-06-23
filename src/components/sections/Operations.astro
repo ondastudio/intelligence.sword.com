@@ -20,11 +20,6 @@ const { eyebrow, heading } = data;
   data-merge-stage
   class="operations relative px-4"
 >
-  <!-- Surface background on its own layer BELOW the rising cards (z-0), so the
-       Numbers grid (z-1) stays visible as it slides up into this stage, while
-       the title (z-2) still lifts away above the cards. -->
-  <div class="absolute inset-0 z-0 bg-surface" aria-hidden="true"></div>
-
   <!-- Animated swirl bloom behind the title — the hero swirl recoloured to the
        section's lavender + lime palette (static bloom.svg is the no-JS /
        reduced-motion fallback). It sits at z-0 (below the rising cards and the
