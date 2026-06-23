@@ -1,9 +1,12 @@
 ---
 /**
  * Triage — the "agentic workforce" use-case section below Care.
- * A centered serif headline with a purple accent, a tab/segmented control
- * highlighting the active use case, and a lime-themed SolutionCard that slides
- * in horizontally on first view.
+ * On arrival: a centered serif headline, the Triage navbar, and a lime-themed
+ * Clinical Triage SolutionCard. As the section pins and the user scrolls, the
+ * navbar swaps instantly (a trigger — one state is shown at a time, no
+ * crossfade) to the Care Orchestration navbar the moment the first purple card
+ * takes over; the remaining purple cards then slide in over the lime card, one
+ * per scroll segment.
  * Content comes from src/data/triage.json.
  */
 import triage from "../../data/triage.json";
@@ -36,7 +39,7 @@ const orchCards = orchestration.cards;
        stage can stick. The stage sits in normal flow — so the headline → navbar
        spacing is just the heading's bottom padding — and only offsets to
        vertical-center once it sticks. The pinned scroll distance scrubs the
-       navbar morph (Triage → Care Orchestration) before it releases. -->
+       purple cards sliding in over the lime card before it releases. -->
   <div
     data-triage-track
     class="triage-track mx-auto w-full max-w-[1440px] px-4 pb-40 sm:px-6 lg:px-20 lg:pb-0"
@@ -45,23 +48,22 @@ const orchCards = orchestration.cards;
       data-triage-stage
       class="triage-stage mx-auto flex w-full max-w-[1064px] flex-col items-center gap-8"
     >
-      <!-- Morphing nav (centered): starts as the Triage tab (state A) and
-           crossfades + expands into the Care Orchestration navbar (state B). Both
-           states are stacked in one grid cell so the wrapper sizes to the wider
-           B; JS interpolates the wrapper width and crossfades the two layers
-           against the pinned scroll progress. -->
+      <!-- Trigger nav (centered): the Triage tab (state A) on arrival, swapped
+           instantly for the Care Orchestration navbar (state B) when the first
+           purple card takes over. Both states are stacked in one grid cell but
+           only one is displayed at a time, so the wrapper auto-sizes to it — JS
+           just toggles which state shows (no crossfade, no gradual expansion). -->
       <div class="flex w-full justify-center">
           <div
             data-nav-wrap
             class="nav-wrap relative max-w-full rounded-[40px] bg-ink-wash"
           >
-            <!-- State A — Triage (collapsed) -->
+            <!-- State A — Triage -->
             <div
               data-nav-a
               class="nav-layer flex items-center gap-6 py-2 pl-8 pr-2"
             >
-              <span
-                class="shrink-0 text-sm font-semibold uppercase"
+              <span class="shrink-0 text-sm font-semibold uppercase"
                 >{tabs.label}</span
               >
               <span
@@ -70,13 +72,12 @@ const orchCards = orchestration.cards;
               >
             </div>
 
-            <!-- State B — Care Orchestration (expanded) -->
+            <!-- State B — Care Orchestration -->
             <div
               data-nav-b
               class="nav-layer flex items-center gap-6 py-2 pl-8 pr-2"
             >
-              <span
-                class="shrink-0 text-sm font-semibold uppercase"
+              <span class="shrink-0 text-sm font-semibold uppercase"
                 >{orchestration.navLabel}</span
               >
               <div class="flex shrink-0 items-stretch gap-2">
@@ -86,10 +87,7 @@ const orchCards = orchestration.cards;
                       type="button"
                       data-orch-tab={i}
                       aria-label={`Show ${orchCards[i].title}`}
-                      class:list={[
-                        "orch-tab flex shrink-0 cursor-pointer items-center justify-center whitespace-pre-line rounded-[40px] border border-gray-200 px-8 py-4 text-center text-sm font-semibold uppercase transition-colors",
-                        i === 0 && "is-active",
-                      ]}
+                      class="orch-tab flex shrink-0 cursor-pointer items-center justify-center whitespace-pre-line rounded-[40px] border border-gray-200 px-8 py-4 text-center text-sm font-semibold uppercase transition-colors"
                     >
                       {t}
                     </button>
@@ -100,9 +98,9 @@ const orchCards = orchestration.cards;
           </div>
         </div>
 
-        <!-- Card stage: the Triage (lime) card and the first Care Orchestration
-             (purple) card share one relative box so the purple card can slide up
-             from below and overlap the Triage card as the navbar morphs. -->
+        <!-- Card stage: the lime Clinical Triage card and the purple Care
+             Orchestration cards share one relative box so the purple cards can
+             slide in horizontally and overlap the lime card as the section pins. -->
         <div class="relative w-full" data-cards>
           <!-- triage-reveal = horizontal slide-in on first view. The inner
                [data-triage-card] wrapper carries the scroll-driven scale/fade so
@@ -125,9 +123,8 @@ const orchCards = orchestration.cards;
             </div>
           </div>
 
-          <!-- Care Orchestration cards — absolutely stacked over the Triage card.
-               Card 0 rises vertically from below as the navbar morphs; cards 1–3
-               then reveal horizontally (slide in from the right) one per scroll
+          <!-- Care Orchestration cards — absolutely stacked over the lime card.
+               Each reveals horizontally (slides in from the right) one per scroll
                segment while the section stays pinned. Later cards sit on higher
                z-index so each new reveal covers the previous. -->
           {
@@ -166,17 +163,15 @@ const orchCards = orchestration.cards;
 </section>
 
 <style>
-  /* Morphing nav -----------------------------------------------------------
-     State A and State B share a single grid cell (stacked); the wrapper sizes
-     to the wider/taller B. JS interpolates `width` (clipping B's extra pills
-     while collapsed) and crossfades the two layers. Hidden until measured to
-     avoid a flash of the end-state on load; <noscript> reveals it for no-JS. */
+  /* Trigger nav -----------------------------------------------------------
+     State A and State B share a single grid cell (stacked), but only one is
+     displayed at a time so the wrapper auto-sizes to whichever shows. JS adds
+     `.show-b` to swap them instantly — no opacity, no width tween. Hidden until
+     JS is ready to avoid a flash; <noscript> reveals the Triage state for no-JS. */
   .nav-wrap {
     display: grid;
     justify-items: start;
-    align-items: stretch;
     width: max-content;
-    overflow: hidden;
     visibility: hidden;
   }
   .nav-wrap.is-ready {
@@ -185,10 +180,15 @@ const orchCards = orchestration.cards;
   .nav-layer {
     grid-area: 1 / 1;
     white-space: nowrap;
-    will-change: opacity;
   }
   [data-nav-b] {
-    opacity: 0;
+    display: none;
+  }
+  .nav-wrap.show-b [data-nav-a] {
+    display: none;
+  }
+  .nav-wrap.show-b [data-nav-b] {
+    display: flex;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -197,8 +197,8 @@ const orchCards = orchestration.cards;
     }
   }
 
-  /* Pin: while morphing (lg, motion allowed), the stage sticks so the navbar
-     morph is scrubbed in place. The stage stays in normal flow (headline → navbar
+  /* Pin: while scrubbing (lg, motion allowed), the stage sticks so the card
+     sequence is scrubbed in place. The stage stays in normal flow (headline → navbar
      spacing = the heading's padding); JS sets its `top` so it lands centered once
      stuck, plus the track height (taller than the viewport) and is-pinned.
      `overflow-x: clip` on the section clips the card slide-in without creating a
@@ -228,17 +228,12 @@ const orchCards = orchestration.cards;
     }
   }
 
-  /* Morph-driven card sequence -----------------------------------------------
-     [data-triage-card] scales down + fades as the navbar morphs; the first
-     [data-orch-card] slides up from below to overlap it; the remaining orch cards
-     then slide in horizontally (one per scroll segment) while the section stays
-     pinned. JS writes every transform inline against the pinned scroll progress;
-     these defaults are the at-rest state so nothing flashes before JS runs and on
-     no-JS / non-morph viewports only the Triage card shows. */
-  [data-triage-card] {
-    transform-origin: center top;
-    will-change: transform, opacity;
-  }
+  /* Scroll-driven card sequence -----------------------------------------------
+     The purple [data-orch-card]s slide in horizontally (one per scroll segment)
+     over the lime card while the section stays pinned. JS writes every transform
+     inline against the pinned scroll progress; these defaults are the at-rest
+     state so nothing flashes before JS runs and on no-JS / non-pinned viewports
+     only the lime Clinical Triage card shows. */
   .orch-card {
     opacity: 0;
     pointer-events: none;
@@ -275,19 +270,18 @@ const orchCards = orchestration.cards;
   }
 
   // --- Pinned card sequence ------------------------------------------------
-  // Once the stage centers and pins, the continued scroll toward the next section
-  // is scrubbed into a sequence of segments:
-  //   segment 0 (morph): the Triage tab (A) expands + crossfades into the Care
-  //     Orchestration navbar (B); the Triage card scales down + fades; the first
-  //     orchestration card slides up from below to overlap it.
-  //   segments 1…N-1: each remaining orchestration card slides in horizontally
-  //     from the right, covering the previous one; the active nav pill follows.
+  // On arrival the Triage navbar (state A) and the lime card show. Once the stage
+  // centers and pins, the continued scroll toward the next section is scrubbed
+  // into one segment per purple card:
+  //   segment 0: the navbar swaps (crossfade, width snaps at the midpoint — no
+  //     gradual expansion) into the Care Orchestration navbar (B) as the first
+  //     purple card slides in over the lime card.
+  //   segments 1…N-1: each remaining purple card slides in horizontally from the
+  //     right, covering the previous one; the active nav pill follows.
   // After the last card the pin releases. Everything reverses on scroll-up. Runs
-  // only while pinned (lg + motion allowed); otherwise it settles to the collapsed
-  // Triage-only state.
+  // only while pinned (lg + motion allowed); otherwise it settles to the arrival
+  // state (Triage navbar + lime card).
   const wrap = document.querySelector<HTMLElement>("[data-nav-wrap]");
-  const layerA = document.querySelector<HTMLElement>("[data-nav-a]");
-  const layerB = document.querySelector<HTMLElement>("[data-nav-b]");
   const section = document.querySelector<HTMLElement>("[data-triage-section]");
   const track = document.querySelector<HTMLElement>("[data-triage-track]");
   const stage = document.querySelector<HTMLElement>("[data-triage-stage]");
@@ -304,19 +298,16 @@ const orchCards = orchestration.cards;
   ).matches;
   const lgMQ = window.matchMedia("(min-width: 1024px)");
 
-  if (wrap && layerA && layerB && section && track && stage && cardsBox) {
+  if (wrap && section && track && stage && cardsBox) {
     const N = orchCardEls.length; // orchestration cards
-    let wA = 0; // collapsed (Triage) content width
-    let wB = 0; // expanded (Care Orchestration) content width
-    let morphLen = 0; // scroll px the navbar morph (segment 0) is scrubbed across
     let cardLen = 0; // scroll px each horizontal card reveal is scrubbed across
     let scrub = 0; // total pinned scroll distance
     let stickTop = 0; // sticky `top` that lands the stage vertically centered
-    let morph = false;
+    let pinned = false;
     let ticking = false;
 
     const clamp = (n: number) => Math.min(1, Math.max(0, n));
-    // Smoothstep for an eased crossfade/expand/slide.
+    // Smoothstep for an eased slide.
     const ease = (n: number) => n * n * (3 - 2 * n);
 
     const setActiveTab = (i: number) => {
@@ -325,85 +316,56 @@ const orchCards = orchestration.cards;
 
     // offset = pinned scroll distance travelled (0 … scrub), in px.
     const apply = (offset: number) => {
-      // Segment 0 — navbar morph + Triage→card-0 swap.
-      const m = ease(clamp(offset / morphLen));
-      wrap.style.width = `${wA + (wB - wA) * m}px`;
-      layerA.style.opacity = `${1 - m}`;
-      layerB.style.opacity = `${m}`;
-      if (triageCard) {
-        triageCard.style.transform = `scale(${1 - 0.12 * m})`;
-        triageCard.style.opacity = `${1 - m}`;
-      }
-
-      // Card 0 rises vertically from below as the morph runs; cards 1…N-1 each
-      // slide in horizontally from the right over their own segment.
-      let active = 0;
+      // Each card i slides in horizontally over its own segment [i, i+1)·cardLen.
+      // While none is past halfway the lime card shows and no pill is active.
+      let active = -1;
       orchCardEls.forEach((el, i) => {
-        if (i === 0) {
-          el.style.transform = `translateY(${56 * (1 - m)}%)`;
-          el.style.opacity = `${m}`;
-        } else {
-          const r = clamp((offset - (morphLen + (i - 1) * cardLen)) / cardLen);
-          const e = ease(r);
-          el.style.transform = `translateX(${110 * (1 - e)}%)`;
-          el.style.opacity = `${e}`;
-          if (r >= 0.5) active = i;
-        }
+        const r = clamp((offset - i * cardLen) / cardLen);
+        const e = ease(r);
+        el.style.transform = `translateX(${110 * (1 - e)}%)`;
+        el.style.opacity = `${e}`;
         el.style.pointerEvents = "none";
+        if (r >= 0.5) active = i;
       });
-      // Topmost revealed card is interactive; its nav pill is highlighted.
-      orchCardEls[active].style.pointerEvents = m > 0.5 ? "auto" : "none";
+      // The instant a purple card takes over (becomes active) the navbar swaps
+      // from Triage to Care Orchestration; the topmost card is interactive and
+      // its nav pill is highlighted.
+      wrap.classList.toggle("show-b", active >= 0);
+      if (active >= 0) orchCardEls[active].style.pointerEvents = "auto";
       setActiveTab(active);
     };
 
     const settle = () => {
-      // Non-morph states: end-state on reduced motion, collapsed otherwise.
-      if (reduceMotion) {
-        wrap.style.width = `${wB}px`;
-        layerA.style.opacity = "0";
-        layerB.style.opacity = "1";
-      } else {
-        wrap.style.width = `${wA}px`;
-        layerA.style.opacity = "1";
-        layerB.style.opacity = "0";
-      }
-      // No sequence → only the Triage card shows; orchestration cards stay hidden.
-      if (triageCard) {
-        triageCard.style.transform = "";
-        triageCard.style.opacity = "";
-      }
+      // Non-pinned state: only the lime Clinical Triage card shows, so the Triage
+      // navbar (state A) stays; orchestration cards hidden, no nav pill active.
+      wrap.classList.remove("show-b");
       orchCardEls.forEach((el) => {
         el.style.transform = "";
         el.style.opacity = "";
         el.style.pointerEvents = "none";
       });
-      setActiveTab(0);
+      setActiveTab(-1);
     };
 
     const measure = () => {
-      // Read both nav layers at their natural widths, then decide whether to pin.
       section.classList.remove("is-pinned");
       track.style.height = "";
       stage.style.top = "";
-      wrap.style.width = "";
       cardsBox.style.height = "";
-      wA = layerA.offsetWidth;
-      wB = layerB.offsetWidth;
       const vh = window.innerHeight;
-      morph = lgMQ.matches && !reduceMotion && wB > wA;
-      if (morph) {
+      pinned = lgMQ.matches && !reduceMotion;
+      if (pinned) {
         // Reserve the tallest card's height so the centered stage and the pin
-        // distance account for cards taller than the Triage card.
+        // distance account for cards taller than the lime card.
         const maxCardH = orchCardEls.reduce(
           (h, el) => Math.max(h, el.offsetHeight),
           triageCard ? triageCard.offsetHeight : 0,
         );
         cardsBox.style.height = `${maxCardH}px`;
-        morphLen = Math.round(vh * 0.7);
         cardLen = Math.round(vh * 0.6);
-        scrub = morphLen + (N - 1) * cardLen;
+        scrub = N * cardLen;
         // Land the stage centered when it fits; otherwise anchor near the top
-        // (min 24px) so the morphing nav stays on screen on shorter viewports.
+        // (min 24px) so the navbar stays on screen on shorter viewports.
         stickTop = Math.max(24, Math.round((vh - stage.offsetHeight) / 2));
         stage.style.top = `${stickTop}px`;
         section.classList.add("is-pinned");
@@ -413,7 +375,7 @@ const orchCards = orchestration.cards;
 
     const render = () => {
       ticking = false;
-      if (!morph) return settle();
+      if (!pinned) return settle();
       // The stage sticks at top:stickTop and holds for `scrub` px. Track top runs
       // stickTop → stickTop − scrub across that span; map it to the travelled px.
       const offset = clamp(
@@ -440,13 +402,12 @@ const orchCards = orchestration.cards;
     };
 
     // Clicking a Care Orchestration nav pill jumps to the scroll position where
-    // that card is fully revealed. Card 0 lands at the end of the morph segment;
-    // each later card i lands at the end of its own horizontal-reveal segment.
-    // Only meaningful while pinned (morph) — otherwise only the Triage card shows.
-    const offsetForCard = (i: number) => (i === 0 ? morphLen : morphLen + i * cardLen);
+    // that card is fully revealed (the end of its own horizontal-reveal segment).
+    // Only meaningful while pinned — otherwise only the lime card shows.
+    const offsetForCard = (i: number) => (i + 1) * cardLen;
 
     const scrollToCard = (i: number) => {
-      if (!morph) return;
+      if (!pinned) return;
       const trackTop = window.scrollY + track.getBoundingClientRect().top;
       const target = trackTop - stickTop + offsetForCard(i);
       window.scrollTo({ top: target, behavior: "smooth" });
