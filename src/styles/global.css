@@ -224,7 +224,7 @@
 .page-content {
   position: relative;
   z-index: 1;
-  background-color: #fff;
+  background-color: var(--color-surface); /* #f9f9f9 — page background */
 }
 
 .footer-reveal .footer {
