@@ -79,6 +79,23 @@ const { cta } = data;
   </div>
 </section>
 
+<style>
+  /* Fade the mesh into the surface on every edge so the pointer bloom
+     dissolves softly there instead of being clipped to a hard line when the
+     cursor nears an edge. Two gradients (vertical + horizontal) intersected
+     keep the centre at full strength while softening all four borders. */
+  .cta__mesh {
+    -webkit-mask-image:
+      linear-gradient(to bottom, transparent 0, black 80px, black calc(100% - 80px), transparent 100%),
+      linear-gradient(to right, transparent 0, black 80px, black calc(100% - 80px), transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to bottom, transparent 0, black 80px, black calc(100% - 80px), transparent 100%),
+      linear-gradient(to right, transparent 0, black 80px, black calc(100% - 80px), transparent 100%);
+    mask-composite: intersect;
+  }
+</style>
+
 <script>
   // The headline/CTA entrance is handled site-wide via [data-reveal]
   // (see Layout.astro); this script only drives the live dotted mesh.
