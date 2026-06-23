@@ -77,7 +77,10 @@ const ctaList: Cta[] = ctas ?? (cta ? [cta] : []);
 // the whole card clickable; any secondary "outline" CTA stays its own link on
 // top. `clickable` gates that behaviour to cards that actually have a target.
 const primary = ctaList.find((c) => c.style !== "outline") ?? ctaList[0];
-const clickable = !!primary?.href;
+// Only single-CTA cards become fully clickable via the stretched overlay. Cards
+// with two buttons keep each button as its own independent link instead, so the
+// card surface itself isn't a link.
+const clickable = ctaList.length === 1 && !!primary?.href;
 const composite = !!photo && type !== "highlighted";
 const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[tone]} ${className}`;
 ---
