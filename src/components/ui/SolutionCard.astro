@@ -18,6 +18,10 @@ interface Props {
   headline: string;
   points: Point[];
   glow: string;
+  /** When true, `glow` is a full-card baked background (fills the card) rather
+   *  than an oversized overlay bloom. Used by purple cards that ship their own
+   *  base + wash + bloom in one SVG (e.g. Population Health). */
+  glowFill?: boolean;
   badge?: { icon: string; text: string; alt: string };
   logo?: string;
   logoAlt?: string;
@@ -34,6 +38,7 @@ const {
   headline,
   points,
   glow,
+  glowFill = false,
   badge,
   logo,
   logoAlt = "",
@@ -70,6 +75,11 @@ const t = {
     ctaText: "text-white",
   },
 }[theme];
+
+// A baked full-card background supplies its own base + wash, so drop the solid
+// card tint and let the SVG fill the whole card edge-to-edge.
+const cardBg = glowFill ? "" : t.cardBg;
+const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
 ---
 
 <div class={`group relative flex w-full flex-col ${className}`}>
@@ -77,7 +87,7 @@ const t = {
   <div
     class:list={[
       "relative overflow-hidden rounded-card p-6 ring-1 ring-inset md:p-16",
-      t.cardBg,
+      cardBg,
       t.ring,
     ]}
   >
@@ -86,7 +96,7 @@ const t = {
       src={glow}
       alt=""
       aria-hidden="true"
-      class:list={["pointer-events-none absolute z-0", t.glowFit]}
+      class:list={["pointer-events-none absolute z-0", glowFit]}
     />
 
     <div

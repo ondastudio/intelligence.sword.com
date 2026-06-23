@@ -15,6 +15,14 @@ import SolutionCard from "../ui/SolutionCard.astro";
 
 const { eyebrow, heading, tabs, card, case: useCase, orchestration } = triage;
 const orchCards = orchestration.cards;
+
+// Per-card baked full-card backgrounds (index-aligned to orchCards). A null/
+// missing entry falls back to the shared overlay bloom (card-glow-purple.svg).
+const cardBg: Record<number, string> = {
+  1: "/triage/card-bg-population.svg", // Population Health Campaigns
+  2: "/triage/card-bg-surgery.svg", // Surgery Prehab and Rehab
+  3: "/triage/card-bg-readmission.svg", // Readmission Prevention
+};
 ---
 
 <section
@@ -139,7 +147,8 @@ const orchCards = orchestration.cards;
                   title={c.title}
                   headline={`${c.headline.highlight}${c.headline.rest}`}
                   points={c.points}
-                  glow="/triage/card-glow-purple.svg"
+                  glow={cardBg[i] ?? "/triage/card-glow-purple.svg"}
+                  glowFill={cardBg[i] != null}
                   logo={c.case.logo}
                   logoText={c.case.logoText}
                   logoAlt={c.case.logoAlt}

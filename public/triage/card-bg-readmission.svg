@@ -1,0 +1,25 @@
+<svg width="1064" height="598" viewBox="0 0 1064 598" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="readmission-card-clip">
+      <rect width="1064" height="598" rx="40" />
+    </clipPath>
+    <radialGradient id="readmission-card-bloom" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-357.828 -210.479 266.779 -260.471 467.38 388.438)">
+      <stop stop-color="#4D0099" />
+      <stop offset="0.235577" stop-color="#A684FF" />
+      <stop offset="0.884615" stop-color="#D1E0F8" stop-opacity="0.5" />
+    </radialGradient>
+    <filter id="readmission-card-blur" x="-260.384" y="-254.384" width="1414.91" height="1141.52" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="65.6922" />
+    </filter>
+  </defs>
+  <g clip-path="url(#readmission-card-clip)">
+    <rect width="1064" height="598" rx="40" fill="#FFFFFF" />
+    <rect width="1064" height="598" rx="40" fill="#A684FF" fill-opacity="0.4" />
+    <path
+      d="M545.427 332.743C953.809 9.62881 1163.04 243.782 918.947 407.305C779.063 714.695 682.366 714.697 288.066 749.289C-106.235 783.88 -187.912 676.961 -93.0918 490.639C1.72818 304.317 -128.767 240.637 115.324 -63.6094C359.415 -367.856 195.319 609.749 545.427 332.743Z"
+      fill="url(#readmission-card-bloom)"
+      fill-opacity="0.85"
+      filter="url(#readmission-card-blur)"
+    />
+  </g>
+</svg>

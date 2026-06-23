@@ -1,0 +1,25 @@
+<svg width="1064" height="598" viewBox="0 0 1064 598" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="population-card-clip">
+      <rect width="1064" height="598" rx="40" />
+    </clipPath>
+    <radialGradient id="population-card-bloom" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-357.828 -210.479 266.779 -260.471 295.38 425.438)">
+      <stop stop-color="#4D0099" />
+      <stop offset="0.235577" stop-color="#A684FF" />
+      <stop offset="0.884615" stop-color="#D1E0F8" stop-opacity="0.5" />
+    </radialGradient>
+    <filter id="population-card-blur" x="-432.384" y="-217.384" width="1414.91" height="1141.52" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="65.6922" />
+    </filter>
+  </defs>
+  <g clip-path="url(#population-card-clip)">
+    <rect width="1064" height="598" rx="40" fill="#FFFFFF" />
+    <rect width="1064" height="598" rx="40" fill="#A684FF" fill-opacity="0.4" />
+    <path
+      d="M373.427 369.743C781.809 46.6288 991.038 280.782 746.947 444.305C607.063 751.695 510.366 751.697 116.066 786.289C-278.235 820.88 -359.912 713.961 -265.092 527.639C-170.272 341.317 -300.767 277.637 -56.6756 -26.6094C187.415 -330.856 23.3188 646.749 373.427 369.743Z"
+      fill="url(#population-card-bloom)"
+      fill-opacity="0.85"
+      filter="url(#population-card-blur)"
+    />
+  </g>
+</svg>

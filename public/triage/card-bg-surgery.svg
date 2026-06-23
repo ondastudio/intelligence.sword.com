@@ -1,0 +1,25 @@
+<svg width="1064" height="598" viewBox="0 0 1064 598" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="surgery-card-clip">
+      <rect width="1064" height="598" rx="40" />
+    </clipPath>
+    <radialGradient id="surgery-card-bloom" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-357.828 -210.479 266.779 -260.471 276.38 214.438)">
+      <stop stop-color="#4D0099" />
+      <stop offset="0.235577" stop-color="#A684FF" />
+      <stop offset="0.884615" stop-color="#D1E0F8" stop-opacity="0.5" />
+    </radialGradient>
+    <filter id="surgery-card-blur" x="-451.384" y="-428.384" width="1414.91" height="1141.52" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="65.6922" />
+    </filter>
+  </defs>
+  <g clip-path="url(#surgery-card-clip)">
+    <rect width="1064" height="598" rx="40" fill="#FFFFFF" />
+    <rect width="1064" height="598" rx="40" fill="#A684FF" fill-opacity="0.4" />
+    <path
+      d="M354.427 158.743C762.809 -164.371 972.038 69.7819 727.947 233.305C588.063 540.695 491.366 540.697 97.0656 575.289C-297.235 609.88 -378.912 502.961 -284.092 316.639C-189.272 130.317 -319.767 66.6373 -75.6756 -237.609C168.415 -541.856 4.31885 435.749 354.427 158.743Z"
+      fill="url(#surgery-card-bloom)"
+      fill-opacity="0.85"
+      filter="url(#surgery-card-blur)"
+    />
+  </g>
+</svg>
