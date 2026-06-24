@@ -12,6 +12,7 @@
 import data from "../../data/trust.json";
 
 const { heading, badges, points } = data;
+const badgeRows = [badges.slice(0, 7), badges.slice(7)];
 ---
 
 <section class="trust overflow-hidden py-[120px]">
@@ -41,13 +42,13 @@ const { heading, badges, points } = data;
       <!-- Heading -->
       <h2
         data-reveal="title"
-        class="max-w-[816px] text-center font-serif text-h5 font-normal text-black"
+        class="max-w-[350px] text-center font-serif text-h5 font-normal text-black md:max-w-[816px]"
       >
         {heading}
       </h2>
 
       <!-- Badge grid -->
-      <div data-reveal class="flex w-full flex-wrap justify-center gap-5" style="transition-delay:100ms">
+      <div data-reveal class="hidden w-full flex-wrap justify-center gap-5 md:flex" style="transition-delay:100ms">
         {
           badges.map((badge) => (
             <div class="relative flex h-20 w-60 shrink-0 items-center justify-center overflow-hidden rounded-[40px] backdrop-blur-[2px]">
@@ -63,6 +64,43 @@ const { heading, badges, points } = data;
                     style={`left:${l.x}px;top:${l.y}px;width:${l.w}px;height:${l.h}px`}
                   />
                 ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- Mobile badge marquees -->
+      <div data-reveal class="trust-badge-marquee flex w-[calc(100%+32px)] md:hidden" style="transition-delay:100ms">
+        {
+          badgeRows.map((row, rowIndex) => (
+            <div
+              class="trust-badge-marquee__row"
+              data-dir={rowIndex === 0 ? "left" : "right"}
+            >
+              <div class="trust-badge-marquee__track">
+                {[0, 1].map((copy) =>
+                  row.map((badge) => (
+                    <div class="relative flex h-20 w-60 shrink-0 items-center justify-center overflow-hidden rounded-[40px] backdrop-blur-[2px]">
+                      <span class="pointer-events-none absolute left-1/2 top-0 h-20 w-60 -translate-x-1/2 rounded-[40px] border-[15px] border-purple-200 blur-[8px]" />
+                      <div
+                        class="relative"
+                        style={`width:${badge.w}px;height:${badge.h}px`}
+                      >
+                        {badge.layers.map((l, i) => (
+                          <img
+                            src={l.src}
+                            alt={copy === 0 && i === 0 ? badge.alt : ""}
+                            aria-hidden={copy === 0 && i === 0 ? undefined : "true"}
+                            loading="lazy"
+                            class="absolute block max-w-none"
+                            style={`left:${l.x}px;top:${l.y}px;width:${l.w}px;height:${l.h}px`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )),
+                )}
               </div>
             </div>
           ))
@@ -98,9 +136,15 @@ const { heading, badges, points } = data;
   /* Fallback (no JS / reduced motion): the design's contained panel, inset to a
      16px gutter with rounded corners. */
   .trust-frame {
-    border-radius: var(--radius-card);
+    border-radius: var(--radius-card) var(--radius-card) 0 0;
     transform-origin: center center;
     transform: scale(0.978); /* ≈ 16px gutter on a 1440 viewport */
+  }
+
+  @media (min-width: 768px) {
+    .trust-frame {
+      border-radius: var(--radius-card);
+    }
   }
 
   /* Enhanced: the scrubber drives scale (0.82 → 1) and corner radius
@@ -108,6 +152,69 @@ const { heading, badges, points } = data;
   @media (prefers-reduced-motion: no-preference) {
     :global(html.js) .trust-frame {
       transform: scale(0.82);
+    }
+  }
+
+  .trust-badge-marquee {
+    flex-direction: column;
+    gap: 20px;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 24px,
+      #000 calc(100% - 24px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 24px,
+      #000 calc(100% - 24px),
+      transparent 100%
+    );
+  }
+
+  .trust-badge-marquee__row {
+    overflow: visible;
+  }
+
+  .trust-badge-marquee__track {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: max-content;
+    animation: trust-badge-marquee-left 34s linear infinite;
+    will-change: transform;
+  }
+
+  .trust-badge-marquee__row[data-dir="right"] .trust-badge-marquee__track {
+    animation-name: trust-badge-marquee-right;
+    animation-duration: 30s;
+  }
+
+  @keyframes trust-badge-marquee-left {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-50% - 10px));
+    }
+  }
+
+  @keyframes trust-badge-marquee-right {
+    from {
+      transform: translateX(calc(-50% - 10px));
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .trust-badge-marquee__track {
+      animation: none;
+      transform: translateX(-120px);
     }
   }
 </style>
@@ -125,6 +232,8 @@ const { heading, badges, points } = data;
       return;
 
     const MIN_SCALE = 0.82;
+    const MOBILE_QUERY = "(max-width: 767px)";
+    const MOBILE_RADIUS = "40px 40px 0 0";
     const MAX_RADIUS = 40; // px — matches --radius-card
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
@@ -143,7 +252,9 @@ const { heading, badges, points } = data;
       const scale = MIN_SCALE + (1 - MIN_SCALE) * eased;
       const radius = MAX_RADIUS * (1 - eased);
       frame.style.transform = `scale(${scale})`;
-      frame.style.borderRadius = `${radius}px`;
+      frame.style.borderRadius = window.matchMedia(MOBILE_QUERY).matches
+        ? MOBILE_RADIUS
+        : `${radius}px`;
     };
 
     const onScroll = () => {
