@@ -14,9 +14,11 @@ interface Props {
   tone?: "dark" | "light";
 }
 const { tone = "dark" } = Astro.props;
+const menuItems = site.nav.filter((item) => !item.hidden);
 ---
 
-<header class="absolute inset-x-0 top-0 z-20">
+{/* Desktop header (lg+) — unchanged from the design. */}
+<header class="absolute inset-x-0 top-0 z-20 hidden lg:block">
   <nav
     class="mx-auto flex max-w-[1440px] items-center justify-between px-6 pb-5 pt-10 lg:px-20"
   >
@@ -48,3 +50,98 @@ const { tone = "dark" } = Astro.props;
     </div>
   </nav>
 </header>
+
+{/* Mobile header (below lg) — the floating lavender pill from the 390px design.
+    `fixed` so it stays put while the page scrolls. */}
+<header
+  class="fixed inset-x-0 top-0 z-30 px-5 pt-[14px] lg:hidden"
+  data-mobile-header
+>
+  <div
+    class="flex items-center justify-between rounded-full bg-lavender py-1 pl-8 pr-1 backdrop-blur-[20px]"
+  >
+    <!-- Sword icon-mark (left) -->
+    <a href="/" class="text-black" aria-label={`${site.logo.bold} ${site.logo.regular}`}>
+      <svg
+        class="block h-6 w-[13.42px]"
+        viewBox="0 0 13.4208 24"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M6.12011 0.0209433C0.711791 0.43287 -1.8992 7.11858 1.57389 11.3744C5.01554 15.5908 11.7327 14.1051 13.1606 8.77785C14.4358 4.02219 10.8549 -0.340071 6.12011 0.0209433ZM10.3745 7.75267C9.67177 11.3073 4.58899 11.6706 3.36544 8.3775C2.50334 6.05636 3.68423 3.33487 6.21664 3.06874C8.9803 2.77715 10.9335 4.91778 10.3722 7.75267H10.3745Z"
+          fill="currentColor"
+        />
+        <path
+          d="M2.3471 19.7724C2.53793 23.0099 6.00877 25.0117 8.79712 23.4704C11.3587 22.0518 11.8526 18.4348 9.79616 16.315C6.96067 13.3921 2.10014 15.6276 2.34485 19.7724H2.3471Z"
+          fill="currentColor"
+        />
+      </svg>
+    </a>
+
+    <!-- MENU toggle (center) -->
+    <button
+      type="button"
+      class="flex items-center gap-2 px-6 text-sm font-semibold uppercase text-black"
+      aria-expanded="false"
+      aria-controls="mobile-menu-panel"
+      data-menu-toggle
+    >
+      Menu
+      <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="3" cy="3" r="3" fill="currentColor" />
+        <circle cx="13" cy="3" r="3" fill="currentColor" />
+        <circle cx="3" cy="13" r="3" fill="currentColor" />
+        <circle cx="13" cy="13" r="3" fill="currentColor" />
+      </svg>
+    </button>
+
+    <!-- Primary CTA (right) -->
+    <Button variant="solid" href={site.cta.href}>{site.cta.label}</Button>
+  </div>
+
+  <!-- Slide-down nav panel revealed by MENU. -->
+  <div
+    id="mobile-menu-panel"
+    class="mt-2 hidden overflow-hidden rounded-[28px] bg-lavender backdrop-blur-[20px]"
+    data-menu-panel
+  >
+    <nav class="flex flex-col p-2">
+      {
+        menuItems.map((item) => (
+          <a
+            href={item.href}
+            class="rounded-full px-6 py-3 text-sm font-semibold uppercase text-black transition-colors hover:bg-ink-wash-hover"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-mobile-header]");
+  if (header) {
+    const toggle = header.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+    const panel = header.querySelector<HTMLElement>("[data-menu-panel]");
+
+    const setOpen = (open: boolean) => {
+      toggle?.setAttribute("aria-expanded", String(open));
+      panel?.classList.toggle("hidden", !open);
+    };
+
+    toggle?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setOpen(toggle.getAttribute("aria-expanded") !== "true");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!header.contains(e.target as Node)) setOpen(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") setOpen(false);
+    });
+  }
+</script>
