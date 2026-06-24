@@ -29,13 +29,16 @@ import ClinicalDiagram04 from "../ui/ClinicalDiagram04.astro";
 import ClinicalDiagram05 from "../ui/ClinicalDiagram05.astro";
 import ClinicalDiagram06 from "../ui/ClinicalDiagram06.astro";
 import ClinicalCards06 from "../ui/ClinicalCards06.astro";
+import ClinicalLogoMarquee from "../ui/ClinicalLogoMarquee.astro";
 import data from "../../data/clinical-layer.json";
 
-const { heading, steps, cards, integrationLogos } = data;
+const { heading, steps, cards, integrationLogos, closing } = data;
 ---
 
 <section data-clinical-layer class="clinical-layer relative text-black">
-  <div data-clinical-stage class="clinical-stage">
+  <!-- DESKTOP (lg+): the pinned, side-by-side crossfade stage. Hidden below lg,
+       where the mobile layout below takes over. -->
+  <div data-clinical-stage class="clinical-stage hidden lg:block">
     <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
       <!-- Title -->
       <h2
@@ -172,6 +175,169 @@ const { heading, steps, cards, integrationLogos } = data;
           </div>
         </div>
       </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE (below lg). Three stacked blocks, matching the mobile Figma
+       (8797:51970): (1) title + capability cards; (2) a pinned crossfade of the
+       Channels→Data-foundation beats (A–F); (3) the closing "Complex operations"
+       beat pulled into its own static section with its own title + card set.
+       The desktop side-by-side pin above is hidden here. -->
+  <div class="clinical-mobile lg:hidden">
+    <!-- Swirl bloom — a single soft glow held fixed in the viewport (via a
+         sticky zero-height anchor) so it stays centred behind every card and
+         illustration for the whole mobile section, then scrolls away with it.
+         Sits behind all content (negative z within the section's own stacking
+         context). CSS radial wash is the no-JS / reduced-motion fallback. -->
+    <div class="cl-swirl-fixed" aria-hidden="true">
+      <div
+        data-cl-swirl-stage
+        class="cl-swirl-m pointer-events-none absolute opacity-0"
+      >
+        <canvas
+          data-cl-swirl
+          class="absolute inset-0 h-full w-full opacity-0"
+        ></canvas>
+      </div>
+    </div>
+
+    <!-- Block 1 — title over three capability cards -->
+    <div class="relative mx-auto w-full max-w-[420px] px-5 pt-[120px]">
+      <h2
+        data-reveal="title"
+        class="mx-auto max-w-[320px] text-center font-serif text-h5 font-normal"
+      >
+        {heading.before}<span class="text-brand">{heading.accent}</span>{heading.after}
+      </h2>
+
+      <div class="mt-16 flex flex-col gap-2">
+        {
+          cards.map((card, i) => (
+            <div
+              data-reveal
+              class="flex flex-col items-center justify-center gap-5 rounded-card bg-ink-wash p-8 backdrop-blur-[30px]"
+              style={`transition-delay:${i * 80}ms`}
+            >
+              <LabelPill>{card.label}</LabelPill>
+              <p class="text-center text-xmd leading-[1.25]">
+                {card.lines.map((line, j) => (
+                  <>
+                    {j > 0 && <br />}
+                    {line}
+                  </>
+                ))}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Block 2 — pinned crossfade of beats A–F. Each state is a step chip above
+         its diagram; the six states overlap in one slot and crossfade as the pin
+         scrolls. No-JS / reduced-motion: the states fall back to a normal stack. -->
+    <div data-clinical-m-pin class="clinical-m-pin mt-[120px]">
+      <div class="clinical-m-sticky">
+        <div class="mx-auto w-full max-w-[420px] px-5">
+          <div class="clinical-m-diagrams relative">
+            <div data-cm-state="a" class="clinical-m-state">
+              <ClinicalStepPill num={steps[0].num} label={steps[0].label} class="mb-6" />
+              <ClinicalDiagram class="mt-8" />
+            </div>
+            <div data-cm-state="b" class="clinical-m-state">
+              <ClinicalStepPill num={steps[1].num} label={steps[1].label} class="mb-6" />
+              <ClinicalDiagram02 class="mt-8" />
+            </div>
+            <div data-cm-state="c" class="clinical-m-state">
+              <ClinicalStepPill num={steps[2].num} label={steps[2].label} class="mb-6" />
+              <ClinicalDiagram03 class="mt-8" />
+            </div>
+            <div data-cm-state="d" class="clinical-m-state">
+              <ClinicalStepPill num={steps[2].num} label={steps[2].label} class="mb-6" />
+              <ClinicalDiagram31 class="mt-8" />
+            </div>
+            <div data-cm-state="e" class="clinical-m-state">
+              <ClinicalStepPill num={steps[3].num} label={steps[3].label} class="mb-6" />
+              <ClinicalDiagram04 card={false} />
+              <!-- On mobile the floating EHR logo card moves out of the diagram
+                   into its own frosted card below: an "EHR" label over the two
+                   scrolling logo marquee rows. -->
+              <div
+                class="mt-6 flex flex-col items-center gap-6 rounded-card bg-ink-wash p-6 backdrop-blur-[30px]"
+              >
+                <LabelPill>EHR</LabelPill>
+                <div class="h-20 w-full">
+                  <ClinicalLogoMarquee rows={integrationLogos} />
+                </div>
+              </div>
+            </div>
+            <div data-cm-state="f" class="clinical-m-state">
+              <ClinicalStepPill num={steps[4].num} label={steps[4].label} class="mb-6" />
+              <ClinicalDiagram05 class="mt-8" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block 3 — the closing "Complex operations" beat: its own title + subtitle
+         over the dashboards illustration and the alternate card set. The shared
+         fixed swirl bloom (top of .clinical-mobile) sits behind this too. -->
+    <div class="clinical-m-closing relative mt-[120px] pb-[120px]">
+      <div class="relative">
+        <div class="mx-auto w-full max-w-[420px] px-5">
+          <div data-reveal="title" class="text-center">
+            <h3 class="text-h5 font-normal leading-[1.15]">
+              {closing.heading[0]}<br />{closing.heading[1]}
+            </h3>
+            <p class="mx-auto mt-4 max-w-[300px] text-[1.25rem] leading-[1.2]">
+              {
+                closing.subtitle.map((seg) =>
+                  seg.bold ? (
+                    <span class="font-semibold">{seg.text}</span>
+                  ) : (
+                    <>
+                      {seg.text}
+                      {seg.br && <br />}
+                    </>
+                  ),
+                )
+              }
+            </p>
+          </div>
+          <div data-reveal class="mt-16">
+            <ClinicalDiagram06 />
+          </div>
+        </div>
+      </div>
+
+      <div class="mx-auto mt-16 flex w-full max-w-[420px] flex-col gap-4 px-5">
+        {
+          closing.cards.map((card, i) => (
+            <div
+              data-reveal
+              class="flex flex-col items-center justify-center gap-5 rounded-card bg-purple-tint p-8 backdrop-blur-[30px]"
+              style={`transition-delay:${i * 80}ms`}
+            >
+              <span class="grid size-10 place-items-center rounded-full border border-black/24">
+                <img src={card.icon} alt={card.alt} width="25" height="25" class="size-[25px]" />
+              </span>
+              <p class="text-center text-xmd leading-[1.25]">
+                {card.segments.map((seg) =>
+                  seg.bold ? (
+                    <span class="font-semibold">{seg.text}</span>
+                  ) : (
+                    <>
+                      {seg.text}
+                      {seg.br && <br />}
+                    </>
+                  ),
+                )}
+              </p>
+            </div>
+          ))
+        }
       </div>
     </div>
   </div>
@@ -345,6 +511,133 @@ const { heading, steps, cards, integrationLogos } = data;
   document
     .querySelectorAll<HTMLElement>("[data-clinical-layer]")
     .forEach(initClinicalLayer);
+
+  // Mobile (<lg) crossfade: the same pinned-scrubber mechanism, but over the six
+  // beats A–F only (the closing beat lives in its own static block below). The
+  // pin is a tall section with a sticky stage; progress is how far the pin has
+  // scrolled past the top of the viewport. Gated on motion + max-width:1023px
+  // (matching the CSS); otherwise the six states stay in normal stacked flow.
+  function initClinicalMobile(pin: HTMLElement) {
+    const enabled = () =>
+      window.matchMedia(
+        "(prefers-reduced-motion: no-preference) and (max-width: 1023px)",
+      ).matches;
+
+    const keys = ["a", "b", "c", "d", "e", "f"] as const;
+    const states = keys.map((k) =>
+      pin.querySelector<HTMLElement>(`[data-cm-state="${k}"]`),
+    );
+    if (states.some((s) => !s)) return;
+    const [a, b, c, d, e, f] = states as HTMLElement[];
+
+    // Bloom: scroll-driven so it only shows behind the illustrations. It fades
+    // in as the pinned illustrations take over from the capability cards, holds
+    // through the beats + the closing dashboard, then fades out as the closing
+    // "Complex operations" title scrolls off the top of the viewport.
+    const mobileRoot = pin.closest<HTMLElement>(".clinical-mobile");
+    // Drive opacity on the stage (not the canvas) so its CSS gradient fallback
+    // fades with the canvas rather than lingering in the cards section.
+    const bloom = mobileRoot?.querySelector<HTMLElement>(".cl-swirl-m");
+    const closingTitle = mobileRoot?.querySelector<HTMLElement>(
+      '.clinical-m-closing [data-reveal="title"]',
+    );
+    const BLOOM_MAX = 0.55;
+    const updateBloom = () => {
+      if (!bloom) return;
+      const vh = window.innerHeight;
+      // Fade in as the pin nears its pinned position (illustrations on screen).
+      const pinTop = pin.getBoundingClientRect().top;
+      const inT = Math.min(1, Math.max(0, (vh * 0.45 - pinTop) / (vh * 0.45)));
+      // Fade out as the closing title's bottom crosses the top of the viewport.
+      let outT = 0;
+      if (closingTitle) {
+        const tb = closingTitle.getBoundingClientRect().bottom;
+        outT = Math.min(1, Math.max(0, (vh * 0.2 - tb) / (vh * 0.2)));
+      }
+      bloom.style.opacity = String(BLOOM_MAX * inT * (1 - outT));
+    };
+
+    // Timeline windows over the pin's scrub distance: A holds then blurs out,
+    // B–E each resolve in then blur back out, F resolves in last and holds.
+    const A_OUT: [number, number] = [0.12, 0.2];
+    const B_IN: [number, number] = [0.14, 0.22];
+    const B_OUT: [number, number] = [0.3, 0.38];
+    const C_IN: [number, number] = [0.32, 0.4];
+    const C_OUT: [number, number] = [0.48, 0.56];
+    const D_IN: [number, number] = [0.5, 0.58];
+    const D_OUT: [number, number] = [0.66, 0.74];
+    const E_IN: [number, number] = [0.68, 0.76];
+    const E_OUT: [number, number] = [0.82, 0.9];
+    const F_IN: [number, number] = [0.84, 0.92];
+    const BLUR = 12;
+
+    const track = (p: number, [x, y]: [number, number]) =>
+      Math.min(1, Math.max(0, (p - x) / (y - x)));
+    const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+    const clear = (el: HTMLElement) => {
+      el.style.opacity = "";
+      el.style.filter = "";
+    };
+
+    let ticking = false;
+    const render = () => {
+      ticking = false;
+      // Bloom opacity tracks scroll regardless of the crossfade's motion gate.
+      updateBloom();
+      if (!enabled()) {
+        (states as HTMLElement[]).forEach(clear);
+        return;
+      }
+
+      const scrub = pin.offsetHeight - window.innerHeight;
+      const p =
+        scrub > 0
+          ? Math.min(1, Math.max(0, -pin.getBoundingClientRect().top / scrub))
+          : 0;
+
+      const aOut = ease(track(p, A_OUT));
+      a.style.opacity = String(1 - aOut);
+      a.style.filter = `blur(${aOut * BLUR}px)`;
+
+      const bIn = ease(track(p, B_IN));
+      const bOut = ease(track(p, B_OUT));
+      b.style.opacity = String(bIn * (1 - bOut));
+      b.style.filter = `blur(${(1 - bIn + bOut) * BLUR}px)`;
+
+      const cIn = ease(track(p, C_IN));
+      const cOut = ease(track(p, C_OUT));
+      c.style.opacity = String(cIn * (1 - cOut));
+      c.style.filter = `blur(${(1 - cIn + cOut) * BLUR}px)`;
+
+      const dIn = ease(track(p, D_IN));
+      const dOut = ease(track(p, D_OUT));
+      d.style.opacity = String(dIn * (1 - dOut));
+      d.style.filter = `blur(${(1 - dIn + dOut) * BLUR}px)`;
+
+      const eIn = ease(track(p, E_IN));
+      const eOut = ease(track(p, E_OUT));
+      e.style.opacity = String(eIn * (1 - eOut));
+      e.style.filter = `blur(${(1 - eIn + eOut) * BLUR}px)`;
+
+      const fIn = ease(track(p, F_IN));
+      f.style.opacity = String(fIn);
+      f.style.filter = `blur(${(1 - fIn) * BLUR}px)`;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    };
+
+    render();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+  }
+
+  document
+    .querySelectorAll<HTMLElement>("[data-clinical-m-pin]")
+    .forEach(initClinicalMobile);
 </script>
 
 <style>
@@ -445,6 +738,78 @@ const { heading, steps, cards, integrationLogos } = data;
       filter: blur(12px);
     }
   }
+
+  /* ====================================================================
+     MOBILE (<lg) — cards stacked above the illustration; A–F crossfade in
+     a pinned stage; the closing beat is its own static block.
+     ==================================================================== */
+  .clinical-mobile {
+    /* Own stacking context so the negative-z bloom sits behind this section's
+       content but never bleeds onto neighbouring sections. */
+    position: relative;
+    isolation: isolate;
+    /* Clip the swirl bloom horizontally so it can't add a scrollbar. */
+    overflow-x: clip;
+  }
+
+  /* Fixed-in-viewport swirl bloom: a sticky, zero-height anchor pinned to the
+     top of the viewport for the whole section, holding the bloom centred behind
+     every card + illustration. Sits behind the section's content (z below the
+     blocks, inside .clinical-mobile's isolated stacking context). */
+  .cl-swirl-fixed {
+    position: sticky;
+    top: 0;
+    z-index: -1;
+    height: 0;
+  }
+
+  /* Fallback (no-JS / reduced-motion): the six A–F states stack vertically,
+     each its own chip + diagram. */
+  .clinical-m-state + .clinical-m-state {
+    margin-top: clamp(2.5rem, 8vw, 64px);
+  }
+
+  /* Enhanced: pin the stage and crossfade the six states as one. Pre-setting
+     the start state keeps the first paint flash-free before the rAF loop runs. */
+  @media (prefers-reduced-motion: no-preference) and (max-width: 1023px) {
+    :global(html.js) .clinical-m-pin {
+      height: calc(100svh + 420vh);
+    }
+    :global(html.js) .clinical-m-sticky {
+      position: sticky;
+      top: 0;
+      display: flex;
+      height: 100svh;
+      align-items: center;
+    }
+    /* All six states stack in one grid cell. The cell sizes to the tallest beat
+       — Integrations, which carries the extra EHR logo card below its diagram —
+       so every beat stays top-aligned with a consistent step-chip + diagram
+       position, and the shorter beats simply leave the lower space empty
+       (matching the design's shared 616px frame). */
+    :global(html.js) .clinical-m-diagrams {
+      display: grid;
+      /* Constrain the single column to the container width — without this the
+         auto column sizes to the 837px-wide SVG and blows out the layout. */
+      grid-template-columns: minmax(0, 1fr);
+    }
+    :global(html.js) .clinical-m-state {
+      grid-area: 1 / 1;
+      min-width: 0;
+      align-self: start;
+    }
+    :global(html.js) .clinical-m-state + .clinical-m-state {
+      margin-top: 0;
+    }
+    :global(html.js) [data-cm-state="b"],
+    :global(html.js) [data-cm-state="c"],
+    :global(html.js) [data-cm-state="d"],
+    :global(html.js) [data-cm-state="e"],
+    :global(html.js) [data-cm-state="f"] {
+      opacity: 0;
+      filter: blur(12px);
+    }
+  }
 </style>
 <style>
   /* Swirl bloom — a soft blue glow behind the diagram. It lives inside
@@ -492,6 +857,34 @@ const { heading, steps, cards, integrationLogos } = data;
       height: 116%;
     }
   }
+
+  /* Mobile bloom — centred in the viewport (its anchor, .cl-swirl-fixed, is
+     pinned to the viewport top), sized in viewport units so it reads as one big,
+     soft, fixed glow behind the whole section. */
+  .cl-swirl-m {
+    left: 50%;
+    top: 50vh;
+    width: 135vw;
+    height: 90vh;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+      circle closest-side at 50% 50%,
+      color-mix(in srgb, var(--color-periwinkle) 55%, transparent),
+      transparent 70%
+    );
+    -webkit-mask-image: radial-gradient(
+      circle closest-side at 50% 50%,
+      #000 0%,
+      #000 16%,
+      transparent 72%
+    );
+    mask-image: radial-gradient(
+      circle closest-side at 50% 50%,
+      #000 0%,
+      #000 16%,
+      transparent 72%
+    );
+  }
 </style>
 
 <script>
@@ -499,25 +892,35 @@ const { heading, steps, cards, integrationLogos } = data;
   // to a soft brand-blue glow (circular, gentle drift).
   import { initSwirl } from "../../lib/swirl";
 
-  const stage = document.querySelector<HTMLElement>("[data-cl-swirl-stage]");
-  const canvas = stage?.querySelector<HTMLCanvasElement>("canvas[data-cl-swirl]");
-
-  if (stage && canvas) {
-    initSwirl(canvas, stage, {
-      grainUrl: "/hero/swirl/perlin1.png",
-      circular: true,
-      warp: 0.6, // gentle drift, cohesive blob
-      speed: 3.8, // faster drift than the hero swirl
-      falloffStart: 0.5,
-      falloffEnd: 0.92,
-      colors: {
-        bgColor: [0.97, 0.98, 1.0], // outer field — near-white
-        soft: [0.86, 0.9, 1.0], // inner core — pale blue
-        body: [0.5, 0.56, 0.97], // dominant bloom — blue-violet
-        lavender: [0.86, 0.9, 1.0], // secondary highlight — pale blue
-        crest: [0.97, 0.97, 0.97], // gradient crest — white
-      },
+  // One stage on desktop (inside the pin) and one on mobile (block 3); each gets
+  // its own canvas. The IntersectionObserver inside initSwirl pauses whichever is
+  // offscreen, so the hidden one for the current breakpoint doesn't render.
+  document
+    .querySelectorAll<HTMLElement>("[data-cl-swirl-stage]")
+    .forEach((stage) => {
+      const canvas = stage.querySelector<HTMLCanvasElement>(
+        "canvas[data-cl-swirl]",
+      );
+      if (!canvas) return;
+      initSwirl(canvas, stage, {
+        grainUrl: "/hero/swirl/perlin1.png",
+        circular: true,
+        warp: 0.6, // gentle drift, cohesive blob
+        speed: 3.8, // faster drift than the hero swirl
+        falloffStart: 0.5,
+        falloffEnd: 0.92,
+        colors: {
+          bgColor: [0.97, 0.98, 1.0], // outer field — near-white
+          soft: [0.86, 0.9, 1.0], // inner core — pale blue
+          body: [0.5, 0.56, 0.97], // dominant bloom — blue-violet
+          lavender: [0.86, 0.9, 1.0], // secondary highlight — pale blue
+          crest: [0.97, 0.97, 0.97], // gradient crest — white
+        },
+      });
+      // Reveal the canvas. The desktop bloom is then fully visible; the mobile
+      // bloom's overall visibility is gated by its stage opacity, which is
+      // scroll-driven in initClinicalMobile so it only shows behind the
+      // illustrations.
+      requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
     });
-    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
-  }
 </script>

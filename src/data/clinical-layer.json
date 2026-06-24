@@ -46,5 +46,44 @@
       { "src": "/clinical/integrations/trubridge.svg", "alt": "TruBridge", "h": 23 },
       { "src": "/clinical/integrations/veradigm.svg", "alt": "Veradigm", "h": 25 }
     ]
-  ]
+  ],
+  "closing": {
+    "heading": ["Complex operations?", "Complete control."],
+    "subtitle": [
+      { "text": "Get the full picture in real-time ", "br": true },
+      { "text": "while AI handles the busywork ", "br": true },
+      { "text": "with bespoke " },
+      { "text": "dashboards", "bold": true },
+      { "text": "." }
+    ],
+    "cards": [
+      {
+        "icon": "/clinical/cards06/monitor-pause.svg",
+        "alt": "Monitor",
+        "segments": [
+          { "text": "Customize what you ", "br": true },
+          { "text": "monitor in real-time", "bold": true }
+        ]
+      },
+      {
+        "icon": "/clinical/cards06/eye.svg",
+        "alt": "Watchtower",
+        "segments": [
+          { "text": "Set " },
+          { "text": "watchtowers", "bold": true },
+          { "text": " that detect ", "br": true },
+          { "text": "anomalies and compliance risks" }
+        ]
+      },
+      {
+        "icon": "/clinical/cards06/ai-chat-02.svg",
+        "alt": "AI",
+        "segments": [
+          { "text": "Train agents", "bold": true },
+          { "text": " on historical data ", "br": true },
+          { "text": "from human and AI interactions" }
+        ]
+      }
+    ]
+  }
 }
