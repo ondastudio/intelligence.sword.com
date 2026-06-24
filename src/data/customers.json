@@ -38,7 +38,14 @@
           "logoAlt": "Hellenic Ministry of Health",
           "title": "Bringing Intelligent Triage to Greece",
           "stat": { "value": "10M", "label": "citizens served" },
-          "cta": { "label": "Read more", "href": "/customers/greece" }
+          "ctas": [
+            { "label": "Read more", "href": "/customers/greece" },
+            {
+              "label": "Press release",
+              "href": "https://swordhealth.com/newsroom/sword-health-and-greek-government-partner-to-deliver-one-of-europe-s-first-national-healthcare-transformation-initiatives-using-ai",
+              "style": "outline"
+            }
+          ]
         }
       ]
     },

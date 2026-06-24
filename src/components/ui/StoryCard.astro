@@ -73,6 +73,8 @@ const toneClass: Record<string, string> = {
 };
 
 const ctaList: Cta[] = ctas ?? (cta ? [cta] : []);
+// External links (off-site press releases, etc.) open in a new tab.
+const isExternal = (href?: string) => !!href?.startsWith("http");
 // The card's primary action (the solid CTA) becomes a stretched link that makes
 // the whole card clickable; any secondary "outline" CTA stays its own link on
 // top. `clickable` gates that behaviour to cards that actually have a target.
@@ -130,7 +132,13 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
         </div>
       </div>
       {clickable && (
-        <a href={primary.href} aria-label={primary.label} class="absolute inset-0 z-20 rounded-card" />
+        <a
+          href={primary.href}
+          target={isExternal(primary.href) ? "_blank" : undefined}
+          rel={isExternal(primary.href) ? "noopener noreferrer" : undefined}
+          aria-label={primary.label}
+          class="absolute inset-0 z-20 rounded-card"
+        />
       )}
     </article>
   )
@@ -194,6 +202,8 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
                   // on whole-card hover (group-hover) as well as direct hover.
                   <a
                     href={c.href}
+                    target={isExternal(c.href) ? "_blank" : undefined}
+                    rel={isExternal(c.href) ? "noopener noreferrer" : undefined}
                     class="relative z-30 inline-flex h-10 items-center rounded-[40px] border border-black px-6 text-sm font-medium uppercase text-black transition-colors hover:bg-black hover:text-white group-hover:bg-black group-hover:text-white"
                   >
                     {c.label}
@@ -211,6 +221,8 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
                   <span class="inline-flex items-center">
                     <a
                       href={c.href}
+                      target={isExternal(c.href) ? "_blank" : undefined}
+                      rel={isExternal(c.href) ? "noopener noreferrer" : undefined}
                       class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase text-white"
                     >
                       {c.label}
@@ -242,7 +254,13 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
 
       {/* Stretched link — makes the entire card clickable (primary action). */}
       {clickable && (
-        <a href={primary.href} aria-label={primary.label} class="absolute inset-0 z-20 rounded-card" />
+        <a
+          href={primary.href}
+          target={isExternal(primary.href) ? "_blank" : undefined}
+          rel={isExternal(primary.href) ? "noopener noreferrer" : undefined}
+          aria-label={primary.label}
+          class="absolute inset-0 z-20 rounded-card"
+        />
       )}
     </article>
   )
