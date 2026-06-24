@@ -38,6 +38,10 @@ interface Story {
     eyebrow: string;
     logo: string;
     logoAlt: string;
+    // Render the logo as flat black (default). Set false for full-colour brand
+    // logos — e.g. the NHS white-on-blue lockup, which `brightness-0` would
+    // otherwise collapse into a solid black box.
+    logoMono?: boolean;
     image: string;
     imageAlt: string;
     stats: Stat[];
@@ -123,7 +127,10 @@ const chip =
           src={hero.logo}
           alt={hero.logoAlt}
           data-reveal
-          class="h-auto w-[180px] shrink-0 object-contain object-left brightness-0 md:col-start-1 md:row-start-2 md:w-[273px]"
+          class:list={[
+            "h-auto w-[180px] shrink-0 object-contain object-left md:col-start-1 md:row-start-2 md:w-[273px]",
+            { "brightness-0": hero.logoMono !== false },
+          ]}
         />
         <div data-reveal class="md:col-start-2 md:row-start-1">
           <Eyebrow>{hero.eyebrow}</Eyebrow>

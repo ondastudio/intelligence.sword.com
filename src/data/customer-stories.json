@@ -94,5 +94,348 @@
         }
       ]
     }
+  },
+  "nhs-prehabilitation": {
+    "title": "Cutting Hospital Stays with AI-driven Prehabilitation",
+    "metaTitle": "NHS Black Country Prehabilitation — Sword Intelligence",
+    "metaDescription": "How NHS Black Country ICB used Sword Intelligence to shorten hospital stays, avoid bed days, and save £405k for one NHS Trust through AI-driven surgery prehabilitation.",
+    "hero": {
+      "eyebrow": "Case Study: NHS Black Country ICB",
+      "logo": "/logos/nhs-black-country.png",
+      "logoAlt": "NHS Black Country Integrated Care Board",
+      "logoMono": false,
+      "image": "/customers/story-hero-nhs.png",
+      "imageAlt": "Hospital reception waiting area",
+      "stats": [
+        { "value": "£405K", "label": "saved for one NHS Trust in 3 months" },
+        { "value": "33%", "label": "shorter length of stay" },
+        { "value": "325", "label": "avoided bed days" }
+      ]
+    },
+    "id": {
+      "customerType": ["Provider", "Government"],
+      "patientsServed": "+1,200,000",
+      "location": "West Midlands, UK",
+      "useCases": ["Surgical Readiness", "Proactive Health Campaigns"]
+    },
+    "overview": {
+      "title": "Overview",
+      "paragraphs": [
+        "<a href=\"#\" class=\"underline\">NHS Black Country ICB</a> is one of six Integrated Care Boards across the West Midlands, responsible for the health of <strong class=\"font-semibold\">1.26 million people</strong>. After the COVID-19 pandemic, the region faced a growing elective surgery backlog — not simply a capacity problem, but a readiness one. Many patients arriving at the point of surgery were not physically or mentally prepared, leading to longer hospital stays, higher complication rates, and greater pressure on clinical teams.",
+        "Sword Intelligence was deployed at Dudley Group NHS Foundation Trust as an initial proof of concept, identifying patients on the waiting list and engaging them through a structured agentic surgery prehabilitation program ahead of intermediate-to-major elective procedures. Patients completed a health assessment on enrollment, which shaped their individual program structure. The goal was to shift preparation upstream — improving patients’ physical fitness, nutrition, and activation before they ever reached the theatre.",
+        "The program was open to all adult patients awaiting intermediate or major elective surgery at the Trust. 28% enrolled and completed the program. Plans are now in place to extend the offering across the wider Black Country region."
+      ]
+    },
+    "testimonial": {
+      "eyebrow": "In their words",
+      "activeTab": "Customer",
+      "panels": [
+        {
+          "label": "Customer",
+          "quote": "“Collaborating with Sword Intelligence has transformed our preoperative care, leading to markedly better patient outcomes and fewer complications.”",
+          "author": "Dr Anna Pierson",
+          "role": "System Lead for Perioperative Medicine\nNHS Black Country ICB"
+        }
+      ]
+    },
+    "impact": {
+      "title": "Impact",
+      "cards": [
+        {
+          "category": "Financial Impact",
+          "value": "£405,031",
+          "label": "saved for Dudley Group NHS Foundation Trust",
+          "detail": "Result of 325 avoided bed days"
+        },
+        {
+          "category": "Operational Efficiency",
+          "value": "33%",
+          "label": "shorter length of stay among program participants",
+          "detail": "Compared to a matched control group"
+        },
+        {
+          "category": "Patient Outcomes",
+          "value": "18%",
+          "label": "improvement in self-rated physical fitness on program exit",
+          "detail": "Other improvements: Patient Activation Measure (7%), nutrition scores (16%)"
+        }
+      ]
+    },
+    "related": {
+      "title": "Other organizations changing with Intelligence.",
+      "seeAll": { "label": "See all stories", "href": "/customers" },
+      "cards": [
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/ne-london.png",
+          "logoAlt": "North East London",
+          "title": "Improving Surgery Readiness at Scale with the NHS",
+          "stat": { "value": "57%", "label": "more patients ready for surgery" },
+          "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
+        },
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/cheshire-merseyside.png",
+          "logoAlt": "NHS Cheshire and Merseyside",
+          "title": "Intelligence Helps the NHS Prevent Surgical Complications",
+          "stat": { "value": "72%", "label": "reduction in surgical complications" },
+          "cta": { "label": "Read more", "href": "/customers/nhs-surgical-complications" }
+        }
+      ]
+    }
+  },
+  "greece": {
+    "title": "Bringing Intelligent Triage to Greece",
+    "metaTitle": "Intelligent Healthcare for Greece — Sword Intelligence",
+    "metaDescription": "How the Greek Government and Sword Intelligence built one of Europe’s first national, AI-powered front doors to healthcare — the 1566 National Health Information Line serving more than 10 million citizens.",
+    "hero": {
+      "eyebrow": "National Initiative: Hellenic Ministry of Health",
+      "logo": "/logos/hellenic-health.png",
+      "logoAlt": "Hellenic Ministry of Health",
+      "logoMono": false,
+      "image": "/customers/story-hero-nhs.png",
+      "imageAlt": "Citizens navigating public healthcare",
+      "stats": [
+        { "value": "10M", "label": "citizens served" },
+        { "value": "1566", "label": "National Health Information Line" }
+      ]
+    },
+    "id": {
+      "customerType": ["Government"],
+      "patientsServed": "+10,000,000",
+      "location": "Greece",
+      "useCases": ["Intelligent Triage", "Care Coordination", "Patient Engagement"]
+    },
+    "overview": {
+      "title": "Overview",
+      "paragraphs": [
+        "The <a href=\"#\" class=\"underline\">Greek Government</a>, alongside Sword Intelligence, is building one of Europe’s first national, AI-powered front doors to healthcare, serving more than <strong class=\"font-semibold\">10 million citizens</strong>.",
+        "The new National Health Information Line (1566) has quickly become one of the most important public services in the country, guiding citizens and helping them navigate care.",
+        "By combining always-on agentic triage with human empathy, the service delivers faster answers, clearer guidance on where to seek care, and consistent regional advice — reducing unnecessary hospital visits while strengthening primary and preventive care."
+      ]
+    },
+    "testimonial": {
+      "eyebrow": "In their words",
+      "activeTab": "Government",
+      "panels": [
+        {
+          "label": "Government",
+          "quote": "“This partnership will rebuild how care flows through our system, making it faster, clearer, and more centered on people.”",
+          "avatar": "/numbers/photo-georgiadis.png",
+          "avatarAlt": "Adonis Georgiadis, Minister of Health (Greece)",
+          "author": "Adonis Georgiadis",
+          "role": "Minister of Health (Greece)"
+        }
+      ]
+    },
+    "related": {
+      "title": "Other organizations changing with Intelligence.",
+      "seeAll": { "label": "See all stories", "href": "/customers" },
+      "cards": [
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/ne-london.png",
+          "logoAlt": "North East London",
+          "title": "Improving Surgery Readiness at Scale with the NHS",
+          "stat": { "value": "57%", "label": "more patients ready for surgery" },
+          "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
+        },
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/nhs-black-country.png",
+          "logoAlt": "NHS Black Country",
+          "title": "Cutting Hospital Stays with AI-driven Prehabilitation",
+          "stat": { "value": "£405K", "label": "saved for one NHS Trust in 3 months" },
+          "cta": { "label": "Read more", "href": "/customers/nhs-prehabilitation" }
+        }
+      ]
+    }
+  },
+  "nhs-surgical-complications": {
+    "title": "Intelligence Helps the NHS Prevent Surgical Complications",
+    "metaTitle": "NHS Cheshire & Merseyside Surgical Complications — Sword Intelligence",
+    "metaDescription": "How NHS Cheshire and Merseyside used Sword Intelligence to cut surgical complications by 72% and post-operative pulmonary complications by 83% with AI-driven surgical readiness.",
+    "hero": {
+      "eyebrow": "Case Study: NHS Cheshire and Merseyside ICB",
+      "logo": "/logos/cheshire-merseyside.png",
+      "logoAlt": "NHS Cheshire and Merseyside",
+      "logoMono": false,
+      "image": "/customers/photo-surgery.png",
+      "imageAlt": "NHS Cheshire and Merseyside clinic reception",
+      "stats": [
+        { "value": "72%", "label": "reduction in surgical complications" },
+        { "value": "83%", "label": "reduction in post-op pulmonary complications" },
+        { "value": "8.5/10", "label": "average patient satisfaction score" }
+      ]
+    },
+    "id": {
+      "customerType": ["Provider", "Government"],
+      "patientsServed": "+2,700,000",
+      "location": "North West England, UK",
+      "useCases": ["Surgical Readiness"]
+    },
+    "overview": {
+      "title": "Overview",
+      "paragraphs": [
+        "<a href=\"#\" class=\"underline\">NHS Cheshire and Merseyside</a> represents one of England’s largest integrated care systems, serving <strong class=\"font-semibold\">2.7 million people across 17 NHS Trusts</strong> in the North West. Following the COVID-19 pandemic, elective surgery backlogs became a system-wide constraint — not due to lack of surgical capacity, but because a significant proportion of waiting patients carried elevated clinical risk and were arriving at surgery unprepared, driving avoidable complications, extended stays, and readmissions.",
+        "To address this, Sword Intelligence deployed a surgical readiness agentic workflow at St Helens and Knowsley Teaching Hospitals NHS Trust as a proof of concept. High-risk patients were identified directly from the waiting list and enrolled in structured, personalized pre-habilitation support before surgery. The approach turned a passive waiting list into an active preparation list.",
+        "The program covered a cohort of patients undergoing intermediate-to-major elective surgery across general surgery, orthopaedics, urology, and gynaecology. A matched cohort of eligible patients who chose not to participate served as a control group.",
+        "Results demonstrated that pairing individualized risk assessment with targeted pre-habilitation support can meaningfully reduce complications, shorten hospital stays, and cut readmissions — without adding clinical headcount."
+      ]
+    },
+    "testimonial": {
+      "eyebrow": "In their words",
+      "activeTab": "Customer",
+      "panels": [
+        {
+          "label": "Customer",
+          "quote": "“With the evidence so far and the wider benefit to patients, elective recovery and capacity usage, there is a real desire to develop a business case and find funding for long-term expansion.”",
+          "author": "Prof. Rowan Pritchard-Jones",
+          "role": "Medical Director\nNHS Cheshire and Merseyside"
+        }
+      ]
+    },
+    "impact": {
+      "title": "Impact",
+      "cards": [
+        {
+          "category": "Clinical Outcomes",
+          "value": "72%",
+          "label": "reduction in overall surgical complications",
+          "detail": "Intervention group: 6% vs. control group: 21.1%"
+        },
+        {
+          "category": "Clinical Outcomes",
+          "value": "83%",
+          "label": "reduction in post-operative pulmonary complications",
+          "detail": "Intervention group: 0.8% vs. control group: 4.8%"
+        },
+        {
+          "category": "Patient Experience",
+          "value": "8.5/10",
+          "label": "average patient satisfaction score",
+          "detail": "63% of participants said they wouldn’t have prepared similarly without this service"
+        }
+      ]
+    },
+    "related": {
+      "title": "Other organizations changing with Intelligence.",
+      "seeAll": { "label": "See all stories", "href": "/customers" },
+      "cards": [
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/ne-london.png",
+          "logoAlt": "North East London",
+          "title": "Improving Surgery Readiness at Scale with the NHS",
+          "stat": { "value": "57%", "label": "more patients ready for surgery" },
+          "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
+        },
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/nhs-south-tee.png",
+          "logoAlt": "South Tees Hospitals NHS Foundation Trust",
+          "title": "AI Surgical Readiness Closes the Gap for Deprived Communities",
+          "stat": { "value": "84%", "label": "improvement in patient-reported quality of life" },
+          "cta": { "label": "Read more", "href": "/customers/nhs-deprived-communities" }
+        }
+      ]
+    }
+  },
+  "nhs-deprived-communities": {
+    "title": "AI Surgical Readiness Closes the Gap for Deprived Communities",
+    "metaTitle": "South Tees AI Surgical Readiness — Sword Intelligence",
+    "metaDescription": "How South Tees NHS Foundation Trust used Sword Intelligence to deliver AI-supported pre-habilitation to a digitally underserved population — improving quality of life, shortening stays, and saving £250 per patient.",
+    "hero": {
+      "eyebrow": "Case Study: South Tees NHS Foundation Trust",
+      "logo": "/logos/nhs-south-tee.png",
+      "logoAlt": "South Tees Hospitals NHS Foundation Trust",
+      "logoMono": false,
+      "image": "/customers/story-hero-nhs.png",
+      "imageAlt": "Hospital reception waiting area",
+      "stats": [
+        { "value": "84%", "label": "improvement in patient-reported quality of life" },
+        { "value": "£250", "label": "saved per patient" },
+        { "value": "1 day", "label": "shorter length of stay" }
+      ]
+    },
+    "id": {
+      "customerType": ["Provider", "Government"],
+      "patientsServed": "+1,500,000",
+      "location": "South Tees, UK",
+      "useCases": ["Surgical Readiness"]
+    },
+    "overview": {
+      "title": "Overview",
+      "paragraphs": [
+        "<a href=\"#\" class=\"underline\">South Tees NHS Foundation Trust</a> serves one of the most socio-economically disadvantaged regions in England, where health inequalities are high. In January 2023, the Trust partnered with Sword Intelligence and Public Health England to launch a hybrid pre-habilitation program for patients awaiting major surgery, offering a choice of digital support or face-to-face care.",
+        "The program ran for 11 months, with each patient following an 8-week structured pre-habilitation journey. Patients were recruited from the most deprived postcodes, and the evaluation tracked quality of life, programme preference, length of stay, and cost.",
+        "Results showed that nearly half of a high-risk, digitally underserved population chose AI-supported pre-habilitation over in-person care — achieving better outcomes while saving money."
+      ]
+    },
+    "testimonial": {
+      "eyebrow": "In their words",
+      "activeTab": "Customer",
+      "panels": [
+        {
+          "label": "Customer",
+          "quote": "“The feedback from our patients has been overwhelmingly positive since we began working with Sword Intelligence.”",
+          "author": "Professor Gerard Danjoux",
+          "role": "Consultant Anaesthetist and Perioperative Care Lead\nSouth Tees NHS Foundation Trust"
+        }
+      ]
+    },
+    "impact": {
+      "title": "Impact",
+      "cards": [
+        {
+          "category": "Patient Outcomes",
+          "value": "84%",
+          "label": "improvement in patient-reported quality of life in the digital cohort",
+          "detail": "Digital sets a new benchmark that outperforms face-to-face care (81%)"
+        },
+        {
+          "category": "Financial Savings",
+          "value": "£250",
+          "label": "cost saving per patient vs. face-to-face prehabilitation",
+          "detail": "Achieved while delivering better clinical outcomes"
+        },
+        {
+          "category": "Operational Efficiency",
+          "value": "1 day",
+          "label": "shorter mean length of stay vs. the face-to-face group",
+          "detail": "Digital cohort showed higher behavioural risk factors for surgery"
+        }
+      ]
+    },
+    "related": {
+      "title": "Other organizations changing with Intelligence.",
+      "seeAll": { "label": "See all stories", "href": "/customers" },
+      "cards": [
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/cheshire-merseyside.png",
+          "logoAlt": "NHS Cheshire and Merseyside",
+          "title": "Intelligence Helps the NHS Prevent Surgical Complications",
+          "stat": { "value": "72%", "label": "reduction in surgical complications" },
+          "cta": { "label": "Read more", "href": "/customers/nhs-surgical-complications" }
+        },
+        {
+          "type": "story",
+          "tone": "white",
+          "logo": "/logos/nhs-black-country.png",
+          "logoAlt": "NHS Black Country",
+          "title": "Cutting Hospital Stays with AI-driven Prehabilitation",
+          "stat": { "value": "£405K", "label": "saved for one NHS Trust in 3 months" },
+          "cta": { "label": "Read more", "href": "/customers/nhs-prehabilitation" }
+        }
+      ]
+    }
   }
 }
