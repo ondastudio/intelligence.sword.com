@@ -19,14 +19,22 @@ interface Props {
   poster?: string;
   alt: string;
   class?: string;
+  /** Mobile-only: bloom a soft purple gradient around the contained frame
+   *  (the design's mesh-gradient wash behind the product video). No effect on
+   *  sm+ where the video goes full-bleed. */
+  glow?: boolean;
 }
-const { src, poster, alt, class: className = "" } = Astro.props;
+const { src, poster, alt, class: className = "", glow = false } = Astro.props;
 ---
 
 <div
   data-reveal
   data-video-scroll
-  class:list={["video-scroll relative z-10 w-full", className]}
+  class:list={[
+    "video-scroll relative z-10 w-full",
+    { "video-scroll--glow": glow },
+    className,
+  ]}
 >
   <div
     data-video-frame
@@ -50,14 +58,24 @@ const { src, poster, alt, class: className = "" } = Astro.props;
     border-radius: var(--radius-card);
   }
 
-  /* Phones: let the frame run wider (8px gutters) with a softer radius, and
-     tighten the vertical rhythm. */
+  /* Phones (matches Figma mobile 8797:50811): the frame runs near-full-width
+     (5px gutters) with an ~11px radius, sitting ~124px below the logos
+     (44px here + the column's 80px pb). */
   @media (max-width: 639px) {
     .video-scroll {
-      padding: 56px 8px;
+      /* ~120px below the logos (matches the gap in Figma 8797:50783→50811),
+         5px gutters, and a tight 12px below the frame — the design keeps the
+         video frame snug (no big band beneath it before the next section). */
+      padding: 6px;
     }
     .video-frame {
-      border-radius: 20px;
+      border-radius: 11px;
+    }
+    /* Soft lavender wash around the video — the design's mesh-gradient, blooming
+       from above the frame (the blurred blob sits above it) and staying subtle,
+       not a saturated band. */
+    .video-scroll--glow {
+      background: linear-gradient(0deg, #e8e7f3, var(--color-surface));
     }
   }
 

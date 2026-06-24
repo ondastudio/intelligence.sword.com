@@ -51,15 +51,17 @@ const containerClass = fill
 const containerStyle = fill ? undefined : `aspect-ratio:${aspect};`;
 
 // 40px round button; stroke icons inherit currentColor (black). No shadow.
-// When the reproduction bar is shown, lift the controls to keep a 76px gap
-// above the 4px bar (bottom-20 = 80px → 80 − 4 = 76); otherwise sit at 24px.
+// With the reproduction bar (sm+), lift the controls to keep a 76px gap above
+// the 4px bar (bottom-20 = 80px → 80 − 4 = 76). On mobile the bar is hidden and
+// the buttons tuck into the corners at ~15px (bottom-4), matching the design;
+// without the bar at all they sit at 24px.
 const btnBase = `absolute ${
-  showProgress ? "bottom-20" : "bottom-6"
+  showProgress ? "bottom-4 sm:bottom-20" : "bottom-6"
 } z-10 inline-flex size-10 items-center justify-center rounded-full text-black transition hover:opacity-80`;
-// Horizontal inset from the frame edges: 80px in the reproduction-bar layout,
-// 24px otherwise.
-const btnLeft = showProgress ? "left-20" : "left-6";
-const btnRight = showProgress ? "right-20" : "right-6";
+// Horizontal inset from the frame edges: ~15px on mobile, 80px in the
+// reproduction-bar layout on sm+, 24px when there's no bar.
+const btnLeft = showProgress ? "left-4 sm:left-20" : "left-6";
+const btnRight = showProgress ? "right-4 sm:right-20" : "right-6";
 const iconBase = "size-6";
 ---
 
@@ -164,7 +166,7 @@ const iconBase = "size-6";
             type="button"
             data-vp-progress
             aria-label="Seek video"
-            class="group absolute inset-x-0 bottom-0 z-10 flex h-4 items-end"
+            class="group absolute inset-x-0 bottom-0 z-10 hidden h-4 items-end sm:flex"
           >
             {/* 4px reproduction bar — faint track + purple-200 playback fill */}
             <span class="relative block h-1 w-full bg-white/25">
