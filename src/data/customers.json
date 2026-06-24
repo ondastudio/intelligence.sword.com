@@ -6,8 +6,8 @@
       "cells": [
         {
           "type": "highlighted",
-          "logo": "/logos/nhs.svg",
-          "logoAlt": "NHS",
+          "logo": "/logos/ne-london.png",
+          "logoAlt": "North East London Health & Care Partnership",
           "title": "Improving Surgery Readiness at Scale with the NHS",
           "stats": [
             { "value": "57%", "label": "more patients ready for surgery" },
@@ -25,8 +25,8 @@
         {
           "type": "story",
           "tone": "white",
-          "logo": "/logos/cheshire-merseyside.png",
-          "logoAlt": "Cheshire & Merseyside",
+          "logo": "/logos/nhs-black-country.png",
+          "logoAlt": "NHS Black Country Integrated Care Board",
           "title": "Cutting Hospital Stays with AI-driven Prehabilitation",
           "stat": { "value": "£405K", "label": "saved for one NHS Trust in 3 months" },
           "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
@@ -48,54 +48,22 @@
         {
           "type": "logo",
           "tone": "lavender",
-          "logo": "/logos/vivamas.svg",
-          "logoAlt": "VivaMas"
-        },
-        {
-          "type": "story",
-          "tone": "white",
-          "logo": "/logos/nhs.svg",
-          "logoAlt": "NHS",
-          "title": "Improving Surgery Readiness at Scale with the NHS",
-          "stat": { "value": "57%", "label": "more patients ready for surgery" },
-          "ctas": [
-            { "label": "Read more", "href": "/customers/nhs-surgery-readiness" },
-            { "label": "Press release", "href": "#", "style": "outline" }
-          ],
-          "photo": "/customers/photo-surgery.png",
-          "photoAlt": "VivaMas clinic reception"
-        }
-      ]
-    },
-    {
-      "layout": "third",
-      "cells": [
-        {
-          "type": "story",
-          "tone": "white",
           "logo": "/logos/ne-london.png",
-          "logoAlt": "North East London",
-          "title": "Intelligence Helps the NHS Prevent Surgical Complications",
-          "stat": { "value": "72%", "label": "reduction in surgical complications" },
-          "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
+          "logoAlt": "North East London Health & Care Partnership"
         },
         {
           "type": "story",
           "tone": "white",
           "logo": "/logos/cheshire-merseyside.png",
-          "logoAlt": "Cheshire & Merseyside",
-          "title": "AI Surgical Readiness Closes the Gap for Deprived Communities",
-          "stat": { "value": "84%", "label": "improvement in patient-reported quality of life" },
-          "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
-        },
-        {
-          "type": "quote",
-          "tone": "lavender",
-          "logo": "/logos/hellenic-health.png",
-          "logoAlt": "Hellenic Ministry of Health",
-          "quote": "This partnership will rebuild how care flows through our system, making it faster, clearer, and more centered on people.",
-          "author": "Adonis Georgiadis",
-          "role": "Minister of Health (Greece)"
+          "logoAlt": "NHS Cheshire and Merseyside",
+          "title": "Intelligence Helps the NHS Prevent Surgical Complications",
+          "stat": { "value": "72%", "label": "reduction in surgical complications" },
+          "ctas": [
+            { "label": "Read more", "href": "/customers/nhs-surgery-readiness" },
+            { "label": "Press release", "href": "#", "style": "outline" }
+          ],
+          "photo": "/customers/photo-surgery.png",
+          "photoAlt": "NHS Cheshire and Merseyside clinic reception"
         }
       ]
     },
@@ -116,8 +84,8 @@
         {
           "type": "story",
           "tone": "white",
-          "logo": "/logos/cheshire-merseyside.png",
-          "logoAlt": "Cheshire & Merseyside",
+          "logo": "/logos/nhs-south-tee.png",
+          "logoAlt": "South Tees Hospitals NHS Foundation Trust",
           "title": "AI Surgical Readiness Closes the Gap for Deprived Communities",
           "stat": { "value": "84%", "label": "improvement in patient-reported quality of life" },
           "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
