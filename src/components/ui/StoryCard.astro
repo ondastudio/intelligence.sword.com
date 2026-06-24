@@ -85,6 +85,12 @@ const primary = ctaList.find((c) => c.style !== "outline") ?? ctaList[0];
 const clickable = ctaList.length === 1 && !!primary?.href;
 const composite = !!photo && type !== "highlighted";
 const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[tone]} ${className}`;
+
+// Stat numbers are a fixed 38px on mobile (Figma's numbers opt out of the fluid
+// type scale — see the design annotation), with tighter 1.05 leading / -4%
+// tracking. On md+ they hand back to the page's fluid heading token.
+const statValue =
+  "font-sans font-normal text-black text-[2.375rem] leading-[1.05] tracking-[-0.04em] md:leading-[1.2] md:tracking-[-0.02em]";
 ---
 
 {
@@ -96,19 +102,19 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
         aria-hidden="true"
         class="pointer-events-none absolute -right-[6%] top-1/2 h-[150%] w-[78%] -translate-y-1/2"
       />
-      <div class="relative flex flex-1 flex-col justify-between gap-10 p-10 md:pr-4">
-        <header class="flex flex-col gap-10">
+      <div class="relative flex flex-1 flex-col justify-between gap-8 px-6 py-8 md:gap-10 md:p-10 md:pr-4">
+        <header class="flex flex-col gap-8 md:gap-10">
           {logo && (
-            <img src={logo} alt={logoAlt} class="h-8 w-auto max-w-[185px] self-start object-contain object-left" />
+            <img src={logo} alt={logoAlt} class="h-12 w-auto max-w-[185px] self-start object-contain object-left md:h-8" />
           )}
           <h2 class="font-serif text-h6 font-normal text-black md:max-w-[486px]">
             {title}
           </h2>
         </header>
-        <div class="flex flex-col gap-6 sm:flex-row sm:gap-4">
+        <div class="flex flex-row gap-4">
           {stats.map((s) => (
             <div class="flex flex-1 flex-col gap-4 border-t border-purple-200 pt-6">
-              <span class="font-sans text-h5 font-normal text-black">
+              <span class={`${statValue} md:text-h5`}>
                 {s.value}
               </span>
               <p class="max-w-[180px] text-sm font-semibold uppercase text-black">
@@ -118,11 +124,12 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
           ))}
         </div>
       </div>
-      <div class="relative p-6 md:flex md:flex-1 md:items-center">
-        <div class="relative h-60 w-full md:h-full md:flex-1">
+      <div class="flex flex-col gap-8 p-6 md:flex-row md:flex-1 md:items-center md:gap-0">
+        <div class="relative h-[170px] w-full md:h-full md:flex-1">
           <img src={photo} alt={photoAlt} class="h-full w-full rounded-[24px] object-cover" />
+          {/* Desktop: the CTA is overlaid on the photo's bottom-right. */}
           {ctaList[0] && (
-            <span class="absolute bottom-4 right-4 inline-flex items-center" aria-hidden="true">
+            <span class="absolute bottom-4 right-4 hidden items-center md:inline-flex" aria-hidden="true">
               <span class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase text-white">
                 {ctaList[0].label}
               </span>
@@ -130,6 +137,17 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
             </span>
           )}
         </div>
+        {/* Mobile: the CTA sits in its own row below the photo, right-aligned.
+            `relative z-10` lifts it above the decorative swoosh (an absolutely
+            positioned sibling that would otherwise paint over and wash it out). */}
+        {ctaList[0] && (
+          <span class="relative z-10 flex w-full items-center justify-end md:hidden" aria-hidden="true">
+            <span class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase text-white">
+              {ctaList[0].label}
+            </span>
+            <ArrowCircle variant="filled" label={ctaList[0].label} decorative detach class="-ml-px" />
+          </span>
+        )}
       </div>
       {clickable && (
         <a
@@ -153,10 +171,85 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
 }
 
 {
-  (type === "story" || type === "quote") && (
-    <article class={composite ? `group flex flex-col md:h-[510px] md:flex-row ${base}` : `group flex flex-col justify-between gap-8 p-10 ${base}`}>
+  /* Composite story card (a story with a photo). Stacks logo → title → stat →
+     photo → CTAs on mobile; on md+ it's a 2-col grid: the text column (logo +
+     title top, stat + CTAs pinned bottom) beside a full-height photo. The grid
+     placement reproduces the desktop flex layout while letting the photo sit
+     between the stat and the CTAs on mobile, matching the design. */
+  type === "story" && composite && (
+    <article class={`group relative flex flex-col overflow-hidden rounded-card md:grid md:h-[510px] md:grid-cols-2 md:grid-rows-[auto_1fr_auto_auto] ${toneClass[tone]} ${className}`}>
+      <header class="flex flex-col gap-6 px-6 pt-8 md:col-start-1 md:row-start-1 md:px-10 md:pr-4 md:pt-10">
+        {logo && (
+          <img src={logo} alt={logoAlt} class="h-12 w-auto max-w-[185px] self-start object-contain object-left md:h-8" />
+        )}
+        <h3 class="font-serif text-xlg font-normal text-black">{title}</h3>
+      </header>
+
+      {stat && (
+        <div class="px-6 pt-8 md:col-start-1 md:row-start-3 md:px-10 md:pr-4 md:pt-0">
+          <div class="flex flex-col gap-4 border-t border-black/15 pt-6">
+            <span class={`${statValue} md:text-h6`}>{stat.value}</span>
+            <p class="max-w-[260px] text-sm font-semibold uppercase text-black">{stat.label}</p>
+          </div>
+        </div>
+      )}
+
+      <div class="px-6 pt-14 md:col-start-2 md:row-span-full md:flex md:items-center md:p-6">
+        <img src={photo} alt={photoAlt} class="h-60 w-full rounded-[24px] object-cover md:h-full md:flex-1" />
+      </div>
+
+      <div class="flex flex-wrap items-center justify-end gap-3 px-6 pb-8 pt-8 md:col-start-1 md:row-start-4 md:px-10 md:pb-10 md:pr-4">
+        {ctaList.map((c) =>
+          c.style === "outline" ? (
+            <a
+              href={c.href}
+              target={isExternal(c.href) ? "_blank" : undefined}
+              rel={isExternal(c.href) ? "noopener noreferrer" : undefined}
+              class="relative z-30 inline-flex h-10 items-center rounded-[40px] border border-black px-6 text-sm font-medium uppercase text-black transition-colors hover:bg-black hover:text-white group-hover:bg-black group-hover:text-white"
+            >
+              {c.label}
+            </a>
+          ) : clickable ? (
+            <span class="inline-flex items-center" aria-hidden="true">
+              <span class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase text-white">
+                {c.label}
+              </span>
+              <ArrowCircle variant="filled" label={c.label} decorative detach class="-ml-px" />
+            </span>
+          ) : (
+            <span class="inline-flex items-center">
+              <a
+                href={c.href}
+                target={isExternal(c.href) ? "_blank" : undefined}
+                rel={isExternal(c.href) ? "noopener noreferrer" : undefined}
+                class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase text-white"
+              >
+                {c.label}
+              </a>
+              <ArrowCircle variant="filled" href={c.href} label={c.label} detach class="-ml-px" />
+            </span>
+          ),
+        )}
+      </div>
+
+      {clickable && (
+        <a
+          href={primary.href}
+          target={isExternal(primary.href) ? "_blank" : undefined}
+          rel={isExternal(primary.href) ? "noopener noreferrer" : undefined}
+          aria-label={primary.label}
+          class="absolute inset-0 z-20 rounded-card"
+        />
+      )}
+    </article>
+  )
+}
+
+{
+  (type === "quote" || (type === "story" && !composite)) && (
+    <article class={composite ? `group flex flex-col md:h-[510px] md:flex-row ${base}` : `group flex flex-col justify-between gap-14 px-6 py-8 md:gap-8 md:p-10 ${base}`}>
       {/* Text pane */}
-      <div class={composite ? "flex flex-1 flex-col justify-between gap-8 p-10 md:pr-4" : "contents"}>
+      <div class={composite ? "flex flex-1 flex-col justify-between gap-8 px-6 py-8 md:p-10 md:pr-4" : "contents"}>
         <header class="flex flex-col gap-6">
           {confidential ? (
             <span class="flex items-center gap-2 self-start text-sm font-semibold uppercase text-black">
@@ -168,7 +261,7 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
             </span>
           ) : (
             logo && (
-              <img src={logo} alt={logoAlt} class="h-8 w-auto max-w-[185px] self-start object-contain object-left" />
+              <img src={logo} alt={logoAlt} class="h-12 w-auto max-w-[185px] self-start object-contain object-left md:h-8" />
             )
           )}
           {type === "story" ? (
@@ -186,7 +279,7 @@ const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[ton
           <div class="flex flex-col gap-8">
             {stat && (
               <div class="flex flex-col gap-4 border-t border-black/15 pt-6">
-                <span class="font-sans text-h6 font-normal text-black">
+                <span class={`${statValue} md:text-h6`}>
                   {stat.value}
                 </span>
                 <p class="max-w-[260px] text-sm font-semibold uppercase text-black">
