@@ -23,13 +23,13 @@ const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
 
 <section class="about-stats relative bg-white py-[clamp(5rem,12vw,140px)] text-black">
   <div
-    class="mx-auto w-full max-w-[1440px] px-[clamp(1.5rem,5.2vw,80px)]"
+    class="mx-auto w-full max-w-[1440px] px-[clamp(1.25rem,5.2vw,80px)]"
   >
     <!-- Header: title block (left) + body copy (right) -->
     <div
-      class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-20"
+      class="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between lg:gap-20"
     >
-      <div class="flex max-w-[620px] flex-col gap-6">
+      <div class="flex max-w-[620px] flex-col gap-8 lg:gap-6">
         <div data-reveal><Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow></div>
         <h2
           data-reveal="title"
@@ -41,7 +41,7 @@ const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
 
       <div
         data-reveal
-        class="flex max-w-[525px] flex-col gap-5 text-base sm:text-lg"
+        class="flex max-w-[525px] flex-col gap-5 text-xmd sm:text-lg"
         style="transition-delay:160ms"
       >
         {
@@ -54,13 +54,16 @@ const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
 
     <!-- Stat cards + trusted-by panel -->
     <div class="mt-16 flex flex-col gap-4 lg:mt-[120px]">
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="grid grid-cols-2 gap-4 lg:grid-cols-3">
         {
           stats.map((stat, i) => (
             <div
               data-reveal
               style={`transition-delay:${i * 80}ms`}
-              class="flex min-h-[260px] flex-col justify-between rounded-card border border-black/24 p-6"
+              class:list={[
+                "flex min-h-[260px] flex-col justify-between rounded-card border border-black/24 p-6",
+                stat.wide && "col-span-2 lg:col-span-1",
+              ]}
             >
               <span class="flex w-fit items-center rounded-card bg-purple-150 p-2">
                 <img src={stat.icon} alt="" aria-hidden="true" class="size-8" />

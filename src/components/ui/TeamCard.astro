@@ -34,7 +34,7 @@ const {
 
 <article class:list={["group relative flex flex-col", className]} {...rest}>
   <!-- Portrait -->
-  <div class="aspect-[416/480] w-full overflow-hidden rounded-card">
+  <div class="aspect-[350/480] w-full overflow-hidden rounded-card lg:aspect-[416/480]">
     <img
       src={photo}
       alt={name}
@@ -47,13 +47,13 @@ const {
 
   <!-- Name / role + LinkedIn -->
   <div
-    class="flex items-center justify-between gap-4 rounded-card bg-white p-6 lg:p-10"
+    class="flex items-center justify-between gap-4 rounded-card bg-white p-10"
   >
     <div class="flex min-w-0 flex-col gap-2">
       <p class="text-2xl font-semibold text-black">
         {name}
       </p>
-      <p class="text-lg text-ink-soft">{role}</p>
+      <p class="text-xmd text-ink-soft lg:text-lg">{role}</p>
     </div>
 
     <ArrowCircle glyph="linkedin" label={`${name} on LinkedIn`} decorative />

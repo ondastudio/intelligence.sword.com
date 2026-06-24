@@ -57,10 +57,10 @@
     "stats": [
       { "icon": "/about/icons/award.svg", "value": "10M", "plus": true, "label": "All sessions delivered" },
       { "icon": "/about/icons/calendar.svg", "value": "100M", "plus": true, "label": "Lives covered" },
-      { "icon": "/about/icons/document.svg", "value": "58", "label": "Clinical papers published & patents granted" },
+      { "icon": "/about/icons/document.svg", "value": "58", "label": "Clinical papers published & patents granted", "wide": true },
       { "icon": "/about/icons/agreement.svg", "value": "50", "label": "Patents granted" },
       { "icon": "/about/icons/globe.svg", "value": "5", "label": "Continents" },
-      { "icon": "/about/icons/money.svg", "value": "$4B", "label": "Company valuation" }
+      { "icon": "/about/icons/money.svg", "value": "$4B", "label": "Company valuation", "wide": true }
     ],
     "trustedBy": {
       "label": "Trusted by",
