@@ -144,17 +144,17 @@ const chip =
       </div>
 
       {/* stat columns */}
-      <div class="flex flex-col gap-6 md:flex-row md:gap-6">
+      <div class="flex flex-col gap-8 md:flex-row md:gap-6">
         {
           hero.stats.map((stat, i) => (
             <div
               data-reveal
               style={`transition-delay:${i * 120}ms`}
-              class="cs-stat relative flex flex-1 flex-col gap-6 pl-6"
+              class="cs-stat relative flex flex-1 flex-col gap-6 pl-4 lg:pl-6"
             >
               {/* divider draws in from the top, same effect as the home hero line */}
               <span class="cs-stat-line absolute inset-y-0 left-0 w-px bg-black/[0.24]" aria-hidden="true" />
-              <p class="text-h6 font-normal leading-[1.15] text-black">
+              <p class="text-[38px] font-normal leading-[1.15] tracking-[-0.76px] text-black lg:text-h6 lg:tracking-normal">
                 {stat.value}
               </p>
               <p class="text-sm font-semibold uppercase text-black">
@@ -363,7 +363,7 @@ const chip =
           <div class="relative z-10 mx-auto flex w-full max-w-[1376px] flex-col gap-12 px-6 py-16 md:gap-20 md:px-20 md:py-[120px]">
           <h2
             data-reveal="title"
-            class="relative text-center font-serif text-h5 font-normal text-black"
+            class="relative text-center font-serif text-[56px] font-normal tracking-[-1.12px] text-black lg:text-h5 lg:tracking-normal"
           >
             {impact.title}
           </h2>
