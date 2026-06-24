@@ -62,11 +62,32 @@ const { eyebrow, heading } = data;
 <style>
   /* Mobile / reduced-motion: a plain centered banner, no pinning. */
   .operations {
-    min-height: clamp(620px, 62.5vw, 900px);
-    padding-block: 120px;
+    min-height: 0;
+    padding-inline: 20px;
+    padding-block: 0;
   }
   .op-pin {
-    min-height: inherit;
+    min-height: 0;
+  }
+
+  .op-swirl {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .operations {
+      min-height: clamp(620px, 62.5vw, 900px);
+      padding-inline: 16px;
+      padding-block: 120px;
+    }
+
+    .op-pin {
+      min-height: inherit;
+    }
+
+    .op-swirl {
+      display: block;
+    }
   }
 
   /* Swirl bloom layer — fills the banner behind the centered title. A radial
@@ -112,6 +133,7 @@ const { eyebrow, heading } = data;
     /* The bloom becomes an in-flow sticky layer so it tracks the pinned title
        (its flow height is cancelled by .op-pin's negative margin above). */
     .op-swirl {
+      display: block;
       position: sticky;
       inset: auto;
       top: 0;

@@ -19,18 +19,28 @@ const { stats, testimonial, cta } = data;
 ---
 
 <section class="numbers relative z-[1] px-4 py-[120px]">
-  <div class="mx-auto flex max-w-[1280px] flex-col items-center gap-16 md:gap-20">
+  <div
+    class="mx-auto flex max-w-[1280px] flex-col items-center gap-16 md:gap-20"
+  >
     <!-- Bento canvas — cards sit in their fixed grid positions (the whole
          section slides up toward the Operations title as you scroll). -->
-    <div data-reveal class="nb-canvas flex w-full flex-col gap-4">
+    <div class="nb-canvas flex w-full flex-col gap-4">
       <!-- 4x — intake capacity -->
       <article
-        class="nb-card group relative flex flex-col items-center overflow-hidden rounded-card bg-periwinkle/45 px-8 py-10 text-center"
+        class="nb-card nb-card-intake group relative flex flex-col items-center overflow-hidden rounded-card bg-periwinkle/45 px-8 py-10 text-center"
         data-parallax="22"
+        data-reveal
         style="--l:13.44%;--t:0%;--w:23.44%;--h:47.89%"
       >
-        <div class="relative aspect-square w-[clamp(150px,15vw,200px)] shrink-0">
-          <img src="/numbers/ring-1.svg" alt="" aria-hidden="true" class="absolute inset-0 size-full" />
+        <div
+          class="relative aspect-square w-[clamp(150px,15vw,200px)] shrink-0"
+        >
+          <img
+            src="/numbers/ring-1.svg"
+            alt=""
+            aria-hidden="true"
+            class="absolute inset-0 size-full"
+          />
           <img
             src="/numbers/ring-2.svg"
             alt=""
@@ -59,17 +69,23 @@ const { stats, testimonial, cta } = data;
           </span>
           <ArrowCircle decorative class="mb-[10.5px]" />
         </div>
-        <p class="mt-6 max-w-[232px] text-sm font-semibold uppercase text-black">
+        <p
+          class="mt-6 max-w-[232px] text-sm font-semibold uppercase text-black"
+        >
           {stats.intake.label}
         </p>
-        <a href={stats.intake.href} aria-label="More on intake capacity" class="absolute inset-0 z-20 rounded-card"></a>
+        <a
+          href={stats.intake.href}
+          aria-label="More on intake capacity"
+          class="absolute inset-0 z-20 rounded-card"></a>
       </article>
 
       <!-- Customer portrait -->
       <figure
-        class="nb-card overflow-hidden rounded-card"
+        class="nb-card nb-card-photo overflow-hidden rounded-card"
         data-parallax="-16"
-        style="--l:39.17%;--t:0%;--w:17.75%;--h:37.74%"
+        data-reveal
+        style="transition-delay:80ms;--l:39.17%;--t:0%;--w:17.75%;--h:37.74%"
       >
         <img
           src={testimonial.photo}
@@ -80,9 +96,10 @@ const { stats, testimonial, cta } = data;
 
       <!-- Ministerial testimonial -->
       <article
-        class="nb-card group relative flex flex-col justify-between gap-6 overflow-hidden rounded-card bg-purple-tint p-10"
+        class="nb-card nb-card-testimonial group relative flex flex-col justify-between gap-6 overflow-hidden rounded-card bg-purple-tint p-10"
         data-parallax="-20"
-        style="--l:56.92%;--t:0%;--w:43.08%;--h:37.74%"
+        data-reveal
+        style="transition-delay:120ms;--l:56.92%;--t:0%;--w:43.08%;--h:37.74%"
       >
         <img
           src={testimonial.logo}
@@ -94,19 +111,25 @@ const { stats, testimonial, cta } = data;
         </p>
         <div class="flex items-end justify-between gap-4">
           <div class="flex flex-col gap-1 text-black">
-            <span class="text-sm font-semibold uppercase">{testimonial.name}</span>
+            <span class="text-sm font-semibold uppercase"
+              >{testimonial.name}</span
+            >
             <span class="text-base">{testimonial.role}</span>
           </div>
           <ArrowCircle decorative />
         </div>
-        <a href={testimonial.href} aria-label="Read the partnership story" class="absolute inset-0 z-20 rounded-card"></a>
+        <a
+          href={testimonial.href}
+          aria-label="Read the partnership story"
+          class="absolute inset-0 z-20 rounded-card"></a>
       </article>
 
       <!-- 686 — admin workdays saved -->
       <article
-        class="nb-card group relative min-h-[280px] overflow-hidden rounded-card bg-accent"
+        class="nb-card nb-card-workdays group relative min-h-[280px] overflow-hidden rounded-card bg-accent"
         data-parallax="14"
-        style="--l:0%;--t:51.54%;--w:36.91%;--h:34.09%"
+        data-reveal
+        style="transition-delay:240ms;--l:0%;--t:51.54%;--w:36.91%;--h:34.09%"
       >
         <!-- perforated dot mesh — exact Figma pattern (16.2px grid), clipped
              like the design's 391.5×155 rect so it never cuts on the edges -->
@@ -124,29 +147,37 @@ const { stats, testimonial, cta } = data;
         </div>
         <!-- 686 — ink centered in the mask, overlapping the mesh -->
         <span
-          class="absolute left-[48.57%] top-[37.76%] -translate-x-1/2 -translate-y-1/2 font-serif text-h2 font-normal text-black"
+          class="nb-workdays-value absolute left-[48.57%] top-[37.76%] -translate-x-1/2 -translate-y-1/2 font-serif text-h2 font-normal text-black"
         >
           {stats.workdays.value}
         </span>
 
         <div class="relative flex h-full flex-col p-10 text-center">
-          <p class="mx-auto mt-auto max-w-[200px] text-sm font-semibold uppercase text-ink">
+          <p
+            class="mx-auto mt-auto max-w-[200px] text-sm font-semibold uppercase text-ink"
+          >
             {stats.workdays.label}
           </p>
         </div>
 
         <ArrowCircle decorative class="absolute bottom-10 right-10 z-10" />
-        <a href={stats.workdays.href} aria-label="See admin workdays saved" class="absolute inset-0 z-20 rounded-card"></a>
+        <a
+          href={stats.workdays.href}
+          aria-label="See admin workdays saved"
+          class="absolute inset-0 z-20 rounded-card"></a>
       </article>
 
       <!-- 5.2x ROI — bar chart -->
       <article
-        class="nb-card group relative flex flex-col items-center justify-center gap-8 overflow-hidden rounded-card bg-gray-200/35 px-6 py-10 text-center backdrop-blur-[20px]"
+        class="nb-card nb-card-roi group relative flex flex-col items-center justify-center gap-8 overflow-hidden rounded-card bg-gray-200/35 px-6 py-10 text-center backdrop-blur-[20px]"
         data-parallax="30"
-        style="--l:39.14%;--t:41.39%;--w:36.91%;--h:58.56%"
+        data-reveal
+        style="transition-delay:160ms;--l:39.14%;--t:41.39%;--w:36.91%;--h:58.56%"
       >
         <div class="flex items-center justify-center gap-6">
-          <span class="whitespace-nowrap font-serif text-h3 font-normal text-black">
+          <span
+            class="whitespace-nowrap font-serif text-h3 font-normal text-black"
+          >
             {stats.roi.value}
           </span>
           <ArrowCircle decorative />
@@ -161,22 +192,33 @@ const { stats, testimonial, cta } = data;
         <p class="text-sm font-semibold uppercase text-ink">
           {stats.roi.label}
         </p>
-        <a href={stats.roi.href} aria-label="See the ROI breakdown" class="absolute inset-0 z-20 rounded-card"></a>
+        <a
+          href={stats.roi.href}
+          aria-label="See the ROI breakdown"
+          class="absolute inset-0 z-20 rounded-card"></a>
       </article>
 
       <!-- 34% — readmissions reduction -->
       <article
-        class="nb-card group relative flex flex-col items-center justify-center gap-8 overflow-hidden rounded-card px-6 py-10 text-center"
+        class="nb-card nb-card-readmissions group relative flex flex-col items-center justify-center gap-8 overflow-hidden rounded-card px-6 py-10 text-center"
         data-parallax="-16"
-        style="--l:78.36%;--t:41.39%;--w:21.56%;--h:41.31%;background:radial-gradient(120% 95% at 50% 100%, rgba(186,224,235,0.75), rgba(220,221,228,0.26))"
+        data-reveal
+        style="transition-delay:200ms;--l:78.36%;--t:41.39%;--w:21.56%;--h:41.31%;background:radial-gradient(120% 95% at 50% 100%, rgba(186,224,235,0.75), rgba(220,221,228,0.26))"
       >
         <img src="/numbers/logo-nhs.svg" alt="NHS" class="h-[26px] w-auto" />
         <div class="flex items-start gap-1">
           <span class="font-serif text-h3 font-normal text-black">
             {stats.readmissions.value}
           </span>
-          <span class="mt-3 grid size-6 place-items-center rounded-[24px] bg-[rgba(77,79,96,0.1)] text-ink">
-            <svg viewBox="0 0 16 16" class="size-4" fill="none" aria-hidden="true">
+          <span
+            class="mt-3 grid size-6 place-items-center rounded-[24px] bg-[rgba(77,79,96,0.1)] text-ink"
+          >
+            <svg
+              viewBox="0 0 16 16"
+              class="size-4"
+              fill="none"
+              aria-hidden="true"
+            >
               <path
                 d="M12.67 8H3.33"
                 stroke="currentColor"
@@ -190,24 +232,160 @@ const { stats, testimonial, cta } = data;
           {stats.readmissions.label}
         </p>
         <ArrowCircle decorative />
-        <a href={stats.readmissions.href} aria-label="See readmissions impact" class="absolute inset-0 z-20 rounded-card"></a>
+        <a
+          href={stats.readmissions.href}
+          aria-label="See readmissions impact"
+          class="absolute inset-0 z-20 rounded-card"></a>
       </article>
     </div>
 
     <!-- CTA -->
-    <div data-reveal class="group flex items-center" style="transition-delay:120ms">
+    <div
+      data-reveal
+      class="group flex items-center"
+      style="transition-delay:120ms"
+    >
       <a
         href={cta.href}
         class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase text-white"
       >
         {cta.label}
       </a>
-      <ArrowCircle variant="filled" href={cta.href} label={cta.label} detach class="-ml-px" />
+      <ArrowCircle
+        variant="filled"
+        href={cta.href}
+        label={cta.label}
+        detach
+        class="-ml-px"
+      />
     </div>
   </div>
 </section>
 
 <style>
+  @media (max-width: 767.98px) {
+    .numbers {
+      padding-inline: 20px;
+      padding-block: 80px 120px;
+    }
+
+    .numbers > div {
+      max-width: 350px;
+      gap: 40px;
+    }
+
+    .nb-canvas {
+      gap: 16px;
+    }
+
+    .nb-card {
+      width: 100%;
+    }
+
+    .nb-card-intake {
+      min-height: 132px;
+      justify-content: center;
+      padding: 40px 32px;
+    }
+
+    .nb-card-intake > div:first-child {
+      display: none;
+    }
+
+    .nb-card-intake > div:nth-of-type(2) {
+      margin-top: 0;
+    }
+
+    .nb-card-intake p {
+      max-width: 232px;
+    }
+
+    .nb-card-photo {
+      order: 2;
+      height: 227px;
+    }
+
+    .nb-card-photo img {
+      min-height: 0;
+    }
+
+    .nb-card-testimonial {
+      order: 3;
+      gap: 32px;
+      margin-top: -16px;
+      padding: 40px;
+    }
+
+    .nb-card-testimonial p {
+      font-size: 20px;
+    }
+
+    .nb-card-testimonial > div {
+      align-items: flex-start;
+    }
+
+    .nb-card-roi {
+      order: 4;
+      min-height: 235px;
+      gap: 24px;
+    }
+
+    .nb-card-roi img {
+      display: none;
+    }
+
+    .nb-card-readmissions {
+      order: 5;
+      min-height: 300px;
+      gap: 24px;
+      padding-block: 40px;
+    }
+
+    .nb-card-workdays {
+      display: flex;
+      flex-direction: column;
+      order: 6;
+      min-height: 266px;
+    }
+
+    .nb-card-workdays span {
+      font-size: var(--text-h3);
+    }
+
+    .nb-card-workdays img {
+      left: 8.86%;
+      top: 15.04%;
+      width: 79.7%;
+      height: 48%;
+    }
+
+    .nb-card-workdays > div:first-of-type {
+      left: 50%;
+      width: 25%;
+      top: 34%;
+      height: 13%;
+      transform: translateX(-50%);
+    }
+
+    .nb-card-workdays .nb-workdays-value {
+      left: 50%;
+      top: 40.6%;
+    }
+
+    .nb-card-workdays > div.relative {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 40px;
+    }
+
+    .nb-card-workdays p {
+      max-width: 165px;
+    }
+  }
+
   /* Pull the grid up so its cards overlap the Operations stage above and
      "slide" up toward the pinned title as the page scrolls. Sits below the
      title (z-1 < z-2) so the title can lift away over it. Desktop +
