@@ -46,22 +46,31 @@ const { cta } = data;
      Scaling neon bloom above bleed down behind the dotted mesh instead of being
      cut off at the section seam. -->
 <section
-  class="cta relative flex min-h-[420px] items-center justify-center overflow-hidden px-6 py-24 text-black md:min-h-[519px]"
+  class="cta relative flex min-h-[472px] items-center justify-center overflow-hidden px-6 py-24 text-black md:min-h-[519px]"
 >
   <!-- Live dotted mesh; sizing/colors handled in the script -->
-  <canvas class="cta__mesh pointer-events-none absolute inset-0 z-0 h-full w-full" aria-hidden="true"></canvas>
+  <canvas
+    class="cta__mesh pointer-events-none absolute inset-0 z-0 h-full w-full"
+    aria-hidden="true"></canvas>
 
   <div class="relative z-10 flex flex-col items-center gap-10 text-center">
+    <!-- Mobile (Figma): 42px Lora, capped at 318px so it wraps to three centred
+         lines (no forced break). Desktop keeps text-h5 with the explicit line
+         break between the two halves. -->
     <h2
       data-reveal="title"
       class="font-serif text-[clamp(2.625rem,5vw,3.5rem)] font-normal"
     >
-      {heading.line1}<br />{heading.line2Before}<span class="text-brand"
-        >{heading.accent}</span
-      >{heading.after}
+      {heading.line1}{" "}<br class="hidden lg:inline" />{
+        heading.line2Before
+      }<span class="text-brand">{heading.accent}</span>{heading.after}
     </h2>
 
-    <div data-reveal class="group flex items-center" style="transition-delay:140ms">
+    <div
+      data-reveal
+      class="group flex items-center"
+      style="transition-delay:140ms"
+    >
       <a
         href={cta.href}
         class="flex h-10 items-center rounded-full bg-brand px-6 text-sm font-semibold uppercase text-white"
@@ -86,12 +95,36 @@ const { cta } = data;
      keep the centre at full strength while softening all four borders. */
   .cta__mesh {
     -webkit-mask-image:
-      linear-gradient(to bottom, transparent 0, black 80px, black calc(100% - 80px), transparent 100%),
-      linear-gradient(to right, transparent 0, black 80px, black calc(100% - 80px), transparent 100%);
+      linear-gradient(
+        to bottom,
+        transparent 0,
+        black 80px,
+        black calc(100% - 80px),
+        transparent 100%
+      ),
+      linear-gradient(
+        to right,
+        transparent 0,
+        black 80px,
+        black calc(100% - 80px),
+        transparent 100%
+      );
     -webkit-mask-composite: source-in;
     mask-image:
-      linear-gradient(to bottom, transparent 0, black 80px, black calc(100% - 80px), transparent 100%),
-      linear-gradient(to right, transparent 0, black 80px, black calc(100% - 80px), transparent 100%);
+      linear-gradient(
+        to bottom,
+        transparent 0,
+        black 80px,
+        black calc(100% - 80px),
+        transparent 100%
+      ),
+      linear-gradient(
+        to right,
+        transparent 0,
+        black 80px,
+        black calc(100% - 80px),
+        transparent 100%
+      );
     mask-composite: intersect;
   }
 </style>
@@ -117,6 +150,19 @@ const { cta } = data;
     const DEAD_D = 115; // design-px radius around the focal point where dots vanish
     const SLOPE_D = 0.00427; // dot radius gained per design-px of distance
     const MAX_R_D = 2.5; // largest dot radius in design px (far edges)
+
+    // ---- Mobile field (Figma 390px frame) ----
+    // The desktop params assume a ~1440px band; on a phone the same dots barely
+    // grow before the band runs out, leaving a faint, sparse mesh. Measured off
+    // the 390px Figma frame, the mobile field instead has NO hard clear zone —
+    // dots are present everywhere, rising from ~0.2 opacity near the focal to a
+    // ~0.62 plateau of solid ~2.5px dots across the rest of the band. The
+    // negative "dead" offset means dots already have size at the focal; SLOPE_M
+    // reaches the cap by ~140px, and ALPHA_M scales the plateau to the design's
+    // lighter purple-200 (desktop keeps its solid far-edge dots).
+    const DEAD_M = -70;
+    const SLOPE_M = 0.0121;
+    const ALPHA_M = 0.62;
 
     // ---- Pointer bloom (the blur generated on interaction) ----
     const INFLUENCE_D = 200; // design-px reach of the cursor bloom
@@ -145,6 +191,7 @@ const { cta } = data;
     let h = 0;
     let dpr = 1;
     let s = 1; // scale = width / design width
+    let isMobile = false; // below the lg breakpoint — use the mobile field params
     let cols = 0;
     let rows = 0;
     let offX = 0;
@@ -165,7 +212,12 @@ const { cta } = data;
       const rect = canvas.getBoundingClientRect();
       w = rect.width;
       h = rect.height;
-      s = w / REF_W;
+      // Preserve the design-scale dot grid on mobile: below the lg breakpoint
+      // the field is pinned to s = 1 (a fixed ~26.5px grid) instead of shrinking
+      // with the band width, matching the Figma 390px frame. Desktop (lg+) keeps
+      // the width-relative scale.
+      isMobile = w < 1024;
+      s = isMobile ? 1 : w / REF_W;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
@@ -182,7 +234,9 @@ const { cta } = data;
 
     // Static dot radius at canvas distance `dist` from the focal point.
     function staticRadius(dist: number) {
-      const r = (dist - DEAD_D * s) * SLOPE_D;
+      const dead = isMobile ? DEAD_M : DEAD_D * s;
+      const slope = isMobile ? SLOPE_M : SLOPE_D;
+      const r = (dist - dead) * slope;
       const max = MAX_R_D * s;
       return r < 0 ? 0 : r > max ? max : r;
     }
@@ -207,9 +261,12 @@ const { cta } = data;
           const radius = staticRadius(Math.sqrt(dx * dx + dy * dy));
           if (radius < 0.05) continue;
           const t = radius / maxR; // 0 (faint, center) → 1 (solid, edge)
+          // Mobile plateaus at the design's lighter purple-200 (~0.62); desktop
+          // keeps solid far-edge dots.
+          const alpha = isMobile ? t * ALPHA_M : t;
           ctx.beginPath();
           ctx.arc(x, y, radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${dotRGB}, ${t})`;
+          ctx.fillStyle = `rgba(${dotRGB}, ${alpha})`;
           ctx.fill();
         }
       }

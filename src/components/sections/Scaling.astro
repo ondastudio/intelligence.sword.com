@@ -37,12 +37,17 @@ const { eyebrow, heading, body, stats } = data;
   </div>
 
   <div
-    class="relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20"
+    class="relative z-10 mx-auto w-full max-w-[1440px] px-5 sm:px-6 lg:px-20"
   >
     <!-- Heading block -->
     <div class="flex flex-col gap-6">
       <div data-reveal>
-        <Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow>
+        <Eyebrow
+          dotClass="bg-purple-500"
+          textClass="text-black max-w-[221px] lg:max-w-none"
+        >
+          {eyebrow}
+        </Eyebrow>
       </div>
 
       <div
@@ -67,14 +72,17 @@ const { eyebrow, heading, body, stats } = data;
     </div>
 
     <!-- Stats row -->
+    <!-- Mobile (Figma): single column, compact stat blocks (icon → 40px gap →
+         content, 24px between blocks). At sm the desktop layout is restored:
+         min-height + justify-between align the 2-up / 4-up rows. -->
     <div
-      class="mt-20 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:mt-[120px] lg:grid-cols-4"
+      class="mt-20 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 sm:gap-y-12 lg:mt-[120px] lg:grid-cols-4"
     >
       {
         stats.map((stat, i) => (
           <div
             data-reveal
-            class="flex min-h-[260px] flex-col justify-between border-l border-black/24 px-6"
+            class="flex flex-col gap-10 border-l border-black/24 px-6 sm:min-h-[260px] sm:justify-between sm:gap-0"
             style={`transition-delay:${120 + i * 100}ms`}
           >
             <span class="flex size-12 items-center justify-center rounded-full bg-accent">
@@ -100,42 +108,62 @@ const { eyebrow, heading, body, stats } = data;
 </section>
 
 <style>
-  /* Neon-lime bloom — blooms from the right, behind the copy and stats. `top`/
-     `left` mark the bloom's centre (the layer is pulled back by half its own
-     size); a radial mask keeps it a soft circular bloom. The background is the
-     no-JS / reduced-motion fallback wash. */
+  /* Mobile (Figma): the bloom is a full-width neon-lime wash running down the
+     top of the section and fading to white by ~85%. The animated swirl is a
+     screen-space circle (see lib/swirl) and can't read as a full-width top
+     wash, so on phones the bloom is a static vertical gradient instead — which
+     also matches the Figma mesh gradient and skips WebGL on mobile. Stops are
+     measured off the 390px frame: solid lime to ~35%, ~0.8 at 50%, ~0.5 at 62%,
+     fading out by ~86%. The canvas is hidden here (desktop re-enables it). */
   .sc-swirl {
-    left: 64%;
-    top: 56%;
-    width: 110%;
-    height: 118%;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(
-      circle closest-side at 50% 50%,
-      color-mix(in srgb, var(--color-accent) 42%, transparent),
-      transparent 68%
-    );
-    -webkit-mask-image: radial-gradient(
-      circle closest-side at 50% 50%,
-      #000 0%,
-      #000 16%,
-      transparent 70%
-    );
-    mask-image: radial-gradient(
-      circle closest-side at 50% 50%,
-      #000 0%,
-      #000 16%,
-      transparent 70%
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      var(--color-accent) 10%,
+      var(--color-accent) 35%,
+      color-mix(in srgb, var(--color-accent) 80%, transparent) 50%,
+      color-mix(in srgb, var(--color-accent) 50%, transparent) 62%,
+      color-mix(in srgb, var(--color-accent) 22%, transparent) 72%,
+      transparent 86%
     );
   }
+  .sc-swirl canvas {
+    display: none;
+  }
 
-  /* Desktop: shift the bloom toward the right edge (behind the paragraph). */
+  /* Desktop: the animated circular lime swirl, blooming from the right behind
+     the copy and stats. `top`/`left` mark the bloom's centre (the layer is
+     pulled back by half its own size); a radial mask keeps it a soft circular
+     bloom. The background is the no-JS / reduced-motion fallback wash. */
   @media (min-width: 1024px) {
     .sc-swirl {
+      inset: auto;
       left: 66%;
       top: 56%;
       width: 100%;
       height: 165%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(
+        circle closest-side at 50% 50%,
+        color-mix(in srgb, var(--color-accent) 42%, transparent),
+        transparent 68%
+      );
+      -webkit-mask-image: radial-gradient(
+        circle closest-side at 50% 50%,
+        #000 0%,
+        #000 16%,
+        transparent 70%
+      );
+      mask-image: radial-gradient(
+        circle closest-side at 50% 50%,
+        #000 0%,
+        #000 16%,
+        transparent 70%
+      );
+    }
+    .sc-swirl canvas {
+      display: block;
     }
   }
 </style>
@@ -150,7 +178,10 @@ const { eyebrow, heading, body, stats } = data;
     "canvas[data-sc-swirl]",
   );
 
-  if (stage && canvas) {
+  // The animated swirl is desktop-only; on mobile the bloom is a static CSS
+  // vertical wash (see the <style> block) and the canvas is hidden, so there's
+  // no need to spin up WebGL there.
+  if (stage && canvas && window.matchMedia("(min-width: 1024px)").matches) {
     initSwirl(canvas, stage, {
       grainUrl: "/hero/swirl/perlin1.png",
       circular: true,
