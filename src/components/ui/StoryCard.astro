@@ -84,37 +84,37 @@ const primary = ctaList.find((c) => c.style !== "outline") ?? ctaList[0];
 // card surface itself isn't a link.
 const clickable = ctaList.length === 1 && !!primary?.href;
 const composite = !!photo && type !== "highlighted";
-const base = `relative overflow-hidden rounded-card md:h-[510px] ${toneClass[tone]} ${className}`;
+const base = `relative overflow-hidden rounded-card lg:min-h-[510px] ${toneClass[tone]} ${className}`;
 
 // Stat numbers are a fixed 38px on mobile (Figma's numbers opt out of the fluid
 // type scale — see the design annotation), with tighter 1.05 leading / -4%
-// tracking. On md+ they hand back to the page's fluid heading token.
+// tracking. On lg+ they hand back to the page's fluid heading token.
 const statValue =
-  "font-sans font-normal text-black text-[2.375rem] leading-[1.05] tracking-[-0.04em] md:leading-[1.2] md:tracking-[-0.02em]";
+  "font-sans font-normal text-black text-[2.375rem] leading-[1.05] tracking-[-0.04em] lg:leading-[1.2] lg:tracking-[-0.02em]";
 ---
 
 {
   type === "highlighted" && (
-    <article class={`group flex flex-col bg-purple-200/40 md:h-[510px] md:flex-row ${className} relative overflow-hidden rounded-card`}>
+    <article class={`group flex flex-col bg-purple-200/40 lg:min-h-[510px] lg:flex-row ${className} relative overflow-hidden rounded-card`}>
       <img
         src="/customers/swoosh.svg"
         alt=""
         aria-hidden="true"
         class="pointer-events-none absolute -right-[6%] top-1/2 h-[150%] w-[78%] -translate-y-1/2"
       />
-      <div class="relative flex flex-1 flex-col justify-between gap-8 px-6 py-8 md:gap-10 md:p-10 md:pr-4">
-        <header class="flex flex-col gap-8 md:gap-10">
+      <div class="relative flex flex-1 flex-col justify-between gap-8 px-6 py-8 lg:gap-10 lg:p-10 lg:pr-4">
+        <header class="flex flex-col gap-8 lg:gap-10">
           {logo && (
-            <img src={logo} alt={logoAlt} class="h-12 w-auto max-w-[185px] self-start object-contain object-left md:h-8" />
+            <img src={logo} alt={logoAlt} class="h-12 w-auto max-w-[185px] self-start object-contain object-left lg:h-8" />
           )}
-          <h2 class="font-serif text-h6 font-normal text-black md:max-w-[486px]">
+          <h2 class="font-serif text-h6 font-normal text-black lg:max-w-[486px]">
             {title}
           </h2>
         </header>
         <div class="flex flex-row gap-4">
           {stats.map((s) => (
             <div class="flex flex-1 flex-col gap-4 border-t border-purple-200 pt-6">
-              <span class={`${statValue} md:text-h5`}>
+              <span class={`${statValue} lg:text-h5`}>
                 {s.value}
               </span>
               <p class="max-w-[180px] text-sm font-semibold uppercase text-black">
@@ -124,12 +124,12 @@ const statValue =
           ))}
         </div>
       </div>
-      <div class="flex flex-col gap-8 p-6 md:flex-row md:flex-1 md:items-center md:gap-0">
-        <div class="relative h-[170px] w-full md:h-full md:flex-1">
+      <div class="flex flex-col gap-8 p-6 lg:flex-row lg:flex-1 lg:items-center lg:gap-0">
+        <div class="relative h-[170px] w-full lg:h-full lg:flex-1">
           <img src={photo} alt={photoAlt} class="h-full w-full rounded-[24px] object-cover" />
           {/* Desktop: the CTA is overlaid on the photo's bottom-right. */}
           {ctaList[0] && (
-            <span class="absolute bottom-4 right-4 hidden items-center md:inline-flex" aria-hidden="true">
+            <span class="absolute bottom-4 right-4 hidden items-center lg:inline-flex" aria-hidden="true">
               <span class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase text-white">
                 {ctaList[0].label}
               </span>
@@ -141,7 +141,7 @@ const statValue =
             `relative z-10` lifts it above the decorative swoosh (an absolutely
             positioned sibling that would otherwise paint over and wash it out). */}
         {ctaList[0] && (
-          <span class="relative z-10 flex w-full items-center justify-end md:hidden" aria-hidden="true">
+          <span class="relative z-10 flex w-full items-center justify-end lg:hidden" aria-hidden="true">
             <span class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase text-white">
               {ctaList[0].label}
             </span>
@@ -172,33 +172,33 @@ const statValue =
 
 {
   /* Composite story card (a story with a photo). Stacks logo → title → stat →
-     photo → CTAs on mobile; on md+ it's a 2-col grid: the text column (logo +
+     photo → CTAs up to lg; on lg+ it's a 2-col grid: the text column (logo +
      title top, stat + CTAs pinned bottom) beside a full-height photo. The grid
      placement reproduces the desktop flex layout while letting the photo sit
-     between the stat and the CTAs on mobile, matching the design. */
+     between the stat and the CTAs on the stacked layout, matching the design. */
   type === "story" && composite && (
-    <article class={`group relative flex flex-col overflow-hidden rounded-card md:grid md:h-[510px] md:grid-cols-2 md:grid-rows-[auto_1fr_auto_auto] ${toneClass[tone]} ${className}`}>
-      <header class="flex flex-col gap-6 px-6 pt-8 md:col-start-1 md:row-start-1 md:px-10 md:pr-4 md:pt-10">
+    <article class={`group relative flex flex-col overflow-hidden rounded-card lg:grid lg:min-h-[510px] lg:grid-cols-2 lg:grid-rows-[auto_1fr_auto_auto] ${toneClass[tone]} ${className}`}>
+      <header class="flex flex-col gap-6 px-6 pt-8 lg:col-start-1 lg:row-start-1 lg:px-10 lg:pr-4 lg:pt-10">
         {logo && (
-          <img src={logo} alt={logoAlt} class="h-12 w-auto max-w-[185px] self-start object-contain object-left md:h-8" />
+          <img src={logo} alt={logoAlt} class="h-12 w-auto max-w-[185px] self-start object-contain object-left lg:h-8" />
         )}
         <h3 class="font-serif text-xlg font-normal text-black">{title}</h3>
       </header>
 
       {stat && (
-        <div class="px-6 pt-8 md:col-start-1 md:row-start-3 md:px-10 md:pr-4 md:pt-0">
+        <div class="px-6 pt-8 lg:col-start-1 lg:row-start-3 lg:px-10 lg:pr-4 lg:pt-0">
           <div class="flex flex-col gap-4 border-t border-black/15 pt-6">
-            <span class={`${statValue} md:text-h6`}>{stat.value}</span>
+            <span class={`${statValue} lg:text-h6`}>{stat.value}</span>
             <p class="max-w-[260px] text-sm font-semibold uppercase text-black">{stat.label}</p>
           </div>
         </div>
       )}
 
-      <div class="px-6 pt-14 md:col-start-2 md:row-span-full md:flex md:items-center md:p-6">
-        <img src={photo} alt={photoAlt} class="h-60 w-full rounded-[24px] object-cover md:h-full md:flex-1" />
+      <div class="px-6 pt-14 lg:col-start-2 lg:row-span-full lg:flex lg:items-center lg:p-6">
+        <img src={photo} alt={photoAlt} class="h-60 w-full rounded-[24px] object-cover lg:h-full lg:flex-1" />
       </div>
 
-      <div class="flex flex-wrap items-center justify-end gap-3 px-6 pb-8 pt-8 md:col-start-1 md:row-start-4 md:px-10 md:pb-10 md:pr-4">
+      <div class="flex flex-wrap items-center justify-end gap-3 px-6 pb-8 pt-8 lg:col-start-1 lg:row-start-4 lg:px-10 lg:pb-10 lg:pr-4">
         {ctaList.map((c) =>
           c.style === "outline" ? (
             <a
@@ -247,9 +247,9 @@ const statValue =
 
 {
   (type === "quote" || (type === "story" && !composite)) && (
-    <article class={composite ? `group flex flex-col md:h-[510px] md:flex-row ${base}` : `group flex flex-col justify-between gap-14 px-6 py-8 md:gap-8 md:p-10 ${base}`}>
+    <article class={composite ? `group flex flex-col lg:min-h-[510px] lg:flex-row ${base}` : `group flex flex-col justify-between gap-14 px-6 py-8 lg:gap-8 lg:p-10 ${base}`}>
       {/* Text pane */}
-      <div class={composite ? "flex flex-1 flex-col justify-between gap-8 px-6 py-8 md:p-10 md:pr-4" : "contents"}>
+      <div class={composite ? "flex flex-1 flex-col justify-between gap-8 px-6 py-8 lg:p-10 lg:pr-4" : "contents"}>
         <header class="flex flex-col gap-6">
           {confidential ? (
             <span class="flex items-center gap-2 self-start text-sm font-semibold uppercase text-black">
@@ -261,7 +261,7 @@ const statValue =
             </span>
           ) : (
             logo && (
-              <img src={logo} alt={logoAlt} class="h-12 w-auto max-w-[185px] self-start object-contain object-left md:h-8" />
+              <img src={logo} alt={logoAlt} class="h-12 w-auto max-w-[185px] self-start object-contain object-left lg:h-8" />
             )
           )}
           {type === "story" ? (
@@ -279,7 +279,7 @@ const statValue =
           <div class="flex flex-col gap-8">
             {stat && (
               <div class="flex flex-col gap-4 border-t border-black/15 pt-6">
-                <span class={`${statValue} md:text-h6`}>
+                <span class={`${statValue} lg:text-h6`}>
                   {stat.value}
                 </span>
                 <p class="max-w-[260px] text-sm font-semibold uppercase text-black">
@@ -336,11 +336,11 @@ const statValue =
 
       {/* Photo pane (composite only) */}
       {composite && (
-        <div class="p-6 md:flex md:flex-1 md:items-center">
+        <div class="p-6 lg:flex lg:flex-1 lg:items-center">
           <img
             src={photo}
             alt={photoAlt}
-            class="h-60 w-full rounded-[24px] object-cover md:h-full md:flex-1"
+            class="h-60 w-full rounded-[24px] object-cover lg:h-full lg:flex-1"
           />
         </div>
       )}
