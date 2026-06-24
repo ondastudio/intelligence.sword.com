@@ -40,6 +40,14 @@ const labelTag =
 // it stays glued to the visible stroke under any transform.
 const curvePath = "M0.5 0.5H543.472C676.834 0.5 624 84.5 778 84.5";
 
+// Mobile dotted strokes reproduce the Figma spec exactly: solid-black round
+// dots, 1.5px across, 8px apart (the design's stroke-dasharray "0.01 8" with
+// round caps). Authored at 1:1 px so the spacing never scales with the box.
+const dottedYLine =
+  "background-image:radial-gradient(circle,#000 0.75px,transparent 0.75px);background-size:1.5px 8px;background-repeat:repeat-y;background-position:center";
+const dottedXLine =
+  "background-image:radial-gradient(circle,#000 0.75px,transparent 0.75px);background-size:8px 1.5px;background-repeat:repeat-x;background-position:center";
+
 // Per-curve flow timing. All four share the same duration and start, so the
 // dots run edge → centre in lockstep and reach the orb at the same instant.
 const FLOW_DUR = "5s";
@@ -71,23 +79,26 @@ const curves = [
     <div
       class="mx-auto flex max-w-[820px] flex-col items-center gap-6 text-center"
     >
-      <h2 data-reveal="title" class="font-serif text-h5 font-normal">
+      <h2
+        data-reveal="title"
+        class="max-w-[350px] font-serif text-[28px] font-normal lg:max-w-none lg:text-h5"
+      >
         {heading}
       </h2>
       <p
         data-reveal
-        class="max-w-[600px] text-lg text-black"
+        class="max-w-[350px] text-[22px] text-black lg:max-w-[600px] lg:text-lg"
         style="transition-delay:120ms"
       >
         {subheading}
       </p>
     </div>
 
-    <!-- Diagram (scaled to fit) -->
+    <!-- Diagram (scaled to fit), desktop / tablet only -->
     <div
       data-stage-wrap
       data-reveal
-      class="relative mt-20"
+      class="relative mt-20 hidden lg:block"
       style="transition-delay:160ms"
     >
       <div
@@ -300,6 +311,91 @@ const curves = [
         </div>
       </div>
     </div>
+
+    <!-- ============ Mobile diagram (vertical stack) ============ -->
+    <!-- The fixed-canvas diagram does not scale down to phone widths, so on
+         small screens the same system is re-laid-out as a single column:
+         "learns from" card -> orb -> "governed by" card. Dots flow along the
+         dotted connectors toward the orb in lockstep, and the orb keeps its
+         self-animating spin (baked into orb.svg). -->
+    <div data-reveal class="mt-16 flex flex-col items-center lg:hidden" style="transition-delay:160ms">
+      <!-- Continuously learns from -->
+      <div class="flex w-full max-w-[350px] flex-col items-center gap-4">
+        <span class={`whitespace-nowrap ${labelTag}`}>{learnsLabel}</span>
+        <div class="relative w-full">
+          <!-- Dotted border (round dots, 1.5px @ 8px, non-scaling) -->
+          <svg class="pointer-events-none absolute inset-0 size-full overflow-visible" fill="none" aria-hidden="true">
+            <rect x="0" y="0" width="100%" height="100%" rx="40" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="0.01 8" />
+          </svg>
+          <div class="p-2">
+            <div class="grid grid-cols-2 gap-2">
+              {stats.map((stat) => (
+                <div class="flex flex-col items-center gap-[18px] rounded-[40px] bg-lavender px-4 py-4 text-center">
+                  <span class="flex items-start gap-1">
+                    <span class="font-serif text-[28px] font-normal leading-[1.1]">{stat.value}</span>
+                    {stat.plus && (
+                      <span class="mt-1.5 flex size-5 shrink-0 items-center justify-center rounded-[24px] bg-ink-wash-strong text-sm leading-none">+</span>
+                    )}
+                  </span>
+                  <span class="text-sm font-semibold uppercase leading-[1.25]">{stat.label}</span>
+                </div>
+              ))}
+            </div>
+            <div class="mt-2 flex items-center gap-4 rounded-full bg-lavender p-1 pr-6">
+              <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-white">
+                <img src={memory.icon} alt="" aria-hidden="true" class="size-5" />
+              </span>
+              <span class="text-sm font-semibold uppercase text-black">{memory.label}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connector: card -> orb (dot flows down toward the orb) -->
+      <span class="relative block h-[50px] w-2.5 shrink-0">
+        <span class="absolute inset-y-0 left-1/2 w-[1.5px] -translate-x-1/2" style={dottedYLine}></span>
+        <span class="m-flow absolute left-[calc(50%-5px)] top-0 size-2.5 rounded-full bg-brand" style="--from:0px;--to:50px"></span>
+      </span>
+
+      <!-- Center orb: the mobile asset bakes the ring, glow, two-line MDR
+           badge, label and the purple entry/exit dots; its arcs self-spin
+           (orb-arc-spin, identical behaviour to the desktop orb). -->
+      <div class="relative flex shrink-0 items-center justify-center">
+        <img
+          src="/platform/orb-mobile.svg"
+          alt={`${orb.title} — ${orb.badgeLine1} ${orb.badgeLine2}`}
+          class="w-[211px]"
+        />
+        <span class="absolute right-full top-1/2 mr-[-12px] h-[1.5px] w-[30px] -translate-y-1/2" style={dottedXLine}></span>
+        <span class="absolute left-full top-1/2 ml-[-12px] h-[1.5px] w-[30px] -translate-y-1/2" style={dottedXLine}></span>
+      </div>
+
+      <!-- Connector: orb -> card (dot flows up toward the orb, in sync) -->
+      <span class="relative block h-[50px] w-2.5 shrink-0">
+        <span class="absolute inset-y-0 left-1/2 w-[1.5px] -translate-x-1/2" style={dottedYLine}></span>
+        <span class="m-flow absolute left-[calc(50%-5px)] top-0 size-2.5 rounded-full bg-brand" style="--from:50px;--to:0px"></span>
+      </span>
+
+      <!-- Governed by -->
+      <div class="flex w-full max-w-[309px] flex-col items-center gap-4">
+        <div class="relative w-full">
+          <svg class="pointer-events-none absolute inset-0 size-full overflow-visible" fill="none" aria-hidden="true">
+            <rect x="0" y="0" width="100%" height="100%" rx="32" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="0.01 8" />
+          </svg>
+          <div class="flex flex-col gap-2 p-2">
+            {governance.map((g) => (
+              <div class="flex items-center gap-4 rounded-full bg-lavender p-1 pr-8">
+                <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-white">
+                  <img src={g.icon} alt="" aria-hidden="true" class="size-5" />
+                </span>
+                <span class="text-sm font-semibold uppercase text-black">{g.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <span class={`whitespace-nowrap ${labelTag}`}>{governedLabel}</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -330,12 +426,33 @@ const curves = [
     }
   }
 
+  /* Mobile connector dots — flow toward the orb in lockstep (one runs down
+     from the top card, one runs up from the bottom card; same timing). */
+  .m-flow {
+    pointer-events: none;
+    will-change: transform, opacity;
+    animation: m-flow 2.4s linear infinite;
+  }
+
+  /* Only translateY is animated — horizontal centering is done with `left`
+     so the animation's transform can't knock the dot off the line. */
+  @keyframes m-flow {
+    0%   { transform: translateY(var(--from)); opacity: 0; }
+    15%  { opacity: 1; }
+    85%  { opacity: 1; }
+    100% { transform: translateY(var(--to)); opacity: 0; }
+  }
+
   /* Respect users who prefer reduced motion — no traveling dots. */
   @media (prefers-reduced-motion: reduce) {
     .flow-dot {
       display: none;
     }
     .flow-conn {
+      animation: none;
+      opacity: 0;
+    }
+    .m-flow {
       animation: none;
       opacity: 0;
     }
