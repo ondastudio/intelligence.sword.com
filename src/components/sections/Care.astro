@@ -44,8 +44,9 @@ import FeatureCard from "../ui/FeatureCard.astro";
       <!-- Cards + banner share a 16px gap (one container in the design) -->
       <div class="flex flex-col gap-4">
         <!-- Capability grid: 3 columns × 2 rows on desktop. Each card carries
-             its own reveal with a stepped delay so they cascade in. -->
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+             its own reveal with a stepped delay so they cascade in. Hidden on
+             mobile, where the swipe-through deck below takes over. -->
+        <div class="hidden gap-4 md:grid md:grid-cols-3">
           {
             care.cards.map((card, i) => (
               <div data-reveal style={`transition-delay:${i * 110}ms`}>
@@ -58,11 +59,61 @@ import FeatureCard from "../ui/FeatureCard.astro";
           }
         </div>
 
-        <!-- Humans-in-the-loop banner — continues the card cascade as the 7th step -->
+        <!-- Mobile: a stacked card deck. The cards sit piled on screen; each
+             upward swipe slides the next card up over the pile, and once the
+             last card lands the pin releases so the same motion carries on into
+             the banner below. JS-driven (the section's overflow-hidden would
+             neutralise CSS sticky); with JS off or reduced motion it falls back
+             to a plain vertical column. See the script at the foot of the file. -->
+        <div class="care-deck md:hidden" data-care-deck>
+          <div class="care-deck__track" data-care-track>
+            <div class="care-deck__stage" data-care-stage>
+              {
+                care.cards.map((card, i) => (
+                  <div class="care-deck__card" data-care-card style={`z-index:${i}`}>
+                    <FeatureCard
+                      label={card.label}
+                      description={card.description}
+                      class="h-full min-h-0"
+                    />
+                  </div>
+                ))
+              }
+              {/* The "Humans in the loop" banner is the final card in the deck on
+                  mobile — it fades in over the pile like every other card. The
+                  full-width banner below is its desktop counterpart. */}
+              <div
+                class="care-deck__card"
+                data-care-card
+                style={`z-index:${care.cards.length}`}
+              >
+                <div
+                  class="flex h-full flex-col items-start gap-6 overflow-hidden rounded-[24px] bg-[image:var(--gradient-care-banner)] p-8"
+                >
+                  <LabelPill>{care.banner.label}</LabelPill>
+                  <p class="text-lg">
+                    {care.banner.before}<span class="font-semibold"
+                      >{care.banner.highlight}</span
+                    >
+                  </p>
+                  <img
+                    src={care.banner.graphic}
+                    alt={care.banner.graphicAlt}
+                    class="mt-auto h-32 w-32 self-end"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Humans-in-the-loop banner (desktop) — continues the card cascade as
+             the 7th step. On mobile this is hidden; the deck above carries its
+             own banner card instead. -->
         <div
           data-reveal
           style="transition-delay:660ms"
-          class="relative flex flex-col items-start justify-between gap-10 overflow-hidden rounded-[24px] bg-[image:var(--gradient-care-banner)] p-10 md:h-[300px] md:flex-row md:items-center"
+          class="relative hidden flex-col items-start justify-between gap-10 overflow-hidden rounded-[24px] bg-[image:var(--gradient-care-banner)] p-10 md:flex md:h-[300px] md:flex-row md:items-center"
         >
           <div
             class="relative z-10 flex h-full flex-col items-start justify-between gap-10"
@@ -85,3 +136,195 @@ import FeatureCard from "../ui/FeatureCard.astro";
     </div>
   </div>
 </section>
+
+<style>
+  /* Mobile card deck. Default (no JS / reduced motion): a plain vertical column
+     — the stage just stacks its cards with a gap. The script adds `.is-active`
+     and switches the stage into the pinned, absolutely-stacked deck. */
+  .care-deck__stage {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .care-deck.is-active .care-deck__track {
+    position: relative;
+  }
+
+  .care-deck.is-active .care-deck__stage {
+    display: block;
+    /* position/top/left/width/height are driven inline by the script */
+  }
+
+  /* Each card fills the stage box and overlays the others; the script sets the
+     transform (fade-in rise + staggered recede), opacity, and a depth tint per
+     scroll frame. Matching the design, receded cards darken toward grey
+     (#e6e6e6 → #ccc) so the staggered tops read as a stack against the near-white
+     page — there is no drop shadow in the design. */
+  .care-deck.is-active .care-deck__card {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    will-change: transform, opacity, filter;
+  }
+</style>
+
+<script>
+  // Mobile-only swipe-through deck. The cards pile up on screen; scrolling
+  // pins the stack in the viewport centre and slides one card up at a time. The
+  // pin is done with position:fixed (not CSS sticky — the section's
+  // overflow-hidden would neutralise sticky) and measured the project's usual
+  // way: vanilla rAF + getBoundingClientRect.
+  const deck = document.querySelector<HTMLElement>("[data-care-deck]");
+
+  if (deck) {
+    const track = deck.querySelector<HTMLElement>("[data-care-track]")!;
+    const stage = deck.querySelector<HTMLElement>("[data-care-stage]")!;
+    const cards = Array.from(
+      deck.querySelectorAll<HTMLElement>("[data-care-card]"),
+    );
+    const N = cards.length;
+
+    // Active only on phones with motion allowed; desktop keeps the static grid.
+    const mq = window.matchMedia(
+      "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
+    );
+
+    let stageH = 0; // px height of one card box (the pinned stage)
+    let pinTravel = 0; // px of scroll the deck stays pinned for
+    let centerTop = 0; // viewport offset the pinned stage rests at
+    let active = false;
+    let ticking = false;
+
+    function measure() {
+      const vh = window.innerHeight;
+      stageH = Math.min(Math.max(Math.round(vh * 0.6), 360), 520);
+      const perCard = vh * 0.72; // scroll distance to bring in each next card
+      pinTravel = perCard * (N - 1);
+      centerTop = Math.max(16, Math.round((vh - stageH) / 2));
+      track.style.height = `${stageH + pinTravel}px`;
+      stage.style.height = `${stageH}px`;
+    }
+
+    // Per-card style for a continuous deck position `s` (0 = first card front,
+    // N-1 = last card front). At s=0 only the first card shows. As `s` grows the
+    // next card fades in while rising into the front, and each card it covers
+    // drifts up at full size so the tops of all the previous cards stay visible,
+    // staggered above the current one.
+    const ENTER_RISE = 64; // px the entering card rises from as it fades in
+    const STAGGER = 22; // px each receded card peeks above the one in front
+    function styleFor(i: number, s: number) {
+      const rel = s - i;
+      let ty: number;
+      let opacity = 1;
+      let brightness = 1;
+      if (rel <= -1) {
+        // not in yet — parked just below the front, invisible
+        ty = ENTER_RISE;
+        opacity = 0;
+      } else if (rel < 0) {
+        // entering: fade in and rise into the front. Opacity ramps faster than
+        // the rise so the card turns opaque early and cleanly covers the one
+        // beneath — only its staggered top stays visible — instead of letting
+        // both cards' text show through each other mid-transition.
+        const t = rel + 1; // 0 → 1
+        ty = (1 - t) * ENTER_RISE;
+        opacity = Math.min(1, t * 2.2);
+      } else {
+        // settled — drifts up so its top peeks above the card in front, and
+        // darkens toward grey with depth (design: #e6e6e6 at 1 back, #ccc at 2).
+        // Only the front card plus the two behind it stay visible; deeper cards
+        // fade out (opacity 1 at depth ≤2 → 0 by depth 3) so the pile stays tidy.
+        ty = -rel * STAGGER;
+        brightness = 1 - Math.min(rel, 2) * 0.1;
+        opacity = Math.max(0, Math.min(1, 3 - rel));
+      }
+      return { transform: `translateY(${ty}px)`, opacity, brightness };
+    }
+
+    function render() {
+      ticking = false;
+      if (!active) return;
+
+      const rect = track.getBoundingClientRect();
+      const progress = centerTop - rect.top; // px scrolled into the pin range
+      const clamped = Math.max(0, Math.min(pinTravel, progress));
+      const s = pinTravel > 0 ? (clamped / pinTravel) * (N - 1) : 0;
+
+      if (progress < 0) {
+        // Before the pin: stage rides along at the top of the track.
+        stage.style.position = "absolute";
+        stage.style.top = "0px";
+        stage.style.left = "0";
+        stage.style.width = "100%";
+      } else if (progress > pinTravel) {
+        // After the pin: stage rests at the bottom of the track and scrolls off.
+        stage.style.position = "absolute";
+        stage.style.top = `${pinTravel}px`;
+        stage.style.left = "0";
+        stage.style.width = "100%";
+      } else {
+        // Pinned: stage held in the viewport centre while the cards animate.
+        stage.style.position = "fixed";
+        stage.style.top = `${centerTop}px`;
+        stage.style.left = `${rect.left}px`;
+        stage.style.width = `${rect.width}px`;
+      }
+
+      for (let i = 0; i < N; i++) {
+        const st = styleFor(i, s);
+        cards[i].style.transform = st.transform;
+        cards[i].style.opacity = String(st.opacity);
+        cards[i].style.filter = `brightness(${st.brightness})`;
+      }
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    }
+
+    function activate() {
+      if (active) return;
+      active = true;
+      deck.classList.add("is-active");
+      measure();
+      render();
+      window.addEventListener("scroll", onScroll, { passive: true });
+    }
+
+    function deactivate() {
+      if (!active) return;
+      active = false;
+      deck.classList.remove("is-active");
+      window.removeEventListener("scroll", onScroll);
+      for (const el of [track, stage]) {
+        el.style.height = "";
+      }
+      stage.style.position = "";
+      stage.style.top = "";
+      stage.style.left = "";
+      stage.style.width = "";
+      cards.forEach((c) => {
+        c.style.transform = "";
+        c.style.opacity = "";
+        c.style.filter = "";
+      });
+    }
+
+    function sync() {
+      if (mq.matches) activate();
+      else deactivate();
+    }
+
+    sync();
+    window.addEventListener("resize", () => {
+      if (active) {
+        measure();
+        render();
+      }
+    });
+    mq.addEventListener("change", sync);
+  }
+</script>
