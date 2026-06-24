@@ -37,7 +37,9 @@ const { src, poster, alt, class: className = "" } = Astro.props;
 </div>
 
 <style>
-  /* Fallback (no JS / reduced motion): the design's contained product frame. */
+  /* Fallback (no JS / reduced motion) AND mobile: the design's contained,
+     within-the-gutters product frame — the full-bleed stage below is gated to
+     sm+ so the video never overflows on phones. */
   .video-scroll {
     padding: 120px 16px 80px;
   }
@@ -48,8 +50,19 @@ const { src, poster, alt, class: className = "" } = Astro.props;
     border-radius: var(--radius-card);
   }
 
-  /* Enhanced: full-bleed stage the scrubber scales between 0.82 → 1 → 0.82. */
-  @media (prefers-reduced-motion: no-preference) {
+  /* Phones: let the frame run wider (8px gutters) with a softer radius, and
+     tighten the vertical rhythm. */
+  @media (max-width: 639px) {
+    .video-scroll {
+      padding: 56px 8px;
+    }
+    .video-frame {
+      border-radius: 20px;
+    }
+  }
+
+  /* Enhanced (sm+ only): full-bleed stage the scrubber scales 0.82 → 1 → 0.82. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 640px) {
     :global(html.js) .video-scroll {
       padding: 80px 0;
     }
@@ -77,6 +90,9 @@ const { src, poster, alt, class: className = "" } = Astro.props;
     if (!frame) return;
     if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches)
       return;
+    // Mobile uses the contained frame (see the sm+ gate in the styles above);
+    // bail so we never scale the small frame with inline transforms.
+    if (!window.matchMedia("(min-width: 640px)").matches) return;
 
     const MIN_SCALE = 0.82;
     const MAX_RADIUS = 40; // px — matches --radius-card

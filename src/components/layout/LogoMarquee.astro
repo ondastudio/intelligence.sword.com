@@ -1,0 +1,89 @@
+---
+/**
+ * LogoMarquee — an infinite, auto-scrolling row of partner / client logos.
+ * The list is rendered twice and the track translated by -50% (plus half the
+ * seam gap) so the loop is seamless. Each logo sits in a fixed-width cell topped
+ * by a faint divider rule — the same segmented top-borders as LogoStrip, but in
+ * a single full-width scrolling row (the design's mobile carousel, Figma
+ * `8797:50789`: 70px-tall cells, 0.875px black/24 top rule, 21px side padding,
+ * 16px gaps). No edge mask — the cells run edge to edge. Logos are forced to a
+ * uniform solid black via `brightness(0)` like LogoStrip.
+ *
+ * Used where the segmented LogoStrip grid is too cramped — the home Intro swaps
+ * to this on mobile (below `sm`). Content is passed in so it stays generic.
+ */
+interface LogoItem {
+  src: string;
+  alt: string;
+}
+interface Props {
+  logos: LogoItem[];
+  class?: string;
+}
+const { logos, class: className = "" } = Astro.props;
+---
+
+<div class={`logo-marquee ${className}`}>
+  <div class="logo-marquee__track">
+    {
+      [0, 1].map((copy) =>
+        logos.map((logo) => (
+          <div class="logo-marquee__cell">
+            <img
+              src={logo.src}
+              alt={copy === 0 ? logo.alt : ""}
+              aria-hidden={copy === 0 ? undefined : "true"}
+              loading="lazy"
+              class="logo-marquee__logo"
+            />
+          </div>
+        )),
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .logo-marquee {
+    width: 100%;
+    overflow: hidden;
+  }
+  .logo-marquee__track {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+    width: max-content;
+    animation: logo-marquee-scroll 26s linear infinite;
+  }
+  .logo-marquee__cell {
+    display: flex;
+    flex: none;
+    width: 146px;
+    height: 70px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 21px;
+    border-top: 0.875px solid rgba(0, 0, 0, 0.24);
+  }
+  .logo-marquee__logo {
+    display: block;
+    width: auto;
+    max-height: 40px;
+    object-fit: contain;
+    filter: brightness(0);
+  }
+  @keyframes logo-marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      /* -50% of the doubled track + half the seam gap = one full set */
+      transform: translateX(calc(-50% - 8px));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .logo-marquee__track {
+      animation: none;
+    }
+  }
+</style>

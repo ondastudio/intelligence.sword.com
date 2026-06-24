@@ -45,9 +45,29 @@
   if (stage && canvas && hero && wrapper) {
     const sizeStage = () => {
       const heroHeight = hero.offsetHeight;
-      // Distance from the top of the wrapper (= the stage's top) down to the
-      // fade-target element (the heading the swirl should reach). Falls back to
-      // a fraction of the hero height if the marker isn't present.
+
+      // On mobile the section below (Intro) supplies its own mesh-gradient
+      // background graphic, so the swirl must NOT extend into it at all. Cap the
+      // stage to exactly the hero height and fade the swirl out within the hero's
+      // bottom edge — no tail bleeds past the boundary.
+      const setMask = (mask: string) => {
+        stage.style.maskImage = mask;
+        stage.style.webkitMaskImage = mask;
+      };
+      if (window.matchMedia("(max-width: 639px)").matches) {
+        const fade = Math.round(heroHeight * 0.14);
+        stage.style.height = `${heroHeight}px`;
+        setMask(
+          `linear-gradient(to bottom,` +
+            ` #000 ${heroHeight - fade}px,` +
+            ` transparent ${heroHeight}px)`
+        );
+        return;
+      }
+
+      // sm+: carry the swirl down to the fade-target element (`data-swirl-end`),
+      // falling back to a fraction of the hero height if that marker isn't
+      // present.
       const reach = endEl
         ? Math.round(
             endEl.getBoundingClientRect().top - wrapper.getBoundingClientRect().top
@@ -60,14 +80,13 @@
       const total = reach + tail;
       const bleed = Math.max(1, reach - heroHeight);
       stage.style.height = `${total}px`;
-      const mask =
+      setMask(
         `linear-gradient(to bottom,` +
-        ` #000 ${heroHeight}px,` +
-        ` rgba(0,0,0,0.4) ${heroHeight + Math.round(bleed * 0.55)}px,` +
-        ` rgba(0,0,0,0.12) ${reach}px,` +
-        ` transparent ${total}px)`;
-      stage.style.maskImage = mask;
-      stage.style.webkitMaskImage = mask;
+          ` #000 ${heroHeight}px,` +
+          ` rgba(0,0,0,0.4) ${heroHeight + Math.round(bleed * 0.55)}px,` +
+          ` rgba(0,0,0,0.12) ${reach}px,` +
+          ` transparent ${total}px)`
+      );
     };
 
     sizeStage();

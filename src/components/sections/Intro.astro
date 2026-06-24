@@ -7,12 +7,22 @@
  */
 import intro from "../../data/intro.json";
 import LogoStrip from "../layout/LogoStrip.astro";
+import LogoMarquee from "../layout/LogoMarquee.astro";
 import ProductVideo from "../ui/ProductVideo.astro";
 ---
 
 <section class="relative overflow-hidden text-black">
-  <!-- The soft gradient wash at the top comes from <SwirlBackground />, which
-       bleeds the hero swirl down across this section's top edge. -->
+  <!-- On sm+ the soft top wash comes from <SwirlBackground /> bleeding the hero
+       swirl across this section's edge. On mobile that bleed is replaced by the
+       design's own mesh-gradient graphic (Figma "Home_Mobile_390px", 390×576):
+       pinned to the top, full-width, behind the z-10 content, fading out by the
+       time it reaches the product video. -->
+  <img
+    src="/intro/home-mobile-bg.png"
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-x-0 top-0 z-0 w-full select-none sm:hidden"
+  />
 
   <!-- Outer block keeps the design's 16px gutters so the product frame can
        span near-full-width; the text/logos sit in a narrower column inside. -->
@@ -23,14 +33,23 @@ import ProductVideo from "../ui/ProductVideo.astro";
     >
       <p
         data-reveal
-        class="max-w-[962px] text-center text-xlg"
+        class="mx-auto max-w-[350px] text-center text-xlg sm:max-w-[600px] md:max-w-[962px]"
       >
         {intro.lead.before}<span class="font-semibold">{intro.lead.highlight}</span
         >{intro.lead.after}
       </p>
 
       <div data-reveal class="w-full" style="transition-delay:120ms">
-        <LogoStrip logos={intro.logos} class="w-full" borderClass="border-black/24" />
+        <!-- Mobile: a full-bleed auto-scrolling marquee. The `-mx-6` cancels the
+             column's horizontal padding (px-4 outer + px-2 inner = 24px) so the
+             strip runs edge to edge per the design; the section's overflow-hidden
+             clips it. sm+: the segmented grid stays within the column. -->
+        <div class="-mx-6 sm:hidden">
+          <LogoMarquee logos={intro.logos} />
+        </div>
+        <div class="hidden sm:block">
+          <LogoStrip logos={intro.logos} class="w-full" borderClass="border-black/24" />
+        </div>
       </div>
     </div>
   </div>

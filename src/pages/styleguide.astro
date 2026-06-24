@@ -18,6 +18,7 @@ import StoryCard from "../components/ui/StoryCard.astro";
 import TeamCard from "../components/ui/TeamCard.astro";
 import Logo from "../components/layout/Logo.astro";
 import LogoStrip from "../components/layout/LogoStrip.astro";
+import LogoMarquee from "../components/layout/LogoMarquee.astro";
 import intro from "../data/intro.json";
 import about from "../data/about.json";
 
@@ -199,6 +200,16 @@ const swatches = [
       </h2>
       <div class="mt-4">
         <LogoStrip logos={intro.logos} />
+      </div>
+    </section>
+
+    <!-- LogoMarquee -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase">
+        LogoMarquee
+      </h2>
+      <div class="mt-4">
+        <LogoMarquee logos={intro.logos} />
       </div>
     </section>
 
