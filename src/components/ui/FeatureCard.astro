@@ -19,9 +19,7 @@ const { label, description, class: className = "" } = Astro.props;
   class={`flex min-h-[340px] flex-col items-center justify-between gap-10 overflow-hidden rounded-[24px] bg-white p-10 backdrop-blur-[12px] md:h-[600px] ${className}`}
 >
   <LabelPill>{label}</LabelPill>
-  <p
-    class="text-center text-xl text-black"
-  >
+  <p class="text-center text-lg text-black">
     {description}
   </p>
 </article>

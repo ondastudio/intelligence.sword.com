@@ -11,9 +11,7 @@ import Eyebrow from "../ui/Eyebrow.astro";
 import CircleButton from "../ui/CircleButton.astro";
 ---
 
-<section
-  class="relative flex min-h-screen flex-col overflow-hidden text-black"
->
+<section class="relative flex min-h-screen flex-col overflow-hidden text-black">
   <!-- Background swirl lives in <SwirlBackground /> at the page level so it can
        bleed into the next section; this section is transparent over it. -->
   <Navbar />
@@ -24,10 +22,7 @@ import CircleButton from "../ui/CircleButton.astro";
     <!-- Headline block -->
     <div class="max-w-[1160px] pt-[160px] lg:pt-[200px]">
       <div data-reveal><Eyebrow>{hero.eyebrow}</Eyebrow></div>
-      <h1
-        data-reveal="title"
-        class="mt-8 font-serif font-normal text-[clamp(2.75rem,6vw,88px)]"
-      >
+      <h1 data-reveal="title" class="mt-8 font-serif font-normal text-h1">
         {hero.headline}
       </h1>
     </div>
@@ -36,7 +31,11 @@ import CircleButton from "../ui/CircleButton.astro";
     <div class="mt-auto pb-10">
       <div data-reveal="line" class="border-t border-black/24"></div>
       <div class="grid grid-cols-1 md:grid-cols-2">
-        <div data-reveal class="flex items-center py-10" style="transition-delay:120ms">
+        <div
+          data-reveal
+          class="flex items-center py-10"
+          style="transition-delay:120ms"
+        >
           <CircleButton data-hero-scroll label={hero.cta.label} />
         </div>
         <div
@@ -44,7 +43,7 @@ import CircleButton from "../ui/CircleButton.astro";
           class="py-10 md:border-l md:border-black/24 md:pl-12"
           style="transition-delay:200ms"
         >
-          <p class="max-w-[540px] text-2xl">
+          <p class="max-w-[540px] text-lg">
             {hero.paragraph}
           </p>
         </div>
@@ -76,22 +75,26 @@ import CircleButton from "../ui/CircleButton.astro";
     requestAnimationFrame(step);
   };
 
-  document.querySelectorAll<HTMLElement>("[data-hero-scroll]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const hero = btn.closest("section");
-      let next = hero?.nextElementSibling as HTMLElement | null;
-      while (next && next.tagName !== "SECTION") {
-        next = next.nextElementSibling as HTMLElement | null;
-      }
-      const targetY = next
-        ? next.getBoundingClientRect().top + window.scrollY
-        : window.innerHeight;
-      if (reduce) {
-        window.scrollTo(0, targetY);
-      } else {
-        glideTo(targetY);
-      }
+  document
+    .querySelectorAll<HTMLElement>("[data-hero-scroll]")
+    .forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const reduce = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        const hero = btn.closest("section");
+        let next = hero?.nextElementSibling as HTMLElement | null;
+        while (next && next.tagName !== "SECTION") {
+          next = next.nextElementSibling as HTMLElement | null;
+        }
+        const targetY = next
+          ? next.getBoundingClientRect().top + window.scrollY
+          : window.innerHeight;
+        if (reduce) {
+          window.scrollTo(0, targetY);
+        } else {
+          glideTo(targetY);
+        }
+      });
     });
-  });
 </script>

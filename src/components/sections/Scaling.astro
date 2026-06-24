@@ -36,26 +36,29 @@ const { eyebrow, heading, body, stats } = data;
     ></canvas>
   </div>
 
-  <div class="relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
+  <div
+    class="relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20"
+  >
     <!-- Heading block -->
     <div class="flex flex-col gap-6">
-      <div data-reveal><Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow></div>
+      <div data-reveal>
+        <Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow>
+      </div>
 
       <div
         class="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between lg:gap-[133px]"
       >
-        <h2
-          data-reveal="title"
-          class="font-serif text-3xl font-normal sm:text-4xl lg:text-display"
-        >
+        <h2 data-reveal="title" class="font-serif text-h5 font-normal">
           {heading.line1}<br /><span class="whitespace-nowrap"
-            >{heading.line2}<span class="text-brand">{heading.accent}</span>{heading.after}</span
+            >{heading.line2}<span class="text-brand">{heading.accent}</span>{
+              heading.after
+            }</span
           >
         </h2>
 
         <p
           data-reveal
-          class="max-w-[628px] text-base sm:text-lg"
+          class="max-w-[628px] text-base text-xmd"
           style="transition-delay:160ms;letter-spacing:0"
         >
           {body}
@@ -80,18 +83,14 @@ const { eyebrow, heading, body, stats } = data;
 
             <div class="flex flex-col gap-4">
               <div class="flex items-start gap-2">
-                <span class="font-serif text-[clamp(2.75rem,7vw,64px)] font-normal">
-                  {stat.value}
-                </span>
+                <span class="font-serif text-h4 font-normal">{stat.value}</span>
                 {stat.plus && (
                   <span class="mt-[11px] flex size-6 shrink-0 items-center justify-center rounded-[24px] bg-ink-wash-strong text-base">
                     +
                   </span>
                 )}
               </div>
-              <p class="min-h-[44px] max-w-[254px] text-lg">
-                {stat.label}
-              </p>
+              <p class="min-h-[44px] max-w-[254px] text-xmd">{stat.label}</p>
             </div>
           </div>
         ))
@@ -147,7 +146,9 @@ const { eyebrow, heading, body, stats } = data;
   import { initSwirl } from "../../lib/swirl";
 
   const stage = document.querySelector<HTMLElement>("[data-sc-swirl-stage]");
-  const canvas = stage?.querySelector<HTMLCanvasElement>("canvas[data-sc-swirl]");
+  const canvas = stage?.querySelector<HTMLCanvasElement>(
+    "canvas[data-sc-swirl]",
+  );
 
   if (stage && canvas) {
     initSwirl(canvas, stage, {

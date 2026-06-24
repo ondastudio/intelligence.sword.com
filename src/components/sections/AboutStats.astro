@@ -33,7 +33,7 @@ const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
         <div data-reveal><Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow></div>
         <h2
           data-reveal="title"
-          class="font-serif text-[clamp(2.25rem,5vw,56px)] font-normal"
+          class="font-serif text-h5 font-normal"
         >
           {title}
         </h2>
@@ -68,7 +68,7 @@ const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
 
               <div class="flex flex-col gap-4">
                 <div class="flex items-start gap-2">
-                  <span class="font-serif text-[clamp(2.75rem,7vw,64px)] font-normal">
+                  <span class="font-serif text-h4 font-normal">
                     {stat.value}
                   </span>
                   {stat.plus && (

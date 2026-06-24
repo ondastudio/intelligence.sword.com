@@ -113,24 +113,29 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
               aria-hidden="true"
               class="h-[29px] w-[16px] shrink-0"
             />
-            <span class="text-[28px]"
-              >{title}</span
-            >
+            <span class="text-[28px]">{title}</span>
           </div>
           {
             badge && (
               <div class="flex shrink-0 items-center gap-2">
-                <img src={badge.icon} alt="" aria-hidden="true" class="h-9 w-9 shrink-0" />
-                <img src={badge.text} alt={badge.alt} class="h-[26px] w-[79px]" />
+                <img
+                  src={badge.icon}
+                  alt=""
+                  aria-hidden="true"
+                  class="h-9 w-9 shrink-0"
+                />
+                <img
+                  src={badge.text}
+                  alt={badge.alt}
+                  class="h-[26px] w-[79px]"
+                />
               </div>
             )
           }
         </div>
 
         <!-- Headline -->
-        <p
-          class="whitespace-pre-line font-serif font-normal text-3xl md:text-card-title"
-        >
+        <p class="whitespace-pre-line font-serif font-normal text-h6">
           {headline}
         </p>
 
@@ -140,7 +145,7 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
             points.map((point, i) => (
               <li
                 class:list={[
-                  "pb-3 text-lg",
+                  "pb-3 text-xmd",
                   i < points.length - 1 && "border-b border-black/24",
                 ]}
               >
@@ -154,7 +159,9 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
       </div>
 
       <!-- Right: media panel -->
-      <div class="h-[470px] w-full shrink-0 rounded-[40px] bg-white md:w-[376px]">
+      <div
+        class="h-[470px] w-full shrink-0 rounded-[40px] bg-white md:w-[376px]"
+      >
       </div>
     </div>
   </div>
@@ -170,24 +177,18 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
       logo ? (
         <img src={logo} alt={logoAlt} class="h-[54px] w-auto shrink-0" />
       ) : (
-        <p class="max-w-[180px] shrink-0 text-sm font-semibold">
-          {logoText}
-        </p>
+        <p class="max-w-[180px] shrink-0 text-sm font-semibold">{logoText}</p>
       )
     }
 
     <div class="flex items-center gap-4">
-      <span
-        class="relative inline-block font-serif text-title"
-      >
+      <span class="relative inline-block font-serif text-h6">
         <span
           class:list={["absolute inset-x-0 bottom-2.5 z-0 h-2", t.statBar]}
           aria-hidden="true"></span>
         <span class="relative z-10">{stat}</span>
       </span>
-      <p
-        class="max-w-[16rem] text-sm font-semibold uppercase"
-      >
+      <p class="max-w-[16rem] text-sm font-semibold uppercase">
         {statLabel}
       </p>
     </div>
@@ -199,8 +200,7 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
           "-mr-px rounded-[50px] px-6 py-3 text-sm font-semibold uppercase",
           t.ctaBg,
           t.ctaText,
-        ]}
-        >{cta.label}</span
+        ]}>{cta.label}</span
       >
       <span
         class:list={[
@@ -210,7 +210,13 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
           t.ctaText,
         ]}
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+        >
           <path
             d="M5 12h14M13 6l6 6-6 6"
             stroke="currentColor"
@@ -223,5 +229,8 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
   </div>
 
   <!-- Stretched link — makes the entire card clickable. -->
-  <a href={cta.href} aria-label={cta.label} class="absolute inset-0 z-20 rounded-card"></a>
+  <a
+    href={cta.href}
+    aria-label={cta.label}
+    class="absolute inset-0 z-20 rounded-card"></a>
 </div>

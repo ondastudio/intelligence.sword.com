@@ -33,9 +33,24 @@
   --color-ink-soft: #525252; /* muted label/role text — About team eyebrow + member role (Figma Black/700) */
   --color-gray-200: #dcdde4; /* hairline borders on light chips; Numbers stat-panel tint */
   --color-gray-400: #85889c; /* mid gray — Numbers bar-chart dots (Figma Gray 400) */
-  --color-ink-wash: rgba(77, 79, 96, 0.05); /* faint frosted fill — Integrations icon chips + integrate card */
-  --color-ink-wash-hover: rgba(77, 79, 96, 0.08); /* nav glass pill hover fill (#4D4F60 @ 8%) */
-  --color-ink-wash-strong: rgba(77, 79, 96, 0.1); /* slightly stronger frosted fill — Scaling stat "+" chips */
+  --color-ink-wash: rgba(
+    77,
+    79,
+    96,
+    0.05
+  ); /* faint frosted fill — Integrations icon chips + integrate card */
+  --color-ink-wash-hover: rgba(
+    77,
+    79,
+    96,
+    0.08
+  ); /* nav glass pill hover fill (#4D4F60 @ 8%) */
+  --color-ink-wash-strong: rgba(
+    77,
+    79,
+    96,
+    0.1
+  ); /* slightly stronger frosted fill — Scaling stat "+" chips */
   --color-periwinkle: #8baee4; /* soft blue — Numbers "4x" intake card background */
   --color-blue-green: #bae0eb; /* pale teal — Numbers "34%" readmissions card background */
 
@@ -46,19 +61,18 @@
 
   /* ---- Typography ---- */
   /* Figtree: UI + body. Lora: editorial headlines. Loaded in Layout.astro. */
-  --font-sans: "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-    Roboto, Helvetica, Arial, sans-serif;
+  --font-sans:
+    "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
   --font-serif: "Lora", ui-serif, Georgia, "Times New Roman", serif;
 
   /* Line-height system (site-wide):
-       default            → 120%  (set on <body> + the size tokens below)
-       48px Figtree (sans) → 115%  (leading-[1.15] on those elements)
-       32px Figtree (sans) → 110%  (--text-lead--line-height, sans-only token)
-     Tailwind's built-in size utilities each ship their own line-height, so we
-     pin every size in use to 1.2 here; arbitrary `text-[clamp(…)]` sizes carry
-     no line-height and inherit the 1.2 from <body>. Type elements should NOT
-     carry their own `leading-*` utility — the only exception is the 48px
-     Figtree headings, which keep an explicit leading-[1.15]. */
+       default → 120%. Every heading token in the scale below carries its own
+       `--text-<name>--line-height: 1.2`, so the line-height travels with the
+       font-size. The built-in Tailwind sizes still used for body/UI ship their
+       own line-height, so we pin those to 1.2 here too. Type elements should
+       NOT carry their own `leading-*` utility — the few intentional exceptions
+       (e.g. the AboutStory manifesto's leading-[1.15]) set it inline. */
   --text-sm--line-height: 1.2;
   --text-base--line-height: 1.2;
   --text-lg--line-height: 1.2;
@@ -67,7 +81,6 @@
   --text-3xl--line-height: 1.2;
   --text-4xl--line-height: 1.2;
   --text-5xl--line-height: 1.2;
-  --text-lead--line-height: 1.1; /* 32px Figtree → 110% */
 
   /* Letter-spacing system (site-wide):
        default            → -2%       (set on <body>, inherited everywhere)
@@ -77,16 +90,39 @@
      the -2% default unless they fall into one of the two exceptions above. */
   --text-base--letter-spacing: 0.01em;
 
-  /* display — section headline (Figma size/1400 = 56px) */
-  --text-display: 3.5rem;
-  /* title — card / stat headline (Figma size/1200 = 48px) */
-  --text-title: 3rem;
-  /* card-title — solution card headline; sized to fit the card column in 3 lines (42px) */
-  --text-card-title: 2.625rem;
-  /* lead — large supporting statement (Figma size/800 = 32px) */
-  --text-lead: 2rem;
-  /* stat — Platform big metric numbers (Figma size/1900 = 76px) */
-  --text-stat: 4.75rem;
+  /* ---- Heading scale (design H1–H6 + xlg) ----
+     FLUID: every token clamps from its MOBILE stop (the rem min) up to its
+     DESKTOP stop (the rem max); the vw middle only shapes the tablet curve.
+     To resize a level everywhere, edit its two px ends below — nothing in the
+     components carries a size of its own. Each token also pins its own 120%
+     line-height (see --text-<name>--line-height). The design's two stops:
+
+       token   mobile → desktop   role
+       h1      42 → 88            page hero headline                 (Hero)
+       h2      42 → 80            section / inner-page openers
+       h3      38 → 76            big stat numbers (was --text-stat)
+       h4      38 → 64            secondary stat numbers
+       h5      28 → 56            section headlines (was --text-display)
+       h6      28 → 48            card / footer / sub headings (was --text-title)
+       xlg     28 → 32            lead / supporting copy (was --text-lead)
+       lg      22 → 24            secondary lead / large body
+                                  (overrides Tailwind's 18px default) */
+  --text-h1: clamp(2.625rem, 6vw, 5.5rem);
+  --text-h2: clamp(2.625rem, 5.5vw, 5rem);
+  --text-h3: clamp(2.375rem, 5.3vw, 4.75rem);
+  --text-h4: clamp(2.375rem, 4.5vw, 4rem);
+  --text-h5: clamp(1.75rem, 4vw, 3.5rem);
+  --text-h6: clamp(1.75rem, 3.4vw, 3rem);
+  --text-xlg: clamp(1.75rem, 2.2vw, 2rem);
+  --text-lg: clamp(1.375rem, 1.8vw, 1.5rem);
+  --text-xmd: 1.125rem;
+  --text-h1--line-height: 1.2;
+  --text-h2--line-height: 1.2;
+  --text-h3--line-height: 1.2;
+  --text-h4--line-height: 1.2;
+  --text-h5--line-height: 1.2;
+  --text-h6--line-height: 1.2;
+  --text-xlg--line-height: 1.2;
 
   /* ---- Radii ---- */
   --radius-card: 40px; /* large rounded media frames */
@@ -95,19 +131,14 @@
   /* care banner: lavender base that blooms bright center-left, with a soft
      purple bloom on the right (the design's #a684ff → #bae0eb → #ecf3fe wash).
      Use as: bg-[image:var(--gradient-care-banner)] */
-  --gradient-care-banner: radial-gradient(
+  --gradient-care-banner:
+    radial-gradient(
       90% 160% at 78% 55%,
       rgba(166, 132, 255, 0.55) 0%,
       rgba(186, 224, 235, 0.12) 43%,
       rgba(236, 243, 254, 0) 72%
     ),
-    linear-gradient(
-      100deg,
-      #d6c7ff 0%,
-      #ece7ff 45%,
-      #d8dafc 70%,
-      #cdc7fb 100%
-    );
+    linear-gradient(100deg, #d6c7ff 0%, #ece7ff 45%, #d8dafc 70%, #cdc7fb 100%);
 
   /* solution outcome card: white pane that blooms purple from the bottom edge.
      Faithful to the Figma export (Card-01.svg): a #a684ff radial centred on the

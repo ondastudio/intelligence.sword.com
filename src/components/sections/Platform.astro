@@ -45,26 +45,51 @@ const curvePath = "M0.5 0.5H543.472C676.834 0.5 624 84.5 778 84.5";
 const FLOW_DUR = "5s";
 const curves = [
   { pos: "left:-216px;top:62px", dur: FLOW_DUR, begin: "0s" },
-  { pos: "left:719px;top:62px;transform:scaleX(-1)", dur: FLOW_DUR, begin: "0s" },
-  { pos: "left:-215px;top:697px;transform:scaleY(-1)", dur: FLOW_DUR, begin: "0s" },
-  { pos: "left:720px;top:697px;transform:rotate(180deg)", dur: FLOW_DUR, begin: "0s" },
+  {
+    pos: "left:719px;top:62px;transform:scaleX(-1)",
+    dur: FLOW_DUR,
+    begin: "0s",
+  },
+  {
+    pos: "left:-215px;top:697px;transform:scaleY(-1)",
+    dur: FLOW_DUR,
+    begin: "0s",
+  },
+  {
+    pos: "left:720px;top:697px;transform:rotate(180deg)",
+    dur: FLOW_DUR,
+    begin: "0s",
+  },
 ];
 ---
 
-<section class="platform relative overflow-x-clip bg-surface py-[120px] text-black">
+<section
+  class="platform relative overflow-x-clip bg-surface py-[120px] text-black"
+>
   <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20">
     <!-- Heading -->
-    <div class="mx-auto flex max-w-[820px] flex-col items-center gap-6 text-center">
-      <h2 data-reveal="title" class="font-serif text-3xl font-normal sm:text-4xl lg:text-display">
+    <div
+      class="mx-auto flex max-w-[820px] flex-col items-center gap-6 text-center"
+    >
+      <h2 data-reveal="title" class="font-serif text-h5 font-normal">
         {heading}
       </h2>
-      <p data-reveal class="max-w-[600px] text-lg text-black sm:text-2xl" style="transition-delay:120ms">
+      <p
+        data-reveal
+        class="max-w-[600px] text-lg text-black"
+        style="transition-delay:120ms"
+      >
         {subheading}
       </p>
     </div>
 
     <!-- Diagram (scaled to fit) -->
-    <div data-stage-wrap data-reveal class="relative mt-20" style="transition-delay:160ms">
+    <div
+      data-stage-wrap
+      data-reveal
+      class="relative mt-20"
+      style="transition-delay:160ms"
+    >
       <div
         data-stage
         class="absolute left-1/2 top-0 h-[781px] w-[1280px]"
@@ -87,7 +112,12 @@ const curves = [
             >
               <path d={curvePath} stroke="black" stroke-linecap="round" />
               <circle class="flow-dot" r="4" fill="black">
-                <animateMotion dur={c.dur} begin={c.begin} repeatCount="indefinite" path={curvePath} />
+                <animateMotion
+                  dur={c.dur}
+                  begin={c.begin}
+                  repeatCount="indefinite"
+                  path={curvePath}
+                />
                 <animate
                   attributeName="opacity"
                   dur={c.dur}
@@ -102,24 +132,49 @@ const curves = [
         }
 
         <!-- Short dotted connectors into the orb -->
-        <img src="/platform/line-left.svg" alt="" aria-hidden="true"
-          class="absolute h-2 w-[116px]" style="left:306px;top:417px" />
-        <img src="/platform/line-right.svg" alt="" aria-hidden="true"
-          class="absolute h-2 w-[81px]" style="left:874px;top:417px" />
-        <img src="/platform/line-down.svg" alt="" aria-hidden="true"
-          class="absolute h-2 w-[74px]" style="left:603px;top:161px;transform:rotate(90deg)" />
+        <img
+          src="/platform/line-left.svg"
+          alt=""
+          aria-hidden="true"
+          class="absolute h-2 w-[116px]"
+          style="left:306px;top:417px"
+        />
+        <img
+          src="/platform/line-right.svg"
+          alt=""
+          aria-hidden="true"
+          class="absolute h-2 w-[81px]"
+          style="left:874px;top:417px"
+        />
+        <img
+          src="/platform/line-down.svg"
+          alt=""
+          aria-hidden="true"
+          class="absolute h-2 w-[74px]"
+          style="left:603px;top:161px;transform:rotate(90deg)"
+        />
 
         <!-- Black flow dot running down from Patients into the orb -->
-        <span class="flow-conn flow-conn--y absolute size-2 rounded-full bg-black"
-          style="left:636px;top:124px;--from:0px;--to:57px;animation-duration:2.4s;animation-delay:-0.8s"></span>
+        <span
+          class="flow-conn flow-conn--y absolute size-2 rounded-full bg-black"
+          style="left:636px;top:124px;--from:0px;--to:57px;animation-duration:2.4s;animation-delay:-0.8s"
+        ></span>
 
         <!-- Top rounded caps under the section labels -->
-        <span class="absolute h-[10px] w-[60px] rounded-full bg-black" style="left:120px;top:57px"></span>
-        <span class="absolute h-[10px] w-[60px] rounded-full bg-black" style="left:1096px;top:57px"></span>
+        <span
+          class="absolute h-[10px] w-[60px] rounded-full bg-black"
+          style="left:120px;top:57px"></span>
+        <span
+          class="absolute h-[10px] w-[60px] rounded-full bg-black"
+          style="left:1096px;top:57px"></span>
 
         <!-- ============ Section labels ============ -->
-        <span class={`absolute ${labelTag}`} style="left:35px;top:0">{learnsLabel}</span>
-        <span class={`absolute ${labelTag}`} style="left:1061px;top:0">{governedLabel}</span>
+        <span class={`absolute ${labelTag}`} style="left:35px;top:0"
+          >{learnsLabel}</span
+        >
+        <span class={`absolute ${labelTag}`} style="left:1061px;top:0"
+          >{governedLabel}</span
+        >
 
         <!-- ============ Center orb (ring + glow + label + MDR seal, one asset) ============ -->
         <img
@@ -130,11 +185,27 @@ const curves = [
         />
 
         <!-- Arrow buttons pointing into the orb -->
-        <span class="absolute flex size-8 items-center justify-center rounded-[40px] bg-brand" style="left:406px;top:405px">
-          <img src="/platform/icon-arrow-right.svg" alt="" aria-hidden="true" class="size-4" />
+        <span
+          class="absolute flex size-8 items-center justify-center rounded-[40px] bg-brand"
+          style="left:406px;top:405px"
+        >
+          <img
+            src="/platform/icon-arrow-right.svg"
+            alt=""
+            aria-hidden="true"
+            class="size-4"
+          />
         </span>
-        <span class="absolute flex size-8 items-center justify-center rounded-[40px] bg-brand" style="left:842px;top:405px">
-          <img src="/platform/icon-arrow-left.svg" alt="" aria-hidden="true" class="size-4" />
+        <span
+          class="absolute flex size-8 items-center justify-center rounded-[40px] bg-brand"
+          style="left:842px;top:405px"
+        >
+          <img
+            src="/platform/icon-arrow-left.svg"
+            alt=""
+            aria-hidden="true"
+            class="size-4"
+          />
         </span>
 
         <!-- ============ Left column: continuously learns from ============ -->
@@ -172,34 +243,59 @@ const curves = [
               dur="9s"
               repeatCount="indefinite"
               path="M307 421 V652 A40 40 0 0 1 267 692 H39 A40 40 0 0 1 -1 652 V190 A40 40 0 0 1 39 150 H267 A40 40 0 0 1 307 190 V421 L416 421"
-            />
-            <animate attributeName="opacity" dur="9s" repeatCount="indefinite"
-              values="0;1;1;1;0" keyTimes="0;0.04;0.5;0.93;1" />
+            ></animateMotion>
+            <animate
+              attributeName="opacity"
+              dur="9s"
+              repeatCount="indefinite"
+              values="0;1;1;1;0"
+              keyTimes="0;0.04;0.5;0.93;1"></animate>
           </circle>
           <circle class="flow-dot" r="4" fill="black">
             <animateMotion
               dur="6.5s"
               repeatCount="indefinite"
               path="M953 421 V340 A40 40 0 0 1 993 300 H1240 A40 40 0 0 1 1280 340 V502 A40 40 0 0 1 1240 542 H993 A40 40 0 0 1 953 502 V421 L863 421"
-            />
-            <animate attributeName="opacity" dur="6.5s" repeatCount="indefinite"
-              values="0;1;1;1;0" keyTimes="0;0.05;0.5;0.92;1" />
+            ></animateMotion>
+            <animate
+              attributeName="opacity"
+              dur="6.5s"
+              repeatCount="indefinite"
+              values="0;1;1;1;0"
+              keyTimes="0;0.05;0.5;0.92;1"></animate>
           </circle>
         </svg>
 
         <!-- ============ Top: Patients ============ -->
-        <div class="absolute -translate-x-1/2 flex h-16 w-[282px] items-center gap-4 overflow-hidden rounded-[50px] bg-lavender pl-2 pr-8" style="left:640px;top:45px">
-          <span class="flex shrink-0 items-center gap-2.5 rounded-[40px] bg-white p-2">
-            {patients.icons.map((ic) => (
-              <img src={ic.src} alt={ic.alt} class="size-8" />
-            ))}
+        <div
+          class="absolute -translate-x-1/2 flex h-16 w-[282px] items-center gap-4 overflow-hidden rounded-[50px] bg-lavender pl-2 pr-8"
+          style="left:640px;top:45px"
+        >
+          <span
+            class="flex shrink-0 items-center gap-2.5 rounded-[40px] bg-white p-2"
+          >
+            {
+              patients.icons.map((ic) => (
+                <img src={ic.src} alt={ic.alt} class="size-8" />
+              ))
+            }
           </span>
           <span class={pillLabel}>{patients.label}</span>
         </div>
 
         <!-- ============ Bottom: Full audits ============ -->
-        <div class="absolute -translate-x-1/2 flex h-16 items-center gap-4 overflow-hidden rounded-[50px] bg-lavender pl-2 pr-8" style="left:640px;top:663px">
-          <span class={iconDisc}><img src={audits.icon} alt="" aria-hidden="true" class="size-8" /></span>
+        <div
+          class="absolute -translate-x-1/2 flex h-16 items-center gap-4 overflow-hidden rounded-[50px] bg-lavender pl-2 pr-8"
+          style="left:640px;top:663px"
+        >
+          <span class={iconDisc}
+            ><img
+              src={audits.icon}
+              alt=""
+              aria-hidden="true"
+              class="size-8"
+            /></span
+          >
           <span class={pillLabel}>{audits.label}</span>
         </div>
       </div>
@@ -218,23 +314,40 @@ const curves = [
   }
 
   @keyframes flow-y {
-    0%   { transform: translateY(var(--from)); opacity: 0; }
-    14%  { opacity: 1; }
-    80%  { opacity: 1; }
-    100% { transform: translateY(var(--to)); opacity: 0; }
+    0% {
+      transform: translateY(var(--from));
+      opacity: 0;
+    }
+    14% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(var(--to));
+      opacity: 0;
+    }
   }
 
   /* Respect users who prefer reduced motion — no traveling dots. */
   @media (prefers-reduced-motion: reduce) {
-    .flow-dot { display: none; }
-    .flow-conn { animation: none; opacity: 0; }
+    .flow-dot {
+      display: none;
+    }
+    .flow-conn {
+      animation: none;
+      opacity: 0;
+    }
   }
 </style>
 
 <script>
   // Scale the fixed 1280-wide diagram down to the container width (never up).
   // Entrance reveal is handled site-wide via [data-reveal] (see Layout.astro).
-  const wrap = document.querySelector<HTMLElement>(".platform [data-stage-wrap]");
+  const wrap = document.querySelector<HTMLElement>(
+    ".platform [data-stage-wrap]",
+  );
   const stage = document.querySelector<HTMLElement>(".platform [data-stage]");
 
   const fit = () => {
