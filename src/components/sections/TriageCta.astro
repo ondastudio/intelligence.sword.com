@@ -21,7 +21,8 @@ import { heading, cta } from "../../data/triage-cta.json";
 ---
 
 <section
-  class="relative isolate overflow-hidden bg-surface px-4 py-16 text-black sm:px-6 md:py-24"
+  data-triage-cta-section
+  class="relative isolate overflow-hidden bg-surface px-4 pb-28 pt-28 text-black sm:px-6 md:py-24"
 >
   <!-- Soft-purple swirl bloom behind the card. z-0, below the card (z-10). The
        static gradient is the no-JS / reduced-motion fallback; the canvas fades
@@ -98,6 +99,12 @@ import { heading, cta } from "../../data/triage-cta.json";
       #e1d6ff 40%,
       transparent 72%
     );
+  }
+
+  @media (max-width: 1023.98px) {
+    .cta-swirl {
+      display: none;
+    }
   }
 </style>
 

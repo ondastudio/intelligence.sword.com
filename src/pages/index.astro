@@ -20,9 +20,11 @@ import Footer from "../components/sections/Footer.astro";
   title="Sword Intelligence — The clinical intelligence behind your care operations"
   description="AI Care Managers that scale your capacity, lift the admin load, and improve patient outcomes."
 >
-  {/* Everything above the footer scrolls as one opaque pane; the footer is
+  {
+    /* Everything above the footer scrolls as one opaque pane; the footer is
       pinned behind it (see .page-content / .footer in global.css) so the page
-      slides up to reveal the footer underneath at the end of the scroll. */}
+      slides up to reveal the footer underneath at the end of the scroll. */
+  }
   <div class="page-content">
     <!-- Hero + Intro share one swirl background that bleeds across the boundary.
          `isolate` keeps the canvas (z-0) behind each section's z-10 content;
@@ -33,8 +35,10 @@ import Footer from "../components/sections/Footer.astro";
       <Intro />
       <Care />
     </div>
-    <Triage />
-    <TriageCta />
+    <div class="triage-usecase-bg bg-surface">
+      <Triage />
+      <TriageCta />
+    </div>
     <Platform />
     <Trust />
     <Operations />
@@ -45,3 +49,16 @@ import Footer from "../components/sections/Footer.astro";
   </div>
   <Footer />
 </Layout>
+
+<style>
+  @media (max-width: 1023.98px) {
+    .triage-usecase-bg {
+      background: linear-gradient(45deg, #f4f3fb, transparent);
+    }
+
+    .triage-usecase-bg :global([data-triage-section]),
+    .triage-usecase-bg :global([data-triage-cta-section]) {
+      background-color: transparent;
+    }
+  }
+</style>

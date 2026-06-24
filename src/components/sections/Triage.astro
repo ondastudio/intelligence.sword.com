@@ -12,6 +12,7 @@
 import triage from "../../data/triage.json";
 import Eyebrow from "../ui/Eyebrow.astro";
 import SolutionCard from "../ui/SolutionCard.astro";
+import ArrowCircle from "../ui/ArrowCircle.astro";
 
 const { eyebrow, heading, tabs, card, case: useCase, orchestration } = triage;
 const orchCards = orchestration.cards;
@@ -31,9 +32,15 @@ const cardBg: Record<number, string> = {
 >
   <!-- Heading -->
   <div
-    class="mx-auto flex w-full max-w-[1440px] flex-col items-center gap-10 px-4 pb-20 pt-[120px] sm:px-6 lg:px-20"
+    class="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col items-center gap-10 px-4 pb-20 pt-[120px] sm:px-6 lg:px-20"
   >
-    <div data-reveal><Eyebrow>{eyebrow}</Eyebrow></div>
+    <div data-reveal class="flex w-full justify-center">
+      <!-- Figma: a centered block with left-aligned 220px label text (not
+           centered text); reverts to the default inline label on lg. -->
+      <Eyebrow class="max-w-[236px] text-left lg:max-w-none"
+        >{eyebrow}</Eyebrow
+      >
+    </div>
     <h2
       data-reveal="title"
       class="max-w-[952px] text-center font-serif font-normal text-h5 text-ink"
@@ -50,7 +57,7 @@ const cardBg: Record<number, string> = {
        purple cards sliding in over the lime card before it releases. -->
   <div
     data-triage-track
-    class="triage-track mx-auto w-full max-w-[1440px] px-4 pb-40 sm:px-6 lg:px-20 lg:pb-0"
+    class="triage-track relative z-10 mx-auto w-full max-w-[1440px] px-4 pb-0 sm:px-6 lg:px-20"
   >
     <div
       data-triage-stage
@@ -61,7 +68,42 @@ const cardBg: Record<number, string> = {
            purple card takes over. Both states are stacked in one grid cell but
            only one is displayed at a time, so the wrapper auto-sizes to it — JS
            just toggles which state shows (no crossfade, no gradual expansion). -->
-      <div class="flex w-full justify-center">
+      <!-- Mobile nav (below lg): arrows scroll the card strip horizontally.
+           The strip itself is the source of truth, so touch swipes update the
+           active label and pagination in the same way as buttons. Trackpad
+           horizontal wheel gestures step one card at a time. -->
+      <div
+        data-mobile-nav
+        class="mobile-nav flex w-full items-center justify-between lg:hidden"
+      >
+        <ArrowCircle
+          variant="dotted"
+          rotate={180}
+          data-mobile-prev
+          type="button"
+          label="Previous use case"
+        />
+        <div
+          data-mobile-dots
+          class="flex items-center gap-2.5 rounded-full border border-black/24 p-2.5"
+        >
+          {
+            Array.from({ length: orchCards.length + 1 }).map(() => (
+              <span class="dot flex h-2.5 items-center overflow-hidden rounded-full bg-ink-muted">
+                <span class="dot-fill h-2.5 w-2.5 shrink-0 rounded-full bg-ink-mid" />
+              </span>
+            ))
+          }
+        </div>
+        <ArrowCircle
+          variant="dotted"
+          data-mobile-next
+          type="button"
+          label="Next use case"
+        />
+      </div>
+
+      <div class="hidden w-full justify-center lg:flex">
           <div
             data-nav-wrap
             class="nav-wrap relative max-w-full rounded-[40px] bg-ink-wash"
@@ -106,10 +148,26 @@ const cardBg: Record<number, string> = {
           </div>
         </div>
 
-        <!-- Card stage: the lime Clinical Triage card and the purple Care
-             Orchestration cards share one relative box so the purple cards can
-             slide in horizontally and overlap the lime card as the section pins. -->
-        <div class="relative w-full" data-cards>
+        <!-- Card label + stage. The label (mobile only) names the current card's
+             category ("Triage" / "Care Orchestration"); JS swaps its text as the
+             carousel advances. Wrapped tight to the card so it reads as a header. -->
+        <div class="flex w-full flex-col items-center">
+          <div
+            data-card-label
+            data-label-a={tabs.label}
+            data-label-b={orchestration.navLabel}
+            class="flex h-14 w-full items-center justify-center rounded-[40px] bg-ink-wash lg:hidden"
+          >
+            <span
+              data-card-label-text
+              class="text-sm font-semibold uppercase text-black">{tabs.label}</span
+            >
+          </div>
+
+          <!-- Card stage: the lime Clinical Triage card and the purple Care
+               Orchestration cards share one relative box so the purple cards can
+               slide in horizontally and overlap the lime card as the section pins. -->
+          <div class="relative w-full" data-cards>
           <!-- triage-reveal = horizontal slide-in on first view. The inner
                [data-triage-card] wrapper carries the scroll-driven scale/fade so
                it doesn't fight the entrance transform. -->
@@ -159,6 +217,7 @@ const cardBg: Record<number, string> = {
               </div>
             ))
           }
+          </div>
         </div>
     </div>
   </div>
@@ -255,6 +314,74 @@ const cardBg: Record<number, string> = {
     color: #fff;
     border-color: transparent;
   }
+
+  /* Mobile carousel (below lg) -------------------------------------------------
+     There's no pin; the cards become a native horizontal snap strip. Scroll
+     position drives the active label, dots, and arrow disabled states. */
+  @media (max-width: 1023.98px) {
+    [data-cards] {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    [data-cards]::-webkit-scrollbar {
+      display: none;
+    }
+    [data-triage-reveal] {
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      transform: none;
+      transition: opacity 0.45s ease;
+    }
+    .orch-card {
+      position: relative;
+      inset: auto;
+      top: auto;
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      transform: none;
+      opacity: 1;
+      pointer-events: auto;
+      transition: none;
+    }
+    .mobile-nav button[disabled] {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+  }
+
+  /* Pagination dots: each card is a 10px ink-muted dot; the active card's dot
+     stretches into a 30px lozenge with the dark fill revealed at its left. */
+  .dot {
+    width: 10px;
+    transition: width 0.3s ease;
+  }
+  .dot .dot-fill {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .dot.is-active {
+    width: 30px;
+  }
+  .dot.is-active .dot-fill {
+    opacity: 1;
+  }
+
+  @media (max-width: 1023.98px) and (prefers-reduced-motion: reduce) {
+    [data-triage-reveal],
+    .orch-card,
+    .dot,
+    .dot .dot-fill {
+      transition: none;
+    }
+  }
 </style>
 
 <script>
@@ -296,6 +423,18 @@ const cardBg: Record<number, string> = {
   const stage = document.querySelector<HTMLElement>("[data-triage-stage]");
   const cardsBox = document.querySelector<HTMLElement>("[data-cards]");
   const triageCard = document.querySelector<HTMLElement>("[data-triage-card]");
+  const triageReveal = document.querySelector<HTMLElement>(
+    "[data-triage-reveal]",
+  );
+  const prevBtn = document.querySelector<HTMLElement>("[data-mobile-prev]");
+  const nextBtn = document.querySelector<HTMLElement>("[data-mobile-next]");
+  const dotEls = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-mobile-dots] .dot"),
+  );
+  const cardLabel = document.querySelector<HTMLElement>("[data-card-label]");
+  const cardLabelText = document.querySelector<HTMLElement>(
+    "[data-card-label-text]",
+  );
   const orchCardEls = Array.from(
     document.querySelectorAll<HTMLElement>("[data-orch-card]"),
   );
@@ -314,6 +453,11 @@ const cardBg: Record<number, string> = {
     let stickTop = 0; // sticky `top` that lands the stage vertically centered
     let pinned = false;
     let ticking = false;
+    // Layout mode: "pinned" = lg scroll-scrub, "mobile" = native scroll carousel,
+    // "settle" = static lime-only (lg + reduced motion). `current` is the
+    // carousel index (0 = lime Clinical Triage, 1…N = the purple cards).
+    let mode: "pinned" | "mobile" | "settle" = "settle";
+    let current = 0;
 
     const clamp = (n: number) => Math.min(1, Math.max(0, n));
     // Smoothstep for an eased slide.
@@ -321,6 +465,32 @@ const cardBg: Record<number, string> = {
 
     const setActiveTab = (i: number) => {
       tabEls.forEach((t, k) => t.classList.toggle("is-active", k === i));
+    };
+
+    // Mobile carousel: update controls from the scroll-derived card index.
+    const updateMobileState = (idx: number) => {
+      current = Math.max(0, Math.min(N, idx));
+      if (triageReveal) {
+        triageReveal.style.opacity = "";
+        triageReveal.style.pointerEvents = "";
+      }
+      orchCardEls.forEach((el, i) => {
+        el.style.transform = "none";
+        el.style.opacity = "";
+        el.style.pointerEvents = "";
+      });
+      setActiveTab(current - 1);
+      // Pagination dots: only the current card's dot is the elongated lozenge.
+      dotEls.forEach((d, i) => d.classList.toggle("is-active", i === current));
+      // Card label: lime card → "Triage", purple cards → "Care Orchestration".
+      if (cardLabel && cardLabelText) {
+        cardLabelText.textContent =
+          current === 0
+            ? cardLabel.dataset.labelA || ""
+            : cardLabel.dataset.labelB || "";
+      }
+      if (prevBtn) prevBtn.toggleAttribute("disabled", current === 0);
+      if (nextBtn) nextBtn.toggleAttribute("disabled", current === N);
     };
 
     // offset = pinned scroll distance travelled (0 … scrub), in px.
@@ -358,21 +528,27 @@ const cardBg: Record<number, string> = {
       setActiveTab(-1);
     };
 
+    // Reserve the tallest card's height so the absolutely-stacked purple cards
+    // (and the centered pinned stage) get room for cards taller than the lime one.
+    const reserveCardHeight = () => {
+      const maxCardH = orchCardEls.reduce(
+        (h, el) => Math.max(h, el.offsetHeight),
+        triageCard ? triageCard.offsetHeight : 0,
+      );
+      cardsBox.style.height = `${maxCardH}px`;
+    };
+
     const measure = () => {
       section.classList.remove("is-pinned");
       track.style.height = "";
       stage.style.top = "";
       cardsBox.style.height = "";
       const vh = window.innerHeight;
-      pinned = lgMQ.matches && !reduceMotion;
-      if (pinned) {
-        // Reserve the tallest card's height so the centered stage and the pin
-        // distance account for cards taller than the lime card.
-        const maxCardH = orchCardEls.reduce(
-          (h, el) => Math.max(h, el.offsetHeight),
-          triageCard ? triageCard.offsetHeight : 0,
-        );
-        cardsBox.style.height = `${maxCardH}px`;
+      const isLg = lgMQ.matches;
+      pinned = isLg && !reduceMotion;
+      mode = pinned ? "pinned" : isLg ? "settle" : "mobile";
+      if (mode === "pinned") {
+        reserveCardHeight();
         cardLen = Math.round(vh * 0.6);
         scrub = N * cardLen;
         // Land the stage centered when it fits; otherwise anchor near the top
@@ -381,14 +557,24 @@ const cardBg: Record<number, string> = {
         stage.style.top = `${stickTop}px`;
         section.classList.add("is-pinned");
         track.style.height = `${stage.offsetHeight + scrub}px`;
+      } else if (mode === "mobile") {
+        reserveCardHeight();
+      }
+      // Leaving the carousel: clear its inline lime-card overrides so the pinned
+      // / settle states start from a clean slate.
+      if (mode !== "mobile" && triageReveal) {
+        triageReveal.style.opacity = "";
+        triageReveal.style.pointerEvents = "";
+        current = 0;
       }
     };
 
     const render = () => {
       ticking = false;
-      if (!pinned) return settle();
-      // The stage sticks at top:stickTop and holds for `scrub` px. Track top runs
-      // stickTop → stickTop − scrub across that span; map it to the travelled px.
+      if (mode === "mobile") return updateMobileState(current);
+      if (mode === "settle") return settle();
+      // pinned: the stage sticks at top:stickTop and holds for `scrub` px. Track
+      // top runs stickTop → stickTop − scrub across that span; map it to px.
       const offset = clamp(
         (stickTop - track.getBoundingClientRect().top) / scrub,
       );
@@ -427,6 +613,60 @@ const cardBg: Record<number, string> = {
     tabEls.forEach((tab, i) => {
       tab.addEventListener("click", () => scrollToCard(i));
     });
+
+    // --- Mobile carousel inputs (only act while in "mobile" mode) ------------
+    const mobileCardWidth = () =>
+      cardsBox.clientWidth || triageReveal?.clientWidth || 1;
+
+    const scrollToMobileCard = (idx: number, behavior: ScrollBehavior) => {
+      const next = Math.max(0, Math.min(N, idx));
+      updateMobileState(next);
+      cardsBox.scrollTo({
+        left: next * mobileCardWidth(),
+        behavior,
+      });
+    };
+
+    const step = (dir: number) => {
+      if (mode !== "mobile") return;
+      scrollToMobileCard(current + dir, "smooth");
+    };
+
+    prevBtn?.addEventListener("click", () => step(-1));
+    nextBtn?.addEventListener("click", () => step(1));
+
+    let mobileScrollTicking = false;
+    cardsBox.addEventListener(
+      "scroll",
+      () => {
+        if (mode !== "mobile" || mobileScrollTicking) return;
+        mobileScrollTicking = true;
+        requestAnimationFrame(() => {
+          mobileScrollTicking = false;
+          updateMobileState(Math.round(cardsBox.scrollLeft / mobileCardWidth()));
+        });
+      },
+      { passive: true },
+    );
+
+    // Sideways wheel/trackpad scroll: one horizontal gesture advances one card.
+    // Touch dragging still uses the native snap strip above.
+    let wheelLock = false;
+    cardsBox.addEventListener(
+      "wheel",
+      (e) => {
+        if (mode !== "mobile") return;
+        if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+        e.preventDefault();
+        if (wheelLock) return;
+        wheelLock = true;
+        window.setTimeout(() => {
+          wheelLock = false;
+        }, 650);
+        scrollToMobileCard(current + (e.deltaX > 0 ? 1 : -1), "smooth");
+      },
+      { passive: false },
+    );
 
     init();
     window.addEventListener("scroll", onScroll, { passive: true });
