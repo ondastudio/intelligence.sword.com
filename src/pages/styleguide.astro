@@ -13,6 +13,7 @@ import CircleButton from "../components/ui/CircleButton.astro";
 import ArrowCircle from "../components/ui/ArrowCircle.astro";
 import FeatureCard from "../components/ui/FeatureCard.astro";
 import MediaFrame from "../components/ui/MediaFrame.astro";
+import ScrollLetterReveal from "../components/ui/ScrollLetterReveal.astro";
 import SolutionCard from "../components/ui/SolutionCard.astro";
 import StoryCard from "../components/ui/StoryCard.astro";
 import TeamCard from "../components/ui/TeamCard.astro";
@@ -248,6 +249,30 @@ const swatches = [
           src={intro.media.src}
           poster={intro.media.poster}
           alt={intro.media.alt}
+        />
+      </div>
+    </section>
+
+    <!-- ScrollLetterReveal -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase">
+        ScrollLetterReveal
+      </h2>
+      <p class="mt-1 text-sm text-black/50">
+        Letters start muted gray and light up to black as the block scrolls
+        through the viewport (scroll the page to see it). No-JS / reduced-motion
+        renders solid black. Used by AboutStory and the home Intro statement.
+      </p>
+      <div class="mt-4">
+        <ScrollLetterReveal
+          paragraphs={[
+            [
+              { text: "Letters light up " },
+              { text: "one by one", bold: true },
+              { text: " as you scroll past this paragraph." },
+            ],
+          ]}
+          class="max-w-[640px] font-sans text-h6 leading-[1.15]"
         />
       </div>
     </section>
