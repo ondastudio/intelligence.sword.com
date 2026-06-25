@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 413.73 266.6" fill="none">
+  <!-- Browser window — reproduced from Figma node 8797:56109 (mobile card 6).
+       The light-purple frame, three tabs (one active/purple), and the white
+       content panel. Sized in design units; scaled + positioned by the caller. -->
+  <rect width="413.73" height="266.6" rx="15.09" fill="#E1D6FF" />
+  <rect x="16.56" y="11.28" width="65.497" height="22.287" rx="10.916" fill="#4D0099" />
+  <rect x="88.075" y="11.28" width="65.497" height="22.287" rx="10.916" fill="#FFFFFF" />
+  <rect x="159.59" y="11.28" width="65.497" height="22.287" rx="10.916" fill="#FFFFFF" />
+  <rect x="16.914" y="45.33" width="347.124" height="207.791" rx="10.916" fill="#FFFFFF" />
+</svg>

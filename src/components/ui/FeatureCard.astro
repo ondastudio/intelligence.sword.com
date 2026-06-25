@@ -2,24 +2,55 @@
 /**
  * FeatureCard — a single capability card from the "AI Care Managers" grid.
  * A frosted white card holding a LabelPill at the top and a centered
- * description at the bottom; the tall body between them is reserved for the
- * design's (currently hidden) illustration. Generic — content comes from props.
+ * description at the bottom, with the design's illustration filling the tall
+ * body between them. Generic — content (including the illustration) comes from
+ * props; pass no `image` to leave the body empty. Illustrations are decorative
+ * (the description carries the meaning), so `imageAlt` defaults to "".
+ *
+ * `imageClass` sets the illustration's sizing/object-fit (it fully replaces the
+ * default). `imageWrapperClass` fully replaces the body box's classes — the
+ * default is an in-flow centered box; a card can instead pass an `absolute`
+ * positioned box (e.g. an illustration that bleeds off one edge), which drops
+ * it out of the flex flow so the label and description sit at top and bottom.
  */
 import LabelPill from "./LabelPill.astro";
 
 interface Props {
   label: string;
   description: string;
+  image?: string;
+  imageAlt?: string;
+  imageClass?: string;
+  imageWrapperClass?: string;
   class?: string;
 }
-const { label, description, class: className = "" } = Astro.props;
+const {
+  label,
+  description,
+  image,
+  imageAlt = "",
+  imageClass = "max-h-full w-auto max-w-full object-contain",
+  imageWrapperClass = "flex min-h-0 w-full flex-1 items-center justify-center",
+  class: className = "",
+} = Astro.props;
 ---
 
 <article
-  class={`flex min-h-[340px] flex-col items-center justify-between gap-10 overflow-hidden rounded-[24px] bg-white p-10 backdrop-blur-[12px] md:h-[600px] ${className}`}
+  class={`relative flex min-h-[340px] flex-col items-center justify-between gap-10 overflow-hidden rounded-[24px] bg-white p-10 backdrop-blur-[12px] md:h-[600px] ${className}`}
 >
   <LabelPill>{label}</LabelPill>
-  <p class="text-center text-lg text-black">
+  {
+    image && (
+      <div class={imageWrapperClass}>
+        <img
+          src={image}
+          alt={imageAlt}
+          class={imageClass}
+        />
+      </div>
+    )
+  }
+  <p class="text-center text-md text-black">
     {description}
   </p>
 </article>

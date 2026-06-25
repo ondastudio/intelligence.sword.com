@@ -109,7 +109,8 @@
        h6      28 → 48            card / footer / sub headings (was --text-title)
        xlg     28 → 32            lead / supporting copy (was --text-lead)
        lg      22 → 24            secondary lead / large body
-                                  (overrides Tailwind's 18px default) */
+                                  (overrides Tailwind's 18px default)
+       md      20                 fixed card / feature body copy */
   --text-h1: clamp(2.625rem, 6vw, 5.5rem);
   --text-h2: clamp(2.625rem, 5.5vw, 5rem);
   --text-h3: clamp(2.375rem, 5.3vw, 4.75rem);
@@ -118,6 +119,7 @@
   --text-h6: clamp(1.75rem, 3.4vw, 3rem);
   --text-xlg: clamp(1.75rem, 2.2vw, 2rem);
   --text-lg: clamp(1.375rem, 1.8vw, 1.5rem);
+  --text-md: 1.25rem;
   --text-xmd: 1.125rem;
   --text-h1--line-height: 1.2;
   --text-h2--line-height: 1.2;
@@ -126,6 +128,7 @@
   --text-h5--line-height: 1.2;
   --text-h6--line-height: 1.2;
   --text-xlg--line-height: 1.2;
+  --text-md--line-height: 1.2;
 
   /* ---- Radii ---- */
   --radius-card: 40px; /* large rounded media frames */
