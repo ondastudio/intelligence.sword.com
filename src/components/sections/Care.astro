@@ -234,7 +234,7 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
     function measure() {
       const vh = window.innerHeight;
       stageH = Math.min(Math.max(Math.round(vh * 0.6), 360), 520);
-      const perCard = vh * 0.72; // scroll distance to bring in each next card
+      const perCard = vh * 1.05; // scroll distance to bring in each next card
       pinTravel = perCard * (N - 1);
       centerTop = Math.max(16, Math.round((vh - stageH) / 2));
       track.style.height = `${stageH + pinTravel}px`;
@@ -248,6 +248,10 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
     // staggered above the current one.
     const ENTER_RISE = 64; // px the entering card rises from as it fades in
     const STAGGER = 22; // px each receded card peeks above the one in front
+    // Each card holds fully in front for this fraction of its scroll step before
+    // the next one starts sliding in; the remaining fraction plays the hand-off.
+    // Higher = the current card lingers longer / later threshold for the next.
+    const HOLD = 0.5;
     function styleFor(i: number, s: number) {
       const rel = s - i;
       let ty: number;
@@ -284,7 +288,16 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
       const rect = track.getBoundingClientRect();
       const progress = centerTop - rect.top; // px scrolled into the pin range
       const clamped = Math.max(0, Math.min(pinTravel, progress));
-      const s = pinTravel > 0 ? (clamped / pinTravel) * (N - 1) : 0;
+
+      // Map raw scroll position to deck position `s`, but hold on each card for
+      // the first HOLD of its step (card stays fully front, next stays hidden),
+      // then smoothstep the hand-off over the rest — so cards dwell instead of
+      // the next continuously creeping in from the moment you scroll.
+      const sRaw = pinTravel > 0 ? (clamped / pinTravel) * (N - 1) : 0;
+      const base = Math.min(N - 1, Math.floor(sRaw));
+      const frac = sRaw - base;
+      const adv = frac <= HOLD ? 0 : (frac - HOLD) / (1 - HOLD);
+      const s = base + adv * adv * (3 - 2 * adv); // smoothstep the transition
 
       if (progress < 0) {
         // Before the pin: stage rides along at the top of the track.
