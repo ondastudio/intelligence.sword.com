@@ -400,6 +400,23 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       el.style.filter = "";
     };
 
+    // Apply a beat's opacity + blur. iOS Safari vibrates a `position: sticky`
+    // element through the whole momentum tail whenever a `filter` layer lives
+    // inside it and the page is still scrolling — and these states otherwise
+    // keep a `filter: blur()` set at ALL times, including on fully-hidden beats
+    // (blur 12px at opacity 0) and on the resting/held beat (blur 0). Those idle
+    // filter layers are exactly what shakes. So only keep `filter` set while a
+    // beat is actually mid-transition (visible AND blurred); drop it entirely
+    // once the beat is hidden or fully resolved. The visible blur-resolve is
+    // unchanged — it only ever runs while opacity and blur are both non-trivial.
+    const paint = (el: HTMLElement, opacity: number, blurPx: number) => {
+      el.style.opacity = String(opacity);
+      // `none` (not "") so it overrides the CSS pre-set `filter: blur(12px)` on
+      // the hidden states — clearing to "" would fall back to that and both keep
+      // the idle layer and blur a held-visible beat.
+      el.style.filter = opacity < 0.01 || blurPx < 0.15 ? "none" : `blur(${blurPx}px)`;
+    };
+
     let ticking = false;
 
     const render = () => {
@@ -447,53 +464,44 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       }
 
       const aOut = easeOutCubic(track(p, A_OUT));
-      stateA.style.opacity = String(1 - aOut);
-      stateA.style.filter = `blur(${aOut * BLUR}px)`;
+      paint(stateA, 1 - aOut, aOut * BLUR);
 
       // B both resolves in (from A) and later blurs back out (to C): opacity is
       // the product of the two tracks, blur is the sum of the incoming +
       // outgoing amounts (both 0 during B's hold).
       const bIn = easeOutCubic(track(p, B_IN));
       const bOut = easeOutCubic(track(p, B_OUT));
-      stateB.style.opacity = String(bIn * (1 - bOut));
-      stateB.style.filter = `blur(${((1 - bIn) + bOut) * BLUR}px)`;
+      paint(stateB, bIn * (1 - bOut), ((1 - bIn) + bOut) * BLUR);
 
       // C, like B, resolves in (from B) then later blurs out (to D).
       const cIn = easeOutCubic(track(p, C_IN));
       const cOut = easeOutCubic(track(p, C_OUT));
-      stateC.style.opacity = String(cIn * (1 - cOut));
-      stateC.style.filter = `blur(${((1 - cIn) + cOut) * BLUR}px)`;
+      paint(stateC, cIn * (1 - cOut), ((1 - cIn) + cOut) * BLUR);
 
       // D, like B and C, resolves in (from C) then later blurs out (to E).
       const dIn = easeOutCubic(track(p, D_IN));
       const dOut = easeOutCubic(track(p, D_OUT));
-      stateD.style.opacity = String(dIn * (1 - dOut));
-      stateD.style.filter = `blur(${((1 - dIn) + dOut) * BLUR}px)`;
+      paint(stateD, dIn * (1 - dOut), ((1 - dIn) + dOut) * BLUR);
 
       // E, like B–D, resolves in (from D) then later blurs out (to F).
       const eIn = easeOutCubic(track(p, E_IN));
       const eOut = easeOutCubic(track(p, E_OUT));
-      stateE.style.opacity = String(eIn * (1 - eOut));
-      stateE.style.filter = `blur(${((1 - eIn) + eOut) * BLUR}px)`;
+      paint(stateE, eIn * (1 - eOut), ((1 - eIn) + eOut) * BLUR);
 
       // F resolves in (from E) then blurs out (to G) on the final beat.
       const fIn = easeOutCubic(track(p, F_IN));
       const fOut = easeOutCubic(track(p, F_OUT));
-      stateF.style.opacity = String(fIn * (1 - fOut));
-      stateF.style.filter = `blur(${((1 - fIn) + fOut) * BLUR}px)`;
+      paint(stateF, fIn * (1 - fOut), ((1 - fIn) + fOut) * BLUR);
 
       const gIn = easeOutCubic(track(p, G_IN));
-      stateG.style.opacity = String(gIn);
-      stateG.style.filter = `blur(${(1 - gIn) * BLUR}px)`;
+      paint(stateG, gIn, (1 - gIn) * BLUR);
 
       // Left card column swaps in lockstep with the F→G diagram crossfade: the
       // original cards (A) blur out over F_OUT, the alternate set (B) resolves in
       // over G_IN.
       if (cardsA && cardsB) {
-        cardsA.style.opacity = String(1 - fOut);
-        cardsA.style.filter = `blur(${fOut * BLUR}px)`;
-        cardsB.style.opacity = String(gIn);
-        cardsB.style.filter = `blur(${(1 - gIn) * BLUR}px)`;
+        paint(cardsA, 1 - fOut, fOut * BLUR);
+        paint(cardsB, gIn, (1 - gIn) * BLUR);
       }
     };
 
@@ -529,6 +537,36 @@ const { heading, steps, cards, integrationLogos, closing } = data;
     );
     if (states.some((s) => !s)) return;
     const [a, b, c, d, e, f] = states as HTMLElement[];
+
+    // The pinned diagram stage, driven through three phases (before → fixed →
+    // after) instead of `position: sticky` — see the CSS note. `position: fixed`
+    // during the pin keeps the artwork from re-rasterising each scroll frame, so
+    // the embedded backdrop-filter nodes stop vibrating on iOS during momentum.
+    const stage = pin.querySelector<HTMLElement>(".clinical-m-sticky");
+    const PIN_PHASES = ["cl-before", "cl-fixed", "cl-after"];
+    let lastPhase = "";
+    const setPinPhase = () => {
+      if (!stage) return;
+      if (!enabled()) {
+        if (lastPhase) {
+          stage.classList.remove(...PIN_PHASES);
+          lastPhase = "";
+        }
+        return;
+      }
+      const r = pin.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // Match `position: sticky; top: 0` exactly: park at the top until the
+      // track reaches the viewport top, hold fixed while the track spans the
+      // viewport, then park at the bottom for the final stage-height of scroll.
+      const phase =
+        r.top > 0 ? "cl-before" : r.bottom <= vh ? "cl-after" : "cl-fixed";
+      if (phase !== lastPhase) {
+        stage.classList.remove(...PIN_PHASES);
+        stage.classList.add(phase);
+        lastPhase = phase;
+      }
+    };
 
     // Bloom: scroll-driven so it only shows behind the illustrations. It fades
     // in as the pinned illustrations take over from the capability cards, holds
@@ -578,10 +616,24 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       el.style.opacity = "";
       el.style.filter = "";
     };
+    // Only keep a `filter: blur()` layer set on a beat while it is actually
+    // mid-transition (visible AND blurred). Hidden and fully-resolved beats drop
+    // the filter entirely — an idle filter layer inside the sticky stage is what
+    // makes iOS Safari vibrate the pinned block through the momentum tail. The
+    // visible blur-resolve is unchanged (it only runs while both are non-zero).
+    const paint = (el: HTMLElement, opacity: number, blurPx: number) => {
+      el.style.opacity = String(opacity);
+      // `none` (not "") so it overrides the CSS pre-set `filter: blur(12px)` on
+      // the hidden states — clearing to "" would fall back to that and both keep
+      // the idle layer and blur a held-visible beat.
+      el.style.filter = opacity < 0.01 || blurPx < 0.15 ? "none" : `blur(${blurPx}px)`;
+    };
 
     let ticking = false;
     const render = () => {
       ticking = false;
+      // Park/pin the stage (before → fixed → after) before anything else.
+      setPinPhase();
       // Bloom opacity tracks scroll regardless of the crossfade's motion gate.
       updateBloom();
       if (!enabled()) {
@@ -596,32 +648,26 @@ const { heading, steps, cards, integrationLogos, closing } = data;
           : 0;
 
       const aOut = ease(track(p, A_OUT));
-      a.style.opacity = String(1 - aOut);
-      a.style.filter = `blur(${aOut * BLUR}px)`;
+      paint(a, 1 - aOut, aOut * BLUR);
 
       const bIn = ease(track(p, B_IN));
       const bOut = ease(track(p, B_OUT));
-      b.style.opacity = String(bIn * (1 - bOut));
-      b.style.filter = `blur(${(1 - bIn + bOut) * BLUR}px)`;
+      paint(b, bIn * (1 - bOut), (1 - bIn + bOut) * BLUR);
 
       const cIn = ease(track(p, C_IN));
       const cOut = ease(track(p, C_OUT));
-      c.style.opacity = String(cIn * (1 - cOut));
-      c.style.filter = `blur(${(1 - cIn + cOut) * BLUR}px)`;
+      paint(c, cIn * (1 - cOut), (1 - cIn + cOut) * BLUR);
 
       const dIn = ease(track(p, D_IN));
       const dOut = ease(track(p, D_OUT));
-      d.style.opacity = String(dIn * (1 - dOut));
-      d.style.filter = `blur(${(1 - dIn + dOut) * BLUR}px)`;
+      paint(d, dIn * (1 - dOut), (1 - dIn + dOut) * BLUR);
 
       const eIn = ease(track(p, E_IN));
       const eOut = ease(track(p, E_OUT));
-      e.style.opacity = String(eIn * (1 - eOut));
-      e.style.filter = `blur(${(1 - eIn + eOut) * BLUR}px)`;
+      paint(e, eIn * (1 - eOut), (1 - eIn + eOut) * BLUR);
 
       const fIn = ease(track(p, F_IN));
-      f.style.opacity = String(fIn);
-      f.style.filter = `blur(${(1 - fIn) * BLUR}px)`;
+      paint(f, fIn, (1 - fIn) * BLUR);
     };
 
     const onScroll = () => {
@@ -774,13 +820,51 @@ const { heading, steps, cards, integrationLogos, closing } = data;
   @media (prefers-reduced-motion: no-preference) and (max-width: 1023px) {
     :global(html.js) .clinical-m-pin {
       height: calc(100svh + 420vh);
+      /* Positioning context for the JS-driven pin's before/after parked phases. */
+      position: relative;
     }
+    /* The pinned diagram stage. `position: sticky` is the no-JS-fallback / initial
+       state; once the pin controller runs it drives the stage through three
+       phases via classes below. We use JS-toggled `position: fixed` (not sticky)
+       for the pinned phase because iOS Safari re-rasterises a `position: sticky`
+       element's sub-pixel position every frame during momentum scrolling, which
+       makes the diagrams' embedded `backdrop-filter` nodes visibly vibrate all
+       through the momentum tail. A truly `fixed` element is locked to the
+       viewport — its painted position never changes during scroll — so the
+       artwork stays rock-steady while the page scrolls behind it. */
     :global(html.js) .clinical-m-sticky {
       position: sticky;
       top: 0;
       display: flex;
       height: 100svh;
       align-items: center;
+      /* Nudge the centered artwork + step pill ~40px below true viewport centre
+         so it reads as better balanced under the floating page nav. The content
+         is vertically centred, so the padding is halved into the offset — 80px
+         padding ≈ a 40px downward shift. */
+      padding-top: 80px;
+    }
+    /* Before the pin: parked at the top of the track, scrolling in normally. */
+    :global(html.js) .clinical-m-sticky.cl-before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+    /* During the pin: locked to the viewport (no per-frame reposition → no shake). */
+    :global(html.js) .clinical-m-sticky.cl-fixed {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+    /* After the pin: parked at the bottom of the track, scrolling away normally. */
+    :global(html.js) .clinical-m-sticky.cl-after {
+      position: absolute;
+      top: auto;
+      bottom: 0;
+      left: 0;
+      width: 100%;
     }
     /* All six states stack in one grid cell. The cell sizes to the tallest beat
        — Integrations, which carries the extra EHR logo card below its diagram —
