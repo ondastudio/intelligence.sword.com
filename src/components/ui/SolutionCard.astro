@@ -28,6 +28,17 @@ interface Props {
   logoText?: string;
   stat: string;
   statLabel: string;
+  /** Append a frosted "+" chip after the stat (e.g. a "15% +" contractual floor). */
+  statPlus?: boolean;
+  /** Per-breakpoint overrides for the mobile (below lg) case bar only — desktop
+   *  always uses the base props. Lets a card show different case content on
+   *  mobile (e.g. No-Show's contractual-floor stat) without touching desktop. */
+  mobile?: {
+    stat?: string;
+    statLabel?: string;
+    statPlus?: boolean;
+    hideLogo?: boolean;
+  };
   cta: { label: string; href: string };
   class?: string;
 }
@@ -45,9 +56,22 @@ const {
   logoText,
   stat,
   statLabel,
+  statPlus = false,
+  mobile,
   cta,
   class: className = "",
 } = Astro.props;
+
+// Cards with a partner reference (image logo or text) get the two-row mobile
+// case layout; a logo-less guarantee stat (e.g. No-Show) gets a centered row.
+const hasLogo = Boolean(logo || logoText);
+
+// Mobile (below lg) case content — falls back to the base props, so desktop is
+// never affected by these overrides.
+const mStat = mobile?.stat ?? stat;
+const mStatLabel = mobile?.statLabel ?? statLabel;
+const mStatPlus = mobile?.statPlus ?? statPlus;
+const mHasLogo = hasLogo && !mobile?.hideLogo;
 
 // Per-theme token lookups (semantic utilities defined in global.css)
 const t = {
@@ -113,7 +137,7 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
               aria-hidden="true"
               class="h-[29px] w-[16px] shrink-0"
             />
-            <span class="text-[28px]">{title}</span>
+            <span class="text-xl lg:text-[28px]">{title}</span>
           </div>
           {
             badge && (
@@ -167,65 +191,121 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
     </div>
   </div>
 
-  <!-- Case bar -->
-  <div
-    class:list={[
-      "flex flex-col items-center justify-between gap-8 overflow-hidden rounded-card px-6 py-8 md:h-[100px] md:flex-row md:px-16 md:py-0",
-      t.caseBg,
-    ]}
-  >
-    {
-      logo ? (
-        <img src={logo} alt={logoAlt} class="h-[54px] w-auto shrink-0" />
-      ) : (
-        <p class="max-w-[180px] shrink-0 text-sm font-semibold">{logoText}</p>
-      )
-    }
+  <!-- Case bar. lg+ keeps the desktop row (logo · stat · Learn More). Below lg
+       follows the Figma 390px spec: logo cards stack into two rows (logo + arrow,
+       then stat + label); a logo-less guarantee stat is a single centered row. -->
+  <div class:list={["overflow-hidden rounded-card", t.caseBg]}>
+    <!-- Desktop (lg+) -->
+    <div class="hidden h-[100px] items-center justify-between px-16 lg:flex">
+      {
+        hasLogo &&
+          (logo ? (
+            <img src={logo} alt={logoAlt} class="h-[54px] w-auto shrink-0" />
+          ) : (
+            <p class="max-w-[180px] shrink-0 text-sm font-semibold">{logoText}</p>
+          ))
+      }
 
-    <div class="flex items-center gap-4">
-      <span class="relative inline-block font-serif text-h6">
+      <div class="flex items-center gap-3">
+        <span class="relative inline-block font-serif text-h6">
+          <span
+            class:list={["absolute inset-x-0 bottom-2.5 z-0 h-2", t.statBar]}
+            aria-hidden="true"></span>
+          <span class="relative z-10">{stat}</span>
+        </span>
+        {
+          statPlus && (
+            <span
+              class="flex size-6 shrink-0 items-center justify-center rounded-full bg-ink-mid/10"
+              aria-hidden="true"
+            >
+              <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </span>
+          )
+        }
+        <p class="max-w-[16rem] text-sm font-semibold uppercase">{statLabel}</p>
+      </div>
+
+      <!-- Visual CTA only — the whole card is the link (stretched <a> below). -->
+      <div class="flex shrink-0 items-center rounded-full" aria-hidden="true">
         <span
-          class:list={["absolute inset-x-0 bottom-2.5 z-0 h-2", t.statBar]}
-          aria-hidden="true"></span>
-        <span class="relative z-10">{stat}</span>
-      </span>
-      <p class="max-w-[16rem] text-sm font-semibold uppercase">
-        {statLabel}
-      </p>
+          class:list={[
+            "-mr-px rounded-[50px] px-6 py-3 text-sm font-semibold uppercase",
+            t.ctaBg,
+            t.ctaText,
+          ]}>{cta.label}</span
+        >
+        <span
+          class:list={[
+            "flex size-10 items-center justify-center rounded-full",
+            "transition-transform duration-300 ease-out group-hover:translate-x-1",
+            t.ctaBg,
+            t.ctaText,
+          ]}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+      </div>
     </div>
 
-    <!-- Visual CTA only — the whole card is the link (stretched <a> below). -->
-    <div class="flex shrink-0 items-center rounded-full" aria-hidden="true">
-      <span
-        class:list={[
-          "-mr-px rounded-[50px] px-6 py-3 text-sm font-semibold uppercase",
-          t.ctaBg,
-          t.ctaText,
-        ]}>{cta.label}</span
-      >
-      <span
-        class:list={[
-          "flex size-10 items-center justify-center rounded-full",
-          "transition-transform duration-300 ease-out group-hover:translate-x-1",
-          t.ctaBg,
-          t.ctaText,
-        ]}
-      >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M5 12h14M13 6l6 6-6 6"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"></path>
-        </svg>
-      </span>
+    <!-- Mobile (below lg) -->
+    <div
+      class:list={[
+        "flex flex-col gap-6 px-10 py-6 lg:hidden",
+        mHasLogo ? "" : "h-[152px] justify-center",
+      ]}
+    >
+      {
+        mHasLogo && (
+          <div class="flex items-center justify-between gap-4">
+            {logo ? (
+              <img src={logo} alt={logoAlt} class="h-12 w-auto shrink-0" />
+            ) : (
+              <p class="max-w-[180px] shrink-0 text-sm font-semibold">{logoText}</p>
+            )}
+            <span
+              class:list={[
+                "flex size-10 shrink-0 items-center justify-center rounded-full",
+                t.ctaBg,
+                t.ctaText,
+              ]}
+              aria-hidden="true"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </div>
+        )
+      }
+
+      <div class:list={["flex items-center gap-4", mHasLogo ? "" : "justify-center"]}>
+        <span class="relative inline-block font-serif text-[32px]">
+          <span
+            class:list={["absolute inset-x-0 bottom-2.5 z-0 h-2", t.statBar]}
+            aria-hidden="true"></span>
+          <span class="relative z-10">{mStat}</span>
+        </span>
+        {
+          mStatPlus && (
+            <span
+              class="flex size-6 shrink-0 items-center justify-center rounded-full bg-ink-mid/10"
+              aria-hidden="true"
+            >
+              <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </span>
+          )
+        }
+        <p class:list={["text-sm font-semibold uppercase", mHasLogo ? "flex-1" : "max-w-[16rem]"]}>
+          {mStatLabel}
+        </p>
+      </div>
     </div>
   </div>
 

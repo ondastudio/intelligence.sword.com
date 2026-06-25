@@ -36,7 +36,13 @@
           "logoAlt": "Hellenic Republic Ministry of Health",
           "stat": "$150B",
           "statLabel": "lost yearly to no-shows in the US",
-          "cta": { "label": "Learn More", "href": "#" }
+          "cta": { "label": "Learn More", "href": "#" },
+          "mobile": {
+            "stat": "15%",
+            "statPlus": true,
+            "statLabel": "Guaranteed DN reduction (contractual floor)",
+            "hideLogo": true
+          }
         }
       },
       {
@@ -56,7 +62,8 @@
           "logoAlt": "US Medicare-focused VBC Provider",
           "stat": "69%",
           "statLabel": "US autonomous appointment confirmation rate",
-          "cta": { "label": "Learn More", "href": "#" }
+          "cta": { "label": "Learn More", "href": "#" },
+          "mobile": { "hideLogo": true }
         }
       },
       {
@@ -96,7 +103,8 @@
           "logoAlt": "NHS Cheshire and Merseyside",
           "stat": "-34%",
           "statLabel": "reduction in 30-day readmissions",
-          "cta": { "label": "Learn More", "href": "#" }
+          "cta": { "label": "Learn More", "href": "#" },
+          "mobile": { "stat": "34%" }
         }
       }
     ]

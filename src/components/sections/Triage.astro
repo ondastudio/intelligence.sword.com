@@ -57,7 +57,7 @@ const cardBg: Record<number, string> = {
        purple cards sliding in over the lime card before it releases. -->
   <div
     data-triage-track
-    class="triage-track relative z-10 mx-auto w-full max-w-[1440px] px-4 pb-0 sm:px-6 lg:px-20"
+    class="triage-track relative z-10 mx-auto w-full max-w-[1440px] px-[5px] pb-0 sm:px-6 lg:px-20"
   >
     <div
       data-triage-stage
@@ -168,10 +168,10 @@ const cardBg: Record<number, string> = {
                Orchestration cards share one relative box so the purple cards can
                slide in horizontally and overlap the lime card as the section pins. -->
           <div class="relative w-full" data-cards>
-          <!-- triage-reveal = horizontal slide-in on first view. The inner
-               [data-triage-card] wrapper carries the scroll-driven scale/fade so
-               it doesn't fight the entrance transform. -->
-          <div class="triage-reveal w-full" data-triage-reveal>
+          <!-- The lime Clinical Triage card is the initial, static card — no
+               entrance animation. The inner [data-triage-card] wrapper carries
+               the scroll-driven fade as the purple cards take over. -->
+          <div class="w-full" data-triage-reveal>
             <div data-triage-card>
               <SolutionCard
                 theme="lime"
@@ -212,6 +212,7 @@ const cardBg: Record<number, string> = {
                   logoAlt={c.case.logoAlt}
                   stat={c.case.stat}
                   statLabel={c.case.statLabel}
+                  mobile={c.case.mobile}
                   cta={c.case.cta}
                 />
               </div>
@@ -273,27 +274,6 @@ const cardBg: Record<number, string> = {
      scroll container, so this sticky still resolves against the viewport. */
   .triage-section.is-pinned .triage-stage {
     position: sticky;
-  }
-
-  /* Card slides in from the right and settles centered when scrolled into view. */
-  .triage-reveal {
-    opacity: 0;
-    transform: translateX(240px);
-    transition:
-      opacity 1.2s ease-out,
-      transform 1.6s cubic-bezier(0.33, 1, 0.68, 1);
-    will-change: opacity, transform;
-  }
-  .triage-reveal.is-visible {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .triage-reveal {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
   }
 
   /* Scroll-driven card sequence -----------------------------------------------
@@ -390,26 +370,6 @@ const cardBg: Record<number, string> = {
 </style>
 
 <script>
-  const reveals = document.querySelectorAll<HTMLElement>("[data-triage-reveal]");
-
-  // Entrance: slide in horizontally on first view.
-  if (!("IntersectionObserver" in window)) {
-    reveals.forEach((el) => el.classList.add("is-visible"));
-  } else {
-    const observer = new IntersectionObserver(
-      (entries, obs) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            obs.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.2 },
-    );
-    reveals.forEach((el) => observer.observe(el));
-  }
-
   // --- Pinned card sequence ------------------------------------------------
   // On arrival the Triage navbar (state A) and the lime card show. Once the stage
   // centers and pins, the continued scroll toward the next section is scrubbed
@@ -479,6 +439,7 @@ const cardBg: Record<number, string> = {
         triageReveal.style.opacity = "";
         triageReveal.style.pointerEvents = "";
       }
+      if (triageCard) triageCard.style.opacity = "";
       orchCardEls.forEach((el, i) => {
         el.style.transform = "none";
         el.style.opacity = "";
@@ -521,16 +482,23 @@ const cardBg: Record<number, string> = {
       // Each card i slides in horizontally over its own segment [i, i+1)·cardLen.
       // While none is past halfway the lime card shows and no pill is active.
       let active = -1;
+      // Per-card slide-in progress (0→1 across its own segment).
+      const prog = orchCardEls.map((_, i) =>
+        clamp((offset - i * cardLen) / cardLen),
+      );
       orchCardEls.forEach((el, i) => {
-        const r = clamp((offset - i * cardLen) / cardLen);
+        const r = prog[i];
         const e = ease(r);
         el.style.transform = `translateX(${110 * (1 - e)}%)`;
-        // Stay fully opaque while sliding in — the card is parked off-screen at
-        // r=0 so it's hidden by the slide, not by transparency.
-        el.style.opacity = r > 0 ? "1" : "0";
+        // Once entered the card stays opaque until the next card slides in over
+        // it, then fades out so the incoming card cleanly replaces the previous.
+        const next = i + 1 < prog.length ? ease(prog[i + 1]) : 0;
+        el.style.opacity = r > 0 ? String(1 - next) : "0";
         el.style.pointerEvents = "none";
         if (r >= 0.5) active = i;
       });
+      // The lime base card likewise fades out as the first purple card enters.
+      if (triageCard) triageCard.style.opacity = String(1 - ease(prog[0] ?? 0));
       // The instant a purple card takes over (becomes active) the navbar swaps
       // from Triage to Care Orchestration; the topmost card is interactive and
       // its nav pill is highlighted.
@@ -545,6 +513,7 @@ const cardBg: Record<number, string> = {
       // Non-pinned state: only the lime Clinical Triage card shows, so the Triage
       // navbar (state A) stays; orchestration cards hidden, no nav pill active.
       wrap.classList.remove("show-b");
+      if (triageCard) triageCard.style.opacity = "";
       orchCardEls.forEach((el) => {
         el.style.transform = "";
         el.style.opacity = "";
