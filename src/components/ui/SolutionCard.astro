@@ -106,7 +106,7 @@ const cardBg = glowFill ? "" : t.cardBg;
 const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
 ---
 
-<div class={`group relative flex w-full flex-col ${className}`}>
+<div class={`relative flex w-full flex-col ${className}`}>
   <!-- Capability card -->
   <div
     class:list={[
@@ -242,8 +242,12 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
         <p class="max-w-[16rem] text-sm font-semibold uppercase">{statLabel}</p>
       </div>
 
-      <!-- Visual CTA only — the whole card is the link (stretched <a> below). -->
-      <div class="flex shrink-0 items-center rounded-full" aria-hidden="true">
+      <!-- CTA — the only link on the card. -->
+      <a
+        href={cta.href}
+        aria-label={cta.label}
+        class="group/cta flex shrink-0 items-center rounded-full"
+      >
         <span
           class:list={[
             "-mr-px rounded-[50px] px-6 py-3 text-sm font-semibold uppercase",
@@ -254,7 +258,7 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
         <span
           class:list={[
             "flex size-10 items-center justify-center rounded-full",
-            "transition-transform duration-300 ease-out group-hover:translate-x-1",
+            "transition-transform duration-300 ease-out group-hover/cta:translate-x-1",
             t.ctaBg,
             t.ctaText,
           ]}
@@ -274,7 +278,7 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
               stroke-linejoin="round"></path>
           </svg>
         </span>
-      </div>
+      </a>
     </div>
 
     <!-- Mobile (below lg) -->
@@ -294,13 +298,14 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
                 {logoText}
               </p>
             )}
-            <span
+            <a
+              href={cta.href}
+              aria-label={cta.label}
               class:list={[
                 "flex size-10 shrink-0 items-center justify-center rounded-full",
                 t.ctaBg,
                 t.ctaText,
               ]}
-              aria-hidden="true"
             >
               <svg
                 width="24"
@@ -317,7 +322,7 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
                   stroke-linejoin="round"
                 />
               </svg>
-            </span>
+            </a>
           </div>
         )
       }
@@ -364,10 +369,4 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
       </div>
     </div>
   </div>
-
-  <!-- Stretched link — makes the entire card clickable. -->
-  <a
-    href={cta.href}
-    aria-label={cta.label}
-    class="absolute inset-0 z-20 rounded-card"></a>
 </div>
