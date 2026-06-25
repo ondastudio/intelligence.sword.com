@@ -61,11 +61,13 @@
   --color-lime-tint: #f7ffe8; /* lime/Lime 200 — faint lime section tint */
 
   /* ---- Typography ---- */
-  /* Figtree: UI + body. Lora: editorial headlines. Loaded in Layout.astro. */
+  /* Figtree: UI + body. Lora: editorial headlines. DM Mono: uppercase mono
+     labels (e.g. the mobile menu items). Loaded in Layout.astro. */
   --font-sans:
     "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif;
   --font-serif: "Lora", ui-serif, Georgia, "Times New Roman", serif;
+  --font-mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Line-height system (site-wide):
        default → 120%. Every heading token in the scale below carries its own
