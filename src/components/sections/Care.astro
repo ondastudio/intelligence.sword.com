@@ -88,10 +88,10 @@ import FeatureCard from "../ui/FeatureCard.astro";
                 style={`z-index:${care.cards.length}`}
               >
                 <div
-                  class="flex h-full flex-col items-start gap-6 overflow-hidden rounded-[24px] bg-[image:var(--gradient-care-banner)] p-8"
+                  class="flex h-full flex-col items-center gap-6 overflow-hidden rounded-[24px] bg-[image:var(--gradient-care-banner)] p-8"
                 >
                   <LabelPill>{care.banner.label}</LabelPill>
-                  <p class="text-lg">
+                  <p class="text-center text-lg">
                     {care.banner.before}<span class="font-semibold"
                       >{care.banner.highlight}</span
                     >
@@ -99,7 +99,7 @@ import FeatureCard from "../ui/FeatureCard.astro";
                   <img
                     src={care.banner.graphic}
                     alt={care.banner.graphicAlt}
-                    class="mt-auto h-32 w-32 self-end"
+                    class="mt-auto h-44 w-44"
                   />
                 </div>
               </div>
