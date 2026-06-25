@@ -8,13 +8,16 @@
  * this layout.
  */
 import '../styles/global.css';
+import MobileHeader from '../components/layout/MobileHeader.astro';
 
 interface Props {
   title: string;
   description?: string;
+  /** Render the global mobile nav pill. Off for non-site pages (e.g. styleguide). */
+  mobileNav?: boolean;
 }
 
-const { title, description = '' } = Astro.props;
+const { title, description = '', mobileNav = true } = Astro.props;
 ---
 
 <!doctype html>
@@ -45,6 +48,10 @@ const { title, description = '' } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
+    {/* Global mobile nav — rendered at the body root so it always stays above
+        every page section (see MobileHeader). Desktop nav lives in Navbar. */}
+    {mobileNav && <MobileHeader />}
+
     <slot />
 
     <!-- Site-wide scroll reveal: one observer toggles `.in-view` on every

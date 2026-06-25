@@ -315,46 +315,51 @@ const cardBg: Record<number, string> = {
     border-color: transparent;
   }
 
-  /* Mobile carousel (below lg) -------------------------------------------------
-     There's no pin; the cards become a native horizontal snap strip. Scroll
-     position drives the active label, dots, and arrow disabled states. */
+  /* Mobile (below lg) ----------------------------------------------------------
+     By default mobile uses the same scroll-pinned reveal as lg: the stage pins
+     and vertical scroll scrubs the purple cards in horizontally, one per
+     segment, before the pin releases to normal scroll. The mobile nav (arrows,
+     dots, label) is driven from the same scroll progress.
+     `.is-carousel` (added only as the reduced-motion fallback) reverts to a
+     native horizontal snap strip instead. */
   @media (max-width: 1023.98px) {
-    [data-cards] {
-      display: flex;
-      gap: 0;
-      overflow-x: auto;
-      overflow-y: hidden;
-      scroll-behavior: smooth;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-    }
-    [data-cards]::-webkit-scrollbar {
-      display: none;
-    }
-    [data-triage-reveal] {
-      flex: 0 0 100%;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-      transform: none;
-      transition: opacity 0.45s ease;
-    }
-    .orch-card {
-      position: relative;
-      inset: auto;
-      top: auto;
-      flex: 0 0 100%;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-      transform: none;
-      opacity: 1;
-      pointer-events: auto;
-      transition: none;
-    }
     .mobile-nav button[disabled] {
       opacity: 0.3;
       pointer-events: none;
     }
+  }
+
+  .triage-section.is-carousel [data-cards] {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .triage-section.is-carousel [data-cards]::-webkit-scrollbar {
+    display: none;
+  }
+  .triage-section.is-carousel [data-triage-reveal] {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    transform: none;
+    transition: opacity 0.45s ease;
+  }
+  .triage-section.is-carousel .orch-card {
+    position: relative;
+    inset: auto;
+    top: auto;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+    transition: none;
   }
 
   /* Pagination dots: each card is a 10px ink-muted dot; the active card's dot
@@ -493,6 +498,24 @@ const cardBg: Record<number, string> = {
       if (nextBtn) nextBtn.toggleAttribute("disabled", current === N);
     };
 
+    // Pinned mode: keep the mobile nav (dots, label, arrows) in step with the
+    // scroll-derived card index without disturbing the JS-driven card transforms.
+    let lastMobileIdx = -1;
+    const syncMobileNav = (idx: number) => {
+      current = idx;
+      if (idx === lastMobileIdx) return;
+      lastMobileIdx = idx;
+      dotEls.forEach((d, i) => d.classList.toggle("is-active", i === idx));
+      if (cardLabel && cardLabelText) {
+        cardLabelText.textContent =
+          idx === 0
+            ? cardLabel.dataset.labelA || ""
+            : cardLabel.dataset.labelB || "";
+      }
+      if (prevBtn) prevBtn.toggleAttribute("disabled", idx === 0);
+      if (nextBtn) nextBtn.toggleAttribute("disabled", idx === N);
+    };
+
     // offset = pinned scroll distance travelled (0 … scrub), in px.
     const apply = (offset: number) => {
       // Each card i slides in horizontally over its own segment [i, i+1)·cardLen.
@@ -514,6 +537,8 @@ const cardBg: Record<number, string> = {
       wrap.classList.toggle("show-b", active >= 0);
       if (active >= 0) orchCardEls[active].style.pointerEvents = "auto";
       setActiveTab(active);
+      // Card 0 = lime Clinical Triage; card i (purple) active → mobile index i+1.
+      syncMobileNav(active + 1);
     };
 
     const settle = () => {
@@ -545,15 +570,22 @@ const cardBg: Record<number, string> = {
       cardsBox.style.height = "";
       const vh = window.innerHeight;
       const isLg = lgMQ.matches;
-      pinned = isLg && !reduceMotion;
+      // Both mobile and lg scroll-pin the card reveal; reduced motion falls back
+      // to the static lime card (lg) or the native horizontal carousel (mobile).
+      pinned = !reduceMotion;
       mode = pinned ? "pinned" : isLg ? "settle" : "mobile";
+      // The carousel strip layout only applies in the mobile reduced-motion case.
+      section.classList.toggle("is-carousel", mode === "mobile");
+      lastMobileIdx = -1;
       if (mode === "pinned") {
         reserveCardHeight();
         cardLen = Math.round(vh * 0.6);
         scrub = N * cardLen;
-        // Land the stage centered when it fits; otherwise anchor near the top
-        // (min 24px) so the navbar stays on screen on shorter viewports.
-        stickTop = Math.max(24, Math.round((vh - stage.offsetHeight) / 2));
+        // Land the stage centered when it fits; otherwise anchor near the top so
+        // the navbar stays on screen on shorter viewports. On mobile the fixed
+        // page nav floats over the top, so keep a larger inset to clear it.
+        const minTop = isLg ? 24 : 76;
+        stickTop = Math.max(minTop, Math.round((vh - stage.offsetHeight) / 2));
         stage.style.top = `${stickTop}px`;
         section.classList.add("is-pinned");
         track.style.height = `${stage.offsetHeight + scrub}px`;
@@ -610,6 +642,17 @@ const cardBg: Record<number, string> = {
       window.scrollTo({ top: target, behavior: "smooth" });
     };
 
+    // Mobile arrows while pinned: jump to the scroll offset for carousel index
+    // `c` (0 = lime card, 1…N = purple cards). Index c lands at c·cardLen.
+    const scrollToPinnedIndex = (c: number) => {
+      const idx = Math.max(0, Math.min(N, c));
+      const trackTop = window.scrollY + track.getBoundingClientRect().top;
+      window.scrollTo({
+        top: trackTop - stickTop + idx * cardLen,
+        behavior: "smooth",
+      });
+    };
+
     tabEls.forEach((tab, i) => {
       tab.addEventListener("click", () => scrollToCard(i));
     });
@@ -628,8 +671,8 @@ const cardBg: Record<number, string> = {
     };
 
     const step = (dir: number) => {
-      if (mode !== "mobile") return;
-      scrollToMobileCard(current + dir, "smooth");
+      if (mode === "mobile") return scrollToMobileCard(current + dir, "smooth");
+      if (mode === "pinned") scrollToPinnedIndex(current + dir);
     };
 
     prevBtn?.addEventListener("click", () => step(-1));
