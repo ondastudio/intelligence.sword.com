@@ -7,8 +7,8 @@
       "eyebrow": "Case Study: NHS North East London Health and Care Partnership",
       "logo": "/customers/story-logo-ne-london.png",
       "logoAlt": "North East London Health & Care Partnership",
-      "image": "/customers/story-hero-nhs.png",
-      "imageAlt": "Hospital reception waiting area",
+      "image": "/customers/story-hero-ne-london.png",
+      "imageAlt": "Queen’s Hospital exterior at sunrise, North East London",
       "stats": [
         { "value": "57%", "label": "All sessions delivered" },
         { "value": "0.71 d", "label": "Lives covered" },
@@ -104,8 +104,8 @@
       "logo": "/logos/nhs-black-country.png",
       "logoAlt": "NHS Black Country Integrated Care Board",
       "logoMono": false,
-      "image": "/customers/story-hero-nhs.png",
-      "imageAlt": "Hospital reception waiting area",
+      "image": "/customers/story-hero-black-country.png",
+      "imageAlt": "NHS Black Country hospital exterior at dusk",
       "stats": [
         { "value": "£405K", "label": "saved for one NHS Trust in 3 months" },
         { "value": "33%", "label": "shorter length of stay" },
@@ -264,8 +264,8 @@
       "logo": "/logos/cheshire-merseyside.png",
       "logoAlt": "NHS Cheshire and Merseyside",
       "logoMono": false,
-      "image": "/customers/photo-surgery.png",
-      "imageAlt": "NHS Cheshire and Merseyside clinic reception",
+      "image": "/customers/story-hero-cheshire-merseyside.png",
+      "imageAlt": "Whiston Hospital exterior at dusk, NHS Cheshire and Merseyside",
       "stats": [
         { "value": "72%", "label": "reduction in surgical complications" },
         { "value": "83%", "label": "reduction in post-op pulmonary complications" },
@@ -356,8 +356,8 @@
       "logo": "/logos/nhs-south-tee.png",
       "logoAlt": "South Tees Hospitals NHS Foundation Trust",
       "logoMono": false,
-      "image": "/customers/story-hero-nhs.png",
-      "imageAlt": "Hospital reception waiting area",
+      "image": "/customers/story-hero-south-tees.png",
+      "imageAlt": "James Cook University Hospital exterior, South Tees",
       "stats": [
         { "value": "84%", "label": "improvement in patient-reported quality of life" },
         { "value": "£250", "label": "saved per patient" },
