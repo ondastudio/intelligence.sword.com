@@ -28,7 +28,6 @@ import ClinicalDiagram31 from "../ui/ClinicalDiagram31.astro";
 import ClinicalDiagram04 from "../ui/ClinicalDiagram04.astro";
 import ClinicalDiagram05 from "../ui/ClinicalDiagram05.astro";
 import ClinicalDiagram06 from "../ui/ClinicalDiagram06.astro";
-import ClinicalCards06 from "../ui/ClinicalCards06.astro";
 import ClinicalLogoMarquee from "../ui/ClinicalLogoMarquee.astro";
 import data from "../../data/clinical-layer.json";
 
@@ -45,136 +44,206 @@ const { heading, steps, cards, integrationLogos, closing } = data;
         data-reveal="title"
         class="mx-auto max-w-[980px] text-center font-serif text-h5 font-normal"
       >
-        {heading.before}<span class="text-brand">{heading.accent}</span>{heading.after}
+        {heading.before}<span class="text-brand">{heading.accent}</span>{
+          heading.after
+        }
       </h2>
 
       <!-- Cards (left) + crossfading diagram (right). On lg+ the row is pinned
            centred in the viewport (.clinical-pin) so the whole illustration is
            visible while the title scrolls away above it. Stacks on mobile. -->
       <div class="clinical-pin">
-      <!-- Animated swirl bloom behind the diagram — the shared hero swirl in a
+        <!-- Animated swirl bloom behind the diagram — the shared hero swirl in a
            soft brand-blue palette. Lives inside the pin so it tracks the pinned
            illustration across the beats; `-z-10` keeps it behind the row, over
            the section surface. A CSS radial wash is the no-JS / reduced-motion
            fallback. -->
-      <div
-        data-cl-swirl-stage
-        aria-hidden="true"
-        class="cl-swirl pointer-events-none absolute -z-10"
-      >
-        <canvas
-          data-cl-swirl
-          class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
-        ></canvas>
-      </div>
-      <div
-        class="clinical-row mt-12 flex flex-col items-center gap-16 lg:mt-[120px] lg:flex-row lg:items-start lg:justify-between lg:gap-0"
-      >
-        <!-- Card column: two layers share one slot. The original capability
+        <div
+          data-cl-swirl-stage
+          aria-hidden="true"
+          class="cl-swirl pointer-events-none absolute -z-10"
+        >
+          <canvas
+            data-cl-swirl
+            class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+          ></canvas>
+        </div>
+        <div
+          class="clinical-row mt-12 flex flex-col items-center gap-16 lg:mt-[120px] lg:flex-row lg:items-start lg:justify-between lg:gap-0"
+        >
+          <!-- Card column: two layers share one slot. The original capability
              cards (state "a") are held through beats A–F; on the final beat they
              crossfade out to the alternate "Complex operations" card set
              (state "b"), in sync with the diagram swapping to ClinicalDiagram06.
              On mobile / no-JS both layers stack in normal flow. -->
-        <div class="clinical-cards relative w-full max-w-[340px]">
-          <div data-clinical-cards="a" class="flex flex-col gap-4">
-            {
-              cards.map((card, i) => (
-                <div
-                  data-reveal
-                  class="flex flex-col items-center justify-center gap-5 rounded-card bg-ink-wash p-8"
-                  style={`transition-delay:${120 + (cards.length - 1 - i) * 120}ms`}
-                >
-                  <LabelPill>{card.label}</LabelPill>
-                  <p class="text-center text-xmd leading-[1.25]">
-                    {card.lines.map((line, j) => (
-                      <>
-                        {j > 0 && <br />}
-                        {line}
-                      </>
-                    ))}
-                  </p>
-                </div>
-              ))
-            }
+          <div class="clinical-cards relative w-full max-w-[340px]">
+            <div data-clinical-cards="a" class="flex flex-col gap-4">
+              {
+                cards.map((card, i) => (
+                  <div
+                    data-reveal
+                    class="flex flex-col items-center justify-center gap-5 rounded-card bg-ink-wash p-8"
+                    style={`transition-delay:${120 + (cards.length - 1 - i) * 120}ms`}
+                  >
+                    <LabelPill>{card.label}</LabelPill>
+                    <p class="text-center text-xmd leading-[1.25]">
+                      {card.lines.map((line, j) => (
+                        <>
+                          {j > 0 && <br />}
+                          {line}
+                        </>
+                      ))}
+                    </p>
+                  </div>
+                ))
+              }
+            </div>
+            <!-- Alternate column for the closing beat: the same HTML the mobile
+                 closing block renders, driven by the shared `closing` data
+                 (Figma 8797:58230). Was a baked SVG (ClinicalCards06); now real,
+                 editable HTML so copy lives in one place (clinical-layer.json). -->
+            <div
+              data-clinical-cards="b"
+              class="clinical-cards-alt flex w-full flex-col items-center gap-10"
+            >
+              <div class="flex flex-col items-center gap-4 text-center">
+                <h3 class="text-[1.75rem] font-normal leading-[1.15]">
+                  {closing.heading[0]}<br />{closing.heading[1]}
+                </h3>
+                <p class="text-[1.25rem] leading-[1.2]">
+                  {
+                    closing.subtitle.map((seg) =>
+                      seg.bold ? (
+                        <span class="font-semibold">{seg.text}</span>
+                      ) : (
+                        <>
+                          {seg.text}
+                          {seg.br && <br />}
+                        </>
+                      ),
+                    )
+                  }
+                </p>
+              </div>
+              <div class="flex w-full flex-col gap-4">
+                {
+                  closing.cards.map((card) => (
+                    <div class="flex flex-col items-center justify-center gap-5 rounded-card bg-purple-tint p-8 backdrop-blur-[30px]">
+                      <span class="grid size-10 place-items-center rounded-full border border-black/24">
+                        <img
+                          src={card.icon}
+                          alt={card.alt}
+                          width="25"
+                          height="25"
+                          class="size-[25px]"
+                        />
+                      </span>
+                      <p class="text-center text-xmd leading-[1.25]">
+                        {card.segments.map((seg) =>
+                          seg.bold ? (
+                            <span class="font-semibold">{seg.text}</span>
+                          ) : (
+                            <>
+                              {seg.text}
+                              {seg.br && <br />}
+                            </>
+                          ),
+                        )}
+                      </p>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
           </div>
-          <div data-clinical-cards="b" class="clinical-cards-alt">
-            <ClinicalCards06 />
-          </div>
-        </div>
 
-        <!-- Diagram stack: both states share one slot and crossfade. Each state
+          <!-- Diagram stack: both states share one slot and crossfade. Each state
              carries its own top-left step chip (inlined SVGs so the icon-disc
              backdrop-filter blur chips render). -->
-        <div class="clinical-diagrams w-full max-w-[827px]">
-          <div data-clinical-state="a" class="clinical-state">
-            <div class="clinical-figure relative mx-auto w-full max-w-[827px]">
-              <ClinicalStepPill
-                num={steps[0].num}
-                label={steps[0].label}
-                class="absolute left-0 top-0 z-10"
-              />
-              <ClinicalDiagram />
+          <div class="clinical-diagrams w-full max-w-[827px]">
+            <div data-clinical-state="a" class="clinical-state">
+              <div
+                class="clinical-figure relative mx-auto w-full max-w-[827px]"
+              >
+                <ClinicalStepPill
+                  num={steps[0].num}
+                  label={steps[0].label}
+                  class="absolute left-0 top-0 z-10"
+                />
+                <ClinicalDiagram />
+              </div>
             </div>
-          </div>
-          <div data-clinical-state="b" class="clinical-state">
-            <div class="clinical-figure relative mx-auto w-full max-w-[827px]">
-              <ClinicalStepPill
-                num={steps[1].num}
-                label={steps[1].label}
-                class="absolute left-0 top-0 z-10"
-              />
-              <ClinicalDiagram02 />
+            <div data-clinical-state="b" class="clinical-state">
+              <div
+                class="clinical-figure relative mx-auto w-full max-w-[827px]"
+              >
+                <ClinicalStepPill
+                  num={steps[1].num}
+                  label={steps[1].label}
+                  class="absolute left-0 top-0 z-10"
+                />
+                <ClinicalDiagram02 />
+              </div>
             </div>
-          </div>
-          <div data-clinical-state="c" class="clinical-state">
-            <div class="clinical-figure relative mx-auto w-full max-w-[827px]">
-              <ClinicalStepPill
-                num={steps[2].num}
-                label={steps[2].label}
-                class="absolute left-0 top-0 z-10"
-              />
-              <ClinicalDiagram03 />
+            <div data-clinical-state="c" class="clinical-state">
+              <div
+                class="clinical-figure relative mx-auto w-full max-w-[827px]"
+              >
+                <ClinicalStepPill
+                  num={steps[2].num}
+                  label={steps[2].label}
+                  class="absolute left-0 top-0 z-10"
+                />
+                <ClinicalDiagram03 />
+              </div>
             </div>
-          </div>
-          <!-- Sub-beat of step 03: keeps the same "03 / AI Skills" chip. -->
-          <div data-clinical-state="d" class="clinical-state">
-            <div class="clinical-figure relative mx-auto w-full max-w-[827px]">
-              <ClinicalStepPill
-                num={steps[2].num}
-                label={steps[2].label}
-                class="absolute left-0 top-0 z-10"
-              />
-              <ClinicalDiagram31 />
+            <!-- Sub-beat of step 03: keeps the same "03 / AI Skills" chip. -->
+            <div data-clinical-state="d" class="clinical-state">
+              <div
+                class="clinical-figure relative mx-auto w-full max-w-[827px]"
+              >
+                <ClinicalStepPill
+                  num={steps[2].num}
+                  label={steps[2].label}
+                  class="absolute left-0 top-0 z-10"
+                />
+                <ClinicalDiagram31 />
+              </div>
             </div>
-          </div>
-          <div data-clinical-state="e" class="clinical-state">
-            <div class="clinical-figure relative mx-auto w-full max-w-[827px]">
-              <ClinicalStepPill
-                num={steps[3].num}
-                label={steps[3].label}
-                class="absolute left-0 top-0 z-10"
-              />
-              <ClinicalDiagram04 logos={integrationLogos} />
+            <div data-clinical-state="e" class="clinical-state">
+              <div
+                class="clinical-figure relative mx-auto w-full max-w-[827px]"
+              >
+                <ClinicalStepPill
+                  num={steps[3].num}
+                  label={steps[3].label}
+                  class="absolute left-0 top-0 z-10"
+                />
+                <ClinicalDiagram04 logos={integrationLogos} />
+              </div>
             </div>
-          </div>
-          <div data-clinical-state="f" class="clinical-state">
-            <div class="clinical-figure relative mx-auto w-full max-w-[827px]">
-              <ClinicalStepPill
-                num={steps[4].num}
-                label={steps[4].label}
-                class="absolute left-0 top-0 z-10"
-              />
-              <ClinicalDiagram05 />
+            <div data-clinical-state="f" class="clinical-state">
+              <div
+                class="clinical-figure relative mx-auto w-full max-w-[827px]"
+              >
+                <ClinicalStepPill
+                  num={steps[4].num}
+                  label={steps[4].label}
+                  class="absolute left-0 top-0 z-10"
+                />
+                <ClinicalDiagram05 />
+              </div>
             </div>
-          </div>
-          <!-- Closing beat: no step chip — pairs with the alternate card set. -->
-          <div data-clinical-state="g" class="clinical-state">
-            <div class="clinical-figure relative mx-auto w-full max-w-[827px]">
-              <ClinicalDiagram06 />
+            <!-- Closing beat: no step chip — pairs with the alternate card set. -->
+            <div data-clinical-state="g" class="clinical-state">
+              <div
+                class="clinical-figure relative mx-auto w-full max-w-[827px]"
+              >
+                <ClinicalDiagram06 />
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
     </div>
   </div>
@@ -195,9 +264,7 @@ const { heading, steps, cards, integrationLogos, closing } = data;
         data-cl-swirl-stage
         class="cl-swirl-m pointer-events-none absolute opacity-0"
       >
-        <canvas
-          data-cl-swirl
-          class="absolute inset-0 h-full w-full opacity-0"
+        <canvas data-cl-swirl class="absolute inset-0 h-full w-full opacity-0"
         ></canvas>
       </div>
     </div>
@@ -208,7 +275,9 @@ const { heading, steps, cards, integrationLogos, closing } = data;
         data-reveal="title"
         class="mx-auto max-w-[320px] text-center font-serif text-h5 font-normal"
       >
-        {heading.before}<span class="text-brand">{heading.accent}</span>{heading.after}
+        {heading.before}<span class="text-brand">{heading.accent}</span>{
+          heading.after
+        }
       </h2>
 
       <div class="mt-16 flex flex-col gap-2">
@@ -242,23 +311,43 @@ const { heading, steps, cards, integrationLogos, closing } = data;
         <div class="mx-auto w-full max-w-[420px] px-5">
           <div class="clinical-m-diagrams relative">
             <div data-cm-state="a" class="clinical-m-state">
-              <ClinicalStepPill num={steps[0].num} label={steps[0].label} class="mb-6" />
+              <ClinicalStepPill
+                num={steps[0].num}
+                label={steps[0].label}
+                class="mb-6"
+              />
               <ClinicalDiagram class="mt-8" />
             </div>
             <div data-cm-state="b" class="clinical-m-state">
-              <ClinicalStepPill num={steps[1].num} label={steps[1].label} class="mb-6" />
+              <ClinicalStepPill
+                num={steps[1].num}
+                label={steps[1].label}
+                class="mb-6"
+              />
               <ClinicalDiagram02 class="mt-8" />
             </div>
             <div data-cm-state="c" class="clinical-m-state">
-              <ClinicalStepPill num={steps[2].num} label={steps[2].label} class="mb-6" />
+              <ClinicalStepPill
+                num={steps[2].num}
+                label={steps[2].label}
+                class="mb-6"
+              />
               <ClinicalDiagram03 class="mt-8" />
             </div>
             <div data-cm-state="d" class="clinical-m-state">
-              <ClinicalStepPill num={steps[2].num} label={steps[2].label} class="mb-6" />
+              <ClinicalStepPill
+                num={steps[2].num}
+                label={steps[2].label}
+                class="mb-6"
+              />
               <ClinicalDiagram31 class="mt-8" />
             </div>
             <div data-cm-state="e" class="clinical-m-state">
-              <ClinicalStepPill num={steps[3].num} label={steps[3].label} class="mb-6" />
+              <ClinicalStepPill
+                num={steps[3].num}
+                label={steps[3].label}
+                class="mb-6"
+              />
               <ClinicalDiagram04 card={false} />
               <!-- On mobile the floating EHR logo card moves out of the diagram
                    into its own frosted card below: an "EHR" label over the two
@@ -273,7 +362,11 @@ const { heading, steps, cards, integrationLogos, closing } = data;
               </div>
             </div>
             <div data-cm-state="f" class="clinical-m-state">
-              <ClinicalStepPill num={steps[4].num} label={steps[4].label} class="mb-6" />
+              <ClinicalStepPill
+                num={steps[4].num}
+                label={steps[4].label}
+                class="mb-6"
+              />
               <ClinicalDiagram05 class="mt-8" />
             </div>
           </div>
@@ -355,17 +448,43 @@ const { heading, steps, cards, integrationLogos, closing } = data;
         "(prefers-reduced-motion: no-preference) and (min-width: 1024px)",
       ).matches;
 
-    const stateA = section.querySelector<HTMLElement>('[data-clinical-state="a"]');
-    const stateB = section.querySelector<HTMLElement>('[data-clinical-state="b"]');
-    const stateC = section.querySelector<HTMLElement>('[data-clinical-state="c"]');
-    const stateD = section.querySelector<HTMLElement>('[data-clinical-state="d"]');
-    const stateE = section.querySelector<HTMLElement>('[data-clinical-state="e"]');
-    const stateF = section.querySelector<HTMLElement>('[data-clinical-state="f"]');
-    const stateG = section.querySelector<HTMLElement>('[data-clinical-state="g"]');
-    const cardsA = section.querySelector<HTMLElement>('[data-clinical-cards="a"]');
-    const cardsB = section.querySelector<HTMLElement>('[data-clinical-cards="b"]');
+    const stateA = section.querySelector<HTMLElement>(
+      '[data-clinical-state="a"]',
+    );
+    const stateB = section.querySelector<HTMLElement>(
+      '[data-clinical-state="b"]',
+    );
+    const stateC = section.querySelector<HTMLElement>(
+      '[data-clinical-state="c"]',
+    );
+    const stateD = section.querySelector<HTMLElement>(
+      '[data-clinical-state="d"]',
+    );
+    const stateE = section.querySelector<HTMLElement>(
+      '[data-clinical-state="e"]',
+    );
+    const stateF = section.querySelector<HTMLElement>(
+      '[data-clinical-state="f"]',
+    );
+    const stateG = section.querySelector<HTMLElement>(
+      '[data-clinical-state="g"]',
+    );
+    const cardsA = section.querySelector<HTMLElement>(
+      '[data-clinical-cards="a"]',
+    );
+    const cardsB = section.querySelector<HTMLElement>(
+      '[data-clinical-cards="b"]',
+    );
     const title = section.querySelector<HTMLElement>('[data-reveal="title"]');
-    if (!stateA || !stateB || !stateC || !stateD || !stateE || !stateF || !stateG)
+    if (
+      !stateA ||
+      !stateB ||
+      !stateC ||
+      !stateD ||
+      !stateE ||
+      !stateF ||
+      !stateG
+    )
       return;
 
     // Timeline windows over the section's scrub distance (easy to tune). Seven
@@ -414,7 +533,8 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       // `none` (not "") so it overrides the CSS pre-set `filter: blur(12px)` on
       // the hidden states — clearing to "" would fall back to that and both keep
       // the idle layer and blur a held-visible beat.
-      el.style.filter = opacity < 0.01 || blurPx < 0.15 ? "none" : `blur(${blurPx}px)`;
+      el.style.filter =
+        opacity < 0.01 || blurPx < 0.15 ? "none" : `blur(${blurPx}px)`;
     };
 
     let ticking = false;
@@ -444,7 +564,10 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       const scrub = section.offsetHeight - window.innerHeight;
       const p =
         scrub > 0
-          ? Math.min(1, Math.max(0, -section.getBoundingClientRect().top / scrub))
+          ? Math.min(
+              1,
+              Math.max(0, -section.getBoundingClientRect().top / scrub),
+            )
           : 0;
 
       // Title: hold through its data-reveal entrance (blur resolve), then fade up
@@ -471,27 +594,27 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       // outgoing amounts (both 0 during B's hold).
       const bIn = easeOutCubic(track(p, B_IN));
       const bOut = easeOutCubic(track(p, B_OUT));
-      paint(stateB, bIn * (1 - bOut), ((1 - bIn) + bOut) * BLUR);
+      paint(stateB, bIn * (1 - bOut), (1 - bIn + bOut) * BLUR);
 
       // C, like B, resolves in (from B) then later blurs out (to D).
       const cIn = easeOutCubic(track(p, C_IN));
       const cOut = easeOutCubic(track(p, C_OUT));
-      paint(stateC, cIn * (1 - cOut), ((1 - cIn) + cOut) * BLUR);
+      paint(stateC, cIn * (1 - cOut), (1 - cIn + cOut) * BLUR);
 
       // D, like B and C, resolves in (from C) then later blurs out (to E).
       const dIn = easeOutCubic(track(p, D_IN));
       const dOut = easeOutCubic(track(p, D_OUT));
-      paint(stateD, dIn * (1 - dOut), ((1 - dIn) + dOut) * BLUR);
+      paint(stateD, dIn * (1 - dOut), (1 - dIn + dOut) * BLUR);
 
       // E, like B–D, resolves in (from D) then later blurs out (to F).
       const eIn = easeOutCubic(track(p, E_IN));
       const eOut = easeOutCubic(track(p, E_OUT));
-      paint(stateE, eIn * (1 - eOut), ((1 - eIn) + eOut) * BLUR);
+      paint(stateE, eIn * (1 - eOut), (1 - eIn + eOut) * BLUR);
 
       // F resolves in (from E) then blurs out (to G) on the final beat.
       const fIn = easeOutCubic(track(p, F_IN));
       const fOut = easeOutCubic(track(p, F_OUT));
-      paint(stateF, fIn * (1 - fOut), ((1 - fIn) + fOut) * BLUR);
+      paint(stateF, fIn * (1 - fOut), (1 - fIn + fOut) * BLUR);
 
       const gIn = easeOutCubic(track(p, G_IN));
       paint(stateG, gIn, (1 - gIn) * BLUR);
@@ -626,7 +749,8 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       // `none` (not "") so it overrides the CSS pre-set `filter: blur(12px)` on
       // the hidden states — clearing to "" would fall back to that and both keep
       // the idle layer and blur a held-visible beat.
-      el.style.filter = opacity < 0.01 || blurPx < 0.15 ? "none" : `blur(${blurPx}px)`;
+      el.style.filter =
+        opacity < 0.01 || blurPx < 0.15 ? "none" : `blur(${blurPx}px)`;
     };
 
     let ticking = false;
@@ -774,12 +898,10 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       position: absolute;
       top: 0;
       left: 0;
-      /* Keep the native 340×722 card column whenever it fits; if the viewport is
-         too short to hold it under the 80px top + 32px bottom margins, scale it
-         down by width (the SVG's viewBox preserves the aspect ratio) so the whole
-         column — last card included — stays visible with a 32px bottom margin,
-         mirroring how .clinical-diagrams fits the illustration. */
-      width: min(340px, calc((100svh - 112px) * 340 / 722));
+      /* Full width of the 340px card column. (This is now HTML that reflows, so
+         the old SVG-aspect width scaling no longer applies — the column simply
+         takes the column width and lays its cards out in normal flow.) */
+      width: 100%;
       opacity: 0;
       filter: blur(12px);
     }
