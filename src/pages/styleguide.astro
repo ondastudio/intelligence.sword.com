@@ -15,6 +15,7 @@ import FeatureCard from "../components/ui/FeatureCard.astro";
 import MediaFrame from "../components/ui/MediaFrame.astro";
 import ScrollLetterReveal from "../components/ui/ScrollLetterReveal.astro";
 import SolutionCard from "../components/ui/SolutionCard.astro";
+import TriageMedia from "../components/ui/TriageMedia.astro";
 import StoryCard from "../components/ui/StoryCard.astro";
 import TeamCard from "../components/ui/TeamCard.astro";
 import Logo from "../components/layout/Logo.astro";
@@ -22,6 +23,13 @@ import LogoStrip from "../components/layout/LogoStrip.astro";
 import LogoMarquee from "../components/layout/LogoMarquee.astro";
 import intro from "../data/intro.json";
 import about from "../data/about.json";
+import triage from "../data/triage.json";
+
+// The five Triage media-panel variants (lime call card + 4 orchestration cards).
+const triageMedias = [
+  triage.card.media,
+  ...triage.orchestration.cards.map((c) => c.media),
+];
 
 // Self-contained demo content for the purple SolutionCard variant.
 const demoCard = {
@@ -236,6 +244,26 @@ const swatches = [
           statLabel={demoCard.statLabel}
           cta={demoCard.cta}
         />
+      </div>
+    </section>
+
+    <!-- TriageMedia -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase">TriageMedia</h2>
+      <p class="mt-1 text-sm text-black/50">
+        The illustrative "app screen" for each Triage <code>SolutionCard</code>'s
+        media panel (rendered at its native 376×470). Variants: <code>call</code>,
+        <code>noshow</code>, <code>campaign</code>, <code>surgery</code>,
+        <code>discharge</code>. Fed from <code>data/triage.json</code>.
+      </p>
+      <div class="mt-4 flex flex-wrap gap-6">
+        {
+          triageMedias.map((m) => (
+            <div class="relative h-[470px] w-[376px] shrink-0 overflow-hidden rounded-[40px] bg-white ring-1 ring-inset ring-black/10">
+              <TriageMedia media={m} />
+            </div>
+          ))
+        }
       </div>
     </section>
 

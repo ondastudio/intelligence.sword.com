@@ -23,6 +23,7 @@
   --color-purple-200: #a684ff; /* mid purple — Care Orchestration card border, Platform ring */
   --color-purple-150: #d3c2ff; /* light purple — Trust point icon discs */
   --color-purple-100: #e1d6ff; /* soft purple — tints, chips */
+  --color-purple-50: #e4daff; /* palest lavender — Triage "Surgery scheduled" pill */
   --color-purple-tint: #eee8ff; /* faint lavender — Care case-bar background */
   --color-lavender: #ede7fe; /* Platform pills + stat cards background */
   --color-glow-blue: #4a89e8; /* Platform orb glow halo */
@@ -54,11 +55,16 @@
   ); /* slightly stronger frosted fill — Scaling stat "+" chips */
   --color-periwinkle: #8baee4; /* soft blue — Numbers "4x" intake card background */
   --color-blue-green: #bae0eb; /* pale teal — Numbers "34%" readmissions card background */
+  --color-blue-100: #ecf3fe; /* brand/blue-100 — Triage card "incoming call" pill */
 
   /* ---- Lime ramp (Figma color/lime/*) ---- */
   --color-accent: #ccff33; /* lime/Default — CTAs, active controls, accents */
   --color-lime-400: #d9ff66; /* lime/Lime 400 — gradient mid-stop */
   --color-lime-tint: #f7ffe8; /* lime/Lime 200 — faint lime section tint */
+
+  /* ---- Triage media risk-gauge accents ---- */
+  --color-risk-high: #ff3b30; /* red — No-Show DNA risk gauge (76) */
+  --color-risk-med: #ffb01d; /* amber — Readmission risk gauge (60) */
 
   /* ---- Typography ---- */
   /* Figtree: UI + body. Lora: editorial headlines. DM Mono: uppercase mono

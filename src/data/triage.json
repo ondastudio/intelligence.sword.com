@@ -26,17 +26,49 @@
           "rest": " and move your waiting list."
         },
         "points": [
-          { "before": "Behavioral risk model ", "strong": "predicts DNAs", "rest": "." },
-          { "strong": "Adapts AI actions", "rest": " to risk scores." },
-          { "rest": "Handles outreach, callbacks, and scheduling." },
-          { "before": "Integrates with your EHR ", "strong": "in real-time", "rest": "." }
+          {
+            "before": "Behavioral risk model ",
+            "strong": "predicts DNAs",
+            "rest": "."
+          },
+          {
+            "strong": "Adapts AI actions",
+            "rest": " to risk scores."
+          },
+          {
+            "rest": "Handles outreach, callbacks, and scheduling."
+          },
+          {
+            "before": "Integrates with your EHR ",
+            "strong": "in real-time",
+            "rest": "."
+          }
         ],
+        "media": {
+          "variant": "noshow",
+          "patient": {
+            "name": "Marcus Taylor",
+            "avatar": "/triage/avatar-patient.jpg"
+          },
+          "clinician": {
+            "name": "Dr Suresh",
+            "detail": "Cardiology",
+            "avatar": "/triage/avatar-doctor.jpg"
+          },
+          "date": "Monday",
+          "time": "8:00",
+          "lead": "2 days",
+          "gauge": { "value": "76", "label": "DNA RISK SCORE" }
+        },
         "case": {
           "logo": "/triage/ministry-logo.png",
           "logoAlt": "Hellenic Republic Ministry of Health",
           "stat": "$150B",
           "statLabel": "lost yearly to no-shows in the US",
-          "cta": { "label": "Learn More", "href": "#" },
+          "cta": {
+            "label": "Learn More",
+            "href": "#"
+          },
           "mobile": {
             "stat": "15%",
             "statPlus": true,
@@ -52,18 +84,49 @@
           "rest": " proactively."
         },
         "points": [
-          { "before": "Scans population data ", "strong": "securely", "rest": "." },
-          { "before": "Adapts to ", "strong": "patient responsiveness", "rest": "." },
-          { "before": "Manages ", "strong": "cross-clinic scheduling", "rest": "." },
-          { "rest": "Trained for screenings, vaccinations, med adherence, and other campaigns." }
+          {
+            "before": "Scans population data ",
+            "strong": "securely",
+            "rest": "."
+          },
+          {
+            "before": "Adapts to ",
+            "strong": "patient responsiveness",
+            "rest": "."
+          },
+          {
+            "before": "Manages ",
+            "strong": "cross-clinic scheduling",
+            "rest": "."
+          },
+          {
+            "rest": "Trained for screenings, vaccinations, med adherence, and other campaigns."
+          }
         ],
+        "media": {
+          "variant": "campaign",
+          "label": "Population campaign",
+          "title": "Breast cancer screening",
+          "matching": "Matching population...",
+          "progress": "25%",
+          "criteria": [
+            { "text": "Women aged 50-69", "match": true },
+            { "text": "No mammogram in the last 12 years", "match": false },
+            { "text": "No active breast cancer diagnosis", "match": false }
+          ]
+        },
         "case": {
           "logoText": "US Medicare-focused VBC Provider",
           "logoAlt": "US Medicare-focused VBC Provider",
           "stat": "69%",
           "statLabel": "US autonomous appointment confirmation rate",
-          "cta": { "label": "Learn More", "href": "#" },
-          "mobile": { "hideLogo": true }
+          "cta": {
+            "label": "Learn More",
+            "href": "#"
+          },
+          "mobile": {
+            "hideLogo": true
+          }
         }
       },
       {
@@ -73,17 +136,51 @@
           "rest": " before the surgery even starts."
         },
         "points": [
-          { "before": "Turns waiting lists into ", "strong": "preparation lists", "rest": "." },
-          { "before": "Identifies ", "strong": "high-risk elective", "rest": " patients." },
-          { "strong": "Personalized prehabilitation", "rest": " at scale." },
-          { "before": "Multichannel ", "strong": "post-op journey", "rest": " assistance." }
+          {
+            "before": "Turns waiting lists into ",
+            "strong": "preparation lists",
+            "rest": "."
+          },
+          {
+            "before": "Identifies ",
+            "strong": "high-risk elective",
+            "rest": " patients."
+          },
+          {
+            "strong": "Personalized prehabilitation",
+            "rest": " at scale."
+          },
+          {
+            "before": "Multichannel ",
+            "strong": "post-op journey",
+            "rest": " assistance."
+          }
         ],
+        "media": {
+          "variant": "surgery",
+          "pill": "Surgery scheduled",
+          "patient": {
+            "name": "Sarah McDermott",
+            "avatar": "/triage/avatar-woman.jpg"
+          },
+          "clinician": {
+            "name": "Dr Smith",
+            "detail": "Hip replacement",
+            "avatar": "/triage/avatar-doctor.jpg"
+          },
+          "date": "Jul 27",
+          "time": "8:00",
+          "lead": "10 days"
+        },
         "case": {
           "logo": "/triage/nhs-logo.png",
           "logoAlt": "NHS Cheshire and Merseyside",
           "stat": "72%",
           "statLabel": "reduction in surgical complications",
-          "cta": { "label": "Learn More", "href": "#" }
+          "cta": {
+            "label": "Learn More",
+            "href": "#"
+          }
         }
       },
       {
@@ -93,18 +190,49 @@
           "rest": " after discharge."
         },
         "points": [
-          { "before": "End-to-end automated ", "strong": "care pathways", "rest": "." },
-          { "before": "Hyper-personalized ", "strong": "post-discharge journeys", "rest": "." },
-          { "strong": "Escalates urgent cases", "rest": " to the right team." },
-          { "before": "Integrates with your EHR ", "strong": "in real-time", "rest": "." }
+          {
+            "before": "End-to-end automated ",
+            "strong": "care pathways",
+            "rest": "."
+          },
+          {
+            "before": "Hyper-personalized ",
+            "strong": "post-discharge journeys",
+            "rest": "."
+          },
+          {
+            "strong": "Escalates urgent cases",
+            "rest": " to the right team."
+          },
+          {
+            "before": "Integrates with your EHR ",
+            "strong": "in real-time",
+            "rest": "."
+          }
         ],
+        "media": {
+          "variant": "discharge",
+          "patient": {
+            "name": "Patrick Lopez",
+            "avatar": "/triage/avatar-patient.jpg"
+          },
+          "gauge": { "value": "60" },
+          "treatedFor": "COPD exacerbation",
+          "los": "3 days",
+          "discharge": { "date": "Today", "time": "10:30" }
+        },
         "case": {
           "logo": "/triage/nhs-logo.png",
           "logoAlt": "NHS Cheshire and Merseyside",
           "stat": "-34%",
           "statLabel": "reduction in 30-day readmissions",
-          "cta": { "label": "Learn More", "href": "#" },
-          "mobile": { "stat": "34%" }
+          "cta": {
+            "label": "Learn More",
+            "href": "#"
+          },
+          "mobile": {
+            "stat": "34%"
+          }
         }
       }
     ]
@@ -118,14 +246,33 @@
       "alt": "MDR Class IIa Compliant"
     },
     "headline": {
-      "highlight": "Health Triage line that",
-      "rest": "\nguides every patient\nto the right care."
+      "highlight": "Health Triage line that ",
+      "rest": "guides every patient to the right care."
+    },
+    "media": {
+      "variant": "call",
+      "avatar": "/triage/call-avatar.jpg",
+      "name": "Olivia Carter",
+      "status": "Incoming call..."
     },
     "points": [
-      { "strong": "Certified", "rest": " for clinical use." },
-      { "strong": "Multi-channel", "rest": ", 24/7, never off shift." },
-      { "before": "Trained on ", "strong": "14M+ real triage interactions", "rest": "." },
-      { "strong": "Human in command", "rest": ", when needed." }
+      {
+        "strong": "Certified",
+        "rest": " for clinical use."
+      },
+      {
+        "strong": "Multi-channel",
+        "rest": ", 24/7, never off shift."
+      },
+      {
+        "before": "Trained on ",
+        "strong": "14M+ real triage interactions",
+        "rest": "."
+      },
+      {
+        "strong": "Human in command",
+        "rest": ", when needed."
+      }
     ]
   },
   "case": {
@@ -133,6 +280,9 @@
     "logoAlt": "Hellenic Republic Ministry of Health",
     "stat": "10M",
     "statLabel": "citizens served by a free, always-on hotline",
-    "cta": { "label": "Learn More", "href": "#" }
+    "cta": {
+      "label": "Learn More",
+      "href": "#"
+    }
   }
 }

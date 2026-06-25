@@ -12,6 +12,7 @@
 import triage from "../../data/triage.json";
 import Eyebrow from "../ui/Eyebrow.astro";
 import SolutionCard from "../ui/SolutionCard.astro";
+import TriageMedia from "../ui/TriageMedia.astro";
 import ArrowCircle from "../ui/ArrowCircle.astro";
 
 const { eyebrow, heading, tabs, card, case: useCase, orchestration } = triage;
@@ -185,7 +186,9 @@ const cardBg: Record<number, string> = {
                 stat={useCase.stat}
                 statLabel={useCase.statLabel}
                 cta={useCase.cta}
-              />
+              >
+                <TriageMedia slot="media" media={card.media} />
+              </SolutionCard>
             </div>
           </div>
 
@@ -214,7 +217,9 @@ const cardBg: Record<number, string> = {
                   statLabel={c.case.statLabel}
                   mobile={c.case.mobile}
                   cta={c.case.cta}
-                />
+                >
+                  <TriageMedia slot="media" media={c.media} />
+                </SolutionCard>
               </div>
             ))
           }
@@ -490,10 +495,12 @@ const cardBg: Record<number, string> = {
         const r = prog[i];
         const e = ease(r);
         el.style.transform = `translateX(${110 * (1 - e)}%)`;
-        // Once entered the card stays opaque until the next card slides in over
-        // it, then fades out so the incoming card cleanly replaces the previous.
+        // Crossfade rather than a hard swap: `e` fades the card in as it slides
+        // in (and back out as it slides away on reverse scroll, so it no longer
+        // snaps to invisible the instant it leaves), while `1 - next` fades it
+        // out as the following card slides in over it.
         const next = i + 1 < prog.length ? ease(prog[i + 1]) : 0;
-        el.style.opacity = r > 0 ? String(1 - next) : "0";
+        el.style.opacity = r > 0 ? String(e * (1 - next)) : "0";
         el.style.pointerEvents = "none";
         if (r >= 0.5) active = i;
       });
@@ -599,6 +606,51 @@ const cardBg: Record<number, string> = {
       render();
     };
 
+    // Custom eased scroll tween. The native `behavior: "smooth"` runs a short,
+    // fixed-duration scroll, so a pill click that spans several cards snaps
+    // through the reveal too fast to read. Tweening the scroll position over a
+    // longer, eased duration lets the scroll-driven card scrubbing glide in at a
+    // steady pace no matter how many segments the jump covers. A new tween (or
+    // any manual wheel/touch scroll) cancels the one in flight.
+    // Gentle in, long decelerating out — most of the travel happens early and
+    // the card eases into its resting position rather than stopping abruptly.
+    const easeOutQuint = (t: number) => 1 - Math.pow(1 - t, 5);
+
+    let scrollAnim = 0;
+    const cancelScrollTween = () => {
+      if (scrollAnim) {
+        cancelAnimationFrame(scrollAnim);
+        scrollAnim = 0;
+      }
+    };
+
+    const smoothScrollTo = (target: number) => {
+      cancelScrollTween();
+      const start = window.scrollY;
+      const dist = target - start;
+      if (Math.abs(dist) < 1) return;
+      // Scale the duration with distance (one card ≈ cardLen px) but keep it
+      // within a comfortable range so short and long jumps both feel deliberate.
+      const segments = cardLen ? Math.abs(dist) / cardLen : 1;
+      const duration = Math.min(2000, Math.max(900, 620 * segments));
+      const startTime = performance.now();
+      const stepTween = (now: number) => {
+        const t = Math.min(1, (now - startTime) / duration);
+        window.scrollTo(0, start + dist * easeOutQuint(t));
+        if (t < 1) {
+          scrollAnim = requestAnimationFrame(stepTween);
+        } else {
+          scrollAnim = 0;
+        }
+      };
+      scrollAnim = requestAnimationFrame(stepTween);
+    };
+
+    // A manual scroll gesture should interrupt an in-flight tween so the user
+    // never fights the animation.
+    window.addEventListener("wheel", cancelScrollTween, { passive: true });
+    window.addEventListener("touchstart", cancelScrollTween, { passive: true });
+
     // Clicking a Care Orchestration nav pill jumps to the scroll position where
     // that card is fully revealed (the end of its own horizontal-reveal segment).
     // Only meaningful while pinned — otherwise only the lime card shows.
@@ -607,8 +659,7 @@ const cardBg: Record<number, string> = {
     const scrollToCard = (i: number) => {
       if (!pinned) return;
       const trackTop = window.scrollY + track.getBoundingClientRect().top;
-      const target = trackTop - stickTop + offsetForCard(i);
-      window.scrollTo({ top: target, behavior: "smooth" });
+      smoothScrollTo(trackTop - stickTop + offsetForCard(i));
     };
 
     // Mobile arrows while pinned: jump to the scroll offset for carousel index
@@ -616,10 +667,7 @@ const cardBg: Record<number, string> = {
     const scrollToPinnedIndex = (c: number) => {
       const idx = Math.max(0, Math.min(N, c));
       const trackTop = window.scrollY + track.getBoundingClientRect().top;
-      window.scrollTo({
-        top: trackTop - stickTop + idx * cardLen,
-        behavior: "smooth",
-      });
+      smoothScrollTo(trackTop - stickTop + idx * cardLen);
     };
 
     tabEls.forEach((tab, i) => {

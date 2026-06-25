@@ -1,0 +1,265 @@
+---
+/**
+ * TriageMedia — the illustrative "app screen" that fills a SolutionCard's media
+ * panel in the Triage section (Figma 8797:46138 / 50107 / 50424 / 50520 / 50651).
+ * One block per use case, keyed by `media.variant`; each mirrors its Figma node
+ * at the panel's native 376×470. Content-free — every string/photo comes from
+ * `data/triage.json` (`card.media` / `orchestration.cards[].media`).
+ *
+ * Variants:
+ *   call      — lime Clinical Triage: an incoming-call mock (pill + phone button)
+ *   noshow    — patient card with a red "DNA risk" gauge
+ *   campaign  — population-health campaign card (progress + eligibility list)
+ *   surgery   — patient card topped by a "Surgery scheduled" pill
+ *   discharge — patient card with an amber risk gauge + discharge details
+ */
+interface Props {
+  media: any;
+}
+const { media } = Astro.props;
+const v = media.variant as string;
+
+// Inlined Hugeicons (stroke = currentColor so each use recolors to its context:
+// white on a purple disc, black on a teal one). Native 17.9px / 14.9px viewBoxes.
+const ICON: Record<string, string> = {
+  calendar: `<svg width="100%" height="100%" viewBox="0 0 17.9048 17.9048" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.9292 1.4917V4.47583M5.96094 1.4917V4.47583" stroke="currentColor" stroke-width="1.11905" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.69469 2.98389H8.20263C5.38916 2.98389 3.98244 2.98389 3.1084 3.85792C2.23437 4.73195 2.23438 6.13868 2.23438 8.95214V10.4442C2.23438 13.2576 2.23437 14.6644 3.1084 15.5384C3.98244 16.4125 5.38916 16.4125 8.20263 16.4125H9.69469C12.5081 16.4125 13.9149 16.4125 14.7889 15.5384C15.6629 14.6644 15.6629 13.2576 15.6629 10.4442V8.95214C15.6629 6.13868 15.6629 4.73195 14.7889 3.85792C13.9149 2.98389 12.5081 2.98389 9.69469 2.98389Z" stroke="currentColor" stroke-width="1.11905" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.23438 7.45996H15.6629" stroke="currentColor" stroke-width="1.11905" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  clock: `<svg width="100%" height="100%" viewBox="0 0 17.9048 17.9048" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.95251 16.4123C13.0727 16.4123 16.4128 13.0722 16.4128 8.95202C16.4128 4.8318 13.0727 1.4917 8.95251 1.4917C4.83229 1.4917 1.49219 4.8318 1.49219 8.95202C1.49219 13.0722 4.83229 16.4123 8.95251 16.4123Z" stroke="currentColor" stroke-width="1.11905" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.95325 4.47601V8.95223H11.9374" stroke="currentColor" stroke-width="1.11905" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  sparkle: `<svg width="100%" height="100%" viewBox="0 0 14.9206 14.9206" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.46094 1.86523V3.73031" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/><path d="M7.46094 11.1904V13.0555" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/><path d="M13.0526 7.46045H11.1875" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/><path d="M3.73227 7.46045H1.86719" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/><path d="M11.4125 3.50439L10.0938 4.8232" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/><path d="M4.81881 10.0977L3.5 11.4165" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/><path d="M11.4125 11.4165L10.0938 10.0977" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/><path d="M4.81881 4.8232L3.5 3.50439" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/></svg>`,
+};
+---
+
+{
+  /* ---------- call (lime Clinical Triage) ---------- */
+  v === "call" && (
+    <div class="absolute inset-0">
+      <div class="absolute left-1/2 top-[142.49px] flex -translate-x-1/2 items-center gap-[9.698px] rounded-full bg-blue-100 py-[8.952px] pl-[8.952px] pr-[23.873px]">
+        <span class="block size-[47.746px] shrink-0 overflow-hidden rounded-full">
+          <img src={media.avatar} alt="" class="size-full object-cover" />
+        </span>
+        <span class="flex flex-col gap-[2.984px] whitespace-nowrap">
+          <span class="text-[17.905px] font-semibold leading-none">{media.name}</span>
+          <span class="text-[14.921px] leading-none">{media.status}</span>
+        </span>
+      </div>
+      <div class="absolute left-1/2 top-[243.95px] size-[82.81px] -translate-x-1/2">
+        <span class="absolute inset-0 rounded-full border border-accent/25" />
+        <span class="absolute left-1/2 top-1/2 size-[67.14px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent" />
+        <img
+          src="/triage/call-phone.svg"
+          alt=""
+          class="absolute left-1/2 top-1/2 size-[47.746px] -translate-x-1/2 -translate-y-1/2"
+        />
+      </div>
+    </div>
+  )
+}
+
+{
+  /* ---------- noshow (red DNA-risk gauge) ---------- */
+  v === "noshow" && (
+    <div class="flex h-full items-center justify-center">
+      <div class="flex w-[340.19px] flex-col items-center gap-[23.873px] rounded-[35.81px] bg-blue-100 px-[17.905px] pb-[38.794px] pt-[8.952px]">
+        <div class="flex w-full items-center gap-[9.698px] border-b-[0.746px] border-black px-[5.968px] pb-[23.873px] pt-[5.968px]">
+          <span class="block size-[47.746px] shrink-0 overflow-hidden rounded-full">
+            <img src={media.patient.avatar} alt="" class="size-full object-cover" />
+          </span>
+          <span class="text-[23.873px] font-semibold">{media.patient.name}</span>
+        </div>
+        <div class="flex flex-col items-center gap-[47.746px]">
+          <div class="flex flex-col items-center gap-[13.429px]">
+            <div class="flex items-center gap-[5.968px]">
+              <div class="flex items-center gap-[9.698px]">
+                <span class="block size-[36.556px] shrink-0 overflow-hidden rounded-full">
+                  <img src={media.clinician.avatar} alt="" class="size-full object-cover" />
+                </span>
+                <span class="text-[17.905px] font-medium">{media.clinician.name}</span>
+              </div>
+              <span class="size-[4.476px] shrink-0 rounded-full bg-black" />
+              <span class="text-[17.905px] font-semibold">{media.clinician.detail}</span>
+            </div>
+            <div class="flex items-center justify-center gap-[23.873px]">
+              <div class="flex items-center gap-[5.968px]">
+                <span class="flex size-[29.841px] shrink-0 items-center justify-center rounded-full bg-blue-green">
+                  <span class="size-[17.905px]" set:html={ICON.calendar} />
+                </span>
+                <span class="flex items-center gap-[7.46px] text-[17.905px]">
+                  {media.date}
+                  <span class="size-[4.476px] shrink-0 rounded-full bg-black" />
+                  {media.time}
+                </span>
+              </div>
+              <div class="flex items-center gap-[7.46px]">
+                <span class="flex size-[29.841px] shrink-0 items-center justify-center rounded-full bg-blue-green">
+                  <span class="size-[17.905px]" set:html={ICON.clock} />
+                </span>
+                <span class="text-[17.905px]">{media.lead}</span>
+              </div>
+            </div>
+          </div>
+          <div class="relative flex size-[167.857px] items-center justify-center rounded-full bg-white">
+            <img
+              src="/triage/gauge-red.svg"
+              alt=""
+              class="absolute left-1/2 top-1/2 size-[133.873px] -translate-x-1/2 -translate-y-1/2"
+            />
+            <div class="relative flex flex-col items-center gap-[11.827px]">
+              <span class="text-[58.1px] leading-none text-risk-high">{media.gauge.value}</span>
+              <span class="rounded-full bg-risk-high px-[11.827px] py-[5.914px] text-[7.747px] font-semibold uppercase text-white">
+                {media.gauge.label}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+{
+  /* ---------- campaign (population health) ---------- */
+  v === "campaign" && (
+    <div class="flex h-full items-center justify-center">
+      <div class="flex w-[297.667px] flex-col gap-[29.841px] rounded-[29.841px] bg-blue-100 p-[17.905px]">
+        <div class="flex flex-col gap-[11.937px]">
+          <p class="text-[13.429px] leading-[1.2] tracking-[-0.0514px]">{media.label}</p>
+          <p class="text-[23.873px] font-medium leading-[1.2] tracking-[-0.746px]">{media.title}</p>
+          <div class="flex flex-col items-end gap-[11.937px]">
+            <div class="h-[4.476px] w-full overflow-hidden rounded-full bg-white">
+              <div class="h-full w-[50.73px] rounded-full bg-purple-200" />
+            </div>
+            <div class="flex w-full items-center justify-between">
+              <div class="flex items-center gap-[5.968px]">
+                <span class="flex size-[23.873px] shrink-0 items-center justify-center rounded-full bg-purple-200 text-white">
+                  <span class="size-[14.921px]" set:html={ICON.sparkle} />
+                </span>
+                <p class="text-[11.937px]">{media.matching}</p>
+              </div>
+              <p class="text-[11.937px] leading-[1.2] tracking-[-0.0514px]">{media.progress}</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-[11.937px]">
+          {media.criteria.map((c: any) => (
+            <div class="flex items-center gap-[5.968px]">
+              <span
+                class:list={[
+                  "size-[8.952px] shrink-0 rounded-full",
+                  c.match ? "bg-black" : "border border-black",
+                ]}
+              />
+              <p class="text-[14.921px] tracking-[-0.0514px]">{c.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+{
+  /* ---------- surgery (patient card + "scheduled" pill) ---------- */
+  v === "surgery" && (
+    <div class="flex h-full items-center justify-center">
+      <div class="flex flex-col items-center gap-[23.873px]">
+        <div class="flex w-full items-center gap-[9.698px] rounded-full bg-purple-50 py-[8.952px] pl-[8.952px] pr-[23.873px]">
+          <span class="flex size-[47.746px] shrink-0 items-center justify-center rounded-full bg-purple-200 text-white">
+            <span class="size-[23.873px]" set:html={ICON.calendar} />
+          </span>
+          <span class="text-[17.905px] font-medium">{media.pill}</span>
+        </div>
+        <div class="flex flex-col gap-[23.873px] rounded-[29.841px] bg-blue-100 p-[17.905px]">
+          <div class="flex w-full items-center gap-[9.698px] border-b-[0.746px] border-black px-[5.968px] pb-[23.873px] pt-[5.968px]">
+            <span class="block size-[47.746px] shrink-0 overflow-hidden rounded-full">
+              <img src={media.patient.avatar} alt="" class="size-full object-cover" />
+            </span>
+            <span class="text-[23.873px] font-semibold">{media.patient.name}</span>
+          </div>
+          <div class="flex flex-col gap-[13.429px]">
+            <div class="flex items-center justify-center gap-[5.968px]">
+              <div class="flex items-center gap-[9.698px]">
+                <span class="block size-[36.556px] shrink-0 overflow-hidden rounded-full">
+                  <img src={media.clinician.avatar} alt="" class="size-full object-cover" />
+                </span>
+                <span class="text-[17.905px] font-medium">{media.clinician.name}</span>
+              </div>
+              <span class="size-[4.476px] shrink-0 rounded-full bg-black" />
+              <span class="text-[17.905px] font-semibold">{media.clinician.detail}</span>
+            </div>
+            <div class="flex items-center justify-center gap-[5.968px]">
+              <span class="flex size-[29.841px] shrink-0 items-center justify-center rounded-full bg-blue-green">
+                <span class="size-[17.905px]" set:html={ICON.calendar} />
+              </span>
+              <span class="flex items-center gap-[7.46px] text-[17.905px]">
+                {media.date}
+                <span class="size-[4.476px] shrink-0 rounded-full bg-black" />
+                {media.time}
+              </span>
+            </div>
+            <div class="flex items-center gap-[7.46px]">
+              <span class="flex size-[29.841px] shrink-0 items-center justify-center rounded-full bg-blue-green">
+                <span class="size-[17.905px]" set:html={ICON.clock} />
+              </span>
+              <span class="text-[17.905px]">{media.lead}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+{
+  /* ---------- discharge (amber risk gauge + discharge details) ---------- */
+  v === "discharge" && (
+    <div class="flex h-full items-center justify-center">
+      <div class="flex w-[340.19px] flex-col gap-[23.873px] rounded-[35.81px] bg-blue-100 px-[17.905px] pb-[17.905px] pt-[8.952px]">
+        <div class="flex w-full items-center justify-between border-b-[0.746px] border-black px-[5.968px] pb-[23.873px] pt-[5.968px]">
+          <div class="flex items-center gap-[9.698px]">
+            <span class="block size-[47.746px] shrink-0 overflow-hidden rounded-full">
+              <img src={media.patient.avatar} alt="" class="size-full object-cover" />
+            </span>
+            <span class="text-[23.873px] font-semibold">{media.patient.name}</span>
+          </div>
+          <div class="relative flex size-[51.602px] shrink-0 items-center justify-center rounded-full bg-white">
+            <img
+              src="/triage/gauge-amber.svg"
+              alt=""
+              class="absolute left-1/2 top-1/2 size-[41.154px] -translate-x-1/2 -translate-y-1/2"
+            />
+            <span class="relative text-[18.005px] leading-none text-risk-med">{media.gauge.value}</span>
+          </div>
+        </div>
+        <div class="flex flex-col gap-[20.889px]">
+          <div class="flex flex-col gap-[5.968px] text-[17.905px]">
+            <p class="font-semibold">Treated for</p>
+            <p>{media.treatedFor}</p>
+          </div>
+          <div class="flex items-start justify-between">
+            <div class="flex flex-col gap-[5.968px]">
+              <p class="text-[17.905px] font-semibold">LOS</p>
+              <div class="flex items-center gap-[5.968px]">
+                <span class="flex size-[29.841px] shrink-0 items-center justify-center rounded-full bg-blue-green">
+                  <span class="size-[17.905px]" set:html={ICON.clock} />
+                </span>
+                <span class="text-[17.905px]">{media.los}</span>
+              </div>
+            </div>
+            <div class="flex flex-col gap-[5.968px]">
+              <p class="text-[17.905px] font-semibold">Discharged date</p>
+              <div class="flex items-center gap-[5.968px]">
+                <span class="flex size-[29.841px] shrink-0 items-center justify-center rounded-full bg-blue-green">
+                  <span class="size-[17.905px]" set:html={ICON.calendar} />
+                </span>
+                <span class="flex items-center gap-[7.46px] text-[17.905px]">
+                  {media.discharge.date}
+                  <span class="size-[4.476px] shrink-0 rounded-full bg-black" />
+                  {media.discharge.time}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
