@@ -907,6 +907,16 @@ const { heading, steps, cards, integrationLogos, closing } = data;
     }
   }
 
+  /* Tablet / small-desktop range (lg up to 1300px): the side-by-side stage is
+     active but horizontal space is tight, so shrink the diagram 40px below its
+     native size (827 → 787) so it sits more comfortably beside the cards. The
+     height-constrained term is unchanged so short viewports still fit. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) and (max-width: 1300px) {
+    :global(html.js) .clinical-diagrams {
+      width: min(787px, calc((100svh - 112px) * 827 / 811));
+    }
+  }
+
   /* ====================================================================
      MOBILE (<lg) — cards stacked above the illustration; A–F crossfade in
      a pinned stage; the closing beat is its own static block.

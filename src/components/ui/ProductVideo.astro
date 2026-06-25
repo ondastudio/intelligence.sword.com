@@ -66,9 +66,11 @@ const { src, poster, alt, class: className = "" } = Astro.props;
     }
   }
 
-  /* Enhanced (sm+): full-bleed fullscreen stage the scrubber scales
-     0.82 → 1 → 0.82, the frame filling the viewport at peak. */
-  @media (prefers-reduced-motion: no-preference) and (min-width: 640px) {
+  /* Enhanced (desktop, xl+): full-bleed fullscreen stage the scrubber scales
+     0.82 → 1 → 0.82, the frame filling the viewport at peak. Gated to ≥1280px
+     so tablets (~1024px, often portrait) don't stretch the 16:9 video to full
+     height — they keep the contained 16:9 grow below instead. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 1280px) {
     :global(html.js) .video-scroll {
       padding: 80px 0;
     }
@@ -83,11 +85,11 @@ const { src, poster, alt, class: className = "" } = Astro.props;
     }
   }
 
-  /* Enhanced (mobile, below sm): the scrubber scales the frame up from inset to
-     edge-to-edge width as it crosses centre — but it keeps its 16:9 ratio
-     instead of going fullscreen-tall, since a portrait crop would gut a
-     landscape product video. */
-  @media (prefers-reduced-motion: no-preference) and (max-width: 639px) {
+  /* Enhanced (phones + tablets, below xl): the scrubber scales the frame up from
+     inset to edge-to-edge width as it crosses centre — but it keeps its 16:9
+     ratio instead of going fullscreen-tall, since a portrait crop would gut a
+     landscape product video. Covers up to 1279px so ~1024px tablets stay 16:9. */
+  @media (prefers-reduced-motion: no-preference) and (max-width: 1279px) {
     :global(html.js) .video-scroll {
       /* No horizontal padding so width:100% == 100vw → the frame reaches the
          screen edges at scale 1; the start scale (0.82) provides the inset. */
