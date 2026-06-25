@@ -195,8 +195,8 @@
       "logo": "/logos/hellenic-health.png",
       "logoAlt": "Hellenic Ministry of Health",
       "logoMono": false,
-      "image": "/customers/story-hero-nhs.png",
-      "imageAlt": "Citizens navigating public healthcare",
+      "image": "/customers/story-hero-greece.png",
+      "imageAlt": "Adonis Georgiadis, Minister of Health (Greece), with the Athens skyline behind",
       "stats": [
         { "value": "10M", "label": "citizens served" },
         { "value": "1566", "label": "National Health Information Line" }
