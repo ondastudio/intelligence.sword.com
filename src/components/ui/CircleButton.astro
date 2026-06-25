@@ -1,8 +1,8 @@
 ---
 /**
  * CircleButton — large circular dotted button with a downward chevron.
- * Faithful to the design's "Frame 2147224426" (134×134): a dotted ring
- * (round-capped dashes) enclosing a down arrow.
+ * Faithful to the design's "Frame 2147224426" (110×110 on mobile, 134×134 on
+ * sm+): a dotted ring (round-capped dashes) enclosing a down arrow.
  * Renders an <a> when `href` is set, otherwise a <button>.
  */
 interface Props {
@@ -15,7 +15,7 @@ const { href, label = "Scroll to explore", class: className = "", ...rest } =
   Astro.props;
 
 const classes = [
-  "group inline-flex size-[134px] items-center justify-center text-black",
+  "group inline-flex size-[110px] items-center justify-center text-black sm:size-[134px]",
   className,
 ].join(" ");
 const Tag = href ? "a" : "button";
@@ -23,7 +23,7 @@ const Tag = href ? "a" : "button";
 
 <Tag class={classes} href={href} aria-label={label} {...rest}>
   <svg
-    class="size-[134px]"
+    class="size-[110px] sm:size-[134px]"
     viewBox="0 0 134 134"
     fill="none"
     aria-hidden="true"
