@@ -43,6 +43,23 @@ const isVideo = /\.(webm|mp4|mov|m4v|ogg)$/i.test(src);
 const showControls = isVideo && controls;
 const showProgress = isVideo && progress;
 
+// Safari/WebKit can't decode AV1 (our WebM is AV1) in software, so a lone
+// .webm src silently fails to play there. For a .webm source we emit two
+// <source>s — the AV1 WebM first (small, for Chrome/Firefox) and an H.264 MP4
+// sibling (same basename) second for Safari. The WebM's `type` carries its full
+// AV1 codec string so Safari correctly rejects it and falls through to the MP4
+// instead of selecting the WebM container and failing to decode.
+const webmAv1Type = 'video/webm; codecs="av01.0.08M.08, opus"';
+const sources =
+  isVideo && /\.webm$/i.test(src)
+    ? [
+        { src, type: webmAv1Type },
+        { src: src.replace(/\.webm$/i, ".mp4"), type: "video/mp4" },
+      ]
+    : isVideo
+      ? [{ src, type: undefined }]
+      : [];
+
 // `fill` defers sizing + radius to the parent; otherwise the frame owns its
 // aspect ratio and the design's large card radius.
 const containerClass = fill
@@ -75,7 +92,6 @@ const iconBase = "size-6";
       <>
         <video
           class="size-full object-cover"
-          src={src}
           poster={poster}
           aria-label={alt}
           autoplay
@@ -83,7 +99,11 @@ const iconBase = "size-6";
           muted
           playsinline
           preload="metadata"
-        />
+        >
+          {sources.map((s) => (
+            <source src={s.src} type={s.type} />
+          ))}
+        </video>
         {showControls && (
           <>
             <button
