@@ -17,9 +17,12 @@ import Button from "../ui/Button.astro";
 const mobileItems = site.mobileMenu.items;
 ---
 
-{/* `fixed` so it stays put while the page scrolls. */}
+{/*
+  `fixed` so it stays put while the page scrolls. It also hides (fades + slides
+  up) when scrolling down and reappears when scrolling up — see the script.
+*/}
 <header
-  class="fixed inset-x-0 top-0 z-30 px-5 pt-[14px] lg:hidden"
+  class="fixed inset-x-0 top-0 z-30 px-5 pt-[14px] transition-[translate,opacity] duration-500 ease-out lg:hidden"
   data-mobile-header
 >
   <div
@@ -233,5 +236,38 @@ const mobileItems = site.mobileMenu.items;
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") setOpen(false);
     });
+
+    // Hide the header (fade + slide up) on scroll down, reveal on scroll up.
+    // Stays visible near the top of the page and whenever the menu is open.
+    const isMenuOpen = () => toggle?.getAttribute("aria-expanded") === "true";
+    const setHidden = (hidden: boolean) => {
+      header.classList.toggle("-translate-y-full", hidden);
+      header.classList.toggle("opacity-0", hidden);
+    };
+
+    let lastY = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (isMenuOpen() || y <= 80) {
+        setHidden(false);
+      } else if (y > lastY + 4) {
+        setHidden(true);
+      } else if (y < lastY - 4) {
+        setHidden(false);
+      }
+      lastY = y;
+      ticking = false;
+    };
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(onScroll);
+        }
+      },
+      { passive: true },
+    );
   }
 </script>
