@@ -27,7 +27,7 @@
           "tone": "white",
           "logo": "/logos/nhs-black-country.png",
           "logoAlt": "NHS Black Country Integrated Care Board",
-          "title": "Cutting Hospital Stays with AI-driven Prehabilitation",
+          "title": "Cutting Hospital Stays with\nAI-driven Prehabilitation",
           "stat": { "value": "£405K", "label": "saved for one NHS Trust in 3 months" },
           "cta": { "label": "Read more", "href": "/customers/nhs-prehabilitation" }
         },
@@ -36,7 +36,7 @@
           "tone": "white",
           "logo": "/logos/hellenic-health.png",
           "logoAlt": "Hellenic Ministry of Health",
-          "title": "Bringing Intelligent Triage to Greece",
+          "title": "Bringing Intelligent\nTriage to Greece",
           "stat": { "value": "10M", "label": "citizens served" },
           "ctas": [
             { "label": "Read more", "href": "/customers/greece" },
@@ -95,6 +95,7 @@
           "logoAlt": "South Tees Hospitals NHS Foundation Trust",
           "title": "AI Surgical Readiness Closes the Gap for Deprived Communities",
           "stat": { "value": "84%", "label": "improvement in patient-reported quality of life" },
+          "statWidth": "text-balance",
           "cta": { "label": "Read more", "href": "/customers/nhs-deprived-communities" }
         }
       ]
