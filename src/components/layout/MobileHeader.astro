@@ -22,7 +22,7 @@ const mobileItems = site.mobileMenu.items;
   up) when scrolling down and reappears when scrolling up — see the script.
 */}
 <header
-  class="fixed inset-x-0 top-0 z-30 px-5 pt-[14px] transition-[translate,opacity] duration-500 ease-out lg:hidden"
+  class="fixed inset-x-0 top-0 z-30 px-5 pt-[14px] lg:hidden"
   data-mobile-header
 >
   <div
@@ -181,6 +181,22 @@ const mobileItems = site.mobileMenu.items;
   </div>
 </header>
 
+<style>
+  /* Hide-on-scroll-down animation. Driven via `transform` (not the individual
+     `translate` property): Safari interpolates `transform` between `none` and a
+     value reliably in BOTH directions, whereas transitioning the `translate`
+     property from `none` only animated on the way in — the out jumped. */
+  [data-mobile-header] {
+    transition:
+      transform 500ms ease-out,
+      opacity 500ms ease-out;
+  }
+  [data-mobile-header].is-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+</style>
+
 <script>
   const header = document.querySelector<HTMLElement>("[data-mobile-header]");
   if (header) {
@@ -241,8 +257,7 @@ const mobileItems = site.mobileMenu.items;
     // Stays visible near the top of the page and whenever the menu is open.
     const isMenuOpen = () => toggle?.getAttribute("aria-expanded") === "true";
     const setHidden = (hidden: boolean) => {
-      header.classList.toggle("-translate-y-full", hidden);
-      header.classList.toggle("opacity-0", hidden);
+      header.classList.toggle("is-hidden", hidden);
     };
 
     let lastY = window.scrollY;
