@@ -263,7 +263,7 @@ const { stats, testimonial, cta } = data;
 </section>
 
 <style>
-  @media (max-width: 767.98px) {
+  @media (max-width: 1023.98px) {
     .numbers {
       padding-inline: 20px;
       padding-block: 80px 120px;
@@ -386,18 +386,26 @@ const { stats, testimonial, cta } = data;
     }
   }
 
+  /* Tablet keeps the mobile single-column layout but on a wider, still
+     contained measure so the cards don't stretch edge-to-edge. */
+  @media (min-width: 768px) and (max-width: 1023.98px) {
+    .numbers > div {
+      max-width: 480px;
+    }
+  }
+
   /* Pull the grid up so its cards overlap the Operations stage above and
      "slide" up toward the pinned title as the page scrolls. Sits below the
      title (z-1 < z-2) so the title can lift away over it. Desktop +
-     motion-allowed only — mobile keeps the sections cleanly stacked. */
-  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+     motion-allowed only — mobile and tablet keep the sections cleanly stacked. */
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
     .numbers {
       margin-top: -70vh;
     }
   }
 
-  /* --- Bento: stacked on mobile, exact design canvas at md+ --- */
-  @media (min-width: 768px) {
+  /* --- Bento: stacked on mobile/tablet, exact design canvas at lg+ --- */
+  @media (min-width: 1024px) {
     .nb-canvas {
       display: block;
       position: relative;
@@ -448,7 +456,7 @@ const { stats, testimonial, cta } = data;
   }
 
   const motionOk = window.matchMedia(
-    "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
+    "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
   );
   if (motionOk.matches) {
     document

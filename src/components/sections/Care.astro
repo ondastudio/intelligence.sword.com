@@ -75,7 +75,7 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
         <!-- Capability grid: 3 columns × 2 rows on desktop. Each card carries
              its own reveal with a stepped delay so they cascade in. Hidden on
              mobile, where the swipe-through deck below takes over. -->
-        <div class="hidden gap-4 md:grid md:grid-cols-3">
+        <div class="hidden gap-4 md:grid md:grid-cols-2 lg:grid-cols-3">
           {
             care.cards.map((card, i) => (
               <div data-reveal style={`transition-delay:${i * 110}ms`}>
