@@ -94,53 +94,55 @@ const activeIndex = Math.max(
 
 // Outlined uppercase chip — reused for customer-type + use-case tags.
 const chip =
-  "rounded-[24px] border border-black/[0.24] px-4 py-2 text-base font-semibold uppercase text-black";
+  "rounded-[24px] border border-black/[0.24] px-4 py-2 text-sm font-semibold uppercase text-black";
 ---
 
 <article>
   {/* ---- 1. Hero ----------------------------------------------------------- */}
   <header class="relative overflow-hidden bg-surface">
-    {/* Photo. On mobile the design contains it to the top ~40% so the title can
-        sit below it on a clean wash (full-bleed text-over-photo is unreadable on
-        a tall mobile hero); on md+ it stays full-bleed behind the gradient. */}
+    {/* Photo. On mobile + tablet the design contains it to the top ~40% so the
+        title can sit below it on a clean wash (full-bleed text-over-photo is
+        unreadable on a narrow hero); on lg+ it stays full-bleed behind the
+        gradient. */}
     <img
       src={hero.image}
       alt={hero.imageAlt}
-      class="pointer-events-none absolute inset-x-0 top-0 h-[44%] w-full object-cover md:inset-0 md:h-full"
+      class="pointer-events-none absolute inset-x-0 top-0 h-[44%] w-full object-cover lg:inset-0 lg:h-full"
     />
     {/* transparent → lavender → surface wash. On mobile it blends the photo's
         lower edge into the surface so the copy below reads as dark-on-light; on
-        md+ it covers the lower ~2/3 of the full-bleed photo (Figma: gradient at
+        lg+ it covers the lower ~2/3 of the full-bleed photo (Figma: gradient at
         y=300, h=600 of the 900 hero). */}
     <div
-      class="absolute inset-x-0 top-[22%] h-[28%] bg-gradient-to-b from-transparent via-lavender to-surface md:top-auto md:bottom-0 md:h-[67%]"
+      class="absolute inset-x-0 top-[22%] h-[28%] bg-gradient-to-b from-transparent via-lavender to-surface lg:top-auto lg:bottom-0 lg:h-[67%]"
     >
     </div>
 
     <div
-      class="relative mx-auto flex min-h-[640px] max-w-[1440px] flex-col justify-end gap-10 px-6 pb-0 pt-[180px] md:min-h-[900px] md:gap-[58px] md:px-20"
+      class="relative mx-auto flex min-h-[640px] max-w-[1440px] flex-col justify-end gap-10 px-6 pb-0 pt-[180px] md:px-20 lg:min-h-[900px] lg:gap-[58px]"
     >
-      {/* logo + label + title. On md+ a 2-col grid places the eyebrow above the
+      {/* logo + label + title. On lg+ a 2-col grid places the eyebrow above the
           title (right col) and drops the logo into the title's row, so the logo
-          top aligns with the top of the title line — not the eyebrow. */}
+          top aligns with the top of the title line — not the eyebrow. Below lg
+          it stacks (single column) below the contained photo. */}
       <div
-        class="flex flex-col gap-8 md:grid md:grid-cols-[273px_1fr] md:items-start md:gap-x-[162px] md:gap-y-3"
+        class="flex flex-col gap-8 lg:grid lg:grid-cols-[273px_1fr] lg:items-start lg:gap-x-[162px] lg:gap-y-3"
       >
         <img
           src={hero.logo}
           alt={hero.logoAlt}
           data-reveal
           class:list={[
-            "h-auto w-[180px] shrink-0 object-contain object-left md:col-start-1 md:row-start-2 md:w-[273px]",
+            "h-auto w-[180px] shrink-0 object-contain object-left lg:col-start-1 lg:row-start-2 lg:w-[273px]",
             { "brightness-0": hero.logoMono !== false },
           ]}
         />
-        <div data-reveal class="md:col-start-2 md:row-start-1">
+        <div data-reveal class="lg:col-start-2 lg:row-start-1">
           <Eyebrow>{hero.eyebrow}</Eyebrow>
         </div>
         <h1
           data-reveal="title"
-          class="font-serif text-h4 font-normal text-black md:col-start-2 md:row-start-2"
+          class="font-serif text-h4 font-normal text-black lg:col-start-2 lg:row-start-2"
         >
           {story.title}
         </h1>
