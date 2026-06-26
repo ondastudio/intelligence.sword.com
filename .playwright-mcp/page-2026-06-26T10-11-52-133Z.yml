@@ -1,0 +1,266 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "sword Intelligence" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e5]
+      - button "Menu" [ref=e8]:
+        - text: Menu
+        - img [ref=e9]
+      - link "Book a meeting" [ref=e14] [cursor=pointer]:
+        - /url: "#"
+  - generic [ref=e15]:
+    - generic [ref=e17]:
+      - generic [ref=e19]:
+        - generic "Sword Intelligence manifesto film" [ref=e20]
+        - button "Pause video" [ref=e21]:
+          - img [ref=e22]
+        - button "Unmute video" [pressed] [ref=e25]:
+          - img [ref=e26]
+      - generic:
+        - generic:
+          - generic:
+            - generic: our mission
+          - 'heading "We’re bringing back healthcare’s most valuable resource: attention." [level=1]'
+    - generic [ref=e31]:
+      - paragraph [ref=e32]:
+        - generic [ref=e33]: When
+        - generic [ref=e34]: attention
+        - generic [ref=e35]: disappears,
+        - generic [ref=e36]: healthcare
+        - generic [ref=e37]: breaks.
+        - generic [ref=e38]: Every
+        - generic [ref=e39]: delay,
+        - generic [ref=e40]: every
+        - generic [ref=e41]: missed
+        - generic [ref=e42]: follow-up,
+        - generic [ref=e43]: every
+        - generic [ref=e44]: unanswered
+        - generic [ref=e45]: message,
+        - generic [ref=e46]: they
+        - generic [ref=e47]: all
+        - generic [ref=e48]: come
+        - generic [ref=e49]: down
+        - generic [ref=e50]: to
+        - generic [ref=e51]: one
+        - generic [ref=e52]: "thing:"
+        - generic [ref=e53]: not
+        - generic [ref=e54]: enough
+        - generic [ref=e55]: human
+        - generic [ref=e56]: attention
+        - generic [ref=e57]: to
+        - generic [ref=e58]: go
+        - generic [ref=e59]: around.
+      - paragraph [ref=e60]:
+        - generic [ref=e61]: Sword
+        - generic [ref=e62]: Intelligence
+        - generic [ref=e63]: was
+        - generic [ref=e64]: born
+        - generic [ref=e65]: inside
+        - generic [ref=e66]: Sword
+        - generic [ref=e67]: to
+        - generic [ref=e68]: solve
+        - generic [ref=e69]: that
+        - generic [ref=e70]: by
+        - generic [ref=e71]: making
+        - generic [ref=e72]: healthcare
+        - generic [ref=e73]: more
+        - generic [ref=e74]: intelligent
+        - generic [ref=e75]: .
+    - generic [ref=e77]:
+      - generic [ref=e78]:
+        - generic [ref=e79]:
+          - generic [ref=e83]: the story so far
+          - heading "From care delivery to operational intelligence" [level=2] [ref=e84]
+        - generic [ref=e85]:
+          - paragraph [ref=e86]: For over a decade, Sword has tackled healthcare’s hardest problems, proving it’s possible to deliver high-quality, accessible care at scale while driving costs down.
+          - paragraph [ref=e87]: Today, we’re leading the era of AI Care, showing that technology can scale care without sacrificing empathy.
+      - generic [ref=e88]:
+        - generic [ref=e89]:
+          - generic [ref=e90]:
+            - img [ref=e92]
+            - generic [ref=e93]:
+              - generic [ref=e94]:
+                - generic [ref=e95]: 10M
+                - img [ref=e97]
+              - paragraph [ref=e99]: All sessions delivered
+          - generic [ref=e100]:
+            - img [ref=e102]
+            - generic [ref=e103]:
+              - generic [ref=e104]:
+                - generic [ref=e105]: 100M
+                - img [ref=e107]
+              - paragraph [ref=e109]: Lives covered
+          - generic [ref=e110]:
+            - img [ref=e112]
+            - generic [ref=e113]:
+              - generic [ref=e115]: "58"
+              - paragraph [ref=e116]: Clinical papers published & patents granted
+          - generic [ref=e117]:
+            - img [ref=e119]
+            - generic [ref=e120]:
+              - generic [ref=e122]: "50"
+              - paragraph [ref=e123]: Patents granted
+          - generic [ref=e124]:
+            - img [ref=e126]
+            - generic [ref=e127]:
+              - generic [ref=e129]: "5"
+              - paragraph [ref=e130]: Continents
+          - generic [ref=e131]:
+            - img [ref=e133]
+            - generic [ref=e134]:
+              - generic [ref=e136]: $4B
+              - paragraph [ref=e137]: Company valuation
+        - generic [ref=e138]:
+          - generic [ref=e139]: Trusted by
+          - generic [ref=e141]:
+            - img "Elevance Health" [ref=e142]
+            - img "Independence" [ref=e143]
+            - img "Highmark Health" [ref=e144]
+            - img "CareFirst" [ref=e145]
+            - img "Fresenius Medical Care" [ref=e146]
+            - img "Generali" [ref=e147]
+            - img [ref=e148]
+            - img [ref=e149]
+            - img [ref=e150]
+            - img [ref=e151]
+            - img [ref=e152]
+            - img [ref=e153]
+    - generic [ref=e155]:
+      - generic [ref=e157]:
+        - generic:
+          - generic [ref=e158]:
+            - heading "We first built AI to improve our care delivery, but we unlocked scale by building it into our operations." [level=2] [ref=e159]
+            - paragraph [ref=e160]: Instead of throwing more humans at the problem, we built AI from the ground up and proved it could run the back-office, cutting costs, streamlining operations and freeing humans to focus on care. The results were too good to keep in-house.
+          - generic [ref=e161]:
+            - generic [ref=e162]:
+              - heading "So, Sword Intelligence was born." [level=2] [ref=e163]
+              - paragraph [ref=e164]: We’ve invested years of clinician time, millions of real care interactions, and hard-won certification to build certified Clinical Intelligence trusted by the care teams of providers, payors, and national health around the world. Because when your care managers get the capacity boost they need, they can give your patients the attention they deserve.
+            - generic [ref=e165]:
+              - generic [ref=e167]:
+                - generic [ref=e168]:
+                  - generic [ref=e169]: 85K
+                  - img [ref=e171]
+                - paragraph [ref=e173]: Physician hours invested
+              - generic [ref=e175]:
+                - generic [ref=e176]:
+                  - generic [ref=e177]: 14M
+                  - img [ref=e179]
+                - paragraph [ref=e181]: Care interactions
+              - generic [ref=e182]:
+                - generic [ref=e183]: Medical certifications
+                - generic [ref=e184]:
+                  - img "ISO 13485/27001 Accredited" [ref=e185]
+                  - img "MDR Class IIa Compliant" [ref=e186]
+                  - img "MHRA Class I & IIa" [ref=e187]
+      - generic [ref=e189]:
+        - heading "Built inside Sword. Proven at scale. Ready for your teams." [level=2] [ref=e190]:
+          - text: Built inside Sword.
+          - text: Proven at scale. Ready for your teams.
+        - generic [ref=e191]:
+          - generic [ref=e192]: Let’s make you AI-first, too
+          - img [ref=e194]
+        - link "Let’s make you AI-first, too" [ref=e196] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=e198]:
+        - generic [ref=e199]:
+          - generic [ref=e203]: meet the team
+          - heading "We show up. We build what’s next. We care, always." [level=2] [ref=e204]
+        - generic [ref=e205]:
+          - article [ref=e206]:
+            - img "Virgílio Bento" [ref=e208]
+            - generic [ref=e209]:
+              - generic [ref=e210]:
+                - paragraph [ref=e211]: Virgílio Bento
+                - paragraph [ref=e212]: PhD — CEO
+              - generic [ref=e213]:
+                - img [ref=e214]
+                - img [ref=e216]
+            - link "Virgílio Bento on LinkedIn" [ref=e219] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/vbento
+          - article [ref=e220]:
+            - img "Rik Renard, RN" [ref=e222]
+            - generic [ref=e223]:
+              - generic [ref=e224]:
+                - paragraph [ref=e225]: Rik Renard, RN
+                - paragraph [ref=e226]: GM — Care Orchestration
+              - generic [ref=e227]:
+                - img [ref=e228]
+                - img [ref=e230]
+            - link "Rik Renard, RN on LinkedIn" [ref=e233] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/rik-renard
+          - article [ref=e234]:
+            - img "Mark Ratnarajah" [ref=e236]
+            - generic [ref=e237]:
+              - generic [ref=e238]:
+                - paragraph [ref=e239]: Mark Ratnarajah
+                - paragraph [ref=e240]: MD — Clinical Director
+              - generic [ref=e241]:
+                - img [ref=e242]
+                - img [ref=e244]
+            - link "Mark Ratnarajah on LinkedIn" [ref=e247] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/mark-ratnarajah-b16432/
+          - article [ref=e248]:
+            - img "João Pereira" [ref=e250]
+            - generic [ref=e251]:
+              - generic [ref=e252]:
+                - paragraph [ref=e253]: João Pereira
+                - paragraph [ref=e254]: Head of Engineering
+              - generic [ref=e255]:
+                - img [ref=e256]
+                - img [ref=e258]
+            - link "João Pereira on LinkedIn" [ref=e261] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/joaovpereira/
+          - article [ref=e262]:
+            - img "Filipa Alcobia Ferreira" [ref=e264]
+            - generic [ref=e265]:
+              - generic [ref=e266]:
+                - paragraph [ref=e267]: Filipa Alcobia Ferreira
+                - paragraph [ref=e268]: Head of Marketing
+              - generic [ref=e269]:
+                - img [ref=e270]
+                - img [ref=e272]
+            - link "Filipa Alcobia Ferreira on LinkedIn" [ref=e275] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/filipaalcobiaferreira/
+          - article [ref=e276]:
+            - img "Selina Sachar" [ref=e278]
+            - generic [ref=e279]:
+              - generic [ref=e280]:
+                - paragraph [ref=e281]: Selina Sachar
+                - paragraph [ref=e282]: Sr. Sales Executive
+              - generic [ref=e283]:
+                - img [ref=e284]
+                - img [ref=e286]
+            - link "Selina Sachar on LinkedIn" [ref=e289] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/selinasachar/
+    - generic [ref=e291]:
+      - heading "If that sounds like you, we should talk." [level=2] [ref=e292]
+      - generic [ref=e293]:
+        - link "Get started" [ref=e294] [cursor=pointer]:
+          - /url: "#"
+        - link "Get started" [ref=e295] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e296]
+  - contentinfo [ref=e298]:
+    - generic [ref=e299]:
+      - generic [ref=e300]:
+        - paragraph [ref=e301]: Built with care, by people who truly understand it.
+        - list [ref=e302]:
+          - listitem [ref=e303]:
+            - link "LinkedIn" [ref=e304] [cursor=pointer]:
+              - /url: https://www.linkedin.com/company/sword-intelligence
+              - text: LinkedIn
+              - img [ref=e305]
+          - listitem [ref=e308]:
+            - link "Sword.com" [ref=e309] [cursor=pointer]:
+              - /url: https://www.sword.com/
+              - text: Sword.com
+              - img [ref=e310]
+      - generic [ref=e313]:
+        - generic [ref=e314]: ©2025 Sword Intelligence, Inc.
+        - generic [ref=e315]:
+          - link "Cookie Settings" [ref=e316] [cursor=pointer]:
+            - /url: https://legal.swordhealth.com/members/privacy-statement
+          - link "Privacy Policy" [ref=e317] [cursor=pointer]:
+            - /url: https://legal.swordhealth.com/members/privacy-statement
+      - img "Sword Intelligence" [ref=e318]
