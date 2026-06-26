@@ -103,7 +103,30 @@ const { intro, born } = about.operations;
             >
               {born.certs.label}
             </span>
-            <div class="flex flex-wrap items-center justify-center gap-[24px] lg:flex-nowrap lg:gap-[11.7px]">
+            <!-- Mobile: single-line auto-scrolling marquee (the badges don't fit
+                 one row on a phone). Desktop keeps the static centred row. -->
+            <div class="certs-marquee w-full overflow-hidden lg:hidden">
+              <div class="certs-marquee__track flex w-max items-center">
+                {
+                  [0, 1].map((copy) =>
+                    born.certs.badges.map((badge) => (
+                      <img
+                        src={badge.src}
+                        alt={copy === 0 ? badge.alt : ""}
+                        aria-hidden={copy === 0 ? undefined : "true"}
+                        width={badge.w}
+                        height={badge.h}
+                        loading="lazy"
+                        class="block max-w-none shrink-0"
+                        style={`width:${badge.w}px;height:${badge.h}px`}
+                      />
+                    )),
+                  )
+                }
+              </div>
+            </div>
+
+            <div class="hidden flex-nowrap items-center justify-center gap-[11.7px] lg:flex">
               {
                 born.certs.badges.map((badge) => (
                   <img
@@ -135,8 +158,11 @@ const { intro, born } = about.operations;
   }
 
   /* Enhanced: pin the stage and crossfade the two states as one. Pre-setting the
-     start state here keeps the first paint flash-free before the rAF loop runs. */
-  @media (prefers-reduced-motion: no-preference) {
+     start state here keeps the first paint flash-free before the rAF loop runs.
+     Gated to ≥641px: State B is taller than a phone viewport, so pinning it would
+     clip the cards/certs behind the fixed 100svh stage. Phones use the sticky
+     intro variant below instead. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 641px) {
     :global(html.js) .about-operations {
       height: calc(100svh + 140vh);
     }
@@ -152,12 +178,16 @@ const { intro, born } = about.operations;
     :global(html.js) .ops-inner {
       position: relative;
     }
-    /* Stack both states in the same centred slot so they crossfade in place. */
+    /* Stack both states in the same centred slot so they crossfade in place.
+       Absolute + inset-inline:0 spans .ops-inner's *padding box*, so it ignores
+       the wrapper's horizontal padding — re-add the same gutter here, else the
+       proof cards run edge-to-edge on narrow tablets. */
     :global(html.js) .ops-state {
       position: absolute;
       inset-inline: 0;
       top: 50%;
       transform: translateY(-50%);
+      padding-inline: clamp(1.25rem, 5.2vw, 80px);
     }
     :global(html.js) .ops-state + .ops-state {
       margin-top: 0;
@@ -168,6 +198,53 @@ const { intro, born } = about.operations;
     }
     :global(html.js) [data-ops-card] {
       opacity: 0;
+    }
+  }
+
+  /* Phones (≤640px): keep the blur-fade entrance without pinning the too-tall
+     State B. State A becomes a one-screen sticky intro that fades out as State B
+     — in normal flow — slides up over it; State B then scrolls naturally so the
+     cards/certs are never clipped. JS drives the opacity/blur of both. */
+  @media (prefers-reduced-motion: no-preference) and (max-width: 640px) {
+    :global(html.js) .ops-stage {
+      padding-block: 0;
+    }
+    :global(html.js) [data-ops-state="a"] {
+      position: sticky;
+      top: 0;
+      min-height: 100svh;
+      justify-content: center;
+      margin: 0;
+      z-index: 1;
+    }
+    :global(html.js) [data-ops-state="b"] {
+      position: relative;
+      z-index: 2;
+      margin-top: 0;
+      opacity: 0;
+      filter: blur(12px);
+    }
+  }
+
+  /* Mobile certification marquee — the badge set is rendered twice and the track
+     shifted by one full set (−50% of the doubled track minus half the seam gap)
+     so the loop is seamless. Gap lives here, not in Tailwind, so the keyframe
+     offset stays in sync. */
+  .certs-marquee__track {
+    gap: 40px;
+    animation: certs-marquee-scroll 16s linear infinite;
+  }
+  @keyframes certs-marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-50% - 20px));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .certs-marquee__track {
+      animation: none;
     }
   }
 </style>
@@ -183,23 +260,55 @@ const { intro, born } = about.operations;
 
     const stateA = section.querySelector<HTMLElement>('[data-ops-state="a"]');
     const stateB = section.querySelector<HTMLElement>('[data-ops-state="b"]');
+    if (!stateA || !stateB) return;
+
+    const BLUR = 12; // px — start blur for each incoming/outgoing state
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    // Phones (≤640px): State B is taller than the viewport, so pinning it would
+    // clip the cards. Instead State A is a sticky intro that blur-fades out while
+    // State B — in normal flow — slides up over it and resolves from a blur; the
+    // rest of State B (cards/certs) then scrolls naturally, nothing clipped.
+    if (window.matchMedia("(max-width: 640px)").matches) {
+      let tickingM = false;
+      const renderM = () => {
+        tickingM = false;
+        const vh = window.innerHeight;
+        const bTop = stateB.getBoundingClientRect().top;
+        // 0 while State B sits a screen below the fold → 1 as its top nears the
+        // viewport top (the crossfade completes a touch before it docks).
+        const p = Math.min(1, Math.max(0, (vh - bTop) / (vh * 0.85)));
+        const e = easeOutCubic(p);
+        stateA.style.opacity = String(1 - e);
+        stateA.style.filter = `blur(${e * BLUR}px)`;
+        stateB.style.opacity = String(e);
+        stateB.style.filter = `blur(${(1 - e) * BLUR}px)`;
+      };
+      const onScrollM = () => {
+        if (tickingM) return;
+        tickingM = true;
+        requestAnimationFrame(renderM);
+      };
+      renderM();
+      window.addEventListener("scroll", onScrollM, { passive: true });
+      window.addEventListener("resize", onScrollM);
+      return;
+    }
+
     const cards = Array.from(
       section.querySelectorAll<HTMLElement>("[data-ops-card]"),
     );
-    if (!stateA || !stateB) return;
 
     // Timeline (named windows so the feel is easy to tune). Each pair is a
     // progress window [start, end] over the section's scrub distance.
     const A_OUT: [number, number] = [0.06, 0.42]; // state A fades + blurs away
     const B_IN: [number, number] = [0.4, 0.78]; // state B resolves out of blur
     const CARDS_IN: [number, number] = [0.6, 1]; // cards stagger up last
-    const BLUR = 12; // px — start blur for each incoming/outgoing state
     const RISE = 32; // px — distance each card travels up as it appears
     const STAGGER = 0.12; // share of the CARDS_IN window offset per card
 
     const track = (p: number, [a, b]: [number, number]) =>
       Math.min(1, Math.max(0, (p - a) / (b - a)));
-    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
     let ticking = false;
 
