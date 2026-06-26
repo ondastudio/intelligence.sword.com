@@ -340,7 +340,7 @@
           "tone": "white",
           "logo": "/logos/nhs-south-tee.png",
           "logoAlt": "South Tees Hospitals NHS Foundation Trust",
-          "title": "AI Surgical Readiness\nCloses the Gap for\nDeprived\nCommunities",
+          "title": "AI Surgical Readiness\nCloses the Gap for\nDeprived Communities",
           "stat": { "value": "84%", "label": "improvement in patient-reported quality of life" },
           "cta": { "label": "Read more", "href": "/customers/nhs-deprived-communities" }
         }
