@@ -45,10 +45,10 @@ const { intro, born } = about.operations;
       </div>
 
       <!-- State B — "So, Sword Intelligence was born." + proof cards (Section-05). -->
-      <div data-ops-state="b" class="ops-state flex flex-col items-center gap-[clamp(2.5rem,6vw,80px)]">
+      <div data-ops-state="b" class="ops-state flex flex-col items-center gap-[clamp(4rem,8vw,80px)]">
         <div class="flex flex-col items-center gap-6 text-center">
           <h2
-            class="max-w-[897px] font-serif text-h2 font-normal"
+            class="max-w-[897px] text-balance font-serif text-h2 font-normal leading-[1.1] lg:leading-[1.2]"
           >
             {born.statement}
           </h2>
@@ -74,7 +74,7 @@ const { intro, born } = about.operations;
               <div
                 data-ops-card
                 style={`--card-index:${i}`}
-                class="flex min-h-[214px] items-center justify-center rounded-card border border-black/[0.12] bg-white px-4 py-6 lg:p-10"
+                class="flex items-center justify-center rounded-card border border-black/[0.12] bg-white px-4 py-6 lg:min-h-[214px] lg:p-10"
               >
                 <div class="flex flex-col items-center justify-center gap-6 lg:gap-8">
                   <div class="flex items-start justify-center gap-2">
@@ -96,7 +96,7 @@ const { intro, born } = about.operations;
           <div
             data-ops-card
             style={`--card-index:${born.stats.length}`}
-            class="flex min-h-[214px] flex-col items-center justify-center gap-5 rounded-[50px] bg-ink-wash-strong px-6 py-8 col-span-2 lg:col-span-1"
+            class="flex flex-col items-center justify-center gap-5 rounded-[50px] bg-ink-wash-strong px-6 py-8 col-span-2 lg:col-span-1 lg:min-h-[214px]"
           >
             <span
               class="flex items-center rounded-[16px] border border-black/24 px-4 py-2 text-sm font-semibold uppercase"
