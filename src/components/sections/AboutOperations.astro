@@ -46,21 +46,28 @@ const { intro, born } = about.operations;
 
       <!-- State B — "So, Sword Intelligence was born." + proof cards (Section-05). -->
       <div data-ops-state="b" class="ops-state flex flex-col items-center gap-[clamp(4rem,8vw,80px)]">
-        <div class="flex flex-col items-center gap-6 text-center">
-          <h2
-            class="max-w-[350px] text-balance font-serif text-h2 font-normal leading-[1.1] lg:max-w-[897px] lg:leading-[1.2]"
-          >
-            {born.statement}
-          </h2>
-          <p
-            class="max-w-[678px] text-lg"
-          >
-            {
-              (born.body as Segment[]).map((s) =>
-                s.bold ? <span class="font-semibold">{s.text}</span> : s.text,
-              )
-            }
-          </p>
+        <!-- Pin track for the heading. On desktop this is `display:contents`, so
+             the heading + cards remain State B's two flex children (the desktop
+             crossfade is unchanged). On phones it becomes a tall sticky track
+             that ends before the cards, so the heading pins + fades in place,
+             then unpins and scrolls clear *before* the cards arrive. -->
+        <div data-ops-b-pin>
+          <div data-ops-b-text class="flex flex-col items-center gap-6 text-center">
+            <h2
+              class="max-w-[350px] text-balance font-serif text-h2 font-normal leading-[1.1] lg:max-w-[897px] lg:leading-[1.2]"
+            >
+              {born.statement}
+            </h2>
+            <p
+              class="max-w-[678px] text-lg"
+            >
+              {
+                (born.body as Segment[]).map((s) =>
+                  s.bold ? <span class="font-semibold">{s.text}</span> : s.text,
+                )
+              }
+            </p>
+          </div>
         </div>
 
         <!-- Proof cards: two big-number stats + a certifications panel.
@@ -156,6 +163,11 @@ const { intro, born } = about.operations;
   .ops-state + .ops-state {
     margin-top: clamp(5rem, 12vw, 120px);
   }
+  /* The heading's pin track is inert everywhere except the phone path below — it
+     dissolves into State B's flow so the heading + cards stay its flex children. */
+  [data-ops-b-pin] {
+    display: contents;
+  }
 
   /* Enhanced: pin the stage and crossfade the two states as one. Pre-setting the
      start state here keeps the first paint flash-free before the rAF loop runs.
@@ -201,10 +213,12 @@ const { intro, born } = about.operations;
     }
   }
 
-  /* Phones (≤640px): keep the blur-fade entrance without pinning the too-tall
-     State B. State A becomes a one-screen sticky intro that fades out as State B
-     — in normal flow — slides up over it; State B then scrolls naturally so the
-     cards/certs are never clipped. JS drives the opacity/blur of both. */
+  /* Phones (≤640px): crossfade the two statements IN PLACE, like desktop, but
+     without pinning the too-tall State B (its cards/certs would clip). State A is
+     a one-screen sticky intro that fades out; State B's heading/body is its own
+     sticky one-screen block ([data-ops-b-text]) that pins centred — so it fades
+     in motionless, no slide — while the proof cards stay in normal flow below it
+     and are revealed by continued scrolling. JS drives the opacity/blur of both. */
   @media (prefers-reduced-motion: no-preference) and (max-width: 640px) {
     :global(html.js) .ops-stage {
       padding-block: 0;
@@ -221,8 +235,29 @@ const { intro, born } = about.operations;
       position: relative;
       z-index: 2;
       margin-top: 0;
+    }
+    /* Pin track: one screen for the heading + ~half a screen of pin distance, so
+       the heading stays pinned through its fade then unpins and scrolls out. It
+       ends here — the cards live *after* it — so the cards never rise into the
+       pinned heading. */
+    :global(html.js) [data-ops-b-pin] {
+      display: block;
+      position: relative;
+      min-height: calc(100svh + 50svh);
+    }
+    :global(html.js) [data-ops-b-text] {
+      position: sticky;
+      top: 0;
+      min-height: 100svh;
+      justify-content: center;
+      margin: 0;
       opacity: 0;
       filter: blur(12px);
+    }
+    /* Cards start hidden and are revealed (JS) only once the heading has cleared,
+       so they never overlap it while it's pinned. */
+    :global(html.js) [data-ops-card] {
+      opacity: 0;
     }
   }
 
@@ -265,33 +300,77 @@ const { intro, born } = about.operations;
     const BLUR = 12; // px — start blur for each incoming/outgoing state
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
-    // Phones (≤640px): State B is taller than the viewport, so pinning it would
-    // clip the cards. Instead State A is a sticky intro that blur-fades out while
-    // State B — in normal flow — slides up over it and resolves from a blur; the
-    // rest of State B (cards/certs) then scrolls naturally, nothing clipped.
+    // Phones (≤640px): State B is taller than the viewport, so pinning the whole
+    // of it would clip the cards. Instead State A is a sticky intro that blur-
+    // fades out while State B's heading/body — its own sticky one-screen block —
+    // pins centred and blur-fades IN PLACE (no slide). The progress runs from the
+    // moment that block docks at the top of the viewport through a fixed scroll
+    // window, during which it stays pinned/motionless. The cards below it remain
+    // in normal flow and scroll into view afterwards, so nothing is clipped.
     if (window.matchMedia("(max-width: 640px)").matches) {
+      const textB = stateB.querySelector<HTMLElement>("[data-ops-b-text]");
+      if (!textB) return;
+      const cardsM = Array.from(
+        stateB.querySelectorAll<HTMLElement>("[data-ops-card]"),
+      );
+
+      // Layout position of the block in document coords — unaffected by sticky
+      // displacement, so it's the scrollY at which the block docks at top:0.
+      const docTop = (el: HTMLElement | null) => {
+        let y = 0;
+        for (let n = el; n; n = n.offsetParent as HTMLElement | null)
+          y += n.offsetTop;
+        return y;
+      };
+
+      const RISE = 32; // px — distance each card rises as it appears
       let tickingM = false;
+      let fadeStart = 0;
+      let fadeDist = 1;
+      const measure = () => {
+        fadeStart = docTop(textB);
+        fadeDist = Math.max(1, window.innerHeight * 0.45);
+      };
       const renderM = () => {
         tickingM = false;
-        const vh = window.innerHeight;
-        const bTop = stateB.getBoundingClientRect().top;
-        // 0 while State B sits a screen below the fold → 1 as its top nears the
-        // viewport top (the crossfade completes a touch before it docks).
-        const p = Math.min(1, Math.max(0, (vh - bTop) / (vh * 0.85)));
+        // 0 until the block docks at the top → 1 over the pinned scroll window.
+        const p = Math.min(
+          1,
+          Math.max(0, (window.scrollY - fadeStart) / fadeDist),
+        );
         const e = easeOutCubic(p);
         stateA.style.opacity = String(1 - e);
         stateA.style.filter = `blur(${e * BLUR}px)`;
-        stateB.style.opacity = String(e);
-        stateB.style.filter = `blur(${(1 - e) * BLUR}px)`;
+        textB.style.opacity = String(e);
+        textB.style.filter = `blur(${(1 - e) * BLUR}px)`;
+
+        // Reveal each card as it rises through the upper half of the viewport —
+        // i.e. only after the pinned heading has scrolled clear, so they never
+        // collide with it.
+        const vh = window.innerHeight;
+        cardsM.forEach((card) => {
+          const top = card.getBoundingClientRect().top;
+          const c = Math.min(
+            1,
+            Math.max(0, (vh * 0.62 - top) / (vh * 0.37)),
+          );
+          const ce = easeOutCubic(c);
+          card.style.opacity = String(ce);
+          card.style.transform = `translateY(${(1 - ce) * RISE}px)`;
+        });
       };
       const onScrollM = () => {
         if (tickingM) return;
         tickingM = true;
         requestAnimationFrame(renderM);
       };
+      measure();
       renderM();
       window.addEventListener("scroll", onScrollM, { passive: true });
-      window.addEventListener("resize", onScrollM);
+      window.addEventListener("resize", () => {
+        measure();
+        renderM();
+      });
       return;
     }
 
