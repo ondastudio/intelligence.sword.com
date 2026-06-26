@@ -412,26 +412,31 @@ const chip =
                     the row grows. See the <style> at the foot. */}
                 {card.detail && (
                   <div class="impact-extra">
-                    <div
-                      class={`impact-extra-inner flex gap-2.5 rounded-card bg-white/45 px-8 py-8 text-left ${
-                        i === 2 ? "items-center" : "items-start"
-                      }`}
-                    >
-                      <span
-                        class={`grid size-6 shrink-0 place-items-center text-black ${
-                          i === 2 ? "" : "mt-px"
+                    {/* padding-less clip wrapper so the row collapses fully to 0
+                        (the padded inner can't be the grid item, or its padding
+                        leaves a residual height). */}
+                    <div class="impact-extra-clip">
+                      <div
+                        class={`impact-extra-inner flex gap-2.5 rounded-card bg-white/45 px-8 py-8 text-left ${
+                          i === 2 ? "items-center" : "items-start"
                         }`}
-                        aria-hidden="true"
                       >
-                        <svg viewBox="0 0 24 24" class="size-full" fill="none">
-                          <circle cx="12" cy="12" r="11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                          <path d="M12 16.5V11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M12 8.01V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                      </span>
-                      <p class="text-sm font-semibold uppercase text-black">
-                        {card.detail}
-                      </p>
+                        <span
+                          class={`grid size-6 shrink-0 place-items-center text-black ${
+                            i === 2 ? "" : "mt-px"
+                          }`}
+                          aria-hidden="true"
+                        >
+                          <svg viewBox="0 0 24 24" class="size-full" fill="none">
+                            <circle cx="12" cy="12" r="11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                            <path d="M12 16.5V11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M12 8.01V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        </span>
+                        <p class="text-sm font-semibold uppercase text-black">
+                          {card.detail}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -730,14 +735,20 @@ const chip =
     }
   }
 
-  /* Impact detail panel: collapsed by default (max-height 0, clipped). When the
-     card opens, the wrapper grows to reveal it while the inner card slides down
-     + fades in — a softer reveal than a straight height pop. max-height is a
-     ceiling above the panel's natural height; the row stays content-sized. */
+  /* Impact detail panel: collapsed by default (grid-rows 0fr, inner clipped).
+     When the card opens, the row animates 0fr → 1fr — interpolating to the
+     panel's exact natural height over the full duration, so it eases open
+     smoothly instead of popping (a max-height ceiling would finish the visible
+     growth in the first fraction of the transition). The inner card also slides
+     down + fades in for a softer reveal. */
   .impact-extra {
-    max-height: 0;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.55s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .impact-extra-clip {
+    min-height: 0;
     overflow: hidden;
-    transition: max-height 0.55s cubic-bezier(0.33, 1, 0.68, 1);
   }
   .impact-extra-inner {
     opacity: 0;
@@ -747,7 +758,7 @@ const chip =
       transform 0.55s cubic-bezier(0.33, 1, 0.68, 1) 0.05s;
   }
   .impact-card[data-open="true"] .impact-extra {
-    max-height: 16rem;
+    grid-template-rows: 1fr;
   }
   .impact-card[data-open="true"] .impact-extra-inner {
     opacity: 1;
