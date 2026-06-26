@@ -46,8 +46,6 @@ const curvePath = "M0.5 0.5H543.472C676.834 0.5 624 84.5 778 84.5";
 // round caps). Authored at 1:1 px so the spacing never scales with the box.
 const dottedYLine =
   "background-image:radial-gradient(circle,#000 0.75px,transparent 0.75px);background-size:1.5px 8px;background-repeat:repeat-y;background-position:center";
-const dottedXLine =
-  "background-image:radial-gradient(circle,#000 0.75px,transparent 0.75px);background-size:8px 1.5px;background-repeat:repeat-x;background-position:center";
 
 // Per-curve flow timing. All four share the same duration and start, so the
 // dots run edge → centre in lockstep and reach the orb at the same instant.
@@ -365,8 +363,6 @@ const curves = [
           alt={`${orb.title} — ${orb.badgeLine1} ${orb.badgeLine2}`}
           class="w-[211px]"
         />
-        <span class="absolute right-full top-1/2 mr-[-12px] h-[1.5px] w-[30px] -translate-y-1/2" style={dottedXLine}></span>
-        <span class="absolute left-full top-1/2 ml-[-12px] h-[1.5px] w-[30px] -translate-y-1/2" style={dottedXLine}></span>
       </div>
 
       <!-- Connector: orb -> card (dot flows up toward the orb, in sync) -->
