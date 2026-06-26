@@ -69,28 +69,32 @@
   }
 
   /* On a narrow viewport the contained State-A bloom otherwise lands as a tight,
-     saturated purple blob right over the operations copy. Spread it wider, drop
-     its centre, and soften it so it reads as the faint lavender wash the design
-     shows on mobile (Figma Section-04, node 8808:427). Scoped to mobile so the
-     desktop bloom is untouched; only the mask + canvas opacity change (the JS
-     drives transform/wash, so this never fights it). */
+     saturated purple blob right over the operations copy. Enlarge the bloom so it
+     fills past the screen, vignette the mask to transparent right at the screen
+     edges (so the sides fade out softly instead of clipping), and dim it so it
+     reads as the faint lavender wash the design shows on mobile (Figma
+     Section-04, node 8808:427). Scoped to mobile so the desktop bloom is
+     untouched. The JS drives the STAGE transform/wash; here we scale the CANVAS
+     and set the mask, so the two never fight. */
   @media (max-width: 640px) {
     .field-swirl {
       -webkit-mask-image: radial-gradient(
-        140% 70% at 50% 64%,
+        100% 85% at 50% 56%,
         #000 0%,
-        rgba(0, 0, 0, 0.55) 38%,
-        transparent 80%
+        #000 25%,
+        transparent 100%
       );
       mask-image: radial-gradient(
-        140% 70% at 50% 64%,
+        100% 85% at 50% 56%,
         #000 0%,
-        rgba(0, 0, 0, 0.55) 38%,
-        transparent 80%
+        #000 25%,
+        transparent 100%
       );
     }
     .field-swirl canvas {
-      opacity: 0.6;
+      transform: scale(2.2);
+      transform-origin: 50% 56%;
+      opacity: 0.5;
     }
   }
 </style>
