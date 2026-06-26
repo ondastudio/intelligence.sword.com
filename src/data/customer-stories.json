@@ -179,7 +179,7 @@
           "tone": "white",
           "logo": "/logos/cheshire-merseyside.png",
           "logoAlt": "NHS Cheshire and Merseyside",
-          "title": "Intelligence Helps the NHS Prevent Surgical Complications",
+          "title": "Intelligence Helps the\nNHS Prevent Surgical\nComplications",
           "stat": { "value": "72%", "label": "reduction in surgical complications" },
           "cta": { "label": "Read more", "href": "/customers/nhs-surgical-complications" }
         }
@@ -248,7 +248,7 @@
           "tone": "white",
           "logo": "/logos/nhs-black-country.png",
           "logoAlt": "NHS Black Country",
-          "title": "Cutting Hospital Stays with AI-driven Prehabilitation",
+          "title": "Cutting Hospital Stays\nwith AI-driven\nPrehabilitation",
           "stat": { "value": "£405K", "label": "saved for one NHS Trust in 3 months" },
           "cta": { "label": "Read more", "href": "/customers/nhs-prehabilitation" }
         }
@@ -340,7 +340,7 @@
           "tone": "white",
           "logo": "/logos/nhs-south-tee.png",
           "logoAlt": "South Tees Hospitals NHS Foundation Trust",
-          "title": "AI Surgical Readiness Closes the Gap for Deprived Communities",
+          "title": "AI Surgical Readiness\nCloses the Gap for\nDeprived\nCommunities",
           "stat": { "value": "84%", "label": "improvement in patient-reported quality of life" },
           "cta": { "label": "Read more", "href": "/customers/nhs-deprived-communities" }
         }
@@ -422,7 +422,7 @@
           "tone": "white",
           "logo": "/logos/cheshire-merseyside.png",
           "logoAlt": "NHS Cheshire and Merseyside",
-          "title": "Intelligence Helps the NHS Prevent Surgical Complications",
+          "title": "Intelligence Helps the\nNHS Prevent Surgical\nComplications",
           "stat": { "value": "72%", "label": "reduction in surgical complications" },
           "cta": { "label": "Read more", "href": "/customers/nhs-surgical-complications" }
         },
@@ -431,7 +431,7 @@
           "tone": "white",
           "logo": "/logos/nhs-black-country.png",
           "logoAlt": "NHS Black Country",
-          "title": "Cutting Hospital Stays with AI-driven Prehabilitation",
+          "title": "Cutting Hospital Stays\nwith AI-driven\nPrehabilitation",
           "stat": { "value": "£405K", "label": "saved for one NHS Trust in 3 months" },
           "cta": { "label": "Read more", "href": "/customers/nhs-prehabilitation" }
         }
