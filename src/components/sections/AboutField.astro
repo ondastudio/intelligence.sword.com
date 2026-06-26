@@ -129,6 +129,14 @@
       // Wash tracks AboutOperations precisely so the lavender lands with State B.
       wash.style.opacity = String(easeOutCubic(track(progress(ops), WASH)));
 
+      // On mobile the scroll-driven scale reads poorly (the bloom swells over the
+      // copy as you scroll), so disable it there: clear the inline transform and
+      // let the CSS base scale(0.7) hold a constant, contained bloom for the run.
+      if (window.matchMedia("(max-width: 640px)").matches) {
+        swirl.style.transform = "";
+        return;
+      }
+
       // The bloom keeps growing across the entire run, so it's never a static
       // backdrop — it expands continuously (linear) until it has covered the
       // team grid.
