@@ -130,10 +130,10 @@
       wash.style.opacity = String(easeOutCubic(track(progress(ops), WASH)));
 
       // On mobile the scroll-driven scale reads poorly (the bloom swells over the
-      // copy as you scroll), so disable it there: clear the inline transform and
-      // let the CSS base scale(0.7) hold a constant, contained bloom for the run.
+      // copy as you scroll), so disable it there: pin a constant scale(1) bloom
+      // for the whole run.
       if (window.matchMedia("(max-width: 640px)").matches) {
-        swirl.style.transform = "";
+        swirl.style.transform = "scale(1)";
         return;
       }
 
