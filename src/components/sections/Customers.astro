@@ -51,26 +51,31 @@ const rowCols: Record<string, string> = {
       }
     </div>
 
-    <div data-reveal class="group flex items-center justify-center">
-      <a
-        href={loadMore.href}
-        class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase text-white"
-      >
-        {loadMore.label}
-      </a>
-      <span
-        class="-ml-px grid size-10 place-items-center rounded-full bg-brand text-white transition-transform duration-300 ease-out group-hover:translate-x-1"
-        aria-hidden="true"
-      >
-        <svg viewBox="0 0 24 24" class="size-6" fill="none">
-          <path
-            d="M12 5.5v13M5.5 12h13"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"></path>
-        </svg>
-      </span>
-    </div>
+    {
+      loadMore && (
+        <div data-reveal class="group flex items-center justify-center">
+          <a
+            href={loadMore.href}
+            class="flex h-10 items-center rounded-[50px] bg-brand px-6 text-sm font-semibold uppercase text-white"
+          >
+            {loadMore.label}
+          </a>
+          <span
+            class="-ml-px grid size-10 place-items-center rounded-full bg-brand text-white transition-transform duration-300 ease-out group-hover:translate-x-1"
+            aria-hidden="true"
+          >
+            <svg viewBox="0 0 24 24" class="size-6" fill="none">
+              <path
+                d="M12 5.5v13M5.5 12h13"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+        </div>
+      )
+    }
   </div>
 </section>
