@@ -80,16 +80,16 @@
           "tone": "white",
           "logo": "/logos/ne-london.png",
           "logoAlt": "North East London",
-          "title": "Improving Surgery Readiness at Scale with the NHS",
-          "stat": { "value": "57%", "label": "more patients ready for surgery" },
+          "title": "Improving Surgery\nReadiness at Scale\nwith the NHS",
+          "stat": { "value": "57%", "label": "more patients ready for\nsurgery" },
           "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
         },
         {
           "type": "story",
           "tone": "white",
           "confidential": true,
-          "title": "How AI Eligibility Checks Found Hidden Revenue",
-          "stat": { "value": "$0.5M", "label": "recovered in 3 months" },
+          "title": "How AI Eligibility\nChecks Found Hidden\nRevenue",
+          "stat": { "value": "$0.5M", "label": "recovered in\n3 months" },
           "cta": { "label": "Read more", "href": "#" }
         }
       ]
@@ -170,8 +170,8 @@
           "tone": "white",
           "logo": "/logos/ne-london.png",
           "logoAlt": "North East London",
-          "title": "Improving Surgery Readiness at Scale with the NHS",
-          "stat": { "value": "57%", "label": "more patients ready for surgery" },
+          "title": "Improving Surgery\nReadiness at Scale\nwith the NHS",
+          "stat": { "value": "57%", "label": "more patients ready for\nsurgery" },
           "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
         },
         {
@@ -239,8 +239,8 @@
           "tone": "white",
           "logo": "/logos/ne-london.png",
           "logoAlt": "North East London",
-          "title": "Improving Surgery Readiness at Scale with the NHS",
-          "stat": { "value": "57%", "label": "more patients ready for surgery" },
+          "title": "Improving Surgery\nReadiness at Scale\nwith the NHS",
+          "stat": { "value": "57%", "label": "more patients ready for\nsurgery" },
           "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
         },
         {
@@ -331,8 +331,8 @@
           "tone": "white",
           "logo": "/logos/ne-london.png",
           "logoAlt": "North East London",
-          "title": "Improving Surgery Readiness at Scale with the NHS",
-          "stat": { "value": "57%", "label": "more patients ready for surgery" },
+          "title": "Improving Surgery\nReadiness at Scale\nwith the NHS",
+          "stat": { "value": "57%", "label": "more patients ready for\nsurgery" },
           "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
         },
         {
