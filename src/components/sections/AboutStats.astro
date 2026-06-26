@@ -16,6 +16,7 @@
  */
 import Eyebrow from "../ui/Eyebrow.astro";
 import LabelPill from "../ui/LabelPill.astro";
+import PlusChip from "../ui/PlusChip.astro";
 import about from "../../data/about.json";
 
 const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
@@ -41,7 +42,7 @@ const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
 
       <div
         data-reveal
-        class="flex max-w-[525px] flex-col gap-5 text-xmd sm:text-lg"
+        class="flex max-w-[525px] flex-col gap-5 text-xmd"
         style="transition-delay:160ms"
       >
         {
@@ -74,11 +75,7 @@ const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
                   <span class="font-serif text-h4 font-normal">
                     {stat.value}
                   </span>
-                  {stat.plus && (
-                    <span class="mt-[11px] flex size-6 shrink-0 items-center justify-center rounded-[24px] bg-ink-wash-strong text-base">
-                      +
-                    </span>
-                  )}
+                  {stat.plus && <PlusChip class="mt-[11px]" />}
                 </div>
                 <p class="text-sm font-semibold uppercase">
                   {stat.label}
@@ -92,11 +89,35 @@ const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
       <!-- Trusted-by panel -->
       <div
         data-reveal
-        class="flex flex-col items-center gap-6 rounded-[50px] bg-purple-tint px-6 py-8"
+        class="flex flex-col items-center gap-6 overflow-hidden rounded-[50px] bg-purple-tint px-6 py-8"
       >
         <LabelPill>{trustedBy.label}</LabelPill>
+
+        <!-- Mobile → tablet: auto-scrolling marquee carousel -->
+        <div class="about-logos-marquee w-full overflow-hidden lg:hidden">
+          <div class="about-logos-marquee__track flex w-max items-center">
+            {
+              [0, 1].map((copy) =>
+                trustedBy.logos.map((logo) => (
+                  <img
+                    src={logo.src}
+                    alt={copy === 0 ? logo.alt : ""}
+                    aria-hidden={copy === 0 ? undefined : "true"}
+                    width={logo.width}
+                    height={logo.height}
+                    loading="lazy"
+                    class="block w-auto shrink-0"
+                    style={`height:${logo.height}px`}
+                  />
+                )),
+              )
+            }
+          </div>
+        </div>
+
+        <!-- Desktop: static wrapping row -->
         <div
-          class="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 sm:gap-x-16"
+          class="hidden flex-wrap items-center justify-center gap-x-10 gap-y-6 sm:gap-x-16 lg:flex"
         >
           {
             trustedBy.logos.map((logo) => (
@@ -115,3 +136,27 @@ const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
     </div>
   </div>
 </section>
+
+<style>
+  /* Mobile → tablet "Trusted by" carousel. The logo set is rendered twice and
+     the track shifted by one full set (−50% of the doubled track minus half the
+     seam gap) so the loop is seamless. Gap lives here, not in Tailwind, so the
+     keyframe offset stays in sync. */
+  .about-logos-marquee__track {
+    gap: 40px;
+    animation: about-logos-scroll 24s linear infinite;
+  }
+  @keyframes about-logos-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-50% - 20px));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .about-logos-marquee__track {
+      animation: none;
+    }
+  }
+</style>

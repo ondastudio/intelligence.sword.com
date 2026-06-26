@@ -1,0 +1,35 @@
+---
+/**
+ * PlusChip — the small frosted "+" badge shown beside big stat numbers
+ * (Scaling, Platform, About stats / operations). A rounded `ink-wash-strong`
+ * disc centering a 16px plus glyph — matches Figma node 8579:21430 (`add-01`).
+ *
+ * The plus is drawn as a centered SVG (not a text "+") so it sits dead-centre
+ * in the disc at every size. Disc size defaults to `size-6`; override via
+ * `class` (e.g. vertical nudge + smaller disc), and scale the glyph via
+ * `iconClass` to keep the Figma 16/24 ratio.
+ */
+interface Props {
+  /** Extra classes on the disc (size, vertical alignment, etc.). */
+  class?: string;
+  /** Extra classes on the inner plus glyph (size). */
+  iconClass?: string;
+}
+const { class: className = "", iconClass = "size-4" } = Astro.props;
+---
+
+<span
+  class:list={[
+    "flex size-6 shrink-0 items-center justify-center rounded-[24px] bg-ink-wash-strong text-ink",
+    className,
+  ]}
+>
+  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class:list={[iconClass]}>
+    <path
+      d="M8 3.333v9.334M3.333 8h9.334"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+  </svg>
+</span>

@@ -21,6 +21,7 @@
  * All copy, stats and badges come from src/data/about.json (`operations`).
  */
 import about from "../../data/about.json";
+import PlusChip from "../ui/PlusChip.astro";
 
 type Segment = { text: string; bold?: boolean };
 const { intro, born } = about.operations;
@@ -80,11 +81,7 @@ const { intro, born } = about.operations;
                     <span class="font-serif text-h3 font-normal">
                       {stat.value}
                     </span>
-                    {stat.plus && (
-                      <span class="mt-[11px] flex size-6 shrink-0 items-center justify-center rounded-full bg-ink-wash-strong text-base">
-                        +
-                      </span>
-                    )}
+                    {stat.plus && <PlusChip class="mt-[11px]" />}
                   </div>
                   <p class="text-center text-sm font-semibold uppercase">
                     {stat.label}

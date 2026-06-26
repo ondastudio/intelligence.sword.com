@@ -14,6 +14,7 @@
  * comes from src/data/platform.json.
  */
 import data from "../../data/platform.json";
+import PlusChip from "../ui/PlusChip.astro";
 
 const {
   heading,
@@ -333,9 +334,7 @@ const curves = [
                 <div class="flex flex-col items-center gap-[18px] rounded-[40px] bg-lavender px-4 py-4 text-center">
                   <span class="flex items-start gap-1">
                     <span class="font-serif text-[28px] font-normal leading-[1.1]">{stat.value}</span>
-                    {stat.plus && (
-                      <span class="mt-1.5 flex size-5 shrink-0 items-center justify-center rounded-[24px] bg-ink-wash-strong text-sm leading-none">+</span>
-                    )}
+                    {stat.plus && <PlusChip class="mt-1.5 size-5" iconClass="size-3.5" />}
                   </span>
                   <span class="text-sm font-semibold uppercase leading-[1.25]">{stat.label}</span>
                 </div>
