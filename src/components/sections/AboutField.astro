@@ -67,6 +67,32 @@
   .field-wash {
     opacity: 0;
   }
+
+  /* On a narrow viewport the contained State-A bloom otherwise lands as a tight,
+     saturated purple blob right over the operations copy. Spread it wider, drop
+     its centre, and soften it so it reads as the faint lavender wash the design
+     shows on mobile (Figma Section-04, node 8808:427). Scoped to mobile so the
+     desktop bloom is untouched; only the mask + canvas opacity change (the JS
+     drives transform/wash, so this never fights it). */
+  @media (max-width: 640px) {
+    .field-swirl {
+      -webkit-mask-image: radial-gradient(
+        140% 70% at 50% 64%,
+        #000 0%,
+        rgba(0, 0, 0, 0.55) 38%,
+        transparent 80%
+      );
+      mask-image: radial-gradient(
+        140% 70% at 50% 64%,
+        #000 0%,
+        rgba(0, 0, 0, 0.55) 38%,
+        transparent 80%
+      );
+    }
+    .field-swirl canvas {
+      opacity: 0.6;
+    }
+  }
 </style>
 
 <script>
