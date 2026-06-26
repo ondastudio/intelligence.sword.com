@@ -192,15 +192,14 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
   }
 
   /* Each card fills the stage box and overlays the others; the script sets the
-     transform (fade-in rise + staggered recede), opacity, and a depth tint per
-     scroll frame. Matching the design, receded cards darken toward grey
-     (#e6e6e6 → #ccc) so the staggered tops read as a stack against the near-white
-     page — there is no drop shadow in the design. */
+     transform (fade-in rise) and opacity per scroll frame. The entering card
+     rises quickly into the front while the previous card fades out, so only one
+     card is visible at a time — no stacking, no half-transparent overlap. */
   .care-deck.is-active .care-deck__card {
     position: absolute;
     inset: 0;
     height: 100%;
-    will-change: transform, opacity, filter;
+    will-change: transform, opacity;
   }
 </style>
 
@@ -234,7 +233,7 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
     function measure() {
       const vh = window.innerHeight;
       stageH = Math.min(Math.max(Math.round(vh * 0.6), 360), 520);
-      const perCard = vh * 1.05; // scroll distance to bring in each next card
+      const perCard = vh * 0.7; // scroll distance to bring in each next card
       pinTravel = perCard * (N - 1);
       centerTop = Math.max(16, Math.round((vh - stageH) / 2));
       track.style.height = `${stageH + pinTravel}px`;
@@ -243,42 +242,36 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
 
     // Per-card style for a continuous deck position `s` (0 = first card front,
     // N-1 = last card front). At s=0 only the first card shows. As `s` grows the
-    // next card fades in while rising into the front, and each card it covers
-    // drifts up at full size so the tops of all the previous cards stay visible,
-    // staggered above the current one.
+    // next card rises quickly into the front while the card it covers fades out —
+    // cards do NOT stack or peek above one another, so the pile never shows two
+    // half-transparent cards layered together.
     const ENTER_RISE = 64; // px the entering card rises from as it fades in
-    const STAGGER = 22; // px each receded card peeks above the one in front
     // Each card holds fully in front for this fraction of its scroll step before
     // the next one starts sliding in; the remaining fraction plays the hand-off.
-    // Higher = the current card lingers longer / later threshold for the next.
-    const HOLD = 0.5;
+    // Lower = the next card starts sooner (lower threshold) and the swap is snappier.
+    const HOLD = 0.3;
     function styleFor(i: number, s: number) {
       const rel = s - i;
       let ty: number;
       let opacity = 1;
-      let brightness = 1;
       if (rel <= -1) {
         // not in yet — parked just below the front, invisible
         ty = ENTER_RISE;
         opacity = 0;
       } else if (rel < 0) {
-        // entering: fade in and rise into the front. Opacity ramps faster than
-        // the rise so the card turns opaque early and cleanly covers the one
-        // beneath — only its staggered top stays visible — instead of letting
-        // both cards' text show through each other mid-transition.
+        // entering: rise into the front and fade in fast. Opacity reaches full
+        // well before the rise completes so the card is solid early and never
+        // lingers as a half-transparent overlay on the one beneath.
         const t = rel + 1; // 0 → 1
         ty = (1 - t) * ENTER_RISE;
-        opacity = Math.min(1, t * 2.2);
+        opacity = Math.min(1, t * 3.5);
       } else {
-        // settled — drifts up so its top peeks above the card in front, and
-        // darkens toward grey with depth (design: #e6e6e6 at 1 back, #ccc at 2).
-        // Only the front card plus the two behind it stay visible; deeper cards
-        // fade out (opacity 1 at depth ≤2 → 0 by depth 3) so the pile stays tidy.
-        ty = -rel * STAGGER;
-        brightness = 1 - Math.min(rel, 2) * 0.1;
-        opacity = Math.max(0, Math.min(1, 3 - rel));
+        // behind the front card — fade out quickly so previous cards disappear
+        // instead of stacking up. No upward stagger: nothing peeks above.
+        ty = 0;
+        opacity = Math.max(0, 1 - rel * 3);
       }
-      return { transform: `translateY(${ty}px)`, opacity, brightness };
+      return { transform: `translateY(${ty}px)`, opacity };
     }
 
     function render() {
@@ -323,7 +316,6 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
         const st = styleFor(i, s);
         cards[i].style.transform = st.transform;
         cards[i].style.opacity = String(st.opacity);
-        cards[i].style.filter = `brightness(${st.brightness})`;
       }
     }
 
