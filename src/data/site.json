@@ -34,16 +34,19 @@
                 "href": "/solutions"
               },
               {
+                "icon": "/solutions/menu/preventive-campaigns.svg",
                 "title": "Preventive Population Campaigns",
                 "subtitle": "Scale prevention without more staff",
                 "href": "/solutions"
               },
               {
+                "icon": "/solutions/menu/surgery-prehab.svg",
                 "title": "Surgery Prehab and Rehab",
                 "subtitle": "Improve surgical outcomes",
                 "href": "/solutions"
               },
               {
+                "icon": "/solutions/menu/readmission-prevention.svg",
                 "title": "Readmission Prevention",
                 "subtitle": "Reduce total cost of care",
                 "href": "/solutions"

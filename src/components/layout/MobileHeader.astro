@@ -55,11 +55,32 @@ const mobileItems = site.mobileMenu.items;
       data-menu-toggle
     >
       Menu
-      <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <!-- Dot-grid when closed; swaps to a close (✕) when the panel is open. -->
+      <svg
+        class="size-4"
+        viewBox="0 0 16 16"
+        fill="none"
+        aria-hidden="true"
+        data-menu-icon-open
+      >
         <circle cx="3" cy="3" r="3" fill="currentColor"></circle>
         <circle cx="13" cy="3" r="3" fill="currentColor"></circle>
         <circle cx="3" cy="13" r="3" fill="currentColor"></circle>
         <circle cx="13" cy="13" r="3" fill="currentColor"></circle>
+      </svg>
+      <svg
+        class="hidden size-4"
+        viewBox="0 0 16 16"
+        fill="none"
+        aria-hidden="true"
+        data-menu-icon-close
+      >
+        <path
+          d="M3 3l10 10M13 3L3 13"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        ></path>
       </svg>
     </button>
 
@@ -67,11 +88,17 @@ const mobileItems = site.mobileMenu.items;
     <Button variant="solid" href={site.cta.href}>{site.cta.label}</Button>
   </div>
 
-  <!-- Slide-down nav panel revealed by MENU. -->
+  <!--
+    Slide-down nav panel revealed by MENU. Kept in the DOM (not `display:none`)
+    so it can fade + slide via CSS transitions; the closed state is
+    pointer-events-none + opacity-0 so it neither shows nor intercepts taps.
+    Height is capped to the viewport with internal scrolling for long menus.
+  -->
   <div
     id="mobile-menu-panel"
-    class="mt-2 hidden rounded-[40px] bg-lavender p-8 backdrop-blur-[20px]"
+    class="pointer-events-none mt-2 max-h-[calc(100dvh-6rem)] origin-top -translate-y-2 overflow-y-auto rounded-[40px] bg-lavender p-8 opacity-0 backdrop-blur-[20px] transition duration-200 ease-out"
     data-menu-panel
+    aria-hidden="true"
   >
     <nav
       class="flex flex-col font-mono text-sm uppercase tracking-[-0.14px] text-black"
@@ -112,7 +139,7 @@ const mobileItems = site.mobileMenu.items;
                 </svg>
               </button>
 
-              <div class="hidden flex-col gap-6 pt-6" data-submenu-panel>
+              <div class="hidden flex-col gap-6 pb-3 pt-6" data-submenu-panel>
                 {item.groups.map((group) => (
                   <div class="flex flex-col gap-4">
                     <p class="w-full">{group.label}</p>
@@ -157,10 +184,20 @@ const mobileItems = site.mobileMenu.items;
     const toggle =
       header.querySelector<HTMLButtonElement>("[data-menu-toggle]");
     const panel = header.querySelector<HTMLElement>("[data-menu-panel]");
+    const iconOpen = header.querySelector<HTMLElement>("[data-menu-icon-open]");
+    const iconClose = header.querySelector<HTMLElement>(
+      "[data-menu-icon-close]",
+    );
 
     const setOpen = (open: boolean) => {
       toggle?.setAttribute("aria-expanded", String(open));
-      panel?.classList.toggle("hidden", !open);
+      panel?.setAttribute("aria-hidden", String(!open));
+      // Closed-state classes; removing them lets the panel fade + slide in.
+      panel?.classList.toggle("opacity-0", !open);
+      panel?.classList.toggle("-translate-y-2", !open);
+      panel?.classList.toggle("pointer-events-none", !open);
+      iconOpen?.classList.toggle("hidden", open);
+      iconClose?.classList.toggle("hidden", !open);
     };
 
     toggle?.addEventListener("click", (e) => {
