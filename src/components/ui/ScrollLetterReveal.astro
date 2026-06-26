@@ -115,6 +115,28 @@ const letterCount = letterIndex;
   // character list as the block travels up the viewport; each letter darkens
   // from muted gray to solid black as the head reaches it, with a soft trailing
   // band (FADE letters wide) so the edge is a gradient rather than a hard switch.
+  // Normalize any CSS color string (hex, rgb(), named, …) to an [r,g,b] triple,
+  // independent of stylesheet/layout timing. Canvas does the parsing: assigning
+  // an invalid color leaves fillStyle unchanged, so we seed a sentinel and treat
+  // an unchanged result as "couldn't parse". Returns null on failure.
+  function parseRgb(color: string): [number, number, number] | null {
+    if (!color) return null;
+    const ctx = document.createElement("canvas").getContext("2d");
+    if (!ctx) return null;
+    ctx.fillStyle = "#000000";
+    ctx.fillStyle = color;
+    const a = ctx.fillStyle as string; // "#rrggbb" or "rgba(r, g, b, a)"
+    if (a[0] === "#") {
+      return [
+        parseInt(a.slice(1, 3), 16),
+        parseInt(a.slice(3, 5), 16),
+        parseInt(a.slice(5, 7), 16),
+      ];
+    }
+    const m = a.match(/\d+/g);
+    return m && m.length >= 3 ? [+m[0], +m[1], +m[2]] : null;
+  }
+
   function initLetterReveal(block: HTMLElement) {
     if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches)
       return;
@@ -126,14 +148,21 @@ const letterCount = letterIndex;
 
     const N = letters.length;
     const FADE = 16; // letters mid-transition at once (trailing softness)
-    // Dimmed start color, read back from the CSS (`--lr-muted` / `--color-ink-muted`)
-    // so a caller can override it via the `mutedColor` prop. Falls back to the
-    // design default #BFC0CC if the computed color can't be parsed.
-    const muted = getComputedStyle(letters[0]).color.match(/\d+/g);
-    const MUTED =
-      muted && muted.length >= 3
-        ? [Number(muted[0]), Number(muted[1]), Number(muted[2])]
-        : [191, 192, 204];
+    // Dimmed start color. Read from the CSS custom property the muted rule uses
+    // (`--lr-muted`, overridable via the `mutedColor` prop; falls back to the
+    // `--color-ink-muted` token). We deliberately DON'T read the letter's own
+    // resolved `color`: that comes from the component's scoped stylesheet, which
+    // on some engines (notably mobile WebKit/Safari) has not applied yet when
+    // this deferred module script first runs — yielding black, which would make
+    // the reveal interpolate black→black and never light up. The custom property
+    // is an inline style on the block, so it's available immediately. The value
+    // is normalized to RGB via a canvas, which is independent of stylesheet
+    // timing. Falls back to the design default #BFC0CC if it can't be parsed.
+    const blockStyle = getComputedStyle(block);
+    const mutedColor =
+      blockStyle.getPropertyValue("--lr-muted").trim() ||
+      blockStyle.getPropertyValue("--color-ink-muted").trim();
+    const MUTED = parseRgb(mutedColor) ?? [191, 192, 204];
     // Reveal window, in viewport-height fractions: progress is 0 when the block
     // top sits at START·vh (entering low) and 1 when it has risen to END·vh.
     const START = 0.82;
