@@ -14,7 +14,7 @@ import Button from "../ui/Button.astro";
 
 // Mobile menu content is authored separately from the desktop nav so the two
 // can diverge (the mobile panel has an expandable Solutions section).
-const mobileItems = site.mobileMenu.items;
+const mobileItems = site.mobileMenu.items.filter((item) => !item.hidden);
 ---
 
 {/*
@@ -104,7 +104,7 @@ const mobileItems = site.mobileMenu.items;
     aria-hidden="true"
   >
     <nav
-      class="flex flex-col font-mono text-sm uppercase tracking-[-0.14px] text-black"
+      class="flex flex-col font-sans text-sm font-semibold uppercase tracking-[-0.14px] text-black"
     >
       {
         mobileItems.map((item, i) => {
@@ -120,7 +120,7 @@ const mobileItems = site.mobileMenu.items;
             <div class={edge} data-submenu>
               <button
                 type="button"
-                class="flex w-full items-center justify-between font-mono uppercase tracking-[-0.14px]"
+                class="flex w-full items-center justify-between font-sans uppercase tracking-[-0.14px]"
                 aria-expanded="false"
                 data-submenu-toggle
               >

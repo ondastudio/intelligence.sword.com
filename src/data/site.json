@@ -12,6 +12,7 @@
       {
         "label": "Solutions",
         "href": "/solutions",
+        "hidden": true,
         "groups": [
           {
             "label": "Triage",
@@ -56,7 +57,7 @@
         ]
       },
       { "label": "About", "href": "/about" },
-      { "label": "Resources", "href": "#" },
+      { "label": "Resources", "href": "#", "hidden": true },
       { "label": "Our customers", "href": "/customers" }
     ]
   }
