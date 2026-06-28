@@ -1,13 +1,19 @@
 ---
 /**
- * MobileHeader — the floating lavender nav pill from the 390px design (below lg).
+ * MobileHeader — the floating lavender nav pill from the 390px design.
+ *
+ * On mobile (below lg) it's the primary nav, visible near the top of the page,
+ * hiding on scroll-down and revealing on scroll-up.
+ * On desktop (lg+) it doubles as a SECONDARY nav: the primary `Navbar` owns the
+ * top of the page, and this pill (centered, constrained to a pill width) stays
+ * hidden until the page's first section has scrolled off the top — then it fades
+ * in, and fades back out when the user scrolls up to that section (see script).
  *
  * Rendered once at the page root (see Layout.astro), OUTSIDE `.page-content`, so
  * it's never trapped inside a section's stacking context: pages wrap their
  * content sections in `isolate` wrappers, and a fixed nav nested in the hero
  * would be out-painted by those sibling wrappers no matter its z-index. Kept at
- * the body level it always stays on top. The desktop header still lives in
- * Navbar (it's `absolute`, anchored per-hero, and tone-aware).
+ * the body level it always stays on top.
  */
 import site from "../../data/site.json";
 import Button from "../ui/Button.astro";
@@ -22,7 +28,7 @@ const mobileItems = site.mobileMenu.items.filter((item) => !item.hidden);
   up) when scrolling down and reappears when scrolling up — see the script.
 */}
 <header
-  class="fixed inset-x-0 top-0 z-30 px-5 pt-[14px] lg:hidden"
+  class="pre-init fixed inset-x-0 top-0 z-30 px-5 pt-[14px] lg:mx-auto lg:max-w-[760px] lg:px-0 lg:pt-5"
   data-mobile-header
 >
   <div
@@ -195,6 +201,20 @@ const mobileItems = site.mobileMenu.items.filter((item) => !item.hidden);
     transform: translateY(-100%);
     opacity: 0;
   }
+
+  /* No-flash guard (removed by the script once the real state is computed). On
+     desktop the secondary nav starts hidden — without a transition — so it never
+     flashes at the top of the page on load. Mobile is untouched: there the pill
+     is the primary nav and is meant to be visible at the top. */
+  [data-mobile-header].pre-init {
+    transition: none;
+  }
+  @media (min-width: 1024px) {
+    [data-mobile-header].pre-init {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+  }
 </style>
 
 <script>
@@ -253,17 +273,55 @@ const mobileItems = site.mobileMenu.items.filter((item) => !item.hidden);
       if (e.key === "Escape") setOpen(false);
     });
 
-    // Hide the header (fade + slide up) on scroll down, reveal on scroll up.
-    // Stays visible near the top of the page and whenever the menu is open.
     const isMenuOpen = () => toggle?.getAttribute("aria-expanded") === "true";
+    const isDesktop = () => window.matchMedia("(min-width: 1024px)").matches;
     const setHidden = (hidden: boolean) => {
       header.classList.toggle("is-hidden", hidden);
     };
 
+    // Desktop — this pill is a SECONDARY nav (the primary `Navbar` owns the top
+    // of the page). It fades in the first time the reveal anchor has scrolled
+    // off the top, and fades back out when the user scrolls up to it again. The
+    // anchor is watched with an IntersectionObserver: the page scrolls a nested
+    // pane, so window scroll offsets are unreliable here, but the observer fires
+    // on the anchor entering/leaving regardless. A page can flag the anchor
+    // explicitly with [data-secondary-nav-anchor] (e.g. the customers "highlight"
+    // card); otherwise we fall back to the page's first hero <section>.
+    const anchor =
+      document.querySelector<HTMLElement>("[data-secondary-nav-anchor]") ??
+      document.querySelector<HTMLElement>(".page-content section") ??
+      document.querySelector<HTMLElement>("section");
+
+    let pastAnchor = false;
+    const applyDesktopState = () => {
+      if (isDesktop()) setHidden(!(pastAnchor || isMenuOpen()));
+    };
+
+    if (anchor) {
+      new IntersectionObserver(
+        ([entry]) => {
+          // "Past" = the anchor has scrolled fully above the viewport top.
+          pastAnchor =
+            !entry.isIntersecting && entry.boundingClientRect.top < 0;
+          applyDesktopState();
+        },
+        { threshold: 0 },
+      ).observe(anchor);
+    }
+
+    // Mobile — this IS the nav, so it shows near the top and hides on
+    // scroll-down / reveals on scroll-up. Desktop is driven by the observer
+    // above, so the scroll handler only runs the mobile branch there.
     let lastY = window.scrollY;
     let ticking = false;
     const onScroll = () => {
+      ticking = false;
       const y = window.scrollY;
+      if (isDesktop()) {
+        applyDesktopState();
+        lastY = y;
+        return;
+      }
       if (isMenuOpen() || y <= 80) {
         setHidden(false);
       } else if (y > lastY + 4) {
@@ -272,7 +330,6 @@ const mobileItems = site.mobileMenu.items.filter((item) => !item.hidden);
         setHidden(false);
       }
       lastY = y;
-      ticking = false;
     };
     window.addEventListener(
       "scroll",
@@ -284,5 +341,19 @@ const mobileItems = site.mobileMenu.items.filter((item) => !item.hidden);
       },
       { passive: true },
     );
+    // Set the initial state and re-apply when crossing the breakpoint so the
+    // pill never lingers in the wrong viewport's state.
+    onScroll();
+    window.addEventListener("resize", onScroll, { passive: true });
+    // Drop the no-flash guard only once the page has settled at its final scroll
+    // position (`load` + a frame). While the guard is on, the desktop pill is
+    // force-hidden regardless of `is-hidden`, so a first-load scroll transient —
+    // e.g. the home page's heavy JS (swirl canvas, product video) momentarily
+    // shifting layout, or the browser restoring a scroll position — can't flash
+    // the pill at the top. After this, the `is-hidden` fade takes over.
+    const dropPreInit = () =>
+      requestAnimationFrame(() => header.classList.remove("pre-init"));
+    if (document.readyState === "complete") dropPreInit();
+    else window.addEventListener("load", dropPreInit, { once: true });
   }
 </script>
