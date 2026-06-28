@@ -9,16 +9,6 @@ import intro from "../../data/intro.json";
 import LogoStrip from "../layout/LogoStrip.astro";
 import LogoMarquee from "../layout/LogoMarquee.astro";
 import ProductVideo from "../ui/ProductVideo.astro";
-import ScrollLetterReveal from "../ui/ScrollLetterReveal.astro";
-
-// The lead statement reveals letter-by-letter on scroll (same effect as the
-// About manifesto). Map the before/highlight/after copy onto styled segments,
-// the highlight rendered semibold.
-const leadSegments = [
-  { text: intro.lead.before },
-  { text: intro.lead.highlight, bold: true },
-  { text: intro.lead.after },
-];
 ---
 
 <section class="relative overflow-hidden text-black">
@@ -41,11 +31,11 @@ const leadSegments = [
     <div
       class="mx-auto flex max-w-[1298px] flex-col items-center gap-20 px-2 pb-0 sm:px-6 sm:pb-20 lg:px-0"
     >
-      <ScrollLetterReveal
-        paragraphs={[leadSegments]}
-        mutedColor="#EEE8FF"
+      <p
         class="mx-auto max-w-[350px] text-center text-xlg sm:max-w-[600px] md:max-w-[962px]"
-      />
+      >
+        {intro.lead.before}<span class="font-semibold">{intro.lead.highlight}</span>{intro.lead.after}
+      </p>
 
       <div data-reveal class="w-full" style="transition-delay:120ms">
         <!-- Mobile: a full-bleed auto-scrolling marquee. The `-mx-6` cancels the
