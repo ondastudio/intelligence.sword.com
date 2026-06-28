@@ -21,8 +21,10 @@
 ---
 
 <div class="about-field relative isolate overflow-clip bg-white">
-  <!-- Out-of-flow background layer spanning the whole run. -->
-  <div class="field-bg pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+  <!-- Out-of-flow background layer spanning the run. Its bottom stops short of
+       the run's end so the sticky swirl releases — and finishes — in the upper
+       part of the closing CTA, leaving the headline + button on clean surface. -->
+  <div class="field-bg pointer-events-none absolute inset-x-0 top-0 bottom-[280px] z-0" aria-hidden="true">
     <!-- Lavender wash — scrubbed 0 (white State A) → 1 (lavender State B onward),
          then held for AboutCta / AboutTeam below. -->
     <div data-field-wash class="field-wash absolute inset-0 bg-purple-tint"></div>
@@ -66,6 +68,21 @@
   }
   .field-wash {
     opacity: 0;
+    /* The wash rectangle ends short of the run (see .field-bg bottom inset) so
+       the swirl finishes in the upper CTA. Fade its bottom edge out instead of
+       cutting it hard, so that seam never reads as a band across the CTA. */
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0,
+      #000 calc(100% - 240px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      #000 0,
+      #000 calc(100% - 240px),
+      transparent 100%
+    );
   }
 
   /* On a narrow viewport the contained State-A bloom otherwise lands as a tight,
