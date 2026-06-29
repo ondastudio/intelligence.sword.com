@@ -20,7 +20,7 @@ import FormField from "../ui/FormField.astro";
 import SelectMenu from "../ui/SelectMenu.astro";
 import ArrowCircle from "../ui/ArrowCircle.astro";
 
-const { eyebrow, heading, subtext, form, privacy } = data;
+const { eyebrow, heading, subtext, form, privacy, success } = data;
 ---
 
 <section class="relative z-10 min-h-screen text-ink">
@@ -44,10 +44,11 @@ const { eyebrow, heading, subtext, form, privacy } = data;
       </p>
     </div>
 
-    {/* Right — form */}
+    {/* Right — form (swapped for the success panel after submit) */}
+    <div class="w-full lg:w-[522px] lg:shrink-0">
     <form
       data-book-intro-form
-      class="flex w-full flex-col gap-[72px] lg:w-[522px] lg:shrink-0"
+      class="flex w-full flex-col gap-[72px]"
     >
       <div class="flex flex-col gap-10">
         <div class="flex flex-col gap-6">
@@ -155,6 +156,30 @@ const { eyebrow, heading, subtext, form, privacy } = data;
         >{privacy.after}
       </p>
     </form>
+
+    {/* Success — shown in place of the form after submit (Figma 9222:91). */}
+    <div
+      data-book-intro-success
+      hidden
+      tabindex="-1"
+      class="flex flex-col items-start gap-6 focus:outline-none"
+    >
+      <h2 class="font-serif text-h6 font-normal text-ink">{success.heading}</h2>
+      <p class="max-w-[413px] text-lg font-medium text-ink">{success.body}</p>
+      <button
+        type="button"
+        data-book-intro-back
+        class="group flex items-center self-start"
+        aria-label={success.back}
+      >
+        <ArrowCircle variant="filled" rotate={180} decorative label={success.back} />
+        <span
+          class="-ml-px rounded-[50px] bg-brand px-6 py-3 text-sm font-semibold uppercase leading-tight text-white"
+          >{success.back}</span
+        >
+      </button>
+    </div>
+    </div>
   </div>
 </section>
 
@@ -165,6 +190,23 @@ const { eyebrow, heading, subtext, form, privacy } = data;
   // configured recipients (the same inboxes the old CTA opened). Replace this
   // with a fetch POST to a real endpoint to capture submissions server-side.
   const form = document.querySelector<HTMLFormElement>("[data-book-intro-form]");
+  const success = document.querySelector<HTMLElement>("[data-book-intro-success]");
+  const backBtn = document.querySelector<HTMLButtonElement>("[data-book-intro-back]");
+
+  // Swap the form for the success panel (and back again on "Go back").
+  const showSuccess = () => {
+    if (!form || !success) return;
+    form.hidden = true;
+    success.hidden = false;
+    success.focus();
+  };
+  backBtn?.addEventListener("click", () => {
+    if (!form || !success) return;
+    form.reset(); // clears native fields + fires `reset` (SelectMenus reset too)
+    success.hidden = true;
+    form.hidden = false;
+    form.querySelector<HTMLInputElement>("input, textarea")?.focus();
+  });
 
   form?.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -206,6 +248,9 @@ const { eyebrow, heading, subtext, form, privacy } = data;
       `?subject=${encodeURIComponent(subject)}` +
       `&body=${encodeURIComponent(body)}`;
 
+    // Trigger the delivery attempt (opens the visitor's mail client) and show
+    // the success panel in place of the form.
     window.location.href = href;
+    showSuccess();
   });
 </script>

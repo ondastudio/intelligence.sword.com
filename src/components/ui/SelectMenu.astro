@@ -46,7 +46,7 @@ const listId = `${name}-listbox`;
 
 // Mirrors FormField's control look so the closed state is indistinguishable.
 const trigger =
-  "flex w-full items-center justify-between gap-6 rounded-[16px] border border-black/50 bg-transparent px-6 py-3 text-left text-sm uppercase text-black/50 transition-colors focus:border-brand focus:outline-none aria-expanded:border-brand [[data-invalid]_&]:border-risk-high";
+  "flex w-full items-center justify-between gap-6 rounded-[16px] border border-black/50 bg-transparent px-6 py-3 text-left text-sm uppercase text-black transition-colors focus:border-brand focus:outline-none aria-expanded:border-brand [[data-invalid]_&]:border-risk-high";
 
 const optionClass =
   "flex w-full items-center py-3 text-left text-sm uppercase text-black transition-colors data-[active]:text-brand aria-selected:text-brand";
@@ -67,7 +67,7 @@ const optionClass =
     aria-controls={listId}
     class={trigger}
   >
-    <span data-select-text>{label}</span>
+    <span data-select-text class="text-black/50">{label}</span>
     <svg
       data-select-chevron
       class="h-[6px] w-[10px] shrink-0 text-black/50 transition-transform duration-200"
@@ -325,6 +325,16 @@ const optionClass =
     // Close on outside click.
     document.addEventListener("click", (e) => {
       if (!root.contains(e.target as Node)) close();
+    });
+
+    // Restore the placeholder state when the owning form is reset.
+    root.closest("form")?.addEventListener("reset", () => {
+      valueInput.value = "";
+      text.textContent = placeholder;
+      text.classList.add("text-black/50");
+      options.forEach((o) => o.setAttribute("aria-selected", "false"));
+      root.removeAttribute("data-invalid");
+      close();
     });
   }
 

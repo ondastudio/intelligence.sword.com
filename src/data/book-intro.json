@@ -52,6 +52,11 @@
     "linkHref": "https://legal.swordhealth.com/members/privacy-statement",
     "after": "."
   },
+  "success": {
+    "heading": "Message received!",
+    "body": "One of our Intelligence experts will get back to you as soon as possible.",
+    "back": "Go back"
+  },
   "delivery": {
     "recipients": ["f.alcobia@swordhealth.com", "j.gonzalez@swordhealth.com"],
     "subject": "New intro request from intelligence.sword.com"
