@@ -1,0 +1,195 @@
+---
+/**
+ * SelectMenu — a custom dropdown matching the Figma "Menu" design (node
+ * 9220:129): a field-styled trigger (identical to FormField's closed select)
+ * that opens a white, `backdrop-blur`, `rounded-[16px]`, 32px-padded popup
+ * listbox whose uppercase items are separated by faint hairlines (the last has
+ * none). Native `<select>` can't be styled this way, so this is a button +
+ * listbox pair driven by a small script.
+ *
+ * It stays form-friendly: the chosen value lives in a hidden `<input>` (so it
+ * appears in FormData / the mailto compose), and `required` is enforced by the
+ * page's submit handler via the `data-required` flag on the wrapper. A
+ * `required` field appends a ` *` marker to its placeholder, like FormField.
+ *
+ * Keyboard: Enter/Space/↓ open, ↑/↓ move, Enter select, Esc close.
+ */
+interface Props {
+  name: string;
+  placeholder: string;
+  required?: boolean;
+  options: string[];
+  class?: string;
+}
+const {
+  name,
+  placeholder,
+  required = false,
+  options,
+  class: className = "",
+} = Astro.props;
+
+const label = required ? `${placeholder} *` : placeholder;
+const listId = `${name}-listbox`;
+
+// Mirrors FormField's control look so the closed state is indistinguishable.
+const trigger =
+  "flex w-full items-center justify-between gap-6 rounded-[16px] border border-black/50 bg-transparent px-6 py-3 text-left text-sm uppercase text-black/50 transition-colors focus:border-brand focus:outline-none aria-expanded:border-brand [[data-invalid]_&]:border-risk-high";
+---
+
+<div
+  data-select-menu
+  data-required={required ? "" : undefined}
+  class={`relative ${className}`}
+>
+  <input type="hidden" name={name} value="" data-select-value />
+
+  <button
+    type="button"
+    data-select-trigger
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    aria-controls={listId}
+    class={trigger}
+  >
+    <span data-select-text>{label}</span>
+    <svg
+      data-select-chevron
+      class="h-[6px] w-[10px] shrink-0 text-black/50 transition-transform duration-200"
+      viewBox="0 0 10 6"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M5.295 5.29289C4.90447 5.68342 4.27131 5.68342 3.88078 5.29289L0.294998 1.70711C-0.334967 1.07714 0.111199 0 1.0021 0L8.17368 0C9.06458 0 9.51075 1.07714 8.88078 1.70711L5.295 5.29289Z"
+        fill="currentColor"
+      />
+    </svg>
+  </button>
+
+  <ul
+    id={listId}
+    role="listbox"
+    data-select-list
+    class="pointer-events-none absolute left-0 top-full z-50 mt-2 w-full origin-top -translate-y-2 scale-[0.98] rounded-[16px] bg-white/95 p-8 opacity-0 shadow-[0_24px_60px_-12px_rgba(31,31,31,0.22)] backdrop-blur-[20px] transition duration-200 ease-[cubic-bezier(0.33,1,0.68,1)] motion-reduce:transition-none data-[open]:pointer-events-auto data-[open]:translate-y-0 data-[open]:scale-100 data-[open]:opacity-100"
+  >
+    {
+      options.map((opt, i) => (
+        <li role="presentation">
+          <button
+            type="button"
+            role="option"
+            aria-selected="false"
+            tabindex="-1"
+            data-select-option
+            data-value={opt}
+            class:list={[
+              "flex w-full items-center py-3 text-left text-sm uppercase text-black transition-colors hover:text-brand aria-selected:text-brand",
+              i < options.length - 1 ? "border-b border-black/24" : "pb-0",
+            ]}
+          >
+            {opt}
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<script>
+  function initSelectMenu(root: HTMLElement) {
+    const trigger = root.querySelector<HTMLButtonElement>("[data-select-trigger]");
+    const list = root.querySelector<HTMLUListElement>("[data-select-list]");
+    const valueInput = root.querySelector<HTMLInputElement>("[data-select-value]");
+    const text = root.querySelector<HTMLElement>("[data-select-text]");
+    const chevron = root.querySelector<SVGElement>("[data-select-chevron]");
+    const options = Array.from(
+      root.querySelectorAll<HTMLButtonElement>("[data-select-option]"),
+    );
+    if (!trigger || !list || !valueInput || !text) return;
+
+    const placeholder = text.textContent ?? "";
+    let activeIndex = -1;
+
+    const isOpen = () => list.hasAttribute("data-open");
+
+    const open = () => {
+      list.setAttribute("data-open", "");
+      trigger.setAttribute("aria-expanded", "true");
+      chevron?.style.setProperty("transform", "rotate(180deg)");
+      const selected = options.findIndex(
+        (o) => o.getAttribute("aria-selected") === "true",
+      );
+      setActive(selected >= 0 ? selected : 0);
+    };
+
+    const close = () => {
+      list.removeAttribute("data-open");
+      trigger.setAttribute("aria-expanded", "false");
+      chevron?.style.removeProperty("transform");
+      activeIndex = -1;
+    };
+
+    const setActive = (i: number) => {
+      activeIndex = Math.max(0, Math.min(options.length - 1, i));
+      options[activeIndex]?.focus();
+    };
+
+    const choose = (opt: HTMLButtonElement) => {
+      options.forEach((o) => o.setAttribute("aria-selected", "false"));
+      opt.setAttribute("aria-selected", "true");
+      valueInput.value = opt.dataset.value ?? "";
+      text.textContent = opt.dataset.value ?? placeholder;
+      // Move from muted placeholder to solid value.
+      text.classList.remove("text-black/50");
+      root.removeAttribute("data-invalid"); // clear any prior error
+      close();
+      trigger.focus();
+    };
+
+    trigger.addEventListener("click", () => (isOpen() ? close() : open()));
+
+    trigger.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        isOpen() ? setActive(activeIndex + 1) : open();
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (!isOpen()) open();
+        else setActive(activeIndex - 1);
+      } else if (e.key === "Escape") {
+        close();
+      }
+    });
+
+    options.forEach((opt, i) => {
+      opt.addEventListener("click", () => choose(opt));
+      opt.addEventListener("mousemove", () => (activeIndex = i));
+      opt.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          setActive(activeIndex + 1);
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          setActive(activeIndex - 1);
+        } else if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          choose(opt);
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          close();
+          trigger.focus();
+        }
+      });
+    });
+
+    // Close on outside click.
+    document.addEventListener("click", (e) => {
+      if (!root.contains(e.target as Node)) close();
+    });
+  }
+
+  document
+    .querySelectorAll<HTMLElement>("[data-select-menu]")
+    .forEach(initSelectMenu);
+</script>

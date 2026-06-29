@@ -16,6 +16,7 @@ import data from "../../data/book-intro.json";
 import Navbar from "../layout/Navbar.astro";
 import Eyebrow from "../ui/Eyebrow.astro";
 import FormField from "../ui/FormField.astro";
+import SelectMenu from "../ui/SelectMenu.astro";
 import ArrowCircle from "../ui/ArrowCircle.astro";
 
 const { eyebrow, heading, subtext, form, privacy } = data;
@@ -83,11 +84,13 @@ const { eyebrow, heading, subtext, form, privacy } = data;
                 <FormField
                   name={form.companyDetails.jobTitle.name}
                   placeholder={form.companyDetails.jobTitle.placeholder}
+                  required={form.companyDetails.jobTitle.required}
                   class="flex-1"
                 />
                 <FormField
                   name={form.companyDetails.companyName.name}
                   placeholder={form.companyDetails.companyName.placeholder}
+                  required={form.companyDetails.companyName.required}
                   class="flex-1"
                 />
               </div>
@@ -95,6 +98,7 @@ const { eyebrow, heading, subtext, form, privacy } = data;
                 type="select"
                 name={form.companyDetails.country.name}
                 placeholder={form.companyDetails.country.placeholder}
+                required={form.companyDetails.country.required}
                 options={form.companyDetails.country.options}
               />
             </div>
@@ -105,10 +109,10 @@ const { eyebrow, heading, subtext, form, privacy } = data;
             <legend class="mb-4 text-base font-semibold capitalize text-black"
               >{form.companyInterests.label}</legend
             >
-            <FormField
-              type="select"
+            <SelectMenu
               name={form.companyInterests.organizationType.name}
               placeholder={form.companyInterests.organizationType.placeholder}
+              required={form.companyInterests.organizationType.required}
               options={form.companyInterests.organizationType.options}
             />
           </fieldset>
@@ -162,6 +166,20 @@ const { eyebrow, heading, subtext, form, privacy } = data;
 
   form?.addEventListener("submit", (event) => {
     event.preventDefault();
+
+    // Custom dropdowns (SelectMenu) sit outside HTML constraint validation, so
+    // enforce their `required` flag here before the native check.
+    for (const menu of form.querySelectorAll<HTMLElement>(
+      "[data-select-menu][data-required]",
+    )) {
+      const value = menu.querySelector<HTMLInputElement>("[data-select-value]")?.value;
+      if (!value) {
+        menu.setAttribute("data-invalid", "");
+        menu.querySelector<HTMLButtonElement>("[data-select-trigger]")?.focus();
+        return;
+      }
+    }
+
     if (!form.reportValidity()) return;
 
     const fd = new FormData(form);

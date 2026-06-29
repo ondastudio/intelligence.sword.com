@@ -20,6 +20,7 @@ import TriageMedia from "../components/ui/TriageMedia.astro";
 import StoryCard from "../components/ui/StoryCard.astro";
 import TeamCard from "../components/ui/TeamCard.astro";
 import FormField from "../components/ui/FormField.astro";
+import SelectMenu from "../components/ui/SelectMenu.astro";
 import Logo from "../components/layout/Logo.astro";
 import LogoStrip from "../components/layout/LogoStrip.astro";
 import LogoMarquee from "../components/layout/LogoMarquee.astro";
@@ -403,6 +404,23 @@ const swatches = [
           type="textarea"
           name="sg-message"
           placeholder="Tell us about your challenges"
+        />
+      </div>
+    </section>
+
+    <!-- SelectMenu -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase">SelectMenu</h2>
+      <p class="mt-1 text-sm text-black/50">
+        Custom dropdown (Figma "Menu", <code>9220:129</code>): a FormField-styled
+        trigger opening a white, blurred, rounded popup of uppercase items split
+        by hairlines. Used for Organization Type on the Book-an-intro page.
+      </p>
+      <div class="mt-4 max-w-[522px]">
+        <SelectMenu
+          name="sg-org-type"
+          placeholder="Select your organization type"
+          options={["Health System", "Payor", "Provider", "Government", "Others"]}
         />
       </div>
     </section>

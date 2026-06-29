@@ -14,11 +14,12 @@
     "email": { "name": "email", "placeholder": "Email", "required": true },
     "companyDetails": {
       "label": "Company details",
-      "jobTitle": { "name": "jobTitle", "placeholder": "Job title" },
-      "companyName": { "name": "companyName", "placeholder": "Company name" },
+      "jobTitle": { "name": "jobTitle", "placeholder": "Job title", "required": true },
+      "companyName": { "name": "companyName", "placeholder": "Company name", "required": true },
       "country": {
         "name": "country",
         "placeholder": "Country",
+        "required": true,
         "options": [
           "United States",
           "United Kingdom",
@@ -32,16 +33,17 @@
       }
     },
     "companyInterests": {
-      "label": "Company interests",
+      "label": "Organization Type",
       "organizationType": {
         "name": "organizationType",
         "placeholder": "Select your organization type",
+        "required": true,
         "options": [
-          "Provider",
+          "Health System",
           "Payor",
-          "National Health System",
-          "Pharmaceutical",
-          "Other"
+          "Provider",
+          "Government",
+          "Others"
         ]
       }
     },
