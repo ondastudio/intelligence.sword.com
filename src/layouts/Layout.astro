@@ -15,14 +15,16 @@ interface Props {
   description?: string;
   /** Render the global mobile nav pill. Off for non-site pages (e.g. styleguide). */
   mobileNav?: boolean;
+  /** Social-share card, root-relative path in /public. Defaults to the brand card. */
+  ogImage?: string;
 }
 
-const { title, description = '', mobileNav = true } = Astro.props;
+const { title, description = '', mobileNav = true, ogImage: ogImagePath = '/og-image.png' } = Astro.props;
 
 // Absolute URLs for social sharing. Astro.site is the canonical origin set in
 // astro.config.mjs; both fall back gracefully if a page is viewed standalone.
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL('/og-image.png', Astro.site);
+const ogImage = new URL(ogImagePath, Astro.site);
 ---
 
 <!doctype html>
