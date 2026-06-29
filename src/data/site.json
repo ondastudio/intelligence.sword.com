@@ -6,7 +6,7 @@
     { "label": "Resources", "href": "#", "hidden": true },
     { "label": "Our customers", "href": "/customers" }
   ],
-  "cta": { "label": "Book a meeting", "href": "#" },
+  "cta": { "label": "Book a meeting", "href": "mailto:f.alcobia@swordhealth.com,j.gonzalez@swordhealth.com" },
   "mobileMenu": {
     "items": [
       {
