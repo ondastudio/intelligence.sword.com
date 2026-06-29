@@ -56,7 +56,7 @@
           "statOnly": true,
           "statLabel": "Guaranteed DN reduction (contractual floor)",
           "cta": {
-            "label": "Learn More",
+            "label": "Read case study",
             "href": "#"
           },
           "mobile": {
@@ -104,7 +104,7 @@
           "statOnly": true,
           "statLabel": "US autonomous appointment confirmation rate",
           "cta": {
-            "label": "Learn More",
+            "label": "Read case study",
             "href": "#"
           },
           "mobile": {
@@ -149,7 +149,7 @@
           "stat": "72%",
           "statLabel": "reduction in surgical complications",
           "cta": {
-            "label": "Learn More",
+            "label": "Read case study",
             "href": "#"
           }
         }
@@ -191,7 +191,7 @@
           "stat": "-34%",
           "statLabel": "reduction in 30-day readmissions",
           "cta": {
-            "label": "Learn More",
+            "label": "Read case study",
             "href": "#"
           },
           "mobile": {
@@ -243,7 +243,7 @@
     "stat": "10M",
     "statLabel": "citizens served by a free, always-on hotline",
     "cta": {
-      "label": "Learn More",
+      "label": "Read case study",
       "href": "#"
     }
   }
