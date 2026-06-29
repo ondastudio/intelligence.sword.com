@@ -6,11 +6,13 @@
  * right form column (name, email, company details, interests, message) closing
  * on a SUBMIT pill seamed to a filled ArrowCircle, then the privacy line.
  *
- * The page is static (no backend), so submission is handled client-side: the
- * field values are composed into a mailto to the recipients in
- * `data/book-intro.json` (`delivery`) — the same inboxes the old CTA opened,
- * now with structured context. Swap the handler for a real endpoint by POSTing
- * the form instead. Content + recipients live in `data/book-intro.json`.
+ * Submissions are captured by **Netlify Forms**. The markup carries the
+ * detection attributes (`data-netlify`, hidden `form-name`, honeypot) so
+ * Netlify registers the form at build time, and because the submit handler
+ * intercepts the event (custom dropdown validation), the encoded fields are
+ * POSTed back to the site with `fetch` rather than a native navigation.
+ * Recipient/notification routing is configured in the Netlify dashboard.
+ * Content lives in `data/book-intro.json`.
  */
 import data from "../../data/book-intro.json";
 import countries from "../../data/countries.json";
@@ -20,7 +22,11 @@ import FormField from "../ui/FormField.astro";
 import SelectMenu from "../ui/SelectMenu.astro";
 import ArrowCircle from "../ui/ArrowCircle.astro";
 
-const { eyebrow, heading, subtext, form, privacy, success } = data;
+const { eyebrow, heading, subtext, form, privacy, success, error } = data;
+
+// Netlify identifies submissions by this name (must match the hidden
+// `form-name` input and the AJAX POST body below).
+const formName = "book-intro";
 ---
 
 <section class="relative z-10 min-h-screen text-ink">
@@ -48,8 +54,19 @@ const { eyebrow, heading, subtext, form, privacy, success } = data;
     <div class="w-full lg:w-[522px] lg:shrink-0">
     <form
       data-book-intro-form
+      name={formName}
+      method="POST"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
       class="flex w-full flex-col gap-[72px]"
     >
+      {/* Netlify Forms: ties the POST to the registered form + a honeypot the
+          bot trap fills but humans never see. */}
+      <input type="hidden" name="form-name" value={formName} />
+      <p hidden>
+        <label>Don’t fill this out if you’re human: <input name="bot-field" /></label>
+      </p>
+
       <div class="flex flex-col gap-10">
         <div class="flex flex-col gap-6">
           {/* Name + email */}
@@ -134,17 +151,30 @@ const { eyebrow, heading, subtext, form, privacy, success } = data;
         </div>
 
         {/* Submit */}
-        <button
-          type="submit"
-          class="group flex items-center self-start"
-          aria-label={form.submit}
-        >
-          <span
-            class="rounded-[50px] bg-brand px-6 py-3 text-sm font-semibold uppercase leading-tight text-white"
-            >{form.submit}</span
+        <div class="flex flex-col gap-4">
+          <button
+            type="submit"
+            data-book-intro-submit
+            class="group flex items-center self-start disabled:opacity-60"
+            aria-label={form.submit}
           >
-          <ArrowCircle variant="filled" decorative detach label={form.submit} class="-ml-px" />
-        </button>
+            <span
+              class="rounded-[50px] bg-brand px-6 py-3 text-sm font-semibold uppercase leading-tight text-white"
+              >{form.submit}</span
+            >
+            <ArrowCircle variant="filled" decorative detach label={form.submit} class="-ml-px" />
+          </button>
+
+          {/* Submission failure — revealed by the handler on a failed POST. */}
+          <p
+            data-book-intro-error
+            hidden
+            role="alert"
+            class="text-base text-risk-high"
+          >
+            {error}
+          </p>
+        </div>
       </div>
 
       <p class="text-base text-black">
@@ -184,14 +214,14 @@ const { eyebrow, heading, subtext, form, privacy, success } = data;
 </section>
 
 <script>
-  import data from "../../data/book-intro.json";
-
-  // Static site, no backend: compose the field values into a mailto to the
-  // configured recipients (the same inboxes the old CTA opened). Replace this
-  // with a fetch POST to a real endpoint to capture submissions server-side.
+  // Submissions are sent to Netlify Forms. The handler intercepts submit (to
+  // validate the custom dropdowns), so the encoded fields are POSTed back to
+  // the site origin — Netlify captures any POST whose body carries `form-name`.
   const form = document.querySelector<HTMLFormElement>("[data-book-intro-form]");
   const success = document.querySelector<HTMLElement>("[data-book-intro-success]");
   const backBtn = document.querySelector<HTMLButtonElement>("[data-book-intro-back]");
+  const submitBtn = document.querySelector<HTMLButtonElement>("[data-book-intro-submit]");
+  const errorMsg = document.querySelector<HTMLElement>("[data-book-intro-error]");
 
   // Swap the form for the success panel (and back again on "Go back").
   const showSuccess = () => {
@@ -208,7 +238,7 @@ const { eyebrow, heading, subtext, form, privacy, success } = data;
     form.querySelector<HTMLInputElement>("input, textarea")?.focus();
   });
 
-  form?.addEventListener("submit", (event) => {
+  form?.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     // Custom dropdowns (SelectMenu) sit outside HTML constraint validation, so
@@ -226,31 +256,31 @@ const { eyebrow, heading, subtext, form, privacy, success } = data;
 
     if (!form.reportValidity()) return;
 
-    const fd = new FormData(form);
-    const labels: Record<string, string> = {
-      firstName: "First name",
-      lastName: "Last name",
-      email: "Email",
-      jobTitle: "Job title",
-      companyName: "Company name",
-      country: "Country",
-      organizationType: "Organization type",
-      message: "Message",
-    };
+    // POST the encoded fields back to the site so Netlify records the
+    // submission (form-name + honeypot ride along in the FormData). Lock the
+    // button so a slow network can't be double-submitted, and clear any error
+    // left over from a previous attempt.
+    if (errorMsg) errorMsg.hidden = true;
+    if (submitBtn) submitBtn.disabled = true;
 
-    const body = Object.entries(labels)
-      .map(([key, label]) => `${label}: ${(fd.get(key) as string) || "—"}`)
-      .join("\n");
-
-    const { recipients, subject } = data.delivery;
-    const href =
-      `mailto:${recipients.join(",")}` +
-      `?subject=${encodeURIComponent(subject)}` +
-      `&body=${encodeURIComponent(body)}`;
-
-    // Trigger the delivery attempt (opens the visitor's mail client) and show
-    // the success panel in place of the form.
-    window.location.href = href;
-    showSuccess();
+    try {
+      const res = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(
+          new FormData(form) as unknown as Record<string, string>,
+        ).toString(),
+      });
+      // fetch only rejects on network failure, not on 4xx/5xx — check the
+      // status too so a server-side rejection isn't reported as success.
+      if (!res.ok) throw new Error(`Submission failed: ${res.status}`);
+      showSuccess();
+    } catch {
+      // Network failure or non-OK response: keep the form (and the values the
+      // visitor typed) in place and surface the error so they can retry.
+      if (errorMsg) errorMsg.hidden = false;
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
   });
 </script>
