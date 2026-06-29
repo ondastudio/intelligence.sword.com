@@ -188,14 +188,11 @@
         "case": {
           "logo": "/triage/nhs-logo.png",
           "logoAlt": "NHS Cheshire and Merseyside",
-          "stat": "-34%",
+          "stat": "34%",
           "statLabel": "reduction in 30-day readmissions",
           "cta": {
             "label": "Read case study",
             "href": "/customers/nhs-deprived-communities"
-          },
-          "mobile": {
-            "stat": "34%"
           }
         }
       }
