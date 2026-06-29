@@ -10,7 +10,7 @@
     {
       "label": "Always on",
       "description": "Work 24/7, answering every call and monitoring your population.",
-      "image": "/care/always-on.png"
+      "image": "/care/always-on.webm"
     },
     {
       "label": "Multichannel communication",
@@ -20,12 +20,12 @@
     {
       "label": "Hyper personalization",
       "description": "Adapt tone, timing, and approach to each patient's context and needs.",
-      "image": "/care/personalization.png"
+      "image": "/care/personalization.webm"
     },
     {
       "label": "Conversational AI",
       "description": "Speak naturally in any language, adapting to local accents.",
-      "image": "/care/conversational.png"
+      "image": "/care/conversational.webm"
     },
     {
       "label": "Document processing",
@@ -35,7 +35,7 @@
     {
       "label": "Autonomous browsing",
       "description": "Navigate and operate any platform, even legacy portals.",
-      "image": "/care/autonomous-browsing.svg"
+      "image": "/care/autonomous-browsing.webm"
     }
   ],
   "banner": {

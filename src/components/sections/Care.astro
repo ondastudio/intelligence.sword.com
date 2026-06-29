@@ -13,29 +13,32 @@ import FeatureCard from "../ui/FeatureCard.astro";
 // Per-card illustration styling (keyed by card index). Unlisted cards fall back
 // to FeatureCard's defaults (an in-flow centered box). Notes per special card:
 //
-// • Card 1 (idx 0): small fixed icon — capped width (responsive value serves
-//   both layouts: mobile deck < md, desktop grid ≥ md).
-//
 // • Card 5 (idx 4 — Document processing): a wide composition that bleeds to both
 //   card edges. The image's `-mx-10` + extra width cancel the card's px-10
 //   padding so the artwork reaches the edges at its natural ratio; the wrapper's
 //   clip-path trims only the vertical overflow (±2.5rem horizontal insets leave
 //   the bleed intact) so a tall image is center-cropped, not overlapping text.
 //
-// • Card 6 (idx 5 — Autonomous browsing): per Figma (node 8797:56109) the
-//   browser window is absolutely positioned, vertically centred, and bleeds off
-//   the RIGHT edge only — left edge ~44% across (mobile) / ~32% (desktop), width
-//   ~118% / ~110% of the card. The absolute box leaves the flow so the label and
-//   description sit at top/bottom; the card's overflow-hidden clips the bleed.
+// • Cards 1/3/4/6 (idx 0/2/3/5): video animations. On desktop the clip fills the
+//   card body edge-to-edge within the px-10 padding (40px lateral margins),
+//   object-cover trimming the source's vertical whitespace so the motion reads
+//   large; mobile keeps a small capped centered icon.
 const cardImage: Record<number, { img: string; wrap?: string }> = {
-  0: { img: "max-h-full w-auto max-w-[228px] md:max-w-[237px] object-contain" },
+  0: {
+    img: "max-h-full w-auto max-w-[228px] object-contain md:h-full md:w-full md:max-w-none md:object-cover",
+  },
+  2: {
+    img: "max-h-full w-auto max-w-[228px] object-contain md:h-full md:w-full md:max-w-none md:object-cover",
+  },
+  3: {
+    img: "max-h-full w-auto max-w-[228px] object-contain md:h-full md:w-full md:max-w-none md:object-cover",
+  },
   4: {
     img: "h-auto w-[calc(100%+5rem)] max-w-none -mx-10 object-contain",
     wrap: "flex min-h-0 w-full flex-1 items-center justify-center [clip-path:inset(0_-2.5rem)]",
   },
   5: {
-    img: "h-auto w-full max-w-none",
-    wrap: "absolute top-1/2 left-[44.28%] w-[118.21%] -translate-y-1/2 md:left-[31.73%] md:w-[110.5%]",
+    img: "max-h-full w-auto max-w-[228px] object-contain md:h-full md:w-full md:max-w-none md:object-cover",
   },
 };
 ---

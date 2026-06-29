@@ -12,6 +12,10 @@
  * default is an in-flow centered box; a card can instead pass an `absolute`
  * positioned box (e.g. an illustration that bleeds off one edge), which drops
  * it out of the flex flow so the label and description sit at top and bottom.
+ *
+ * `image` may also point at a video (`.webm`/`.mp4`), in which case it renders
+ * as a muted, looping, autoplaying `<video>` instead of an `<img>` — the same
+ * sizing/wrapper props apply. Videos are decorative, so they carry no caption.
  */
 import LabelPill from "./LabelPill.astro";
 
@@ -33,6 +37,8 @@ const {
   imageWrapperClass = "flex min-h-0 w-full flex-1 items-center justify-center",
   class: className = "",
 } = Astro.props;
+
+const isVideo = !!image && /\.(webm|mp4)$/i.test(image);
 ---
 
 <article
@@ -42,11 +48,20 @@ const {
   {
     image && (
       <div class={imageWrapperClass}>
-        <img
-          src={image}
-          alt={imageAlt}
-          class={imageClass}
-        />
+        {isVideo ? (
+          <video
+            src={image}
+            class={imageClass}
+            autoplay
+            loop
+            muted
+            playsinline
+            preload="auto"
+            aria-hidden="true"
+          />
+        ) : (
+          <img src={image} alt={imageAlt} class={imageClass} />
+        )}
       </div>
     )
   }
