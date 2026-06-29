@@ -24,7 +24,11 @@ export function getStaticPaths() {
 const { story } = Astro.props;
 ---
 
-<Layout title={story.metaTitle} description={story.metaDescription}>
+<Layout
+  title={story.metaTitle}
+  description={story.metaDescription}
+  ogImage="/og-image-case-study.png"
+>
   <div class="page-content">
     <Navbar />
     <CustomerStory story={story} />
