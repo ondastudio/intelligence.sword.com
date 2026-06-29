@@ -51,8 +51,10 @@
         "case": {
           "logo": "/triage/ministry-logo.png",
           "logoAlt": "Hellenic Republic Ministry of Health",
-          "stat": "$150B",
-          "statLabel": "lost yearly to no-shows in the US",
+          "stat": "15%",
+          "statPlus": true,
+          "statOnly": true,
+          "statLabel": "Guaranteed DN reduction (contractual floor)",
           "cta": {
             "label": "Learn More",
             "href": "#"
@@ -99,6 +101,7 @@
           "logoText": "US Medicare-focused VBC Provider",
           "logoAlt": "US Medicare-focused VBC Provider",
           "stat": "69%",
+          "statOnly": true,
           "statLabel": "US autonomous appointment confirmation rate",
           "cta": {
             "label": "Learn More",

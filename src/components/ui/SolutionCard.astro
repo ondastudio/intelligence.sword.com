@@ -30,6 +30,9 @@ interface Props {
   statLabel: string;
   /** Append a frosted "+" chip after the stat (e.g. a "15% +" contractual floor). */
   statPlus?: boolean;
+  /** Desktop case bar shows only the centered stat — no partner logo, no CTA.
+   *  (Mobile is unaffected; it has its own layout.) */
+  statOnly?: boolean;
   /** Per-breakpoint overrides for the mobile (below lg) case bar only — desktop
    *  always uses the base props. Lets a card show different case content on
    *  mobile (e.g. No-Show's contractual-floor stat) without touching desktop. */
@@ -57,6 +60,7 @@ const {
   stat,
   statLabel,
   statPlus = false,
+  statOnly = false,
   mobile,
   cta,
   class: className = "",
@@ -201,9 +205,15 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
        then stat + label); a logo-less guarantee stat is a single centered row. -->
   <div class:list={["overflow-hidden rounded-card", t.caseBg]}>
     <!-- Desktop (lg+) -->
-    <div class="hidden h-[100px] items-center justify-between px-16 lg:flex">
+    <div
+      class:list={[
+        "hidden h-[100px] items-center px-16 lg:flex",
+        statOnly ? "justify-center" : "justify-between",
+      ]}
+    >
       {
-        hasLogo &&
+        !statOnly &&
+          hasLogo &&
           (logo ? (
             <img src={logo} alt={logoAlt} class="h-[54px] w-auto shrink-0" />
           ) : (
@@ -243,11 +253,13 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
       </div>
 
       <!-- CTA — the only link on the card. -->
-      <a
-        href={cta.href}
-        aria-label={cta.label}
-        class="group/cta flex shrink-0 items-center rounded-full"
-      >
+      {
+        !statOnly && (
+          <a
+            href={cta.href}
+            aria-label={cta.label}
+            class="group/cta flex shrink-0 items-center rounded-full"
+          >
         <span
           class:list={[
             "-mr-px rounded-[50px] px-6 py-3 text-sm font-semibold uppercase",
@@ -278,7 +290,9 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
               stroke-linejoin="round"></path>
           </svg>
         </span>
-      </a>
+          </a>
+        )
+      }
     </div>
 
     <!-- Mobile (below lg) -->
