@@ -500,6 +500,7 @@ const cardBg: Record<number, string> = {
       section.classList.remove("is-pinned");
       track.style.height = "";
       stage.style.top = "";
+      stage.style.transform = "";
       cardsBox.style.height = "";
       const vh = window.innerHeight;
       const isLg = lgMQ.matches;
@@ -518,10 +519,20 @@ const cardBg: Record<number, string> = {
         // the navbar stays on screen on shorter viewports. On mobile the fixed
         // page nav floats over the top, so keep a larger inset to clear it.
         const minTop = isLg ? 24 : 76;
-        stickTop = Math.max(minTop, Math.round((vh - stage.offsetHeight) / 2));
+        // When the stage is taller than the viewport (shorter laptops), scale it
+        // down to fit — keeping the exact Figma proportions — so the whole card,
+        // including the bottom case bar + CTA, stays visible while pinned rather
+        // than overflowing the fold. transform-origin is the top so the scaled
+        // visual top still aligns with the sticky `top` inset.
+        const stageH = stage.offsetHeight;
+        const fitScale = Math.min(1, (vh - minTop * 2) / stageH);
+        stage.style.transformOrigin = "top center";
+        stage.style.transform = fitScale < 1 ? `scale(${fitScale})` : "";
+        const scaledH = stageH * fitScale;
+        stickTop = Math.max(minTop, Math.round((vh - scaledH) / 2));
         stage.style.top = `${stickTop}px`;
         section.classList.add("is-pinned");
-        track.style.height = `${stage.offsetHeight + scrub}px`;
+        track.style.height = `${stageH + scrub}px`;
       } else if (mode === "mobile") {
         reserveCardHeight();
       }
