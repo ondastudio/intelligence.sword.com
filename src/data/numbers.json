@@ -13,7 +13,7 @@
     "readmissions": {
       "value": "34%",
       "label": "Up to 34% reduction in 30-day readmissions",
-      "href": "#"
+      "href": "/customers/nhs-surgical-complications"
     },
     "workdays": {
       "value": "686",
@@ -29,7 +29,7 @@
     "role": "Minister of Health (Greece)",
     "photo": "/numbers/photo-georgiadis.png",
     "photoAlt": "Adonis Georgiadis, Minister of Health (Greece)",
-    "href": "#"
+    "href": "/customers/greece"
   },
   "cta": {
     "label": "Book a Meeting",

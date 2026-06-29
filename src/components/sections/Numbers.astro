@@ -60,24 +60,23 @@ const { stats, testimonial, cta } = data;
             class="absolute left-1/2 top-[87.5%] aspect-square w-1/4 -translate-x-1/2 -translate-y-1/2"
           />
         </div>
-        <!-- "4x" + arrow, centered as a group; the arrow is lifted by the line
-             box's descender space (~10.5px at 76px) so the bottom of the circle
-             sits exactly on the bottom of the "4x" glyphs (Figma). -->
-        <div class="mt-[10px] flex items-end justify-center gap-[16px]">
+        <div class="mt-[10px] flex items-end justify-center">
           <span class="font-serif text-h3 font-normal text-black">
             {stats.intake.value}
           </span>
-          <ArrowCircle decorative class="mb-[10.5px]" />
         </div>
         <p
           class="mt-6 max-w-[232px] text-sm font-semibold uppercase text-black"
         >
           {stats.intake.label}
         </p>
-        <a
-          href={stats.intake.href}
-          aria-label="More on intake capacity"
-          class="absolute inset-0 z-20 rounded-card"></a>
+        {stats.intake.href !== "#" && (
+          <a
+            href={stats.intake.href}
+            aria-label="More on intake capacity"
+            class="absolute inset-0 z-20 rounded-card"
+          />
+        )}
       </article>
 
       <!-- Customer portrait -->
@@ -120,6 +119,8 @@ const { stats, testimonial, cta } = data;
         </div>
         <a
           href={testimonial.href}
+          target="_blank"
+          rel="noopener noreferrer"
           aria-label="Read the partnership story"
           class="absolute inset-0 z-20 rounded-card"></a>
       </article>
@@ -160,11 +161,13 @@ const { stats, testimonial, cta } = data;
           </p>
         </div>
 
-        <ArrowCircle decorative class="absolute bottom-10 right-10 z-10" />
-        <a
-          href={stats.workdays.href}
-          aria-label="See admin workdays saved"
-          class="absolute inset-0 z-20 rounded-card"></a>
+        {stats.workdays.href !== "#" && (
+          <a
+            href={stats.workdays.href}
+            aria-label="See admin workdays saved"
+            class="absolute inset-0 z-20 rounded-card"
+          />
+        )}
       </article>
 
       <!-- 5.2x ROI — bar chart -->
@@ -174,13 +177,12 @@ const { stats, testimonial, cta } = data;
         data-reveal
         style="transition-delay:160ms;--l:39.14%;--t:41.39%;--w:36.91%;--h:58.56%"
       >
-        <div class="flex items-center justify-center gap-6">
+        <div class="flex items-center justify-center">
           <span
             class="whitespace-nowrap font-serif text-h3 font-normal text-black"
           >
             {stats.roi.value}
           </span>
-          <ArrowCircle decorative />
         </div>
         <!-- Center-aligned bar chart with perforated dot mesh, exact from Figma -->
         <img
@@ -192,10 +194,13 @@ const { stats, testimonial, cta } = data;
         <p class="text-balance text-sm font-semibold uppercase text-ink">
           {stats.roi.label}
         </p>
-        <a
-          href={stats.roi.href}
-          aria-label="See the ROI breakdown"
-          class="absolute inset-0 z-20 rounded-card"></a>
+        {stats.roi.href !== "#" && (
+          <a
+            href={stats.roi.href}
+            aria-label="See the ROI breakdown"
+            class="absolute inset-0 z-20 rounded-card"
+          />
+        )}
       </article>
 
       <!-- 34% — readmissions reduction -->
@@ -205,7 +210,11 @@ const { stats, testimonial, cta } = data;
         data-reveal
         style="transition-delay:200ms;--l:78.36%;--t:41.39%;--w:21.56%;--h:41.31%;background:radial-gradient(120% 95% at 50% 100%, rgba(186,224,235,0.75), rgba(220,221,228,0.26))"
       >
-        <img src="/numbers/logo-nhs.svg" alt="NHS" class="h-[26px] w-auto" />
+        <img
+          src="/logos/cheshire-merseyside-nhs.png"
+          alt="NHS Cheshire and Merseyside"
+          class="h-10 w-auto"
+        />
         <div class="flex items-start gap-1">
           <span class="font-serif text-h3 font-normal text-black">
             {stats.readmissions.value}
@@ -234,6 +243,8 @@ const { stats, testimonial, cta } = data;
         <ArrowCircle decorative />
         <a
           href={stats.readmissions.href}
+          target="_blank"
+          rel="noopener noreferrer"
           aria-label="See readmissions impact"
           class="absolute inset-0 z-20 rounded-card"></a>
       </article>
