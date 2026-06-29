@@ -31,6 +31,10 @@ interface Props {
   tone?: "white" | "lavender" | "outline";
   logo?: string;
   logoAlt?: string;
+  /** Tailwind size override for the logo. Defaults to a 48.97px height cap;
+   *  tightly-cropped lockups (e.g. NHS Cheshire) can pass a smaller cap so they
+   *  match the visual weight of multi-line sibling logos. */
+  logoClass?: string;
   confidential?: boolean;
   title?: string;
   stat?: Stat;
@@ -50,6 +54,7 @@ const {
   tone = "white",
   logo,
   logoAlt = "",
+  logoClass = "max-h-[48.97px]",
   confidential = false,
   title,
   stat,
@@ -188,7 +193,7 @@ const statLabelLines = (stat?.label ?? "").split("\n");
     <article class={`group relative flex flex-col overflow-hidden rounded-card lg:grid lg:min-h-[510px] lg:grid-cols-2 lg:grid-rows-[auto_1fr_auto_auto] ${toneClass[tone]} ${className}`}>
       <header class="flex flex-col gap-6 px-6 pt-8 lg:col-start-1 lg:row-start-1 lg:px-10 lg:pr-4 lg:pt-10">
         {logo && (
-          <img src={logo} alt={logoAlt} class="h-12 w-auto max-w-[185px] self-start object-contain object-left lg:h-8" />
+          <img src={logo} alt={logoAlt} class={`${logoClass} w-auto max-w-[185px] self-start object-contain object-left`} />
         )}
         <h3 class="font-serif text-xlg font-normal text-black">
           {titleLines.map((line, i) =>
@@ -293,7 +298,7 @@ const statLabelLines = (stat?.label ?? "").split("\n");
             </span>
           ) : (
             logo && (
-              <img src={logo} alt={logoAlt} class="h-12 w-auto max-w-[185px] self-start object-contain object-left lg:h-8" />
+              <img src={logo} alt={logoAlt} class={`${logoClass} w-auto max-w-[185px] self-start object-contain object-left`} />
             )
           )}
           {type === "story" ? (
