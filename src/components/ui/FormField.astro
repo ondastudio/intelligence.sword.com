@@ -34,7 +34,7 @@ const {
 } = Astro.props;
 
 const base =
-  "w-full rounded-[16px] border border-black bg-transparent px-6 py-3 text-sm text-black placeholder:uppercase placeholder:text-black/50 focus:outline-none focus:ring-2 focus:ring-brand/40";
+  "block w-full rounded-[16px] border border-black/50 bg-transparent px-6 py-3 text-sm text-black placeholder:uppercase placeholder:text-black/50 transition-colors focus:border-black focus:outline-none focus:ring-2 focus:ring-brand/40";
 ---
 
 {
@@ -63,14 +63,18 @@ const base =
           <option value={opt}>{opt}</option>
         ))}
       </select>
-      {/* Design's arrow_drop_down chevron, drawn over the native control. */}
+      {/* Design's arrow_drop_down chevron — rounded downward triangle, drawn
+          over the native control. */}
       <svg
-        class="pointer-events-none absolute right-6 top-1/2 h-[6px] w-3 -translate-y-1/2 text-black"
-        viewBox="0 0 12 6"
+        class="pointer-events-none absolute right-6 top-1/2 h-[6px] w-[10px] -translate-y-1/2 text-black/50"
+        viewBox="0 0 10 6"
         fill="none"
         aria-hidden="true"
       >
-        <path d="M0 0L6 6L12 0" fill="currentColor" />
+        <path
+          d="M5.295 5.29289C4.90447 5.68342 4.27131 5.68342 3.88078 5.29289L0.294998 1.70711C-0.334967 1.07714 0.111199 0 1.0021 0L8.17368 0C9.06458 0 9.51075 1.07714 8.88078 1.70711L5.295 5.29289Z"
+          fill="currentColor"
+        />
       </svg>
     </div>
   ) : (
