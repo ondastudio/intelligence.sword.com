@@ -42,7 +42,8 @@ interface Props {
     statPlus?: boolean;
     hideLogo?: boolean;
   };
-  cta: { label: string; href: string };
+  /** Optional CTA. Omit to render a case bar with no link (button + mobile arrow). */
+  cta?: { label: string; href: string };
   class?: string;
 }
 
@@ -254,7 +255,7 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
 
       <!-- CTA — the only link on the card. -->
       {
-        !statOnly && (
+        !statOnly && cta && (
           <a
             href={cta.href}
             aria-label={cta.label}
@@ -312,31 +313,33 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
                 {logoText}
               </p>
             )}
-            <a
-              href={cta.href}
-              aria-label={cta.label}
-              class:list={[
-                "flex size-10 shrink-0 items-center justify-center rounded-full",
-                t.ctaBg,
-                t.ctaText,
-              ]}
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
+            {cta && (
+              <a
+                href={cta.href}
+                aria-label={cta.label}
+                class:list={[
+                  "flex size-10 shrink-0 items-center justify-center rounded-full",
+                  t.ctaBg,
+                  t.ctaText,
+                ]}
               >
-                <path
-                  d="M5 12h14M13 6l6 6-6 6"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </a>
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M5 12h14M13 6l6 6-6 6"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </a>
+            )}
           </div>
         )
       }
