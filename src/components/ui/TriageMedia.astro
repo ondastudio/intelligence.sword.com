@@ -7,6 +7,7 @@
  * `data/triage.json` (`card.media` / `orchestration.cards[].media`).
  *
  * Variants:
+ *   video     — a looping, muted, autoplaying clip that fills the panel (object-cover)
  *   call      — lime Clinical Triage: an incoming-call mock (pill + phone button)
  *   noshow    — patient card with a red "DNA risk" gauge
  *   campaign  — population-health campaign card (progress + eligibility list)
@@ -27,6 +28,22 @@ const ICON: Record<string, string> = {
   sparkle: `<svg width="100%" height="100%" viewBox="0 0 14.9206 14.9206" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.46094 1.86523V3.73031" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/><path d="M7.46094 11.1904V13.0555" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/><path d="M13.0526 7.46045H11.1875" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/><path d="M3.73227 7.46045H1.86719" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/><path d="M11.4125 3.50439L10.0938 4.8232" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/><path d="M4.81881 10.0977L3.5 11.4165" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/><path d="M11.4125 11.4165L10.0938 10.0977" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/><path d="M4.81881 4.8232L3.5 3.50439" stroke="currentColor" stroke-width="0.93254" stroke-linecap="round"/></svg>`,
 };
 ---
+
+{
+  /* ---------- video (fills the panel edge-to-edge) ---------- */
+  v === "video" && (
+    <video
+      src={media.src}
+      class="absolute inset-0 h-full w-full object-cover"
+      autoplay
+      loop
+      muted
+      playsinline
+      preload="auto"
+      aria-hidden="true"
+    />
+  )
+}
 
 {
   /* ---------- call (lime Clinical Triage) ---------- */

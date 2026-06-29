@@ -45,20 +45,8 @@
           }
         ],
         "media": {
-          "variant": "noshow",
-          "patient": {
-            "name": "Marcus Taylor",
-            "avatar": "/triage/avatar-patient.jpg"
-          },
-          "clinician": {
-            "name": "Dr Suresh",
-            "detail": "Cardiology",
-            "avatar": "/triage/avatar-doctor.jpg"
-          },
-          "date": "Monday",
-          "time": "8:00",
-          "lead": "2 days",
-          "gauge": { "value": "76", "label": "DNA RISK SCORE" }
+          "variant": "video",
+          "src": "/triage/no-shows.webm"
         },
         "case": {
           "logo": "/triage/ministry-logo.png",
@@ -104,16 +92,8 @@
           }
         ],
         "media": {
-          "variant": "campaign",
-          "label": "Population campaign",
-          "title": "Breast cancer screening",
-          "matching": "Matching population...",
-          "progress": "25%",
-          "criteria": [
-            { "text": "Women aged 50-69", "match": true },
-            { "text": "No mammogram in the last 12 years", "match": false },
-            { "text": "No active breast cancer diagnosis", "match": false }
-          ]
+          "variant": "video",
+          "src": "/triage/population-health.webm"
         },
         "case": {
           "logoText": "US Medicare-focused VBC Provider",
@@ -157,20 +137,8 @@
           }
         ],
         "media": {
-          "variant": "surgery",
-          "pill": "Surgery scheduled",
-          "patient": {
-            "name": "Sarah McDermott",
-            "avatar": "/triage/avatar-woman.jpg"
-          },
-          "clinician": {
-            "name": "Dr Smith",
-            "detail": "Hip replacement",
-            "avatar": "/triage/avatar-doctor.jpg"
-          },
-          "date": "Jul 27",
-          "time": "8:00",
-          "lead": "10 days"
+          "variant": "video",
+          "src": "/triage/surgery.webm"
         },
         "case": {
           "logo": "/triage/nhs-logo.png",
@@ -211,15 +179,8 @@
           }
         ],
         "media": {
-          "variant": "discharge",
-          "patient": {
-            "name": "Patrick Lopez",
-            "avatar": "/triage/avatar-patient.jpg"
-          },
-          "gauge": { "value": "60" },
-          "treatedFor": "COPD exacerbation",
-          "los": "3 days",
-          "discharge": { "date": "Today", "time": "10:30" }
+          "variant": "video",
+          "src": "/triage/readmission.webm"
         },
         "case": {
           "logo": "/triage/nhs-logo.png",
@@ -250,10 +211,8 @@
       "rest": "guides every patient to the right care."
     },
     "media": {
-      "variant": "call",
-      "avatar": "/triage/call-avatar.jpg",
-      "name": "Olivia Carter",
-      "status": "Incoming call..."
+      "variant": "video",
+      "src": "/triage/triage.webm"
     },
     "points": [
       {
