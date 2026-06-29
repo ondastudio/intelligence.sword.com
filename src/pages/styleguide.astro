@@ -19,6 +19,7 @@ import SolutionCard from "../components/ui/SolutionCard.astro";
 import TriageMedia from "../components/ui/TriageMedia.astro";
 import StoryCard from "../components/ui/StoryCard.astro";
 import TeamCard from "../components/ui/TeamCard.astro";
+import FormField from "../components/ui/FormField.astro";
 import Logo from "../components/layout/Logo.astro";
 import LogoStrip from "../components/layout/LogoStrip.astro";
 import LogoMarquee from "../components/layout/LogoMarquee.astro";
@@ -376,6 +377,33 @@ const swatches = [
             />
           ))
         }
+      </div>
+    </section>
+
+    <!-- FormField -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase">FormField</h2>
+      <p class="mt-1 text-sm text-black/50">
+        Bordered, pill-rounded form control from the Book-an-intro page. One
+        primitive covers <code>text</code>/<code>email</code> inputs, a
+        <code>textarea</code>, and a styled <code>select</code> (with the
+        design's drop-down chevron). Placeholders render uppercase; typed values
+        keep their natural case. Fed from <code>data/book-intro.json</code>.
+      </p>
+      <div class="mt-4 flex max-w-[522px] flex-col gap-5">
+        <FormField name="sg-name" placeholder="First name" />
+        <FormField type="email" name="sg-email" placeholder="Email" />
+        <FormField
+          type="select"
+          name="sg-country"
+          placeholder="Country"
+          options={["United States", "United Kingdom", "Portugal"]}
+        />
+        <FormField
+          type="textarea"
+          name="sg-message"
+          placeholder="Tell us about your challenges"
+        />
       </div>
     </section>
   </main>

@@ -1,0 +1,67 @@
+{
+  "eyebrow": "Book a meeting",
+  "heading": {
+    "line1": "Let’s make you",
+    "accent": "AI-First",
+    "after": " too."
+  },
+  "subtext": "Let us know a bit about yourself, and we will reach out soon.",
+  "form": {
+    "name": {
+      "first": { "name": "firstName", "placeholder": "First name", "required": true },
+      "last": { "name": "lastName", "placeholder": "Last name", "required": true }
+    },
+    "email": { "name": "email", "placeholder": "Email", "required": true },
+    "companyDetails": {
+      "label": "Company details",
+      "jobTitle": { "name": "jobTitle", "placeholder": "Job title" },
+      "companyName": { "name": "companyName", "placeholder": "Company name" },
+      "country": {
+        "name": "country",
+        "placeholder": "Country",
+        "options": [
+          "United States",
+          "United Kingdom",
+          "Portugal",
+          "Spain",
+          "France",
+          "Germany",
+          "Greece",
+          "Other"
+        ]
+      }
+    },
+    "companyInterests": {
+      "label": "Company interests",
+      "organizationType": {
+        "name": "organizationType",
+        "placeholder": "Select your organization type",
+        "options": [
+          "Provider",
+          "Payor",
+          "National Health System",
+          "Pharmaceutical",
+          "Other"
+        ]
+      }
+    },
+    "message": {
+      "label": "Message",
+      "field": {
+        "name": "message",
+        "placeholder": "Tell us about your challenges, a bit of context will allow us to connect you with right team member faster"
+      }
+    },
+    "submit": "Submit"
+  },
+  "privacy": {
+    "before": "By clicking submit, you acknowledge your data will be processed according to our ",
+    "linkLabel": "Privacy Policy",
+    "linkHref": "https://legal.swordhealth.com/members/privacy-statement",
+    "after": "."
+  },
+  "delivery": {
+    "recipients": ["f.alcobia@swordhealth.com", "j.gonzalez@swordhealth.com"],
+    "subject": "New intro request from intelligence.sword.com"
+  }
+}

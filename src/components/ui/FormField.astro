@@ -1,0 +1,86 @@
+---
+/**
+ * FormField — the bordered, pill-rounded form control from the contact form
+ * design (Figma "INPUT", node 9213:4335…). One primitive covers the three
+ * shapes used on the Book-an-intro page:
+ *
+ *   text | email — single-line <input>
+ *   textarea     — multi-line message box (taller, top-aligned)
+ *   select       — native <select> styled to match, with the design's
+ *                  drop-down chevron drawn on top (appearance stripped)
+ *
+ * Every control shares the same black hairline, `rounded-[16px]` corners,
+ * 24/12 padding and uppercase placeholder. The placeholder is uppercased via
+ * `placeholder:uppercase` (NOT a blanket `uppercase`) so the value the user
+ * types — name, email — stays in its natural case.
+ */
+interface Props {
+  type?: "text" | "email" | "textarea" | "select";
+  name: string;
+  /** Placeholder text (and, for selects, the disabled default option). */
+  placeholder: string;
+  required?: boolean;
+  /** Options for `type="select"`. */
+  options?: string[];
+  class?: string;
+}
+const {
+  type = "text",
+  name,
+  placeholder,
+  required = false,
+  options = [],
+  class: className = "",
+} = Astro.props;
+
+const base =
+  "w-full rounded-[16px] border border-black bg-transparent px-6 py-3 text-sm text-black placeholder:uppercase placeholder:text-black/50 focus:outline-none focus:ring-2 focus:ring-brand/40";
+---
+
+{
+  type === "textarea" ? (
+    <textarea
+      id={name}
+      name={name}
+      required={required}
+      placeholder={placeholder}
+      rows={5}
+      class={`${base} h-[157px] resize-none p-6 ${className}`}
+    />
+  ) : type === "select" ? (
+    <div class={`relative ${className}`}>
+      <select
+        id={name}
+        name={name}
+        required={required}
+        defaultValue=""
+        class={`${base} appearance-none pr-12 [&:has(option[value='']:checked)]:uppercase [&:has(option[value='']:checked)]:text-black/50`}
+      >
+        <option value="" disabled selected>
+          {placeholder}
+        </option>
+        {options.map((opt) => (
+          <option value={opt}>{opt}</option>
+        ))}
+      </select>
+      {/* Design's arrow_drop_down chevron, drawn over the native control. */}
+      <svg
+        class="pointer-events-none absolute right-6 top-1/2 h-[6px] w-3 -translate-y-1/2 text-black"
+        viewBox="0 0 12 6"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path d="M0 0L6 6L12 0" fill="currentColor" />
+      </svg>
+    </div>
+  ) : (
+    <input
+      id={name}
+      type={type}
+      name={name}
+      required={required}
+      placeholder={placeholder}
+      class={`${base} ${className}`}
+    />
+  )
+}

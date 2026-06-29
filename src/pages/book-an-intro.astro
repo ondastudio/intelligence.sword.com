@@ -1,0 +1,22 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SwirlBackground from "../components/sections/SwirlBackground.astro";
+import BookIntroForm from "../components/sections/BookIntroForm.astro";
+import Footer from "../components/sections/Footer.astro";
+---
+
+<Layout
+  title="Book an intro — Sword Intelligence"
+  description="Tell us a bit about yourself and your organization, and the Sword Intelligence team will reach out soon."
+>
+  {/* Same footer-reveal shell as the rest of the site. The swirl + hero share
+      one `relative isolate` wrapper so the canvas (z-0) stays behind the form
+      content (z-10), exactly like the home page. */}
+  <div class="page-content">
+    <div class="relative isolate bg-gradient-to-b from-purple-tint to-surface">
+      <SwirlBackground contain />
+      <BookIntroForm />
+    </div>
+  </div>
+  <Footer variant="purple" />
+</Layout>

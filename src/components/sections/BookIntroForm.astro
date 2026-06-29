@@ -1,0 +1,191 @@
+---
+/**
+ * BookIntroForm — the contact / "Book a meeting" page (Figma "Contact form",
+ * node 9213:4256). A light hero with the desktop Navbar on top: a left intro
+ * column (Eyebrow + Lora headline with a purple accent + supporting line) and a
+ * right form column (name, email, company details, interests, message) closing
+ * on a SUBMIT pill seamed to a filled ArrowCircle, then the privacy line.
+ *
+ * The page is static (no backend), so submission is handled client-side: the
+ * field values are composed into a mailto to the recipients in
+ * `data/book-intro.json` (`delivery`) — the same inboxes the old CTA opened,
+ * now with structured context. Swap the handler for a real endpoint by POSTing
+ * the form instead. Content + recipients live in `data/book-intro.json`.
+ */
+import data from "../../data/book-intro.json";
+import Navbar from "../layout/Navbar.astro";
+import Eyebrow from "../ui/Eyebrow.astro";
+import FormField from "../ui/FormField.astro";
+import ArrowCircle from "../ui/ArrowCircle.astro";
+
+const { eyebrow, heading, subtext, form, privacy } = data;
+---
+
+<section class="relative z-10 min-h-screen text-ink">
+  <Navbar tone="dark" />
+
+  <div
+    class="mx-auto flex max-w-[1440px] flex-col gap-12 px-6 pb-24 pt-32 lg:flex-row lg:items-start lg:justify-between lg:gap-16 lg:px-20 lg:pb-[120px] lg:pt-[182px]"
+  >
+    {/* Left — intro copy */}
+    <div class="flex flex-1 flex-col gap-6">
+      <Eyebrow>{eyebrow}</Eyebrow>
+      <h1
+        data-reveal="title"
+        class="max-w-[630px] font-serif text-h4 font-normal text-ink"
+      >
+        {heading.line1}<br />
+        <span class="text-brand">{heading.accent}</span>{heading.after}
+      </h1>
+      <p data-reveal class="max-w-[413px] text-md font-medium text-ink">
+        {subtext}
+      </p>
+    </div>
+
+    {/* Right — form */}
+    <form
+      data-book-intro-form
+      class="flex w-full flex-col gap-[72px] lg:w-[522px] lg:shrink-0"
+    >
+      <div class="flex flex-col gap-10">
+        <div class="flex flex-col gap-6">
+          {/* Name + email */}
+          <div class="flex flex-col gap-5">
+            <div class="flex flex-col gap-5 sm:flex-row">
+              <FormField
+                name={form.name.first.name}
+                placeholder={form.name.first.placeholder}
+                required={form.name.first.required}
+                class="flex-1"
+              />
+              <FormField
+                name={form.name.last.name}
+                placeholder={form.name.last.placeholder}
+                required={form.name.last.required}
+                class="flex-1"
+              />
+            </div>
+            <FormField
+              type="email"
+              name={form.email.name}
+              placeholder={form.email.placeholder}
+              required={form.email.required}
+            />
+          </div>
+
+          {/* Company details */}
+          <fieldset class="flex flex-col gap-4">
+            <legend class="text-base font-semibold capitalize text-black"
+              >{form.companyDetails.label}</legend
+            >
+            <div class="flex flex-col gap-5">
+              <div class="flex flex-col gap-5 sm:flex-row">
+                <FormField
+                  name={form.companyDetails.jobTitle.name}
+                  placeholder={form.companyDetails.jobTitle.placeholder}
+                  class="flex-1"
+                />
+                <FormField
+                  name={form.companyDetails.companyName.name}
+                  placeholder={form.companyDetails.companyName.placeholder}
+                  class="flex-1"
+                />
+              </div>
+              <FormField
+                type="select"
+                name={form.companyDetails.country.name}
+                placeholder={form.companyDetails.country.placeholder}
+                options={form.companyDetails.country.options}
+              />
+            </div>
+          </fieldset>
+
+          {/* Company interests */}
+          <fieldset class="flex flex-col gap-4">
+            <legend class="text-base font-semibold capitalize text-black"
+              >{form.companyInterests.label}</legend
+            >
+            <FormField
+              type="select"
+              name={form.companyInterests.organizationType.name}
+              placeholder={form.companyInterests.organizationType.placeholder}
+              options={form.companyInterests.organizationType.options}
+            />
+          </fieldset>
+
+          {/* Message */}
+          <fieldset class="flex flex-col gap-4">
+            <legend class="text-base font-semibold text-black"
+              >{form.message.label}</legend
+            >
+            <FormField
+              type="textarea"
+              name={form.message.field.name}
+              placeholder={form.message.field.placeholder}
+            />
+          </fieldset>
+        </div>
+
+        {/* Submit */}
+        <button
+          type="submit"
+          class="group flex items-center self-start"
+          aria-label={form.submit}
+        >
+          <span
+            class="rounded-[50px] bg-brand px-6 py-3 text-sm font-semibold uppercase leading-tight text-white"
+            >{form.submit}</span
+          >
+          <ArrowCircle variant="filled" decorative detach label={form.submit} class="-ml-px" />
+        </button>
+      </div>
+
+      <p class="text-base text-black">
+        {privacy.before}<a
+          href={privacy.linkHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="underline">{privacy.linkLabel}</a
+        >{privacy.after}
+      </p>
+    </form>
+  </div>
+</section>
+
+<script>
+  import data from "../../data/book-intro.json";
+
+  // Static site, no backend: compose the field values into a mailto to the
+  // configured recipients (the same inboxes the old CTA opened). Replace this
+  // with a fetch POST to a real endpoint to capture submissions server-side.
+  const form = document.querySelector<HTMLFormElement>("[data-book-intro-form]");
+
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+
+    const fd = new FormData(form);
+    const labels: Record<string, string> = {
+      firstName: "First name",
+      lastName: "Last name",
+      email: "Email",
+      jobTitle: "Job title",
+      companyName: "Company name",
+      country: "Country",
+      organizationType: "Organization type",
+      message: "Message",
+    };
+
+    const body = Object.entries(labels)
+      .map(([key, label]) => `${label}: ${(fd.get(key) as string) || "—"}`)
+      .join("\n");
+
+    const { recipients, subject } = data.delivery;
+    const href =
+      `mailto:${recipients.join(",")}` +
+      `?subject=${encodeURIComponent(subject)}` +
+      `&body=${encodeURIComponent(body)}`;
+
+    window.location.href = href;
+  });
+</script>

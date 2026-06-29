@@ -9,11 +9,20 @@
  * Place this as the first child of a `relative` wrapper that contains the hero
  * and the section it should bleed into. The stage sizes itself to the hero
  * height plus a bleed, and a bottom mask fades the bleed region away.
+ *
+ * `contain` — for a standalone hero with no section to bleed into (e.g. the
+ * Book-an-intro page): cap the stage to the hero height and fade the swirl out
+ * within its own lower half, so nothing spills past the hero onto the footer.
  */
+interface Props {
+  contain?: boolean;
+}
+const { contain = false } = Astro.props;
 ---
 
 <div
   data-swirl-stage
+  data-swirl-contain={contain ? "" : undefined}
   aria-hidden="true"
   class="swirl-stage pointer-events-none absolute inset-x-0 top-0 z-0"
 >
@@ -42,9 +51,31 @@
   // heading of the section below the hero); marked with `data-swirl-end`.
   const endEl = wrapper?.querySelector<HTMLElement>("[data-swirl-end]");
 
+  const contain = stage?.hasAttribute("data-swirl-contain") ?? false;
+
   if (stage && canvas && hero && wrapper) {
     const sizeStage = () => {
       const heroHeight = hero.offsetHeight;
+
+      const setMaskFn = (mask: string) => {
+        stage.style.maskImage = mask;
+        stage.style.webkitMaskImage = mask;
+      };
+
+      // Standalone hero (no section to bleed into): cap to the hero height and
+      // fade the swirl out through its lower half — strong at the top (behind
+      // the eyebrow + headline), softening to nothing before the hero's bottom
+      // edge so it never spills onto the footer below.
+      if (contain) {
+        stage.style.height = `${heroHeight}px`;
+        setMaskFn(
+          `linear-gradient(to bottom,` +
+            ` #000 ${Math.round(heroHeight * 0.42)}px,` +
+            ` rgba(0,0,0,0.5) ${Math.round(heroHeight * 0.72)}px,` +
+            ` transparent ${heroHeight}px)`
+        );
+        return;
+      }
 
       // On mobile the section below (Intro) supplies its own mesh-gradient
       // background graphic, so the swirl must NOT extend into it at all. Cap the
@@ -91,6 +122,10 @@
 
     sizeStage();
     window.addEventListener("resize", sizeStage);
+
+    // Contained heroes sit behind real content (a form), so dial the swirl
+    // back to a softer wash that keeps black-bordered inputs + headline legible.
+    if (contain) stage.style.opacity = "0.5";
 
     initSwirl(canvas, stage, { grainUrl: "/hero/swirl/perlin1.png" });
     requestAnimationFrame(() => canvas.classList.remove("opacity-0"));

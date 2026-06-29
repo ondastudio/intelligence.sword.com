@@ -3,5 +3,5 @@
     "line1": "Looking for another use case?",
     "line2": "We can custom-build a solution for you."
   },
-  "cta": { "label": "Book a meeting", "href": "mailto:f.alcobia@swordhealth.com,j.gonzalez@swordhealth.com" }
+  "cta": { "label": "Book a meeting", "href": "/book-an-intro" }
 }
