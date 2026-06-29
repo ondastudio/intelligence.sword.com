@@ -19,17 +19,7 @@
       "country": {
         "name": "country",
         "placeholder": "Country",
-        "required": true,
-        "options": [
-          "United States",
-          "United Kingdom",
-          "Portugal",
-          "Spain",
-          "France",
-          "Germany",
-          "Greece",
-          "Other"
-        ]
+        "required": true
       }
     },
     "companyInterests": {

@@ -13,6 +13,7 @@
  * the form instead. Content + recipients live in `data/book-intro.json`.
  */
 import data from "../../data/book-intro.json";
+import countries from "../../data/countries.json";
 import Navbar from "../layout/Navbar.astro";
 import Eyebrow from "../ui/Eyebrow.astro";
 import FormField from "../ui/FormField.astro";
@@ -94,12 +95,13 @@ const { eyebrow, heading, subtext, form, privacy } = data;
                   class="flex-1"
                 />
               </div>
-              <FormField
-                type="select"
+              <SelectMenu
                 name={form.companyDetails.country.name}
                 placeholder={form.companyDetails.country.placeholder}
                 required={form.companyDetails.country.required}
-                options={form.companyDetails.country.options}
+                options={countries}
+                searchable
+                searchPlaceholder="Search a country"
               />
             </div>
           </fieldset>
