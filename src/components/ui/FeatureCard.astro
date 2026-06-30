@@ -20,8 +20,11 @@
  * `image` may also point at a dotLottie animation (`.lottie`), rendered into a
  * looping, autoplaying `<canvas>` driven by @lottiefiles/dotlottie-web. The
  * canvas fills its wrapper; how the animation sits inside it is controlled by
- * `lottieFit` ("cover" trims to fill like the old videos, "contain" letterboxes
- * the whole frame). Lottie playback freezes while the card is offscreen.
+ * `lottieFit` ("cover" fills at native proportions, trimming the frame's empty
+ * margins like the old videos; "contain" letterboxes the whole frame) and
+ * `lottieAlign` ([x, y] from 0–1) which biases a cover crop — e.g. [1, 0.5]
+ * hugs the artwork to the right edge for a right-bleed. Lottie playback freezes
+ * while the card is offscreen.
  */
 import LabelPill from "./LabelPill.astro";
 
@@ -32,7 +35,8 @@ interface Props {
   imageAlt?: string;
   imageClass?: string;
   imageWrapperClass?: string;
-  lottieFit?: "cover" | "contain" | "fill";
+  lottieFit?: "cover" | "contain" | "fill" | "fit-width" | "fit-height";
+  lottieAlign?: [number, number];
   class?: string;
 }
 const {
@@ -43,6 +47,7 @@ const {
   imageClass = "max-h-full w-auto max-w-full object-contain",
   imageWrapperClass = "flex min-h-0 w-full flex-1 items-center justify-center",
   lottieFit = "cover",
+  lottieAlign,
   class: className = "",
 } = Astro.props;
 
@@ -62,6 +67,7 @@ const isLottie = !!image && /\.lottie$/i.test(image);
             class={imageClass}
             data-lottie={image}
             data-lottie-fit={lottieFit}
+            data-lottie-align={lottieAlign ? JSON.stringify(lottieAlign) : undefined}
             aria-hidden="true"
           />
         ) : isVideo ? (
@@ -106,13 +112,18 @@ const isLottie = !!image && /\.lottie$/i.test(image);
     const fit = (canvas.dataset.lottieFit || "contain") as
       | "cover"
       | "contain"
-      | "fill";
+      | "fill"
+      | "fit-width"
+      | "fit-height";
+    const align = canvas.dataset.lottieAlign
+      ? (JSON.parse(canvas.dataset.lottieAlign) as [number, number])
+      : ([0.5, 0.5] as [number, number]);
     new DotLottie({
       canvas,
       src,
       loop: true,
       autoplay: true,
-      layout: { fit, align: [0.5, 0.5] },
+      layout: { fit, align },
       // autoResize keeps the drawing buffer matched to the CSS box (and dpr);
       // freezeOnOffscreen pauses rendering while the card is scrolled away.
       renderConfig: { autoResize: true, freezeOnOffscreen: true },
