@@ -16,6 +16,15 @@
  * `image` may also point at a video (`.webm`/`.mp4`), in which case it renders
  * as a muted, looping, autoplaying `<video>` instead of an `<img>` — the same
  * sizing/wrapper props apply. Videos are decorative, so they carry no caption.
+ *
+ * `image` may also point at a dotLottie animation (`.lottie`), rendered into a
+ * looping, autoplaying `<canvas>` driven by @lottiefiles/dotlottie-web. The
+ * canvas fills its wrapper; how the animation sits inside it is controlled by
+ * `lottieFit` ("cover" fills at native proportions, trimming the frame's empty
+ * margins like the old videos; "contain" letterboxes the whole frame) and
+ * `lottieAlign` ([x, y] from 0–1) which biases a cover crop — e.g. [1, 0.5]
+ * hugs the artwork to the right edge for a right-bleed. Lottie playback freezes
+ * while the card is offscreen.
  */
 import LabelPill from "./LabelPill.astro";
 
@@ -26,6 +35,8 @@ interface Props {
   imageAlt?: string;
   imageClass?: string;
   imageWrapperClass?: string;
+  lottieFit?: "cover" | "contain" | "fill" | "fit-width" | "fit-height";
+  lottieAlign?: [number, number];
   class?: string;
 }
 const {
@@ -35,10 +46,13 @@ const {
   imageAlt = "",
   imageClass = "max-h-full w-auto max-w-full object-contain",
   imageWrapperClass = "flex min-h-0 w-full flex-1 items-center justify-center",
+  lottieFit = "cover",
+  lottieAlign,
   class: className = "",
 } = Astro.props;
 
 const isVideo = !!image && /\.(webm|mp4)$/i.test(image);
+const isLottie = !!image && /\.lottie$/i.test(image);
 ---
 
 <article
@@ -48,7 +62,15 @@ const isVideo = !!image && /\.(webm|mp4)$/i.test(image);
   {
     image && (
       <div class={imageWrapperClass}>
-        {isVideo ? (
+        {isLottie ? (
+          <canvas
+            class={imageClass}
+            data-lottie={image}
+            data-lottie-fit={lottieFit}
+            data-lottie-align={lottieAlign ? JSON.stringify(lottieAlign) : undefined}
+            aria-hidden="true"
+          />
+        ) : isVideo ? (
           <video
             src={image}
             class={imageClass}
@@ -69,3 +91,57 @@ const isVideo = !!image && /\.(webm|mp4)$/i.test(image);
     {description}
   </p>
 </article>
+
+<script>
+  import { DotLottie } from "@lottiefiles/dotlottie-web";
+  // Self-host the player wasm (bundled by Vite) instead of the default CDN, so
+  // the cards animate without an external runtime fetch.
+  import wasmUrl from "@lottiefiles/dotlottie-web/dotlottie-player.wasm?url";
+
+  DotLottie.setWasmUrl(wasmUrl);
+
+  // Build the player only once the card nears the viewport. The cards live well
+  // below the fold, and a player constructed while its canvas is offscreen never
+  // loads its animation — so we lazily init on first intersection (which also
+  // saves decoding six animations the visitor may never scroll to). Cards in the
+  // hidden breakpoint variant (display:none) have no box and simply never fire.
+  const init = (canvas: HTMLCanvasElement) => {
+    const src = canvas.dataset.lottie;
+    if (!src || canvas.dataset.lottieReady) return;
+    canvas.dataset.lottieReady = "1";
+    const fit = (canvas.dataset.lottieFit || "contain") as
+      | "cover"
+      | "contain"
+      | "fill"
+      | "fit-width"
+      | "fit-height";
+    const align = canvas.dataset.lottieAlign
+      ? (JSON.parse(canvas.dataset.lottieAlign) as [number, number])
+      : ([0.5, 0.5] as [number, number]);
+    new DotLottie({
+      canvas,
+      src,
+      loop: true,
+      autoplay: true,
+      layout: { fit, align },
+      // autoResize keeps the drawing buffer matched to the CSS box (and dpr);
+      // freezeOnOffscreen pauses rendering while the card is scrolled away.
+      renderConfig: { autoResize: true, freezeOnOffscreen: true },
+    });
+  };
+
+  const canvases = document.querySelectorAll<HTMLCanvasElement>(
+    "canvas[data-lottie]",
+  );
+  const io = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        init(entry.target as HTMLCanvasElement);
+        obs.unobserve(entry.target);
+      });
+    },
+    { rootMargin: "200px" },
+  );
+  canvases.forEach((canvas) => io.observe(canvas));
+</script>

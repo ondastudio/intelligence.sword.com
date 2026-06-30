@@ -1,6 +1,6 @@
 {
   "hero": {
-    "eyebrow": "our mission",
+    "eyebrow": "our mission.",
     "statement": "We’re bringing back healthcare’s most valuable resource: attention.",
     "media": {
       "src": "/about/manifesto.mp4",
@@ -48,7 +48,7 @@
     }
   },
   "storySoFar": {
-    "eyebrow": "the story so far",
+    "eyebrow": "the story so far.",
     "title": "From care delivery to operational intelligence",
     "body": [
       { "text": "For over a decade, Sword has tackled healthcare’s hardest problems, proving it’s possible to deliver high-quality, accessible care at scale while driving costs down." },

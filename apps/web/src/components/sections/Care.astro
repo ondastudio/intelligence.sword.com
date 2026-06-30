@@ -12,35 +12,40 @@ const care = (await getHomePage()).care;
 import LabelPill from "../ui/LabelPill.astro";
 import FeatureCard from "../ui/FeatureCard.astro";
 
-// Per-card illustration styling (keyed by card index). Unlisted cards fall back
-// to FeatureCard's defaults (an in-flow centered box). Notes per special card:
-//
-// • Cards 1/2/3/4/5 (idx 0/1/2/3/4): video animations. The clip fills the card body
-//   edge-to-edge within the px-10 padding (40px lateral margins) at every
-//   breakpoint, object-cover trimming the source's vertical whitespace so the
-//   motion reads large.
-const videoFill = "h-full w-full object-cover";
-const cardImage: Record<number, { img: string; wrap?: string }> = {
-  0: { img: videoFill },
-  1: { img: videoFill },
-  2: { img: videoFill },
-  3: { img: videoFill },
-  4: { img: videoFill },
-  // Autonomous browsing: the browser-window artwork occupies a fixed region of
-  // its frame (~x118–414, y123–453 of 416×600) on a white background that
-  // matches the card, sitting right-biased (only ~2px source margin) with tall
-  // white margins. Per the original design it bleeds off the RIGHT edge of the
-  // card. The wrapper clip-path `inset(0 -2.5rem 0 0)` trims the surplus white
-  // top/bottom (protecting the label + description) while letting the artwork
-  // bleed 2.5rem past the body — through the card's right padding to its outer
-  // edge. Mobile: the clip is oversized and absolutely anchored to that bleed
-  // edge, vertically centred, so the window reads large without distortion.
-  // Desktop: the squarer body uses cover, widened 2.5rem and pulled right so it
-  // fills to the same outer edge (left stays at the 40px body inset).
-  5: {
-    img: "absolute -right-10 top-[-28.2%] h-[163%] w-auto max-w-none object-contain md:static md:right-auto md:top-auto md:-mr-10 md:h-full md:w-[calc(100%+2.5rem)] md:object-cover",
-    wrap: "relative flex min-h-0 w-full flex-1 items-center justify-center [clip-path:inset(0_-2.5rem_0_0)]",
-  },
+// Per-card illustration styling (keyed by card index). Every card carries a
+// dotLottie animation (authored in a 416×600 frame with the artwork centred and
+// empty margins around it) rendered into a <canvas> that fills the card body.
+// The canvas always stretches to the full body box (`lottieFill`); `fit: cover`
+// shows each animation at its native proportions, the card's overflow-hidden
+// trimming only the frame's empty top/bottom margin so the motion reads large.
+const lottieFill = "h-full w-full";
+// Most cards (0–4): the body box widens to content+both paddings and pulls
+// itself back with matching negative margins, letting the animation bleed
+// through the left/right padding to the card edges (the card's overflow-hidden +
+// rounded corners trim it) so every clip reads at the same edge-to-edge scale.
+const bleedX =
+  "relative -mx-8 flex min-h-0 w-[calc(100%+4rem)] flex-1 items-center justify-center md:-mx-10 md:w-[calc(100%+5rem)]";
+// Autonomous browsing (idx 5): its artwork is right-biased, so the box widens
+// only on the right (bleeding through the right padding to the card edge) and
+// the animation is aligned right ([1, 0.5]) so the browser window hugs and
+// bleeds off that edge.
+const bleedRight =
+  "relative -mr-8 flex min-h-0 w-[calc(100%+2rem)] flex-1 items-center justify-center md:-mr-10 md:w-[calc(100%+2.5rem)]";
+const cardImage: Record<
+  number,
+  {
+    img: string;
+    wrap?: string;
+    fit?: "cover" | "contain" | "fill" | "fit-width" | "fit-height";
+    align?: [number, number];
+  }
+> = {
+  0: { img: lottieFill, fit: "cover", wrap: bleedX },
+  1: { img: lottieFill, fit: "cover", wrap: bleedX },
+  2: { img: lottieFill, fit: "cover", wrap: bleedX },
+  3: { img: lottieFill, fit: "cover", wrap: bleedX },
+  4: { img: lottieFill, fit: "cover", wrap: bleedX },
+  5: { img: lottieFill, fit: "cover", wrap: bleedRight, align: [1, 0.5] },
 };
 ---
 
@@ -81,7 +86,7 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
              backdrop-blur samples this, giving a faint frosted-purple tint. -->
         <div
           aria-hidden="true"
-          class="pointer-events-none absolute -inset-x-[160px] -inset-y-32 -z-10 bg-[image:var(--gradient-care-swirl)] [mask-image:linear-gradient(to_bottom,transparent_0%,#000_14%,#000_86%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,#000_14%,#000_86%,transparent_100%)]"
+          class="pointer-events-none absolute -inset-x-[160px] -inset-y-32 -z-10 bg-[image:var(--gradient-care-swirl)] [mask-composite:intersect] [mask-image:linear-gradient(to_bottom,transparent_0%,#000_14%,#000_86%,transparent_100%),linear-gradient(to_right,transparent_0%,#000_12%,#000_88%,transparent_100%)] [-webkit-mask-composite:source-in] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,#000_14%,#000_86%,transparent_100%),linear-gradient(to_right,transparent_0%,#000_12%,#000_88%,transparent_100%)]"
         >
         </div>
 
@@ -98,6 +103,8 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
                   image={card.image}
                   imageClass={cardImage[i]?.img}
                   imageWrapperClass={cardImage[i]?.wrap}
+                  lottieFit={cardImage[i]?.fit}
+                  lottieAlign={cardImage[i]?.align}
                 />
               </div>
             ))
@@ -122,6 +129,8 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
                       image={card.image}
                       imageClass={cardImage[i]?.img}
                       imageWrapperClass={cardImage[i]?.wrap}
+                      lottieFit={cardImage[i]?.fit}
+                      lottieAlign={cardImage[i]?.align}
                       class="h-full min-h-0"
                     />
                   </div>

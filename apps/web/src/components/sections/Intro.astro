@@ -13,7 +13,12 @@ import LogoMarquee from "../layout/LogoMarquee.astro";
 import ProductVideo from "../ui/ProductVideo.astro";
 ---
 
-<section class="relative overflow-hidden text-black">
+<!-- overflow-clip (not -hidden) so the sticky spotlight pin can reference the
+     viewport while still clipping the mobile marquee bleed + bg image. On xl+ it
+     goes visible so the spotlight card's viewport-filling dim shadow isn't
+     clipped to the section — clipping showed a hard box edge on fast scroll.
+     (The marquee/bg that need clipping are sm:hidden, so xl+ has nothing to clip.) -->
+<section class="relative overflow-clip xl:overflow-visible text-black">
   <!-- On sm+ the soft top wash comes from <SwirlBackground /> bleeding the hero
        swirl across this section's edge. On mobile that bleed is replaced by the
        design's own mesh-gradient graphic (Figma "Home_Mobile_390px", 390×576):
@@ -54,10 +59,13 @@ import ProductVideo from "../ui/ProductVideo.astro";
     </div>
   </div>
 
-  <!-- Product video: scroll-driven fullscreen stage (shared ProductVideo). -->
+  <!-- Product video: scroll-driven stage (shared ProductVideo). `spotlight`
+       gives the desktop a Ramp-style gray stage with a pinned, contained,
+       rounded card instead of the full-bleed takeover. -->
   <ProductVideo
     src={intro.media.src}
     poster={intro.media.poster}
     alt={intro.media.alt}
+    spotlight
   />
 </section>

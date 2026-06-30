@@ -20,16 +20,16 @@ interface Props {
 const { tone = "dark" } = Astro.props;
 ---
 
-{/* Desktop header (lg+) — unchanged from the design. */}
-<header class="absolute inset-x-0 top-0 z-20 hidden lg:block">
+{/* Primary header (md+ — tablet + desktop). */}
+<header class="absolute inset-x-0 top-0 z-20 hidden md:block">
   <nav
     class="mx-auto flex max-w-[1440px] items-center justify-between px-6 pb-5 pt-10 lg:px-20"
   >
     <Logo tone={tone} />
 
-    <!-- Centered menu (absolutely centered on large screens) -->
+    <!-- Centered menu (absolutely centered) -->
     <div
-      class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex"
+      class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex"
     >
       {
         site.nav.filter((item) => !item.hidden).map((item) => (

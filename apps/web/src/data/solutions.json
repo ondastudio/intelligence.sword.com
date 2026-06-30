@@ -1,6 +1,6 @@
 {
   "hero": {
-    "eyebrow": "Surgery prehab and rehab",
+    "eyebrow": "Surgery prehab and rehab.",
     "headline": "Prepare every patient, support every recovery.",
     "paragraph": "Intelligence enrolls every patient on your surgical list, identifies who's at risk, delivers personalized preparation and stays with them all the way through recovery."
   },
@@ -20,7 +20,7 @@
     "alt": "Sword Intelligence AI Care Manager handling a patient call"
   },
   "problem": {
-    "eyebrow": "Problem",
+    "eyebrow": "Problem.",
     "heading": "The wait and the recovery are intervention windows. Most systems stay passive through both.",
     "subheading": "Here’s what they can do for you and your patients:",
     "cards": [
@@ -59,7 +59,7 @@
     ]
   },
   "solution": {
-    "eyebrow": "Solution",
+    "eyebrow": "Solution.",
     "headingLead": "Our AI Care Managers turn your waiting list into ",
     "headingAccent": "a preparation and recovery list.",
     "subheading": "They enroll every patient autonomously, coach them through the crucial weeks, and keep supporting them through recovery, while your surgical team focuses on the clinical procedures.",
@@ -71,7 +71,7 @@
     ]
   },
   "howItWorks": {
-    "eyebrow": "How it works",
+    "eyebrow": "How it works.",
     "headline": "Enroll. Coach. Prepare. Recover.",
     "capabilities": [
       "Voice, SMS, Email, Chat",
@@ -83,35 +83,35 @@
       {
         "icon": "content-writing",
         "navLabel": "Automatic enrollment",
-        "eyebrow": "Automatic Enrollment",
+        "eyebrow": "Automatic Enrollment.",
         "heading": "Enroll patients before they even think to ask.",
         "body": "The moment a surgery is scheduled in your system, Intelligence picks it up and enrollment starts automatically — no manual referrals, or patient actions required before preparation starts."
       },
       {
         "icon": "bubble-chat",
         "navLabel": "Personalized coaching",
-        "eyebrow": "Personalized Coaching",
+        "eyebrow": "Personalized Coaching.",
         "heading": "Coach every patient through the weeks that matter.",
         "body": "Across voice, SMS, email and chat, Intelligence guides each patient through their own preparation plan — answering questions, sending reminders and keeping momentum, without adding to your team's workload."
       },
       {
         "icon": "orthogonal-edge",
         "navLabel": "Surgical risk prediction",
-        "eyebrow": "Surgical Risk Prediction",
+        "eyebrow": "Surgical Risk Prediction.",
         "heading": "Spot the patients who need attention first.",
         "body": "Real-time EHR integration lets Intelligence read every signal and predict surgical risk, surfacing the patients most likely to face complications or cancellation so your team can act early."
       },
       {
         "icon": "ai-audio",
         "navLabel": "Always-on communication",
-        "eyebrow": "Always-on Communication",
+        "eyebrow": "Always-on Communication.",
         "heading": "A care manager that never sleeps.",
         "body": "Patients reach Intelligence whenever they need it, and it reaches back in their own language, on their own channel — turning weeks of silence into continuous, two-way support."
       },
       {
         "icon": "home-10",
         "navLabel": "Recovery at home",
-        "eyebrow": "Recovery at Home",
+        "eyebrow": "Recovery at Home.",
         "heading": "Stay with every patient long after discharge.",
         "body": "Intelligence follows each patient home, monitoring recovery, flagging warning signs early and keeping a human coach in the loop — so readmissions drop and outcomes hold."
       }

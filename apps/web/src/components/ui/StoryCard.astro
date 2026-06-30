@@ -90,6 +90,10 @@ const primary = ctaList.find((c) => c.style !== "outline") ?? ctaList[0];
 // with two buttons keep each button as its own independent link instead, so the
 // card surface itself isn't a link.
 const clickable = ctaList.length === 1 && !!primary?.href;
+// Outline (secondary) CTA. It lights up on whole-card hover (group-hover) ONLY
+// when the card is a single fully-clickable target; on two-button cards the card
+// surface isn't a link, so each button must react to its own direct hover only.
+const outlineCtaClass = `relative z-30 inline-flex h-10 items-center rounded-[40px] border border-black px-6 text-sm font-medium uppercase text-black transition-colors hover:bg-black hover:text-white${clickable ? " group-hover:bg-black group-hover:text-white" : ""}`;
 const composite = !!photo && type !== "highlighted";
 const base = `relative overflow-hidden rounded-card lg:min-h-[510px] ${toneClass[tone]} ${className}`;
 
@@ -242,7 +246,7 @@ const statLabelLines = (stat?.label ?? "").split("\n");
               href={c.href}
               target={isExternal(c.href) ? "_blank" : undefined}
               rel={isExternal(c.href) ? "noopener noreferrer" : undefined}
-              class="relative z-30 inline-flex h-10 items-center rounded-[40px] border border-black px-6 text-sm font-medium uppercase text-black transition-colors hover:bg-black hover:text-white group-hover:bg-black group-hover:text-white"
+              class={outlineCtaClass}
             >
               {c.label}
             </a>
@@ -254,7 +258,7 @@ const statLabelLines = (stat?.label ?? "").split("\n");
               <ArrowCircle variant="filled" label={c.label} decorative detach class="-ml-px" />
             </span>
           ) : (
-            <span class="inline-flex items-center">
+            <span class="group/cta inline-flex items-center">
               <a
                 href={c.href}
                 target={isExternal(c.href) ? "_blank" : undefined}
@@ -263,7 +267,14 @@ const statLabelLines = (stat?.label ?? "").split("\n");
               >
                 {c.label}
               </a>
-              <ArrowCircle variant="filled" href={c.href} label={c.label} detach class="-ml-px" />
+              {/* Non-clickable (two-button) card: the arrow detaches on hovering
+                  THIS button only — a named `group/cta` so it ignores card hover. */}
+              <ArrowCircle
+                variant="filled"
+                href={c.href}
+                label={c.label}
+                class="-ml-px transition-transform duration-300 ease-out group-hover/cta:translate-x-1"
+              />
             </span>
           ),
         )}
@@ -354,7 +365,7 @@ const statLabelLines = (stat?.label ?? "").split("\n");
                     href={c.href}
                     target={isExternal(c.href) ? "_blank" : undefined}
                     rel={isExternal(c.href) ? "noopener noreferrer" : undefined}
-                    class="relative z-30 inline-flex h-10 items-center rounded-[40px] border border-black px-6 text-sm font-medium uppercase text-black transition-colors hover:bg-black hover:text-white group-hover:bg-black group-hover:text-white"
+                    class={outlineCtaClass}
                   >
                     {c.label}
                   </a>

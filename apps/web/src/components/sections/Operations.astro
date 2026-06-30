@@ -61,18 +61,20 @@ const { eyebrow, heading } = data;
 </section>
 
 <style>
-  /* Mobile / reduced-motion: a plain centered banner, no pinning. */
+  /* Mobile / reduced-motion: a plain centered banner, no pinning. The lime
+     bloom still sits behind the title (like desktop), so give the banner some
+     vertical room for the glow to breathe around the text. */
   .operations {
     min-height: 0;
     padding-inline: 20px;
-    padding-block: 0;
+    padding-block: 64px;
   }
   .op-pin {
     min-height: 0;
   }
 
   .op-swirl {
-    display: none;
+    display: block;
   }
 
   @media (min-width: 768px) {
