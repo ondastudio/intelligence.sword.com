@@ -582,7 +582,10 @@ const cardBg: Record<number, string> = {
       lastMobileIdx = -1;
       if (mode === "pinned") {
         reserveCardHeight();
-        cardLen = Math.round(vh * 0.6);
+        // Scroll distance each card's slide-in is scrubbed across. Larger = the
+        // cards ease in more gradually (more scroll per card), so the transition
+        // between Care Orchestration cards reads slower, not abrupt.
+        cardLen = Math.round(vh * 0.9);
         // One segment per card that slides in: N on mobile (lime base + N
         // purple), N − 1 on desktop (first purple card is the static base).
         scrub = (limeBase ? N : N - 1) * cardLen;
