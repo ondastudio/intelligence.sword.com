@@ -26,6 +26,7 @@ import CircleButton from "../ui/CircleButton.astro";
           {hero.eyebrow.prefix}<a
             href={hero.eyebrow.href}
             data-hero-scroll-to={hero.eyebrow.href}
+            data-hero-scroll-to-mobile={hero.eyebrow.hrefMobile}
             class="underline decoration-from-font underline-offset-2 transition-opacity hover:opacity-70"
             >{hero.eyebrow.link}</a
           >
@@ -95,6 +96,19 @@ import CircleButton from "../ui/CircleButton.astro";
     }
   };
 
+  // Untransformed document Y of an element. offsetTop ignores transforms, so the
+  // target stays correct even when the element carries a [data-reveal] entry
+  // transform that hasn't settled yet (getBoundingClientRect would be off by it).
+  const documentTop = (el: HTMLElement) => {
+    let y = 0;
+    let node: HTMLElement | null = el;
+    while (node) {
+      y += node.offsetTop;
+      node = node.offsetParent as HTMLElement | null;
+    }
+    return y;
+  };
+
   document
     .querySelectorAll<HTMLElement>("[data-hero-scroll]")
     .forEach((btn) => {
@@ -116,13 +130,18 @@ import CircleButton from "../ui/CircleButton.astro";
     .querySelectorAll<HTMLAnchorElement>("[data-hero-scroll-to]")
     .forEach((link) => {
       link.addEventListener("click", (event) => {
-        const selector = link.dataset.heroScrollTo;
+        // Below lg the data cards are a single stack — aim straight at the 4x
+        // intake card; on desktop fall back to the section anchor.
+        const isMobile = window.matchMedia("(max-width: 1023.98px)").matches;
+        const selector =
+          (isMobile && link.dataset.heroScrollToMobile) ||
+          link.dataset.heroScrollTo;
         const target = selector
           ? document.querySelector<HTMLElement>(selector)
           : null;
         if (!target) return;
         event.preventDefault();
-        scrollToY(target.getBoundingClientRect().top + window.scrollY);
+        scrollToY(documentTop(target));
       });
     });
 </script>
