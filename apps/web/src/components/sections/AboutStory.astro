@@ -10,7 +10,8 @@
  * Content comes from src/data/about.json (`story`). Each paragraph is an array
  * of segments ({ text, bold? }).
  */
-import about from "../../data/about.json";
+import { getAboutPage } from "../../lib/sanity/queries";
+const about = await getAboutPage();
 import ScrollLetterReveal from "../ui/ScrollLetterReveal.astro";
 
 type Segment = { text: string; bold?: boolean };

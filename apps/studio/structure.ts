@@ -9,7 +9,7 @@ import type { StructureResolver } from "sanity/structure";
  */
 const SINGLETONS: { id: string; title: string; schemaType: string }[] = [
   // { id: "homePage", title: "Home page", schemaType: "homePage" },
-  // { id: "aboutPage", title: "About page", schemaType: "aboutPage" },
+  { id: "aboutPage", title: "About page", schemaType: "aboutPage" },
   { id: "customersPage", title: "Customers page", schemaType: "customersPage" },
 ];
 

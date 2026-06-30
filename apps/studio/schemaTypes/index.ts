@@ -8,6 +8,7 @@ import { storyCell } from "./objects/storyCell";
 import { customerRow } from "./objects/customerRow";
 import { customerStory } from "./documents/customerStory";
 import { customersPage } from "./documents/customersPage";
+import { aboutPage } from "./documents/aboutPage";
 
 export const schemaTypes = [
   // objects
@@ -22,4 +23,5 @@ export const schemaTypes = [
   // documents
   customerStory,
   customersPage,
+  aboutPage,
 ];

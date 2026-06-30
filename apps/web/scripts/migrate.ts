@@ -290,6 +290,103 @@ async function buildCustomersPage(client: AnyClient | null) {
   };
 }
 
+// ---------- aboutPage builder (singleton) ------------------------------------
+
+async function buildAboutPage(client: AnyClient | null) {
+  const a = JSON.parse(
+    readFileSync(resolve(ROOT, "src/data/about.json"), "utf8"),
+  ) as any;
+
+  // A {text, bold} run with keys.
+  const body = (arr: any[] | undefined, prefix: string) =>
+    withKeys(
+      (arr ?? []).map((s: any) => ({ text: s.text, bold: !!s.bold })),
+      prefix,
+    );
+
+  const iconStats = await Promise.all(
+    (a.storySoFar.stats ?? []).map(async (s: any, i: number) => ({
+      _key: `ss${i}`,
+      icon: await figure(client, s.icon, s.label),
+      value: s.value,
+      plus: !!s.plus,
+      label: s.label,
+    })),
+  );
+  const logos = await Promise.all(
+    (a.storySoFar.trustedBy?.logos ?? []).map(async (l: any, i: number) => ({
+      _key: `lg${i}`,
+      image: await figure(client, l.src, l.alt),
+      width: l.width,
+      height: l.height,
+    })),
+  );
+  const badges = await Promise.all(
+    (a.operations.born.certs?.badges ?? []).map(async (b: any, i: number) => ({
+      _key: `bd${i}`,
+      image: await figure(client, b.src, b.alt),
+      w: b.w,
+      h: b.h,
+    })),
+  );
+  const members = await Promise.all(
+    (a.team.members ?? []).map(async (m: any, i: number) => ({
+      _key: `m${i}`,
+      name: m.name,
+      role: m.role,
+      photo: await figure(client, m.photo, m.name),
+      linkedin: m.linkedin,
+    })),
+  );
+
+  return {
+    _id: "aboutPage",
+    _type: "aboutPage",
+    hero: {
+      eyebrow: a.hero.eyebrow,
+      statement: a.hero.statement,
+      video: await video(client, a.hero.media?.src),
+    },
+    story: {
+      paragraphs: withKeys(
+        (a.story.paragraphs ?? []).map((p: any, i: number) => ({
+          segments: body(p, `p${i}s`),
+        })),
+        "p",
+      ),
+    },
+    storySoFar: {
+      eyebrow: a.storySoFar.eyebrow,
+      title: a.storySoFar.title,
+      body: body(a.storySoFar.body, "ssb"),
+      stats: iconStats,
+      trustedBy: { label: a.storySoFar.trustedBy?.label, logos },
+    },
+    operations: {
+      intro: {
+        statement: a.operations.intro.statement,
+        body: body(a.operations.intro.body, "ib"),
+      },
+      born: {
+        statement: a.operations.born.statement,
+        body: body(a.operations.born.body, "bb"),
+        stats: withKeys(
+          (a.operations.born.stats ?? []).map((s: any) => ({
+            value: s.value,
+            plus: !!s.plus,
+            label: s.label,
+          })),
+          "obs",
+        ),
+        certs: { label: a.operations.born.certs?.label, badges },
+      },
+    },
+    cta: a.cta,
+    finalCta: a.finalCta,
+    team: { eyebrow: a.team.eyebrow, title: a.team.title, members },
+  };
+}
+
 // ---------- runner -----------------------------------------------------------
 
 async function main() {
@@ -316,6 +413,7 @@ async function main() {
   const docs = [
     ...(await buildCustomerStories(client)),
     await buildCustomersPage(client),
+    await buildAboutPage(client),
   ];
 
   if (DRY) {

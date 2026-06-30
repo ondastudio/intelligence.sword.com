@@ -9,7 +9,8 @@
  */
 import Eyebrow from "../ui/Eyebrow.astro";
 import TeamCard from "../ui/TeamCard.astro";
-import about from "../../data/about.json";
+import { getAboutPage } from "../../lib/sanity/queries";
+const about = await getAboutPage();
 
 const { eyebrow, title, members } = about.team;
 ---

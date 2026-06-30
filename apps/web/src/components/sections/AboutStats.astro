@@ -17,7 +17,8 @@
 import Eyebrow from "../ui/Eyebrow.astro";
 import LabelPill from "../ui/LabelPill.astro";
 import PlusChip from "../ui/PlusChip.astro";
-import about from "../../data/about.json";
+import { getAboutPage } from "../../lib/sanity/queries";
+const about = await getAboutPage();
 
 const { eyebrow, title, body, stats, trustedBy } = about.storySoFar;
 ---

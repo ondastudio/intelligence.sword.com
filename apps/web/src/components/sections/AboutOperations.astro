@@ -20,7 +20,8 @@
  *
  * All copy, stats and badges come from src/data/about.json (`operations`).
  */
-import about from "../../data/about.json";
+import { getAboutPage } from "../../lib/sanity/queries";
+const about = await getAboutPage();
 import PlusChip from "../ui/PlusChip.astro";
 
 type Segment = { text: string; bold?: boolean };

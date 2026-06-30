@@ -70,6 +70,51 @@ export async function getCustomersPage() {
   return page;
 }
 
+/**
+ * About page. Memoized so the six About* components + the page share one fetch.
+ * Reshaped to the exact src/data/about.json shape the components consume.
+ */
+let aboutPromise: Promise<any> | null = null;
+
+async function fetchAbout() {
+  const a = await sanityClient.fetch<any>(`*[_type == "aboutPage"][0]{
+    hero{ eyebrow, statement, "videoUrl": video.asset->url },
+    story{ paragraphs[]{ segments[]{text, bold} } },
+    storySoFar{
+      eyebrow, title, body[]{text, bold},
+      stats[]{ "icon": icon.asset->url, value, plus, label },
+      trustedBy{ label, logos[]{ "src": image.asset->url, "alt": image.alt, width, height } }
+    },
+    operations{
+      intro{ statement, body[]{text, bold} },
+      born{
+        statement, body[]{text, bold},
+        stats[]{ value, plus, label },
+        certs{ label, badges[]{ "src": image.asset->url, "alt": image.alt, w, h } }
+      }
+    },
+    cta, finalCta,
+    team{ eyebrow, title, members[]{ name, role, "photo": photo.asset->url, linkedin } }
+  }`);
+  if (!a) return null;
+  return {
+    ...a,
+    hero: {
+      eyebrow: a.hero.eyebrow,
+      statement: a.hero.statement,
+      media: { src: a.hero.videoUrl, alt: "Sword Intelligence manifesto film" },
+    },
+    story: {
+      // [[{text,bold}]] — one inner array of segments per paragraph.
+      paragraphs: (a.story?.paragraphs ?? []).map((p: any) => p.segments ?? []),
+    },
+  };
+}
+
+export function getAboutPage() {
+  return (aboutPromise ??= fetchAbout());
+}
+
 export async function getCustomerStorySlugs(): Promise<string[]> {
   return sanityClient.fetch(
     `*[_type == "customerStory" && defined(slug.current)].slug.current`,
