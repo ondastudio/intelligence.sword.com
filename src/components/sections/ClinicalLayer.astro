@@ -24,7 +24,6 @@ import ClinicalStepPill from "../ui/ClinicalStepPill.astro";
 import ClinicalDiagram from "../ui/ClinicalDiagram.astro";
 import ClinicalDiagram02 from "../ui/ClinicalDiagram02.astro";
 import ClinicalDiagram03 from "../ui/ClinicalDiagram03.astro";
-import ClinicalDiagram31 from "../ui/ClinicalDiagram31.astro";
 import ClinicalDiagram04 from "../ui/ClinicalDiagram04.astro";
 import ClinicalDiagram05 from "../ui/ClinicalDiagram05.astro";
 import ClinicalDiagram06 from "../ui/ClinicalDiagram06.astro";
@@ -197,20 +196,7 @@ const { heading, steps, cards, integrationLogos, closing } = data;
                 <ClinicalDiagram03 />
               </div>
             </div>
-            <!-- Sub-beat of step 03: keeps the same "03 / AI Skills" chip. -->
             <div data-clinical-state="d" class="clinical-state">
-              <div
-                class="clinical-figure relative mx-auto w-full max-w-[827px]"
-              >
-                <ClinicalStepPill
-                  num={steps[2].num}
-                  label={steps[2].label}
-                  class="absolute left-0 top-0 z-10"
-                />
-                <ClinicalDiagram31 />
-              </div>
-            </div>
-            <div data-clinical-state="e" class="clinical-state">
               <div
                 class="clinical-figure relative mx-auto w-full max-w-[827px]"
               >
@@ -222,7 +208,7 @@ const { heading, steps, cards, integrationLogos, closing } = data;
                 <ClinicalDiagram04 logos={integrationLogos} />
               </div>
             </div>
-            <div data-clinical-state="f" class="clinical-state">
+            <div data-clinical-state="e" class="clinical-state">
               <div
                 class="clinical-figure relative mx-auto w-full max-w-[827px]"
               >
@@ -235,7 +221,7 @@ const { heading, steps, cards, integrationLogos, closing } = data;
               </div>
             </div>
             <!-- Closing beat: no step chip — pairs with the alternate card set. -->
-            <div data-clinical-state="g" class="clinical-state">
+            <div data-clinical-state="f" class="clinical-state">
               <div
                 class="clinical-figure relative mx-auto w-full max-w-[827px]"
               >
@@ -336,14 +322,6 @@ const { heading, steps, cards, integrationLogos, closing } = data;
             </div>
             <div data-cm-state="d" class="clinical-m-state">
               <ClinicalStepPill
-                num={steps[2].num}
-                label={steps[2].label}
-                class="mb-6"
-              />
-              <ClinicalDiagram31 class="mt-8" />
-            </div>
-            <div data-cm-state="e" class="clinical-m-state">
-              <ClinicalStepPill
                 num={steps[3].num}
                 label={steps[3].label}
                 class="mb-6"
@@ -361,7 +339,7 @@ const { heading, steps, cards, integrationLogos, closing } = data;
                 </div>
               </div>
             </div>
-            <div data-cm-state="f" class="clinical-m-state">
+            <div data-cm-state="e" class="clinical-m-state">
               <ClinicalStepPill
                 num={steps[4].num}
                 label={steps[4].label}
@@ -466,9 +444,6 @@ const { heading, steps, cards, integrationLogos, closing } = data;
     const stateF = section.querySelector<HTMLElement>(
       '[data-clinical-state="f"]',
     );
-    const stateG = section.querySelector<HTMLElement>(
-      '[data-clinical-state="g"]',
-    );
     const cardsA = section.querySelector<HTMLElement>(
       '[data-clinical-cards="a"]',
     );
@@ -482,32 +457,29 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       !stateC ||
       !stateD ||
       !stateE ||
-      !stateF ||
-      !stateG
+      !stateF
     )
       return;
 
-    // Timeline windows over the section's scrub distance (easy to tune). Seven
+    // Timeline windows over the section's scrub distance (easy to tune). Six
     // beats chain through one slot: Channels (A) is held first, then crossfades
-    // to Clinical intelligence (B) → AI Skills (C) → a second AI Skills view (D)
-    // → Integrations (E) → Clinical data foundation (F) → the closing "Complex
-    // operations" view (G), each holding before crossfading on to the next; G
-    // settles and holds just before the pin releases. On the final beat the LEFT
-    // card column crossfades too (cardsA → cardsB), in sync with F→G. Each beat
-    // gets a hold so the reader sees the whole illustration before it resolves.
+    // to Clinical intelligence (B) → AI Skills (C) → Integrations (D) → Clinical
+    // data foundation (E) → the closing "Complex operations" view (F), each
+    // holding before crossfading on to the next; F settles and holds just before
+    // the pin releases. On the final beat the LEFT card column crossfades too
+    // (cardsA → cardsB), in sync with E→F. Each beat gets a hold so the reader
+    // sees the whole illustration before it resolves.
     const TITLE_OUT: [number, number] = [0.02, 0.07]; // title fades up + out early
-    const A_OUT: [number, number] = [0.1, 0.17]; // Channels fades + blurs away
-    const B_IN: [number, number] = [0.12, 0.19]; // Clinical resolves out of blur
-    const B_OUT: [number, number] = [0.24, 0.31]; // Clinical fades + blurs away
-    const C_IN: [number, number] = [0.26, 0.33]; // AI Skills resolves out of blur
-    const C_OUT: [number, number] = [0.38, 0.45]; // AI Skills fades + blurs away
-    const D_IN: [number, number] = [0.4, 0.47]; // 2nd AI Skills resolves out of blur
-    const D_OUT: [number, number] = [0.52, 0.59]; // 2nd AI Skills fades + blurs away
-    const E_IN: [number, number] = [0.54, 0.61]; // Integrations resolves out of blur
-    const E_OUT: [number, number] = [0.66, 0.73]; // Integrations fades + blurs away
-    const F_IN: [number, number] = [0.68, 0.75]; // Data foundation resolves out of blur
-    const F_OUT: [number, number] = [0.8, 0.87]; // Data foundation fades + blurs away
-    const G_IN: [number, number] = [0.82, 0.89]; // Closing view resolves out of blur
+    const A_OUT: [number, number] = [0.11, 0.19]; // Channels fades + blurs away
+    const B_IN: [number, number] = [0.13, 0.21]; // Clinical resolves out of blur
+    const B_OUT: [number, number] = [0.28, 0.36]; // Clinical fades + blurs away
+    const C_IN: [number, number] = [0.3, 0.38]; // AI Skills resolves out of blur
+    const C_OUT: [number, number] = [0.45, 0.53]; // AI Skills fades + blurs away
+    const D_IN: [number, number] = [0.47, 0.55]; // Integrations resolves out of blur
+    const D_OUT: [number, number] = [0.62, 0.7]; // Integrations fades + blurs away
+    const E_IN: [number, number] = [0.64, 0.72]; // Data foundation resolves out of blur
+    const E_OUT: [number, number] = [0.79, 0.87]; // Data foundation fades + blurs away
+    const F_IN: [number, number] = [0.81, 0.89]; // Closing view resolves out of blur
     const BLUR = 12; // px — start blur for each incoming/outgoing state
 
     const track = (p: number, [a, b]: [number, number]) =>
@@ -551,7 +523,6 @@ const { heading, steps, cards, integrationLogos, closing } = data;
         clearStyles(stateD);
         clearStyles(stateE);
         clearStyles(stateF);
-        clearStyles(stateG);
         if (cardsA) clearStyles(cardsA);
         if (cardsB) clearStyles(cardsB);
         if (title) {
@@ -611,20 +582,16 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       const eOut = easeOutCubic(track(p, E_OUT));
       paint(stateE, eIn * (1 - eOut), (1 - eIn + eOut) * BLUR);
 
-      // F resolves in (from E) then blurs out (to G) on the final beat.
+      // F resolves in (from E) and holds on the final beat.
       const fIn = easeOutCubic(track(p, F_IN));
-      const fOut = easeOutCubic(track(p, F_OUT));
-      paint(stateF, fIn * (1 - fOut), (1 - fIn + fOut) * BLUR);
+      paint(stateF, fIn, (1 - fIn) * BLUR);
 
-      const gIn = easeOutCubic(track(p, G_IN));
-      paint(stateG, gIn, (1 - gIn) * BLUR);
-
-      // Left card column swaps in lockstep with the F→G diagram crossfade: the
-      // original cards (A) blur out over F_OUT, the alternate set (B) resolves in
-      // over G_IN.
+      // Left card column swaps in lockstep with the E→F diagram crossfade: the
+      // original cards (A) blur out over E_OUT, the alternate set (B) resolves in
+      // over F_IN.
       if (cardsA && cardsB) {
-        paint(cardsA, 1 - fOut, fOut * BLUR);
-        paint(cardsB, gIn, (1 - gIn) * BLUR);
+        paint(cardsA, 1 - eOut, eOut * BLUR);
+        paint(cardsB, fIn, (1 - fIn) * BLUR);
       }
     };
 
@@ -643,23 +610,23 @@ const { heading, steps, cards, integrationLogos, closing } = data;
     .querySelectorAll<HTMLElement>("[data-clinical-layer]")
     .forEach(initClinicalLayer);
 
-  // Mobile (<lg) crossfade: the same pinned-scrubber mechanism, but over the six
-  // beats A–F only (the closing beat lives in its own static block below). The
+  // Mobile (<lg) crossfade: the same pinned-scrubber mechanism, but over the five
+  // beats A–E only (the closing beat lives in its own static block below). The
   // pin is a tall section with a sticky stage; progress is how far the pin has
   // scrolled past the top of the viewport. Gated on motion + max-width:1023px
-  // (matching the CSS); otherwise the six states stay in normal stacked flow.
+  // (matching the CSS); otherwise the five states stay in normal stacked flow.
   function initClinicalMobile(pin: HTMLElement) {
     const enabled = () =>
       window.matchMedia(
         "(prefers-reduced-motion: no-preference) and (max-width: 1023px)",
       ).matches;
 
-    const keys = ["a", "b", "c", "d", "e", "f"] as const;
+    const keys = ["a", "b", "c", "d", "e"] as const;
     const states = keys.map((k) =>
       pin.querySelector<HTMLElement>(`[data-cm-state="${k}"]`),
     );
     if (states.some((s) => !s)) return;
-    const [a, b, c, d, e, f] = states as HTMLElement[];
+    const [a, b, c, d, e] = states as HTMLElement[];
 
     // The pinned diagram stage, driven through three phases (before → fixed →
     // after) instead of `position: sticky` — see the CSS note. `position: fixed`
@@ -719,17 +686,15 @@ const { heading, steps, cards, integrationLogos, closing } = data;
     };
 
     // Timeline windows over the pin's scrub distance: A holds then blurs out,
-    // B–E each resolve in then blur back out, F resolves in last and holds.
-    const A_OUT: [number, number] = [0.12, 0.2];
-    const B_IN: [number, number] = [0.14, 0.22];
-    const B_OUT: [number, number] = [0.3, 0.38];
-    const C_IN: [number, number] = [0.32, 0.4];
-    const C_OUT: [number, number] = [0.48, 0.56];
-    const D_IN: [number, number] = [0.5, 0.58];
-    const D_OUT: [number, number] = [0.66, 0.74];
-    const E_IN: [number, number] = [0.68, 0.76];
-    const E_OUT: [number, number] = [0.82, 0.9];
-    const F_IN: [number, number] = [0.84, 0.92];
+    // B–D each resolve in then blur back out, E resolves in last and holds.
+    const A_OUT: [number, number] = [0.14, 0.22];
+    const B_IN: [number, number] = [0.16, 0.24];
+    const B_OUT: [number, number] = [0.36, 0.44];
+    const C_IN: [number, number] = [0.38, 0.46];
+    const C_OUT: [number, number] = [0.58, 0.66];
+    const D_IN: [number, number] = [0.6, 0.68];
+    const D_OUT: [number, number] = [0.78, 0.86];
+    const E_IN: [number, number] = [0.8, 0.88];
     const BLUR = 12;
 
     const track = (p: number, [x, y]: [number, number]) =>
@@ -787,11 +752,7 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       paint(d, dIn * (1 - dOut), (1 - dIn + dOut) * BLUR);
 
       const eIn = ease(track(p, E_IN));
-      const eOut = ease(track(p, E_OUT));
-      paint(e, eIn * (1 - eOut), (1 - eIn + eOut) * BLUR);
-
-      const fIn = ease(track(p, F_IN));
-      paint(f, fIn, (1 - fIn) * BLUR);
+      paint(e, eIn, (1 - eIn) * BLUR);
     };
 
     const onScroll = () => {
@@ -833,7 +794,7 @@ const { heading, steps, cards, integrationLogos, closing } = data;
      loop runs. */
   @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
     :global(html.js) .clinical-layer {
-      height: calc(100svh + 540vh);
+      height: calc(100svh + 450vh);
     }
     /* Stage + its inner container span the whole tall section so the pin can
        stay stuck across the full scrub distance. */
@@ -880,12 +841,18 @@ const { heading, steps, cards, integrationLogos, closing } = data;
     :global(html.js) [data-clinical-state="c"],
     :global(html.js) [data-clinical-state="d"],
     :global(html.js) [data-clinical-state="e"],
-    :global(html.js) [data-clinical-state="f"],
-    :global(html.js) [data-clinical-state="g"] {
+    :global(html.js) [data-clinical-state="f"] {
       position: absolute;
       inset: 0;
       opacity: 0;
       filter: blur(12px);
+    }
+    /* The closing illustration (ClinicalDiagram06) is wider than the others, so
+       at the shared column width it scales shorter — bottom-align it within the
+       slot so its baseline matches the previous beats instead of floating up. */
+    :global(html.js) [data-clinical-state="f"] {
+      display: flex;
+      align-items: flex-end;
     }
     /* Card column becomes a positioning context too: the original cards (A) stay
        in flow and define the column height; the alternate set (B) overlays from
@@ -951,7 +918,7 @@ const { heading, steps, cards, integrationLogos, closing } = data;
      the start state keeps the first paint flash-free before the rAF loop runs. */
   @media (prefers-reduced-motion: no-preference) and (max-width: 1023px) {
     :global(html.js) .clinical-m-pin {
-      height: calc(100svh + 420vh);
+      height: calc(100svh + 336vh);
       /* Positioning context for the JS-driven pin's before/after parked phases. */
       position: relative;
     }
@@ -1020,8 +987,7 @@ const { heading, steps, cards, integrationLogos, closing } = data;
     :global(html.js) [data-cm-state="b"],
     :global(html.js) [data-cm-state="c"],
     :global(html.js) [data-cm-state="d"],
-    :global(html.js) [data-cm-state="e"],
-    :global(html.js) [data-cm-state="f"] {
+    :global(html.js) [data-cm-state="e"] {
       opacity: 0;
       filter: blur(12px);
     }
