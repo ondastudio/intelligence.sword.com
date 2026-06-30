@@ -12,13 +12,19 @@ import Navbar from "../../components/layout/Navbar.astro";
 import CustomerStory from "../../components/sections/CustomerStory.astro";
 import Cta from "../../components/sections/Cta.astro";
 import Footer from "../../components/sections/Footer.astro";
-import stories from "../../data/customer-stories.json";
+import {
+  getCustomerStorySlugs,
+  getCustomerStory,
+} from "../../lib/sanity/queries";
 
-export function getStaticPaths() {
-  return Object.entries(stories).map(([slug, story]) => ({
-    params: { slug },
-    props: { story },
-  }));
+export async function getStaticPaths() {
+  const slugs = await getCustomerStorySlugs();
+  return Promise.all(
+    slugs.map(async (slug) => ({
+      params: { slug },
+      props: { story: await getCustomerStory(slug) },
+    })),
+  );
 }
 
 const { story } = Astro.props;

@@ -1,0 +1,21 @@
+# Monorepo: install at the workspace root (npm hoists), build the web app,
+# publish its dist. Set PUBLIC_SANITY_PROJECT_ID / PUBLIC_SANITY_DATASET (and,
+# for the preview context, SANITY_PERSPECTIVE=previewDrafts + SANITY_API_READ_TOKEN)
+# in the Netlify UI env vars.
+[build]
+  command = "npm run build -w apps/web"
+  publish = "apps/web/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Production context: published content only.
+[context.production.environment]
+  SANITY_PERSPECTIVE = "published"
+
+# Preview/branch deploys: render unpublished drafts.
+[context.deploy-preview.environment]
+  SANITY_PERSPECTIVE = "previewDrafts"
+
+[context.branch-deploy.environment]
+  SANITY_PERSPECTIVE = "previewDrafts"
