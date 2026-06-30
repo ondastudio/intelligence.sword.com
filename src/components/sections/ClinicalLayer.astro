@@ -470,43 +470,51 @@ const { heading, steps, cards, integrationLogos, closing } = data;
     // (cardsA → cardsB), in sync with E→F. Each beat gets a hold so the reader
     // sees the whole illustration before it resolves.
     const TITLE_OUT: [number, number] = [0.02, 0.07]; // title fades up + out early
-    const A_OUT: [number, number] = [0.11, 0.19]; // Channels fades + blurs away
-    const B_IN: [number, number] = [0.13, 0.21]; // Clinical resolves out of blur
-    const B_OUT: [number, number] = [0.28, 0.36]; // Clinical fades + blurs away
-    const C_IN: [number, number] = [0.3, 0.38]; // AI Skills resolves out of blur
-    const C_OUT: [number, number] = [0.45, 0.53]; // AI Skills fades + blurs away
-    const D_IN: [number, number] = [0.47, 0.55]; // Integrations resolves out of blur
-    const D_OUT: [number, number] = [0.62, 0.7]; // Integrations fades + blurs away
-    const E_IN: [number, number] = [0.64, 0.72]; // Data foundation resolves out of blur
-    const E_OUT: [number, number] = [0.79, 0.87]; // Data foundation fades + blurs away
-    const F_IN: [number, number] = [0.81, 0.89]; // Closing view resolves out of blur
-    const BLUR = 12; // px — start blur for each incoming/outgoing state
+    const A_OUT: [number, number] = [0.11, 0.19]; // Channels fades + scales away
+    const B_IN: [number, number] = [0.13, 0.21]; // Clinical resolves in
+    const B_OUT: [number, number] = [0.28, 0.36]; // Clinical fades + scales away
+    const C_IN: [number, number] = [0.3, 0.38]; // AI Skills resolves in
+    const C_OUT: [number, number] = [0.45, 0.53]; // AI Skills fades + scales away
+    const D_IN: [number, number] = [0.47, 0.55]; // Integrations resolves in
+    const D_OUT: [number, number] = [0.62, 0.7]; // Integrations fades + scales away
+    const E_IN: [number, number] = [0.64, 0.72]; // Data foundation resolves in
+    const E_OUT: [number, number] = [0.79, 0.87]; // Data foundation fades + scales away
+    const F_IN: [number, number] = [0.81, 0.89]; // Closing view resolves in
+    // Crisp crossfade (no blur): an incoming beat resolves UP from SCALE_IN→1 as
+    // it fades in; a leaving beat keeps going 1→SCALE_OUT as it fades out — a
+    // gentle push-through. Both layers stay sharp and readable across the swap,
+    // matching the reference clip (vs the old soft blur dissolve).
+    const SCALE_IN = 0.96; // incoming start scale (resolves up to 1)
+    const SCALE_OUT = 1.04; // leaving end scale (pushes on from 1)
+    const IN_AMT = 1 - SCALE_IN;
+    const OUT_AMT = SCALE_OUT - 1;
 
     const track = (p: number, [a, b]: [number, number]) =>
       Math.min(1, Math.max(0, (p - a) / (b - a)));
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+    // Combined scale for a beat from its incoming + outgoing progress: rests at 1
+    // while held, dips to SCALE_IN before it resolves, rises to SCALE_OUT as it
+    // leaves.
+    const scaleOf = (inT: number, outT: number) =>
+      SCALE_IN + IN_AMT * inT + OUT_AMT * outT;
 
     const clearStyles = (el: HTMLElement) => {
       el.style.opacity = "";
-      el.style.filter = "";
+      el.style.transform = "";
     };
 
-    // Apply a beat's opacity + blur. iOS Safari vibrates a `position: sticky`
-    // element through the whole momentum tail whenever a `filter` layer lives
-    // inside it and the page is still scrolling — and these states otherwise
-    // keep a `filter: blur()` set at ALL times, including on fully-hidden beats
-    // (blur 12px at opacity 0) and on the resting/held beat (blur 0). Those idle
-    // filter layers are exactly what shakes. So only keep `filter` set while a
-    // beat is actually mid-transition (visible AND blurred); drop it entirely
-    // once the beat is hidden or fully resolved. The visible blur-resolve is
-    // unchanged — it only ever runs while opacity and blur are both non-trivial.
-    const paint = (el: HTMLElement, opacity: number, blurPx: number) => {
+    // Apply a beat's opacity + scale. A `transform` is GPU-composited and (unlike
+    // the old `filter: blur()`) doesn't make iOS Safari vibrate the pinned sticky
+    // element during momentum scrolling — but we still mirror that hygiene: only
+    // keep a transform set while a beat is mid-transition (visible AND off 1).
+    // Drop it to `none` once the beat is hidden or fully resolved so held/hidden
+    // beats carry no idle compositing layer.
+    const paint = (el: HTMLElement, opacity: number, scale: number) => {
       el.style.opacity = String(opacity);
-      // `none` (not "") so it overrides the CSS pre-set `filter: blur(12px)` on
-      // the hidden states — clearing to "" would fall back to that and both keep
-      // the idle layer and blur a held-visible beat.
-      el.style.filter =
-        opacity < 0.01 || blurPx < 0.15 ? "none" : `blur(${blurPx}px)`;
+      el.style.transform =
+        opacity < 0.01 || Math.abs(scale - 1) < 0.001
+          ? "none"
+          : `scale(${scale})`;
     };
 
     let ticking = false;
@@ -561,40 +569,40 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       }
 
       const aOut = easeOutCubic(track(p, A_OUT));
-      paint(stateA, 1 - aOut, aOut * BLUR);
+      paint(stateA, 1 - aOut, scaleOf(1, aOut));
 
-      // B both resolves in (from A) and later blurs back out (to C): opacity is
-      // the product of the two tracks, blur is the sum of the incoming +
-      // outgoing amounts (both 0 during B's hold).
+      // B both resolves in (from A) and later scales back out (to C): opacity is
+      // the product of the two tracks, scale chains the incoming resolve into the
+      // outgoing push (resting at 1 during B's hold).
       const bIn = easeOutCubic(track(p, B_IN));
       const bOut = easeOutCubic(track(p, B_OUT));
-      paint(stateB, bIn * (1 - bOut), (1 - bIn + bOut) * BLUR);
+      paint(stateB, bIn * (1 - bOut), scaleOf(bIn, bOut));
 
-      // C, like B, resolves in (from B) then later blurs out (to D).
+      // C, like B, resolves in (from B) then later scales out (to D).
       const cIn = easeOutCubic(track(p, C_IN));
       const cOut = easeOutCubic(track(p, C_OUT));
-      paint(stateC, cIn * (1 - cOut), (1 - cIn + cOut) * BLUR);
+      paint(stateC, cIn * (1 - cOut), scaleOf(cIn, cOut));
 
-      // D, like B and C, resolves in (from C) then later blurs out (to E).
+      // D, like B and C, resolves in (from C) then later scales out (to E).
       const dIn = easeOutCubic(track(p, D_IN));
       const dOut = easeOutCubic(track(p, D_OUT));
-      paint(stateD, dIn * (1 - dOut), (1 - dIn + dOut) * BLUR);
+      paint(stateD, dIn * (1 - dOut), scaleOf(dIn, dOut));
 
-      // E, like B–D, resolves in (from D) then later blurs out (to F).
+      // E, like B–D, resolves in (from D) then later scales out (to F).
       const eIn = easeOutCubic(track(p, E_IN));
       const eOut = easeOutCubic(track(p, E_OUT));
-      paint(stateE, eIn * (1 - eOut), (1 - eIn + eOut) * BLUR);
+      paint(stateE, eIn * (1 - eOut), scaleOf(eIn, eOut));
 
       // F resolves in (from E) and holds on the final beat.
       const fIn = easeOutCubic(track(p, F_IN));
-      paint(stateF, fIn, (1 - fIn) * BLUR);
+      paint(stateF, fIn, scaleOf(fIn, 0));
 
       // Left card column swaps in lockstep with the E→F diagram crossfade: the
-      // original cards (A) blur out over E_OUT, the alternate set (B) resolves in
+      // original cards (A) scale out over E_OUT, the alternate set (B) resolves in
       // over F_IN.
       if (cardsA && cardsB) {
-        paint(cardsA, 1 - eOut, eOut * BLUR);
-        paint(cardsB, fIn, (1 - fIn) * BLUR);
+        paint(cardsA, 1 - eOut, scaleOf(1, eOut));
+        paint(cardsB, fIn, scaleOf(fIn, 0));
 
         // Centre the closing set (heading + subtext + cards) on the viewport's
         // vertical midline while the pin is held. The pinned row is anchored 80px
@@ -704,8 +712,8 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       bloom.style.opacity = String(BLOOM_MAX * inT * (1 - outT));
     };
 
-    // Timeline windows over the pin's scrub distance: A holds then blurs out,
-    // B–D each resolve in then blur back out, E resolves in last and holds.
+    // Timeline windows over the pin's scrub distance: A holds then scales out,
+    // B–D each resolve in then scale back out, E resolves in last and holds.
     const A_OUT: [number, number] = [0.14, 0.22];
     const B_IN: [number, number] = [0.16, 0.24];
     const B_OUT: [number, number] = [0.36, 0.44];
@@ -714,27 +722,31 @@ const { heading, steps, cards, integrationLogos, closing } = data;
     const D_IN: [number, number] = [0.6, 0.68];
     const D_OUT: [number, number] = [0.78, 0.86];
     const E_IN: [number, number] = [0.8, 0.88];
-    const BLUR = 12;
+    // Crisp crossfade (no blur) — see the desktop scrubber: incoming beats resolve
+    // up from SCALE_IN→1, leaving beats push on 1→SCALE_OUT, both staying sharp.
+    const SCALE_IN = 0.96;
+    const SCALE_OUT = 1.04;
+    const IN_AMT = 1 - SCALE_IN;
+    const OUT_AMT = SCALE_OUT - 1;
 
     const track = (p: number, [x, y]: [number, number]) =>
       Math.min(1, Math.max(0, (p - x) / (y - x)));
     const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+    const scaleOf = (inT: number, outT: number) =>
+      SCALE_IN + IN_AMT * inT + OUT_AMT * outT;
     const clear = (el: HTMLElement) => {
       el.style.opacity = "";
-      el.style.filter = "";
+      el.style.transform = "";
     };
-    // Only keep a `filter: blur()` layer set on a beat while it is actually
-    // mid-transition (visible AND blurred). Hidden and fully-resolved beats drop
-    // the filter entirely — an idle filter layer inside the sticky stage is what
-    // makes iOS Safari vibrate the pinned block through the momentum tail. The
-    // visible blur-resolve is unchanged (it only runs while both are non-zero).
-    const paint = (el: HTMLElement, opacity: number, blurPx: number) => {
+    // Opacity + scale. A `transform` is GPU-composited and doesn't trigger the iOS
+    // Safari momentum vibration the old `filter: blur()` did; we still drop it to
+    // `none` on hidden / fully-resolved beats so they carry no idle layer.
+    const paint = (el: HTMLElement, opacity: number, scale: number) => {
       el.style.opacity = String(opacity);
-      // `none` (not "") so it overrides the CSS pre-set `filter: blur(12px)` on
-      // the hidden states — clearing to "" would fall back to that and both keep
-      // the idle layer and blur a held-visible beat.
-      el.style.filter =
-        opacity < 0.01 || blurPx < 0.15 ? "none" : `blur(${blurPx}px)`;
+      el.style.transform =
+        opacity < 0.01 || Math.abs(scale - 1) < 0.001
+          ? "none"
+          : `scale(${scale})`;
     };
 
     let ticking = false;
@@ -756,22 +768,22 @@ const { heading, steps, cards, integrationLogos, closing } = data;
           : 0;
 
       const aOut = ease(track(p, A_OUT));
-      paint(a, 1 - aOut, aOut * BLUR);
+      paint(a, 1 - aOut, scaleOf(1, aOut));
 
       const bIn = ease(track(p, B_IN));
       const bOut = ease(track(p, B_OUT));
-      paint(b, bIn * (1 - bOut), (1 - bIn + bOut) * BLUR);
+      paint(b, bIn * (1 - bOut), scaleOf(bIn, bOut));
 
       const cIn = ease(track(p, C_IN));
       const cOut = ease(track(p, C_OUT));
-      paint(c, cIn * (1 - cOut), (1 - cIn + cOut) * BLUR);
+      paint(c, cIn * (1 - cOut), scaleOf(cIn, cOut));
 
       const dIn = ease(track(p, D_IN));
       const dOut = ease(track(p, D_OUT));
-      paint(d, dIn * (1 - dOut), (1 - dIn + dOut) * BLUR);
+      paint(d, dIn * (1 - dOut), scaleOf(dIn, dOut));
 
       const eIn = ease(track(p, E_IN));
-      paint(e, eIn, (1 - eIn) * BLUR);
+      paint(e, eIn, scaleOf(eIn, 0));
     };
 
     const onScroll = () => {
@@ -864,7 +876,9 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       position: absolute;
       inset: 0;
       opacity: 0;
-      filter: blur(12px);
+      /* Pre-set the incoming start scale so the first paint matches the scrubber;
+         the crossfade itself (opacity + scale) is driven from JS. */
+      transform: scale(0.96);
     }
     /* The closing illustration (ClinicalDiagram06) is wider than the others, so
        at the shared column width it scales shorter — bottom-align it within the
@@ -893,7 +907,7 @@ const { heading, steps, cards, integrationLogos, closing } = data;
          takes the column width and lays its cards out in normal flow.) */
       width: 100%;
       opacity: 0;
-      filter: blur(12px);
+      transform: scale(0.96);
     }
   }
 
@@ -1012,7 +1026,7 @@ const { heading, steps, cards, integrationLogos, closing } = data;
     :global(html.js) [data-cm-state="d"],
     :global(html.js) [data-cm-state="e"] {
       opacity: 0;
-      filter: blur(12px);
+      transform: scale(0.96);
     }
   }
 </style>
