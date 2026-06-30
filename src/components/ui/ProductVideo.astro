@@ -70,17 +70,14 @@ const { src, poster, alt, spotlight = false, class: className = "" } = Astro.pro
   }
 
   /* Phones (matches Figma mobile 8797:50811): the frame runs near-full-width
-     (5px gutters) with an ~11px radius, sitting ~124px below the logos
-     (44px here + the column's 80px pb). */
+     (5px gutters), sitting ~124px below the logos (44px here + the column's
+     80px pb). Corners stay at the 40px card radius (var(--radius-card)). */
   @media (max-width: 639px) {
     .video-scroll {
       /* ~120px below the logos (matches the gap in Figma 8797:50783→50811),
          5px gutters, and a tight 12px below the frame — the design keeps the
          video frame snug (no big band beneath it before the next section). */
       padding: 6px;
-    }
-    .video-frame {
-      border-radius: 11px;
     }
   }
 
@@ -258,7 +255,9 @@ const { src, poster, alt, spotlight = false, class: className = "" } = Astro.pro
       const eased = easeOutCubic(proximity);
 
       const scale = minScale + (1 - minScale) * eased;
-      const radius = MAX_RADIUS * (1 - eased);
+      // Desktop (non-spotlight, e.g. Solutions) squares its corners as it fills
+      // the screen; tablet/mobile keep their 40px rounded corners throughout.
+      const radius = desktopMQ.matches ? MAX_RADIUS * (1 - eased) : MAX_RADIUS;
       frame.style.transform = `scale(${scale})`;
       frame.style.borderRadius = `${radius}px`;
     };
