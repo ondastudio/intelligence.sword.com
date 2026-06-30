@@ -13,7 +13,8 @@
  */
 import Eyebrow from "../ui/Eyebrow.astro";
 import PlusChip from "../ui/PlusChip.astro";
-import data from "../../data/scaling.json";
+import { getHomePage } from "../../lib/sanity/queries";
+const data = (await getHomePage()).scaling;
 
 const { eyebrow, heading, body, stats } = data;
 ---

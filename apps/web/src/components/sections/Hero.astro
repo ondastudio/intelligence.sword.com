@@ -5,7 +5,8 @@
  * headline, an eyebrow label, a divider cross, a supporting paragraph, and a
  * circular arrow button. Content comes from src/data/hero.json.
  */
-import hero from "../../data/hero.json";
+import { getHomePage } from "../../lib/sanity/queries";
+const hero = (await getHomePage()).hero;
 import Navbar from "../layout/Navbar.astro";
 import Eyebrow from "../ui/Eyebrow.astro";
 import CircleButton from "../ui/CircleButton.astro";

@@ -13,7 +13,8 @@
  * number, label and quote is real, editable text from src/data/numbers.json.
  */
 import ArrowCircle from "../ui/ArrowCircle.astro";
-import data from "../../data/numbers.json";
+import { getHomePage } from "../../lib/sanity/queries";
+const data = (await getHomePage()).numbers;
 
 const { stats, testimonial, cta } = data;
 ---

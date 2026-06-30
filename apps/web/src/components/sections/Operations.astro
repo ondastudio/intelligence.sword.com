@@ -11,7 +11,8 @@
  * banner. Content comes from src/data/operations.json.
  */
 import Eyebrow from "../ui/Eyebrow.astro";
-import data from "../../data/operations.json";
+import { getHomePage } from "../../lib/sanity/queries";
+const data = (await getHomePage()).operations;
 
 const { eyebrow, heading } = data;
 ---

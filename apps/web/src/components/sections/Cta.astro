@@ -20,7 +20,8 @@
  * Content comes from src/data/cta.json.
  */
 import ArrowCircle from "../ui/ArrowCircle.astro";
-import data from "../../data/cta.json";
+import { getHomePage } from "../../lib/sanity/queries";
+const data = (await getHomePage()).cta;
 
 /**
  * `heading` is split into a first line, then a second line whose middle word is

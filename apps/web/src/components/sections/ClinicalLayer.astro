@@ -29,7 +29,8 @@ import ClinicalDiagram04 from "../ui/ClinicalDiagram04.astro";
 import ClinicalDiagram05 from "../ui/ClinicalDiagram05.astro";
 import ClinicalDiagram06 from "../ui/ClinicalDiagram06.astro";
 import ClinicalLogoMarquee from "../ui/ClinicalLogoMarquee.astro";
-import data from "../../data/clinical-layer.json";
+import { getHomePage } from "../../lib/sanity/queries";
+const data = (await getHomePage()).clinicalLayer;
 
 const { heading, steps, cards, integrationLogos, closing } = data;
 ---

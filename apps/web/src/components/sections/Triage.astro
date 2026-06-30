@@ -9,7 +9,8 @@
  * per scroll segment.
  * Content comes from src/data/triage.json.
  */
-import triage from "../../data/triage.json";
+import { getHomePage } from "../../lib/sanity/queries";
+const triage = (await getHomePage()).triage;
 import Eyebrow from "../ui/Eyebrow.astro";
 import SolutionCard from "../ui/SolutionCard.astro";
 import TriageMedia from "../ui/TriageMedia.astro";

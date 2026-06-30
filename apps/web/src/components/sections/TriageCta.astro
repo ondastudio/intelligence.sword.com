@@ -17,7 +17,8 @@
  * `data/triage-cta.json`.
  */
 import ArrowCircle from "../ui/ArrowCircle.astro";
-import { heading, cta } from "../../data/triage-cta.json";
+import { getHomePage } from "../../lib/sanity/queries";
+const { heading, cta } = (await getHomePage()).triageCta;
 ---
 
 <section

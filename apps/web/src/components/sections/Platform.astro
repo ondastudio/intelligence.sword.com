@@ -13,7 +13,8 @@
  * container width by a tiny ResizeObserver (never upscaled past 1×). Content
  * comes from src/data/platform.json.
  */
-import data from "../../data/platform.json";
+import { getHomePage } from "../../lib/sanity/queries";
+const data = (await getHomePage()).platform;
 import PlusChip from "../ui/PlusChip.astro";
 
 const {

@@ -9,6 +9,7 @@ import { customerRow } from "./objects/customerRow";
 import { customerStory } from "./documents/customerStory";
 import { customersPage } from "./documents/customersPage";
 import { aboutPage } from "./documents/aboutPage";
+import { homePage } from "./documents/homePage";
 
 export const schemaTypes = [
   // objects
@@ -24,4 +25,5 @@ export const schemaTypes = [
   customerStory,
   customersPage,
   aboutPage,
+  homePage,
 ];

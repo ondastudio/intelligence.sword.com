@@ -1,6 +1,49 @@
 import { sanityClient } from "./client";
+import { imageUrl } from "./image";
 import { serializeHeadline } from "./portableText";
 import type { PortableTextBlock } from "@portabletext/types";
+
+const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID;
+const dataset = import.meta.env.PUBLIC_SANITY_DATASET;
+
+/**
+ * Flatten Sanity asset objects back to URL strings in place, preserving all
+ * other structure (sibling alts, nested arrays). Lets us store a section's JSON
+ * faithfully (paths → asset refs) and render it with its original shape — no
+ * per-section GROQ projection needed.
+ */
+function resolveAssets(node: any): any {
+  if (Array.isArray(node)) return node.map(resolveAssets);
+  if (node && typeof node === "object") {
+    if (node._type === "image" && node.asset?._ref) {
+      return imageUrl(node).url();
+    }
+    if (node._type === "file" && node.asset?._ref) {
+      const m = /^file-([a-f0-9]+)-(\w+)$/.exec(node.asset._ref);
+      return m
+        ? `https://cdn.sanity.io/files/${projectId}/${dataset}/${m[1]}.${m[2]}`
+        : undefined;
+    }
+    const out: any = {};
+    for (const k in node) out[k] = resolveAssets(node[k]);
+    return out;
+  }
+  return node;
+}
+
+/**
+ * Home page. Faithful section objects stored as-is in the homePage singleton;
+ * we resolve asset refs → URLs post-fetch so the existing section components
+ * consume their current shape unchanged. Memoized (every home section + the
+ * page share one fetch).
+ */
+let homePromise: Promise<any> | null = null;
+
+export function getHomePage() {
+  return (homePromise ??= sanityClient
+    .fetch<any>(`*[_type == "homePage"][0]`)
+    .then((doc) => (doc ? resolveAssets(doc) : null)));
+}
 
 /**
  * customerStory queries. GROQ resolves asset URLs + related references so the

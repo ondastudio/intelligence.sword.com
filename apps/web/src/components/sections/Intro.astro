@@ -5,7 +5,8 @@
  * statement, a strip of partner/client logos, and a large rounded product
  * screenshot. Content comes from src/data/intro.json.
  */
-import intro from "../../data/intro.json";
+import { getHomePage } from "../../lib/sanity/queries";
+const intro = (await getHomePage()).intro;
 import LogoStrip from "../layout/LogoStrip.astro";
 import LogoMarquee from "../layout/LogoMarquee.astro";
 import ProductVideo from "../ui/ProductVideo.astro";

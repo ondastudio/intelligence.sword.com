@@ -140,6 +140,77 @@ async function video(client: AnyClient | null, path: string | undefined) {
   };
 }
 
+// ---------- generic section transform (home) ---------------------------------
+
+const IMG_EXT = /\.(png|jpe?g|svg|webp|gif|avif)$/i;
+const VID_EXT = /\.(mp4|webm|mov|m4v|ogg)$/i;
+
+/**
+ * Deep-copy a section's JSON, converting any /public asset path string into a
+ * Sanity image/file ref and adding _key to every object array item. Renders
+ * back to the original shape via resolveAssets() in the web app.
+ */
+async function refs(client: AnyClient | null, node: any): Promise<any> {
+  if (typeof node === "string") {
+    if (node.startsWith("/") && IMG_EXT.test(node)) {
+      return {
+        _type: "image",
+        asset: { _type: "reference", _ref: await uploadAsset(client, node, "image") },
+      };
+    }
+    if (node.startsWith("/") && VID_EXT.test(node)) {
+      return {
+        _type: "file",
+        asset: { _type: "reference", _ref: await uploadAsset(client, node, "file") },
+      };
+    }
+    return node;
+  }
+  if (Array.isArray(node)) {
+    return Promise.all(
+      node.map(async (x, i) => {
+        const r = await refs(client, x);
+        if (r && typeof r === "object" && !Array.isArray(r) && r._key === undefined) {
+          return { _key: `k${i}`, ...r };
+        }
+        return r;
+      }),
+    );
+  }
+  if (node && typeof node === "object") {
+    const out: any = {};
+    for (const k in node) out[k] = await refs(client, node[k]);
+    return out;
+  }
+  return node;
+}
+
+const HOME_SECTIONS: Record<string, string> = {
+  hero: "hero",
+  intro: "intro",
+  care: "care",
+  triage: "triage",
+  triageCta: "triage-cta",
+  platform: "platform",
+  trust: "trust",
+  operations: "operations",
+  numbers: "numbers",
+  clinicalLayer: "clinical-layer",
+  scaling: "scaling",
+  cta: "cta",
+};
+
+async function buildHomePage(client: AnyClient | null) {
+  const doc: any = { _id: "homePage", _type: "homePage" };
+  for (const [key, file] of Object.entries(HOME_SECTIONS)) {
+    const json = JSON.parse(
+      readFileSync(resolve(ROOT, `src/data/${file}.json`), "utf8"),
+    );
+    doc[key] = await refs(client, json);
+  }
+  return doc;
+}
+
 async function figure(
   client: AnyClient | null,
   path: string | undefined,
@@ -414,6 +485,7 @@ async function main() {
     ...(await buildCustomerStories(client)),
     await buildCustomersPage(client),
     await buildAboutPage(client),
+    await buildHomePage(client),
   ];
 
   if (DRY) {

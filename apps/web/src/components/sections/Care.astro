@@ -6,7 +6,8 @@
  * "Humans in the loop" banner with a decorative dotted-globe graphic.
  * Content comes from src/data/care.json.
  */
-import care from "../../data/care.json";
+import { getHomePage } from "../../lib/sanity/queries";
+const care = (await getHomePage()).care;
 import LabelPill from "../ui/LabelPill.astro";
 import FeatureCard from "../ui/FeatureCard.astro";
 

@@ -9,7 +9,8 @@
  * layers positioned at their native Figma offsets. Content comes from
  * src/data/trust.json.
  */
-import data from "../../data/trust.json";
+import { getHomePage } from "../../lib/sanity/queries";
+const data = (await getHomePage()).trust;
 
 const { heading, badges, points } = data;
 const badgeRows = [badges.slice(0, 7), badges.slice(7)];

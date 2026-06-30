@@ -8,7 +8,7 @@ import type { StructureResolver } from "sanity/structure";
  * (the tracer) plus a placeholder for the singletons section.
  */
 const SINGLETONS: { id: string; title: string; schemaType: string }[] = [
-  // { id: "homePage", title: "Home page", schemaType: "homePage" },
+  { id: "homePage", title: "Home page", schemaType: "homePage" },
   { id: "aboutPage", title: "About page", schemaType: "aboutPage" },
   { id: "customersPage", title: "Customers page", schemaType: "customersPage" },
 ];
