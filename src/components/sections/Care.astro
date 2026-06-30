@@ -88,7 +88,7 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
              backdrop-blur samples this, giving a faint frosted-purple tint. -->
         <div
           aria-hidden="true"
-          class="pointer-events-none absolute -inset-x-[160px] -inset-y-32 -z-10 bg-[image:var(--gradient-care-swirl)] [mask-image:linear-gradient(to_bottom,transparent_0%,#000_14%,#000_86%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,#000_14%,#000_86%,transparent_100%)]"
+          class="pointer-events-none absolute -inset-x-[160px] -inset-y-32 -z-10 bg-[image:var(--gradient-care-swirl)] [mask-composite:intersect] [mask-image:linear-gradient(to_bottom,transparent_0%,#000_14%,#000_86%,transparent_100%),linear-gradient(to_right,transparent_0%,#000_12%,#000_88%,transparent_100%)] [-webkit-mask-composite:source-in] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,#000_14%,#000_86%,transparent_100%),linear-gradient(to_right,transparent_0%,#000_12%,#000_88%,transparent_100%)]"
         >
         </div>
 
