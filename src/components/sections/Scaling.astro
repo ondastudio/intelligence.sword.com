@@ -54,7 +54,14 @@ const { eyebrow, heading, body, stats } = data;
       <div
         class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-[133px]"
       >
-        <h2 data-reveal="title" class="font-serif text-h5 font-normal">
+        <!-- text-box-trim trims each block's bottom leading to the alphabetic
+             baseline, so lg:items-end aligns the paragraph's last line precisely
+             with the bottom of the title (not the line-box, whose half-leading
+             differs between the two font sizes). -->
+        <h2
+          data-reveal="title"
+          class="font-serif text-h5 font-normal lg:[text-box-edge:cap_alphabetic] lg:[text-box-trim:trim-end]"
+        >
           {heading.line1}<br /><span class="whitespace-nowrap"
             >{heading.line2}<span class="text-brand">{heading.accent}</span>{
               heading.after
@@ -64,7 +71,7 @@ const { eyebrow, heading, body, stats } = data;
 
         <p
           data-reveal
-          class="max-w-[628px] text-base text-xmd"
+          class="max-w-[628px] text-base text-xmd lg:[text-box-edge:cap_alphabetic] lg:[text-box-trim:trim-end]"
           style="transition-delay:160ms;letter-spacing:0"
         >
           {body}
