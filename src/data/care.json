@@ -10,32 +10,32 @@
     {
       "label": "Always on",
       "description": "Work 24/7, answering every call and monitoring your population.",
-      "image": "/care/always-on.webm"
+      "image": "/care/always-on.lottie"
     },
     {
       "label": "Multichannel communication",
       "description": "Move between voice, text, chat, and email without losing context.",
-      "image": "/care/multichannel.webm"
+      "image": "/care/multichannel.lottie"
     },
     {
       "label": "Hyper personalization",
       "description": "Adapt tone, timing, and approach to each patient's context and needs.",
-      "image": "/care/personalization.webm"
+      "image": "/care/personalization.lottie"
     },
     {
       "label": "Conversational AI",
       "description": "Speak naturally in any language, adapting to local accents.",
-      "image": "/care/conversational.webm"
+      "image": "/care/conversational.lottie"
     },
     {
       "label": "Document processing",
       "description": "Extract and parse docs through computer vision and OCR.",
-      "image": "/care/document-processing.webm"
+      "image": "/care/document-processing.lottie"
     },
     {
       "label": "Autonomous browsing",
       "description": "Navigate and operate any platform, even legacy portals.",
-      "image": "/care/autonomous-browsing.webm"
+      "image": "/care/autonomous-browsing.lottie"
     }
   ],
   "banner": {
