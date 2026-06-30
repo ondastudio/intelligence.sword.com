@@ -13,8 +13,8 @@
             { "value": "57%", "label": "more patients ready for surgery" },
             { "value": "0.71 d", "label": "average reduction in length of stay" }
           ],
-          "photo": "/customers/photo-686.png",
-          "photoAlt": "Doctors Surgeries signpost",
+          "photo": "/customers/photo-queens-hospital.png",
+          "photoAlt": "Queen's Hospital main entrance at sunset",
           "cta": { "label": "Read more", "href": "/customers/nhs-surgery-readiness" }
         }
       ]
