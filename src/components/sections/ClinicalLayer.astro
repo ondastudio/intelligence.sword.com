@@ -524,7 +524,10 @@ const { heading, steps, cards, integrationLogos, closing } = data;
         clearStyles(stateE);
         clearStyles(stateF);
         if (cardsA) clearStyles(cardsA);
-        if (cardsB) clearStyles(cardsB);
+        if (cardsB) {
+          clearStyles(cardsB);
+          cardsB.style.top = "";
+        }
         if (title) {
           title.style.transition = "";
           title.style.opacity = "";
@@ -592,6 +595,22 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       if (cardsA && cardsB) {
         paint(cardsA, 1 - eOut, eOut * BLUR);
         paint(cardsB, fIn, (1 - fIn) * BLUR);
+
+        // Centre the closing set (heading + subtext + cards) on the viewport's
+        // vertical midline while the pin is held. The pinned row is anchored 80px
+        // from the top — not viewport-centred — so a static column-relative centre
+        // reads low; offset cardsB to the true viewport centre instead. Once the
+        // pin releases (rawP > 1) clear the override so it scrolls away with the
+        // column.
+        const rawP =
+          scrub > 0 ? -section.getBoundingClientRect().top / scrub : 0;
+        const col = cardsB.parentElement;
+        if (col && rawP >= 0 && rawP <= 1) {
+          const colTop = col.getBoundingClientRect().top;
+          cardsB.style.top = `${window.innerHeight / 2 - colTop - cardsB.offsetHeight / 2}px`;
+        } else {
+          cardsB.style.top = "";
+        }
       }
     };
 
@@ -863,6 +882,10 @@ const { heading, steps, cards, integrationLogos, closing } = data;
     }
     :global(html.js) [data-clinical-cards="b"] {
       position: absolute;
+      /* `top` is driven by the scrubber so the closing set sits on the viewport's
+         vertical midline while the pin is held (the pinned row is anchored 80px
+         from the top, so a static column-relative centre reads low). This `top: 0`
+         is just the pre-script default. */
       top: 0;
       left: 0;
       /* Full width of the 340px card column. (This is now HTML that reflows, so
