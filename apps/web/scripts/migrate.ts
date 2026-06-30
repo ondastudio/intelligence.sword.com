@@ -390,6 +390,8 @@ async function buildCustomerStories(client: AnyClient | null) {
                     _ref: `customerStory.${targetSlug}`,
                     _weak: true,
                   },
+                  // Curated card title (keeps the design's editorial line breaks).
+                  title: c.title,
                   featuredStat: c.stat,
                   tone: c.tone ?? "white",
                 };

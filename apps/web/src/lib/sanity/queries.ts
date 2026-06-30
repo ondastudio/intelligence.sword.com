@@ -73,7 +73,7 @@ const STORY_PROJECTION = /* groq */ `{
       tone,
       "logo": story->hero.logo.asset->url,
       "logoAlt": story->hero.logo.alt,
-      "title": story->title,
+      "title": coalesce(title, story->title),
       "stat": featuredStat{value, label},
       "cta": {"label": "Read more", "href": "/customers/" + story->slug.current}
     }

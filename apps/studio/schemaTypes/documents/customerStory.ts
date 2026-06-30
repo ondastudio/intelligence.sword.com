@@ -134,6 +134,13 @@ export const customerStory = defineType({
                   validation: (r) => r.required(),
                 }),
                 defineField({
+                  name: "title",
+                  type: "text",
+                  rows: 3,
+                  description:
+                    "Card title — line breaks are preserved. Falls back to the linked story's title if empty.",
+                }),
+                defineField({
                   name: "featuredStat",
                   type: "stat",
                   description: "Stat shown on the related card.",
