@@ -13,17 +13,24 @@ import FeatureCard from "../ui/FeatureCard.astro";
 // Per-card illustration styling (keyed by card index). Unlisted cards fall back
 // to FeatureCard's defaults (an in-flow centered box). Notes per special card:
 //
-// • Cards 1/2/3/4/5 (idx 0/1/2/3/4): video animations. The clip fills the card body
+// • Cards 1/2/3/4 (idx 0/1/2/3): video animations. The clip fills the card body
 //   edge-to-edge within the px-10 padding (40px lateral margins) at every
 //   breakpoint, object-cover trimming the source's vertical whitespace so the
 //   motion reads large.
 const videoFill = "h-full w-full object-cover";
+// • Document processing (idx 4): like the others, but its animation needs the
+//   full card WIDTH — the lateral padding clips it. The wrapper widens to
+//   content+both paddings and pulls itself back with matching negative margins
+//   so the video bleeds through the left/right padding to the card edges (the
+//   card's overflow-hidden + rounded corners still trim it cleanly).
+const videoFillWide =
+  "relative -mx-8 flex min-h-0 w-[calc(100%+4rem)] flex-1 items-center justify-center md:-mx-10 md:w-[calc(100%+5rem)]";
 const cardImage: Record<number, { img: string; wrap?: string }> = {
   0: { img: videoFill },
   1: { img: videoFill },
   2: { img: videoFill },
   3: { img: videoFill },
-  4: { img: videoFill },
+  4: { img: videoFill, wrap: videoFillWide },
   // Autonomous browsing: the browser-window artwork occupies a fixed region of
   // its frame (~x118–414, y123–453 of 416×600) on a white background that
   // matches the card, sitting right-biased (only ~2px source margin) with tall
