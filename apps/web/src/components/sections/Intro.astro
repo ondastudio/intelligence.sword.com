@@ -6,6 +6,7 @@
  * screenshot. Content comes from src/data/intro.json.
  */
 import { getHomePage } from "../../lib/sanity/queries";
+import { serializeHeadline } from "../../lib/sanity/portableText";
 const intro = (await getHomePage()).intro;
 import LogoStrip from "../layout/LogoStrip.astro";
 import LogoMarquee from "../layout/LogoMarquee.astro";
@@ -35,7 +36,7 @@ import ProductVideo from "../ui/ProductVideo.astro";
       <p
         class="mx-auto max-w-[350px] text-center text-xlg sm:max-w-[600px] md:max-w-[962px]"
       >
-        {intro.lead.before}<span class="font-semibold">{intro.lead.highlight}</span>{intro.lead.after}
+        <Fragment set:html={serializeHeadline(intro.lead)} />
       </p>
 
       <div data-reveal class="w-full" style="transition-delay:120ms">

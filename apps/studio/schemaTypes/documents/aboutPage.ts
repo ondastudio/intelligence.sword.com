@@ -189,16 +189,7 @@ export const aboutPage = defineType({
       ],
     }),
 
-    defineField({
-      name: "finalCta",
-      type: "object",
-      fields: [
-        defineField({ name: "line1", type: "string" }),
-        defineField({ name: "line2Before", type: "string" }),
-        defineField({ name: "accent", type: "string" }),
-        defineField({ name: "after", type: "string" }),
-      ],
-    }),
+    defineField({ name: "finalCta", type: "styledHeadline" }),
 
     defineField({
       name: "team",

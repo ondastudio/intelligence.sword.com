@@ -185,6 +185,50 @@ async function refs(client: AnyClient | null, node: any): Promise<any> {
   return node;
 }
 
+/**
+ * Convert a structured heading fragment ({before, line1, highlight, accent,
+ * strong, afterBreak, rest, after, …}) into a styledHeadline Portable Text block.
+ * highlight/accent → highlight decorator, strong → strong, line1/afterBreak → a
+ * soft break (\n → <br>). Mirrors the original component render order.
+ */
+function headline(p: any) {
+  const segs: { text: string; mark?: string }[] = [];
+  const push = (text: any, mark?: string) => {
+    if (text != null && text !== "") segs.push({ text, mark });
+  };
+  const brk = () => segs.push({ text: "\n" });
+  push(p.before);
+  if (p.line1 != null) {
+    push(p.line1);
+    brk();
+  }
+  push(p.line2);
+  push(p.line2Before);
+  push(p.highlight, "highlight");
+  push(p.accent, "highlight");
+  push(p.strong, "strong");
+  if (p.afterBreak != null) {
+    brk();
+    push(p.afterBreak);
+  }
+  push(p.rest);
+  push(p.after);
+  return [
+    {
+      _type: "block",
+      _key: "h",
+      style: "normal",
+      markDefs: [],
+      children: segs.map((s, i) => ({
+        _type: "span",
+        _key: `s${i}`,
+        text: s.text,
+        marks: s.mark ? [s.mark] : [],
+      })),
+    },
+  ];
+}
+
 const HOME_SECTIONS: Record<string, string> = {
   hero: "hero",
   intro: "intro",
@@ -218,6 +262,29 @@ async function buildHomePage(client: AnyClient | null) {
       logos: row,
     }));
   }
+
+  // Structured headings → styledHeadline. Most map directly (highlight/accent →
+  // highlight decorator); intro.lead and care.banner render their emphasis as
+  // bold, so feed those as `strong`.
+  doc.intro.lead = headline({
+    before: doc.intro.lead.before,
+    strong: doc.intro.lead.highlight,
+    after: doc.intro.lead.after,
+  });
+  doc.care.heading = headline(doc.care.heading);
+  doc.care.banner = {
+    label: doc.care.banner.label,
+    text: headline({
+      before: doc.care.banner.before,
+      strong: doc.care.banner.highlight,
+    }),
+    graphic: doc.care.banner.graphic,
+    graphicAlt: doc.care.banner.graphicAlt,
+  };
+  doc.scaling.heading = headline(doc.scaling.heading);
+  doc.clinicalLayer.heading = headline(doc.clinicalLayer.heading);
+  doc.cta.heading = headline(doc.cta.heading);
+  doc.triageCta.heading = headline(doc.triageCta.heading);
 
   return doc;
 }
@@ -464,7 +531,7 @@ async function buildAboutPage(client: AnyClient | null) {
       },
     },
     cta: a.cta,
-    finalCta: a.finalCta,
+    finalCta: headline(a.finalCta),
     team: { eyebrow: a.team.eyebrow, title: a.team.title, members },
   };
 }

@@ -30,6 +30,7 @@ import ClinicalDiagram05 from "../ui/ClinicalDiagram05.astro";
 import ClinicalDiagram06 from "../ui/ClinicalDiagram06.astro";
 import ClinicalLogoMarquee from "../ui/ClinicalLogoMarquee.astro";
 import { getHomePage } from "../../lib/sanity/queries";
+import { serializeHeadline } from "../../lib/sanity/portableText";
 const data = (await getHomePage()).clinicalLayer;
 
 const { heading, steps, cards, closing } = data;
@@ -49,11 +50,9 @@ const integrationLogos = (data.integrationLogos ?? []).map(
       <h2
         data-reveal="title"
         class="mx-auto max-w-[980px] text-center font-serif text-h5 font-normal"
-      >
-        {heading.before}<span class="text-brand">{heading.accent}</span>{
-          heading.after
-        }
-      </h2>
+        set:html={serializeHeadline(heading)}
+      />
+
 
       <!-- Cards (left) + crossfading diagram (right). On lg+ the row is pinned
            centred in the viewport (.clinical-pin) so the whole illustration is
@@ -280,11 +279,9 @@ const integrationLogos = (data.integrationLogos ?? []).map(
       <h2
         data-reveal="title"
         class="mx-auto max-w-[320px] text-center font-serif text-h5 font-normal"
-      >
-        {heading.before}<span class="text-brand">{heading.accent}</span>{
-          heading.after
-        }
-      </h2>
+        set:html={serializeHeadline(heading)}
+      />
+
 
       <div class="mt-16 flex flex-col gap-2">
         {

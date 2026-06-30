@@ -21,6 +21,7 @@
  */
 import ArrowCircle from "../ui/ArrowCircle.astro";
 import { getHomePage } from "../../lib/sanity/queries";
+import { serializeHeadline } from "../../lib/sanity/portableText";
 const data = (await getHomePage()).cta;
 
 /**
@@ -36,11 +37,17 @@ interface Heading {
   after?: string;
 }
 interface Props {
-  heading?: Heading;
+  heading?: Heading | any[];
 }
 
 const { heading = data.heading } = Astro.props;
 const { cta } = data;
+
+// `heading` is either a styledHeadline (Portable Text array, from Sanity) or a
+// structured object passed inline by a page. Render both to the same markup.
+const headingHtml = Array.isArray(heading)
+  ? serializeHeadline(heading)
+  : `${heading.line1} <br class="hidden lg:inline" />${heading.line2Before ?? ""}<span class="text-brand">${heading.accent ?? ""}</span>${heading.after ?? ""}`;
 ---
 
 <!-- No own background: the page-content surface shows through, letting the
@@ -61,11 +68,9 @@ const { cta } = data;
     <h2
       data-reveal="title"
       class="text-balance font-serif text-[clamp(2.625rem,5vw,3.5rem)] font-normal"
-    >
-      {heading.line1}{" "}<br class="hidden lg:inline" />{
-        heading.line2Before
-      }<span class="text-brand">{heading.accent}</span>{heading.after}
-    </h2>
+      set:html={headingHtml}
+    />
+
 
     <div
       data-reveal

@@ -18,6 +18,7 @@
  */
 import ArrowCircle from "../ui/ArrowCircle.astro";
 import { getHomePage } from "../../lib/sanity/queries";
+import { serializeHeadline } from "../../lib/sanity/portableText";
 const { heading, cta } = (await getHomePage()).triageCta;
 ---
 
@@ -46,9 +47,9 @@ const { heading, cta } = (await getHomePage()).triageCta;
     <h2
       data-reveal="title"
       class="max-w-[310px] text-balance font-serif text-xlg font-normal md:max-w-none"
-    >
-      {heading.line1}<br />{heading.line2}
-    </h2>
+      set:html={serializeHeadline(heading)}
+    />
+
 
     <div data-reveal class="flex items-center" style="transition-delay:140ms">
       <span

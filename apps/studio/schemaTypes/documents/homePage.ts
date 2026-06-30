@@ -43,7 +43,7 @@ export const homePage = defineType({
 
     // ---- Intro ----
     obj("intro", [
-      obj("lead", [str("before"), str("highlight"), str("after")]),
+      defineField({ name: "lead", type: "styledHeadline" }),
       arr("logos", [img("src", "Logo"), str("alt")], {
         preview: { select: { media: "src", title: "alt" } },
       }),
@@ -52,15 +52,14 @@ export const homePage = defineType({
 
     // ---- Care ----
     obj("care", [
-      obj("heading", [str("line1"), str("line2"), str("highlight"), str("after")]),
+      defineField({ name: "heading", type: "styledHeadline" }),
       str("subheading"),
       arr("cards", [str("label"), str("description", "text"), file("image")], {
         preview: { select: { title: "label" } },
       }),
       obj("banner", [
         str("label"),
-        str("before"),
-        str("highlight"),
+        defineField({ name: "text", type: "styledHeadline" }),
         img("graphic"),
         str("graphicAlt"),
       ]),
@@ -187,7 +186,7 @@ export const homePage = defineType({
 
     // ---- Clinical layer ----
     obj("clinicalLayer", [
-      obj("heading", [str("before"), str("accent"), str("after")]),
+      defineField({ name: "heading", type: "styledHeadline" }),
       arr("steps", [str("num"), str("label")], {
         preview: { select: { title: "label", subtitle: "num" } },
       }),
@@ -212,7 +211,7 @@ export const homePage = defineType({
     // ---- Scaling ----
     obj("scaling", [
       str("eyebrow"),
-      obj("heading", [str("line1"), str("line2"), str("accent"), str("after")]),
+      defineField({ name: "heading", type: "styledHeadline" }),
       str("body", "text"),
       arr("stats", [img("icon"), str("value"), str("plus", "boolean"), str("label")], {
         preview: { select: { title: "value", subtitle: "label", media: "icon" } },
@@ -224,13 +223,13 @@ export const homePage = defineType({
 
     // ---- CTA ----
     obj("cta", [
-      obj("heading", [str("line1"), str("line2Before"), str("accent"), str("after")]),
+      defineField({ name: "heading", type: "styledHeadline" }),
       defineField({ name: "cta", type: "cta" }),
     ]),
 
     // ---- Triage CTA ----
     obj("triageCta", [
-      obj("heading", [str("line1"), str("line2")]),
+      defineField({ name: "heading", type: "styledHeadline" }),
       defineField({ name: "cta", type: "cta" }),
     ]),
   ],

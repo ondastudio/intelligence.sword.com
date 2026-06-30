@@ -7,6 +7,7 @@
  * Content comes from src/data/care.json.
  */
 import { getHomePage } from "../../lib/sanity/queries";
+import { serializeHeadline } from "../../lib/sanity/portableText";
 const care = (await getHomePage()).care;
 import LabelPill from "../ui/LabelPill.astro";
 import FeatureCard from "../ui/FeatureCard.astro";
@@ -60,9 +61,7 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
           data-swirl-end
           class="max-w-[290px] text-center font-serif font-normal text-h5 md:max-w-[923px]"
         >
-          {care.heading.line1}<br />{care.heading.line2}<span class="text-brand"
-            >{care.heading.highlight}</span
-          >{care.heading.after}
+          <Fragment set:html={serializeHeadline(care.heading)} />
         </h2>
         <p
           data-reveal
@@ -140,11 +139,8 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
                   class="flex h-full flex-col items-center gap-6 overflow-hidden rounded-[24px] bg-[image:var(--gradient-care-banner)] p-8"
                 >
                   <LabelPill>{care.banner.label}</LabelPill>
-                  <p class="text-center text-lg">
-                    {care.banner.before}<span class="font-semibold"
-                      >{care.banner.highlight}</span
-                    >
-                  </p>
+                  <p class="text-center text-lg" set:html={serializeHeadline(care.banner.text)} />
+
                   <img
                     src={care.banner.graphic}
                     alt={care.banner.graphicAlt}
@@ -168,11 +164,8 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
             class="relative z-10 flex h-full flex-col items-start justify-between gap-10"
           >
             <LabelPill>{care.banner.label}</LabelPill>
-            <p class="max-w-[778px] text-lg">
-              {care.banner.before}<span class="font-semibold"
-                >{care.banner.highlight}</span
-              >
-            </p>
+            <p class="max-w-[778px] text-lg" set:html={serializeHeadline(care.banner.text)} />
+
           </div>
 
           <img
