@@ -208,6 +208,17 @@ async function buildHomePage(client: AnyClient | null) {
     );
     doc[key] = await refs(client, json);
   }
+
+  // Sanity can't model an array-of-arrays: wrap each integrationLogos row in
+  // an object { logos: [...] }. ClinicalLayer.astro unwraps via r.logos.
+  const il = doc.clinicalLayer?.integrationLogos;
+  if (Array.isArray(il)) {
+    doc.clinicalLayer.integrationLogos = il.map((row: any, i: number) => ({
+      _key: `row${i}`,
+      logos: row,
+    }));
+  }
+
   return doc;
 }
 

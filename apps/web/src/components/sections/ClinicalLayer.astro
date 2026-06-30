@@ -32,7 +32,12 @@ import ClinicalLogoMarquee from "../ui/ClinicalLogoMarquee.astro";
 import { getHomePage } from "../../lib/sanity/queries";
 const data = (await getHomePage()).clinicalLayer;
 
-const { heading, steps, cards, integrationLogos, closing } = data;
+const { heading, steps, cards, closing } = data;
+// integrationLogos is stored as rows of { logos: [...] } (Sanity can't nest
+// arrays); unwrap back to the array-of-rows the marquee/diagram expect.
+const integrationLogos = (data.integrationLogos ?? []).map(
+  (r: { logos: unknown[] }) => r.logos,
+);
 ---
 
 <section data-clinical-layer class="clinical-layer relative text-black">
