@@ -47,6 +47,17 @@ const curvePath = "M0.5 0.5H543.472C676.834 0.5 624 84.5 778 84.5";
 const dottedYLine =
   "background-image:radial-gradient(circle,#000 0.75px,transparent 0.75px);background-size:1.5px 8px;background-repeat:repeat-y;background-position:center";
 
+// Three dotted connectors fanning Patients → orb (desktop). Each vertical line
+// is line-down.svg rotated 90° (solid at top, fading into the orb), with a
+// black flow dot running down it. Centres sit 36px apart, mirrored around the
+// diagram's x=640 axis; lineLeft = centre − 37, dotLeft = centre − 4. All three
+// dots share the same delay so they travel down in lockstep.
+const patientLines = [
+  { lineLeft: 567, dotLeft: 600 },
+  { lineLeft: 603, dotLeft: 636 },
+  { lineLeft: 639, dotLeft: 672 },
+];
+
 // Per-curve flow timing. All four share the same duration and start, so the
 // dots run edge → centre in lockstep and reach the orb at the same instant.
 const FLOW_DUR = "5s";
@@ -156,19 +167,27 @@ const curves = [
           class="absolute h-2 w-[81px]"
           style="left:874px;top:417px"
         />
-        <img
-          src="/platform/line-down.svg"
-          alt=""
-          aria-hidden="true"
-          class="absolute h-2 w-[74px]"
-          style="left:603px;top:161px;transform:rotate(90deg)"
-        />
+        {
+          patientLines.map((l) => (
+            <img
+              src="/platform/line-down.svg"
+              alt=""
+              aria-hidden="true"
+              class="absolute h-2 w-[74px]"
+              style={`left:${l.lineLeft}px;top:161px;transform:rotate(90deg)`}
+            />
+          ))
+        }
 
-        <!-- Black flow dot running down from Patients into the orb -->
-        <span
-          class="flow-conn flow-conn--y absolute size-2 rounded-full bg-black"
-          style="left:636px;top:124px;--from:0px;--to:57px;animation-duration:2.4s;animation-delay:-0.8s"
-        ></span>
+        <!-- Black flow dots running down each Patients → orb connector -->
+        {
+          patientLines.map((l) => (
+            <span
+              class="flow-conn flow-conn--y absolute size-2 rounded-full bg-black"
+              style={`left:${l.dotLeft}px;top:124px;--from:0px;--to:57px;animation-duration:2.4s;animation-delay:-0.8s`}
+            />
+          ))
+        }
 
         <!-- Top rounded caps under the section labels -->
         <span
