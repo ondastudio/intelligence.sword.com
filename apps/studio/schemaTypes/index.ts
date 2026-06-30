@@ -2,7 +2,11 @@ import { styledHeadline } from "./objects/styledHeadline";
 import { richText } from "./objects/richText";
 import { stat } from "./objects/stat";
 import { figure } from "./objects/figure";
+import { cta } from "./objects/cta";
+import { storyCell } from "./objects/storyCell";
+import { customerRow } from "./objects/customerRow";
 import { customerStory } from "./documents/customerStory";
+import { customersPage } from "./documents/customersPage";
 
 export const schemaTypes = [
   // objects
@@ -10,6 +14,10 @@ export const schemaTypes = [
   richText,
   stat,
   figure,
+  cta,
+  storyCell,
+  customerRow,
   // documents
   customerStory,
+  customersPage,
 ];

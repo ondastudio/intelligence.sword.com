@@ -12,9 +12,10 @@
  * so Tailwind can see and generate them.
  */
 import StoryCard from "../ui/StoryCard.astro";
-import data from "../../data/customers.json";
+import { getCustomersPage } from "../../lib/sanity/queries";
 
-const { title, rows, loadMore } = data;
+const data = await getCustomersPage();
+const { title, rows, loadMore } = data ?? { title: "", rows: [], loadMore: null };
 
 // Per-row grid column templates — keyed by the row's `layout` in the data.
 const rowCols: Record<string, string> = {

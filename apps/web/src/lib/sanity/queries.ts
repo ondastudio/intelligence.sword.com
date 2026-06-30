@@ -37,6 +37,39 @@ const STORY_PROJECTION = /* groq */ `{
   }
 }`;
 
+/**
+ * Customers index page. GROQ resolves image URLs + the story-link slug; we then
+ * fold the slug into each cell's CTA href so ui/StoryCard.astro gets its current
+ * flat shape unchanged.
+ */
+export async function getCustomersPage() {
+  const page = await sanityClient.fetch<any>(`*[_type == "customersPage"][0]{
+    title, loadMore,
+    rows[]{
+      _key, layout,
+      cells[]{
+        type, tone, title, statWidth, quote, author, role, logoClass,
+        "logo": logo.asset->url, "logoAlt": logo.alt,
+        "photo": photo.asset->url, "photoAlt": photo.alt,
+        stat, stats[]{value, label},
+        cta, ctas,
+        "storySlug": storyRef->slug.current
+      }
+    }
+  }`);
+  if (!page) return null;
+  for (const row of page.rows ?? []) {
+    row.cells = (row.cells ?? []).map((cell: any) => {
+      const { storySlug, ...rest } = cell;
+      if (storySlug && rest.cta) {
+        rest.cta = { ...rest.cta, href: `/customers/${storySlug}` };
+      }
+      return rest;
+    });
+  }
+  return page;
+}
+
 export async function getCustomerStorySlugs(): Promise<string[]> {
   return sanityClient.fetch(
     `*[_type == "customerStory" && defined(slug.current)].slug.current`,

@@ -224,6 +224,62 @@ async function buildCustomerStories(client: AnyClient | null) {
   return docs;
 }
 
+// ---------- customersPage builder (singleton) --------------------------------
+
+async function buildCustomersPage(client: AnyClient | null) {
+  const data = JSON.parse(
+    readFileSync(resolve(ROOT, "src/data/customers.json"), "utf8"),
+  ) as any;
+  const validSlugs = new Set(
+    Object.keys(
+      JSON.parse(
+        readFileSync(resolve(ROOT, "src/data/customer-stories.json"), "utf8"),
+      ),
+    ),
+  );
+
+  const buildCell = async (cell: any, key: string) => {
+    const out: any = { _key: key, ...cell };
+    if (cell.logo) out.logo = await figure(client, cell.logo, cell.logoAlt);
+    if (cell.photo) out.photo = await figure(client, cell.photo, cell.photoAlt);
+    delete out.logoAlt; // alt now lives inside the figure
+    delete out.photoAlt;
+    if (cell.stats) out.stats = withKeys(cell.stats, `${key}st`);
+    if (cell.ctas) out.ctas = withKeys(cell.ctas, `${key}c`);
+    // Link a story by reference when a cell points at a /customers/<slug> page.
+    const href = cell.cta?.href ?? cell.ctas?.[0]?.href;
+    const slug = (href ?? "").replace(/^\/customers\//, "");
+    if (validSlugs.has(slug)) {
+      out.storyRef = {
+        _type: "reference",
+        _ref: `customerStory.${slug}`,
+        _weak: true,
+      };
+    }
+    return out;
+  };
+
+  const rows = await Promise.all(
+    (data.rows ?? []).map(async (row: any, ri: number) => ({
+      _key: `r${ri}`,
+      layout: row.layout,
+      cells: await Promise.all(
+        (row.cells ?? []).map((c: any, ci: number) =>
+          buildCell(c, `r${ri}c${ci}`),
+        ),
+      ),
+    })),
+  );
+
+  return {
+    _id: "customersPage",
+    _type: "customersPage",
+    title: data.title,
+    rows,
+    loadMore: data.loadMore,
+  };
+}
+
 // ---------- runner -----------------------------------------------------------
 
 async function main() {
@@ -247,11 +303,14 @@ async function main() {
     }) as unknown as AnyClient;
   }
 
-  const docs = await buildCustomerStories(client);
+  const docs = [
+    ...(await buildCustomerStories(client)),
+    await buildCustomersPage(client),
+  ];
 
   if (DRY) {
     console.log(JSON.stringify(docs, null, 2));
-    console.error(`\n[dry-run] built ${docs.length} customerStory docs (no upload).`);
+    console.error(`\n[dry-run] built ${docs.length} docs (no upload).`);
     return;
   }
 
@@ -260,7 +319,7 @@ async function main() {
   for (const doc of docs) tx.createOrReplace(doc);
   await tx.commit();
   for (const doc of docs) console.error(`upserted ${doc._id}`);
-  console.error(`\nMigrated ${docs.length} customerStory docs.`);
+  console.error(`\nMigrated ${docs.length} docs.`);
 }
 
 main().catch((e) => {
