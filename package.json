@@ -17,5 +17,8 @@
     "studio:deploy": "npm run deploy -w apps/studio",
     "migrate": "npm run migrate -w apps/web",
     "migrate:dry": "npm run migrate:dry -w apps/web"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1"
   }
 }

@@ -159,9 +159,13 @@ async function refs(client: AnyClient | null, node: any): Promise<any> {
       };
     }
     if (node.startsWith("/") && VID_EXT.test(node)) {
+      // Standardize on a single optimized H.264 mp4 (no basename-sibling fallback
+      // works for Sanity's content-hashed URLs). .webm sources have a transcoded
+      // .mp4 sibling in /public — upload that.
+      const mp4 = node.replace(/\.webm$/i, ".mp4");
       return {
         _type: "file",
-        asset: { _type: "reference", _ref: await uploadAsset(client, node, "file") },
+        asset: { _type: "reference", _ref: await uploadAsset(client, mp4, "file") },
       };
     }
     return node;
