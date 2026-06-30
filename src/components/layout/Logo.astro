@@ -1,7 +1,8 @@
 ---
 /**
  * Logo — the "Sword Intelligence" wordmark from the design.
- * Rendered from the SVG asset in public/logotype.svg (168×21, native size).
+ * Rendered from the SVG asset in public/logotype.svg (native 4785×664,
+ * ~7.21:1). Drawn at 21px tall; width follows the aspect ratio.
  * The accessible label text comes from src/data/site.json.
  */
 import site from "../../data/site.json";
@@ -26,7 +27,7 @@ const toneClass = tone === "light" ? "[filter:brightness(0)_invert(1)]" : "";
 >
   <img
     src="/logotype.svg"
-    width="168"
+    width="151"
     height="21"
     alt={`${bold} ${regular}`}
     class={`block h-[21px] w-auto ${toneClass}`}
