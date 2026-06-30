@@ -10,6 +10,7 @@
  * Content comes from src/data/triage.json.
  */
 import { getHomePage } from "../../lib/sanity/queries";
+import { serializeHeadline } from "../../lib/sanity/portableText";
 const triage = (await getHomePage()).triage;
 import Eyebrow from "../ui/Eyebrow.astro";
 import SolutionCard from "../ui/SolutionCard.astro";
@@ -46,10 +47,9 @@ const cardBg: Record<number, string> = {
     <h2
       data-reveal="title"
       class="max-w-[952px] text-center font-serif font-normal text-h5 text-ink"
-    >
-      {heading.before}<span class="text-brand">{heading.highlight}</span><br
-      />{heading.afterBreak}{heading.after}
-    </h2>
+      set:html={serializeHeadline(heading)}
+    />
+
   </div>
 
   <!-- Pinned card column: on lg the track runs taller than the viewport so the
@@ -157,7 +157,7 @@ const cardBg: Record<number, string> = {
               <SolutionCard
                 theme="lime"
                 title={card.title}
-                headline={`${card.headline.highlight}${card.headline.rest}`}
+                headline={card.headline}
                 points={card.points}
                 glow="/triage/card-bg.svg"
                 logo={useCase.logo}
@@ -185,7 +185,7 @@ const cardBg: Record<number, string> = {
                 <SolutionCard
                   theme="purple"
                   title={c.title}
-                  headline={`${c.headline.highlight}${c.headline.rest}`}
+                  headline={c.headline}
                   points={c.points}
                   glow={cardBg[i] ?? "/triage/card-glow-purple.svg"}
                   glowFill={cardBg[i] != null}

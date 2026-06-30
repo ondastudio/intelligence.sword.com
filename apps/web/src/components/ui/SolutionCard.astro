@@ -7,15 +7,23 @@
  * a partner logo (image or text), a stat + highlight bar, and a Learn More CTA.
  * Content-free: everything comes through props (fed from data/*.json).
  */
+import { serializeHeadline } from "../../lib/sanity/portableText";
+
+// A point is either a styledHeadline ({ content }) or the legacy fragment shape.
 interface Point {
+  content?: any[];
   before?: string;
   strong?: string;
   rest?: string;
 }
+const pointHtml = (p: Point) =>
+  p.content
+    ? serializeHeadline(p.content)
+    : `${p.before ?? ""}${p.strong ? `<span class="font-semibold">${p.strong}</span>` : ""}${p.rest ?? ""}`;
 interface Props {
   theme?: "lime" | "purple";
   title: string;
-  headline: string;
+  headline: string | any[];
   points: Point[];
   glow: string;
   /** When true, `glow` is a full-card baked background (fills the card) rather
@@ -167,7 +175,13 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
         <p
           class="whitespace-pre-line font-serif font-normal text-h6 text-balance"
         >
-          {headline}
+          {
+            Array.isArray(headline) ? (
+              <Fragment set:html={serializeHeadline(headline)} />
+            ) : (
+              headline
+            )
+          }
         </p>
 
         <!-- Proof points -->
@@ -180,9 +194,7 @@ const glowFit = glowFill ? "inset-0 h-full w-full" : t.glowFit;
                   i < points.length - 1 && "border-b border-black/24",
                 ]}
               >
-                <Fragment
-                  set:html={`${point.before ?? ""}${point.strong ? `<span class="font-semibold">${point.strong}</span>` : ""}${point.rest ?? ""}`}
-                />
+                <Fragment set:html={pointHtml(point)} />
               </li>
             ))
           }

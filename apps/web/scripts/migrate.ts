@@ -286,6 +286,21 @@ async function buildHomePage(client: AnyClient | null) {
   doc.cta.heading = headline(doc.cta.heading);
   doc.triageCta.heading = headline(doc.triageCta.heading);
 
+  // Triage: heading (purple highlight); card headlines render plain today so
+  // convert flat (editors can add emphasis); points keep their bold runs, each
+  // wrapped as { content } since Sanity can't nest a styledHeadline array.
+  doc.triage.heading = headline(doc.triage.heading);
+  const flat = (hl: any) =>
+    headline({ rest: `${hl.highlight ?? ""}${hl.rest ?? ""}` });
+  const points = (pts: any[]) =>
+    pts.map((p: any, i: number) => ({ _key: `pt${i}`, content: headline(p) }));
+  for (const c of doc.triage.orchestration.cards) {
+    c.headline = flat(c.headline);
+    c.points = points(c.points);
+  }
+  doc.triage.card.headline = flat(doc.triage.card.headline);
+  doc.triage.card.points = points(doc.triage.card.points);
+
   return doc;
 }
 

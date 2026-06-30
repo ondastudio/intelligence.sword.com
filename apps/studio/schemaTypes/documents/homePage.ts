@@ -68,7 +68,7 @@ export const homePage = defineType({
     // ---- Triage ----
     obj("triage", [
       str("eyebrow"),
-      obj("heading", [str("before"), str("highlight"), str("afterBreak"), str("after")]),
+      defineField({ name: "heading", type: "styledHeadline" }),
       obj("tabs", [str("label"), str("active")]),
       obj("orchestration", [
         str("navLabel"),
@@ -77,8 +77,8 @@ export const homePage = defineType({
           "cards",
           [
             str("title"),
-            obj("headline", [str("highlight"), str("rest")]),
-            arr("points", [str("before"), str("strong"), str("rest")]),
+            defineField({ name: "headline", type: "styledHeadline" }),
+            arr("points", [defineField({ name: "content", type: "styledHeadline" })]),
             obj("media", [str("variant"), file("src")]),
             obj("case", [
               img("logo"),
@@ -103,9 +103,9 @@ export const homePage = defineType({
         img("icon"),
         str("title"),
         obj("badge", [img("icon"), img("text"), str("alt")]),
-        obj("headline", [str("highlight"), str("rest")]),
+        defineField({ name: "headline", type: "styledHeadline" }),
         obj("media", [str("variant"), file("src")]),
-        arr("points", [str("strong"), str("rest")]),
+        arr("points", [defineField({ name: "content", type: "styledHeadline" })]),
       ]),
       obj("case", [
         img("logo"),
