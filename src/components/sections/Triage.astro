@@ -450,6 +450,13 @@ const cardBg: Record<number, string> = {
     // Smoothstep for an eased slide.
     const ease = (n: number) => n * n * (3 - 2 * n);
 
+    // While the section is pinned and actively scrubbing, flag the document so
+    // the site's secondary nav (MobileHeader) stays put. Scrolling BACK through
+    // the cards moves the page up, which the nav would otherwise read as a
+    // scroll-up and fire on — this lock suppresses that while on the cards.
+    const setNavLocked = (on: boolean) =>
+      document.documentElement.classList.toggle("secondary-nav-locked", on);
+
     const setActiveTab = (i: number) => {
       tabEls.forEach((t, k) => t.classList.toggle("is-active", k === i));
     };
@@ -621,14 +628,22 @@ const cardBg: Record<number, string> = {
 
     const render = () => {
       ticking = false;
-      if (mode === "mobile") return updateMobileState(current);
-      if (mode === "settle") return settle();
+      if (mode === "mobile") {
+        setNavLocked(false);
+        return updateMobileState(current);
+      }
+      if (mode === "settle") {
+        setNavLocked(false);
+        return settle();
+      }
       // pinned: the stage sticks at top:stickTop and holds for `scrub` px. Track
       // top runs stickTop → stickTop − scrub across that span; map it to px.
-      const offset = clamp(
-        (stickTop - track.getBoundingClientRect().top) / scrub,
-      );
-      apply(offset * scrub);
+      const raw = (stickTop - track.getBoundingClientRect().top) / scrub;
+      // Lock the secondary nav only while the scrub is actually holding the
+      // scroll (raw strictly inside 0…1); released the instant it hands scroll
+      // back to the page above or below the section.
+      setNavLocked(raw > 0 && raw < 1);
+      apply(clamp(raw) * scrub);
     };
 
     const onScroll = () => {

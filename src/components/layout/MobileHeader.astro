@@ -457,6 +457,20 @@ const tabItems = site.mobileMenu.items;
       // is read from the hero's viewport position (getBoundingClientRect), which
       // is robust to whichever element actually scrolls.
       if (isMdUp()) {
+        // A pinned, actively-scrubbing section (e.g. Triage) can flag the
+        // document to lock this pill: its in-place scroll moves the page up,
+        // which would otherwise read as a scroll-up and fire the nav. Stay
+        // hidden while locked (unless the menu is open), but keep the direction
+        // refs current so detection resumes cleanly once the lock releases.
+        const locked = document.documentElement.classList.contains(
+          "secondary-nav-locked",
+        );
+        if (locked && !isMenuOpen()) {
+          setHidden(true);
+          if (anchor) lastTop = anchor.getBoundingClientRect().top;
+          lastY = window.scrollY;
+          return;
+        }
         if (!anchor) {
           setHidden(!isMenuOpen());
           lastY = window.scrollY;
