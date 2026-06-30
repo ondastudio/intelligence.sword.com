@@ -13,13 +13,7 @@ import FeatureCard from "../ui/FeatureCard.astro";
 // Per-card illustration styling (keyed by card index). Unlisted cards fall back
 // to FeatureCard's defaults (an in-flow centered box). Notes per special card:
 //
-// • Card 5 (idx 4 — Document processing): a wide composition that bleeds to both
-//   card edges. The image's `-mx-10` + extra width cancel the card's px-10
-//   padding so the artwork reaches the edges at its natural ratio; the wrapper's
-//   clip-path trims only the vertical overflow (±2.5rem horizontal insets leave
-//   the bleed intact) so a tall image is center-cropped, not overlapping text.
-//
-// • Cards 1/3/4/6 (idx 0/2/3/5): video animations. The clip fills the card body
+// • Cards 1/2/3/4/5 (idx 0/1/2/3/4): video animations. The clip fills the card body
 //   edge-to-edge within the px-10 padding (40px lateral margins) at every
 //   breakpoint, object-cover trimming the source's vertical whitespace so the
 //   motion reads large.
@@ -29,10 +23,7 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
   1: { img: videoFill },
   2: { img: videoFill },
   3: { img: videoFill },
-  4: {
-    img: "h-auto w-[calc(100%+5rem)] max-w-none -mx-10 object-contain",
-    wrap: "flex min-h-0 w-full flex-1 items-center justify-center [clip-path:inset(0_-2.5rem)]",
-  },
+  4: { img: videoFill },
   // Autonomous browsing: the browser-window artwork occupies a fixed region of
   // its frame (~x118–414, y123–453 of 416×600) on a white background that
   // matches the card, sitting right-biased (only ~2px source margin) with tall

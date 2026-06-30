@@ -30,7 +30,7 @@
     {
       "label": "Document processing",
       "description": "Extract and parse docs through computer vision and OCR.",
-      "image": "/care/document-processing.png"
+      "image": "/care/document-processing.webm"
     },
     {
       "label": "Autonomous browsing",
