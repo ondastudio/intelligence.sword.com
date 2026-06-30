@@ -88,6 +88,13 @@ function htmlToBlock(html: string, key: string): Block {
 const htmlToRichText = (paragraphs: string[]): Block[] =>
   paragraphs.map((p, idx) => htmlToBlock(p, `b${idx}`));
 
+/** Sanity requires a unique _key on every array-of-objects item. */
+const withKeys = <T extends object>(
+  arr: T[] | undefined,
+  prefix: string,
+): (T & { _key: string })[] =>
+  (arr ?? []).map((item, i) => ({ _key: `${prefix}${i}`, ...item }));
+
 // ---------- asset upload (pass 1) --------------------------------------------
 
 type AnyClient = {
@@ -158,7 +165,7 @@ async function buildCustomerStories(client: AnyClient | null) {
         logo: await figure(client, s.hero?.logo, s.hero?.logoAlt),
         logoMono: s.hero?.logoMono ?? false,
         image: await figure(client, s.hero?.image, s.hero?.imageAlt),
-        stats: s.hero?.stats,
+        stats: withKeys(s.hero?.stats, "st"),
       },
       id: s.id,
       overview: {
@@ -169,8 +176,9 @@ async function buildCustomerStories(client: AnyClient | null) {
         ? {
             eyebrow: s.testimonial.eyebrow,
             panels: await Promise.all(
-              (s.testimonial.panels ?? []).map(async (p: any) => ({
+              (s.testimonial.panels ?? []).map(async (p: any, idx: number) => ({
                 _type: "panel",
+                _key: `p${idx}`,
                 label: p.label,
                 quote: p.quote,
                 avatar: await figure(client, p.avatar, p.avatarAlt),
