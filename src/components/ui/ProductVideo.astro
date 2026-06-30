@@ -16,8 +16,9 @@
  * `spotlight` swaps the desktop (xl+) treatment from the full-bleed fullscreen
  * takeover to a Ramp-style "stage": the section becomes a tall scroll track with
  * a gray backdrop, and the frame is pinned (sticky-centred) and scrubbed as a
- * rounded, contained 16:9 card — growing toward full width with side gutters,
- * dwelling at peak, then shrinking. Mobile/tablet (<1280px) keep the existing
+ * rounded, contained 16:9 card — growing toward full size as it rises in,
+ * reaching full size exactly when centred, then holding that size for the rest
+ * of the stage while the dim backdrop fades away. Mobile/tablet (<1280px) keep the existing
  * contained-grow regardless, so the variant only changes desktop.
  */
 import MediaFrame from "./MediaFrame.astro";
@@ -100,13 +101,15 @@ const { src, poster, alt, spotlight = false, class: className = "" } = Astro.pro
     }
 
     /* Spotlight desktop stage (Ramp-style): a tall scroll track with the frame
-       pinned and scrubbed as a contained rounded card. The 200vh track gives
-       ~100vh of pinned scrubbing; the dim is a huge box-shadow cast by the card
-       itself (driven per-frame in JS) — one continuous translucent layer that
-       fills the viewport around the card with no seams. */
+       pinned and scrubbed as a contained rounded card. The 130vh track gives
+       ~30vh of pinned scrubbing — just enough for the dim to fade out past
+       centre without a long "stuck scroll" dead-zone; the dim is a huge
+       box-shadow cast by the card itself (driven per-frame in JS) — one
+       continuous translucent layer that fills the viewport around the card with
+       no seams. */
     :global(html.js) .video-scroll[data-spotlight] {
       padding: 0;
-      height: 200vh;
+      height: 130vh;
     }
     :global(html.js) .video-scroll[data-spotlight] .video-pin {
       display: grid;
@@ -180,41 +183,63 @@ const { src, poster, alt, spotlight = false, class: className = "" } = Astro.pro
       return x * x * x * (x * (x * 6 - 15) + 10);
     };
 
-    // Spotlight: a normalized 0→1→0 "bell" (from scroll progress) drives both the
-    // card scale and the dim. We don't snap to it — `current` glides toward
-    // `target` each frame (lerp), so wheel/trackpad steps read as one fluid sweep.
+    // Spotlight: scale and dim are driven by two separate curves that share the
+    // same rise but diverge past centre — the card holds full size while the dim
+    // fades. We don't snap to them — `current*` glides toward `target*` each
+    // frame (lerp), so wheel/trackpad steps read as one fluid sweep.
     const MIN_SCALE = 0.72;
     const MAX_DIM = 0.8; // peak scrim opacity (kept < 1 so the dim stays translucent)
-    let target = 0;
-    let current = 0;
+    let targetScale = 0;
+    let currentScale = 0;
+    let targetDim = 0;
+    let currentDim = 0;
     let gliding = false;
     let primed = false;
 
-    const bell = () => {
+    // Centre = the moment the section top meets the viewport top (`srect.top ===
+    // 0`), which is when the sticky pin first holds the card dead-centre. Both
+    // curves grow 0 → 1 over the final viewport-height of the rise so the effect
+    // peaks exactly as the card centres.
+    //
+    // Scale: grows in, then HOLDS full size for the rest of the stage.
+    const scaleCurve = () => {
       const srect = stage.getBoundingClientRect();
-      const total = srect.height - window.innerHeight;
-      const p = total > 0 ? Math.min(1, Math.max(0, -srect.top / total)) : 0;
-      // Smooth rise (0–0.4), soft dwell at full (0.4–0.6), smooth fall (0.6–1).
-      if (p < 0.4) return smootherstep(p / 0.4);
-      if (p > 0.6) return smootherstep((1 - p) / 0.4);
+      const vh = window.innerHeight;
+      if (srect.top > 0) return smootherstep(1 - Math.min(1, srect.top / vh));
       return 1;
     };
+    // Dim: grows in with the card, HOLDS at full briefly past centre (so it
+    // doesn't start fading on the very first scroll), then FADES back out over
+    // the latter part of the pinned track.
+    const DIM_HOLD = 0.5; // fraction of the pinned scroll the dim stays full
+    const dimCurve = () => {
+      const srect = stage.getBoundingClientRect();
+      const vh = window.innerHeight;
+      if (srect.top > 0) return smootherstep(1 - Math.min(1, srect.top / vh));
+      const total = srect.height - vh;
+      const p = total > 0 ? Math.min(1, -srect.top / total) : 0;
+      if (p < DIM_HOLD) return 1;
+      return smootherstep((1 - p) / (1 - DIM_HOLD));
+    };
 
-    const applySpotlight = (v: number) => {
-      frame.style.transform = `scale(${MIN_SCALE + (1 - MIN_SCALE) * v})`;
+    const applySpotlight = (scaleV: number, dimV: number) => {
+      frame.style.transform = `scale(${MIN_SCALE + (1 - MIN_SCALE) * scaleV})`;
       frame.style.borderRadius = "";
       // Dim = a viewport-filling translucent wash cast around the card as one
       // continuous box-shadow (no seams; an edge never enters the viewport).
       // color-mix keeps it on the --color-video-stage token; the % is the alpha.
-      const pct = (v * MAX_DIM * 100).toFixed(1);
+      const pct = (dimV * MAX_DIM * 100).toFixed(1);
       frame.style.boxShadow = `0 0 0 200vmax color-mix(in srgb, var(--color-video-stage) ${pct}%, transparent)`;
     };
 
     const glide = () => {
-      current += (target - current) * 0.15;
-      if (Math.abs(target - current) < 0.0008) current = target;
-      applySpotlight(current);
-      if (current !== target) requestAnimationFrame(glide);
+      currentScale += (targetScale - currentScale) * 0.15;
+      currentDim += (targetDim - currentDim) * 0.15;
+      if (Math.abs(targetScale - currentScale) < 0.0008) currentScale = targetScale;
+      if (Math.abs(targetDim - currentDim) < 0.0008) currentDim = targetDim;
+      applySpotlight(currentScale, currentDim);
+      if (currentScale !== targetScale || currentDim !== targetDim)
+        requestAnimationFrame(glide);
       else gliding = false;
     };
 
@@ -223,15 +248,17 @@ const { src, poster, alt, spotlight = false, class: className = "" } = Astro.pro
     const render = () => {
       ticking = false;
 
-      // Spotlight desktop: the sticky-pinned card scales + dims off the track's
-      // scroll progress via a smooth bell. We update the target and let the glide
-      // loop ease toward it (snap on first paint so there's no startup sweep).
+      // Spotlight desktop: the sticky-pinned card scales + dims off its distance
+      // to centre via two curves. We update the targets and let the glide loop
+      // ease toward them (snap on first paint so there's no startup sweep).
       if (spotlight && desktopMQ.matches) {
-        target = bell();
+        targetScale = scaleCurve();
+        targetDim = dimCurve();
         if (!primed) {
           primed = true;
-          current = target;
-          applySpotlight(current);
+          currentScale = targetScale;
+          currentDim = targetDim;
+          applySpotlight(currentScale, currentDim);
         } else if (!gliding) {
           gliding = true;
           requestAnimationFrame(glide);
