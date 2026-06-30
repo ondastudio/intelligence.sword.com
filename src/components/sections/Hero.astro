@@ -21,7 +21,16 @@ import CircleButton from "../ui/CircleButton.astro";
   >
     <!-- Headline block -->
     <div class="max-w-[1160px] pt-[160px] lg:pt-[200px]">
-      <div data-reveal><Eyebrow>{hero.eyebrow}</Eyebrow></div>
+      <div data-reveal>
+        <Eyebrow>
+          {hero.eyebrow.prefix}<a
+            href={hero.eyebrow.href}
+            data-hero-scroll-to={hero.eyebrow.href}
+            class="underline decoration-from-font underline-offset-2 transition-opacity hover:opacity-70"
+            >{hero.eyebrow.link}</a
+          >
+        </Eyebrow>
+      </div>
       <h1 data-reveal="title" class="mt-8 font-serif font-normal text-h1">
         {hero.headline}
       </h1>
@@ -75,13 +84,21 @@ import CircleButton from "../ui/CircleButton.astro";
     requestAnimationFrame(step);
   };
 
+  const prefersReduced = () =>
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const scrollToY = (targetY: number) => {
+    if (prefersReduced()) {
+      window.scrollTo(0, targetY);
+    } else {
+      glideTo(targetY);
+    }
+  };
+
   document
     .querySelectorAll<HTMLElement>("[data-hero-scroll]")
     .forEach((btn) => {
       btn.addEventListener("click", () => {
-        const reduce = window.matchMedia(
-          "(prefers-reduced-motion: reduce)",
-        ).matches;
         const hero = btn.closest("section");
         let next = hero?.nextElementSibling as HTMLElement | null;
         while (next && next.tagName !== "SECTION") {
@@ -90,11 +107,22 @@ import CircleButton from "../ui/CircleButton.astro";
         const targetY = next
           ? next.getBoundingClientRect().top + window.scrollY
           : window.innerHeight;
-        if (reduce) {
-          window.scrollTo(0, targetY);
-        } else {
-          glideTo(targetY);
-        }
+        scrollToY(targetY);
+      });
+    });
+
+  // Eyebrow "#1 AI Care company." link glides down to the Numbers data cards.
+  document
+    .querySelectorAll<HTMLAnchorElement>("[data-hero-scroll-to]")
+    .forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const selector = link.dataset.heroScrollTo;
+        const target = selector
+          ? document.querySelector<HTMLElement>(selector)
+          : null;
+        if (!target) return;
+        event.preventDefault();
+        scrollToY(target.getBoundingClientRect().top + window.scrollY);
       });
     });
 </script>

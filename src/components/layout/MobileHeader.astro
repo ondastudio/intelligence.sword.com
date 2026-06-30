@@ -27,12 +27,19 @@ const mobileItems = site.mobileMenu.items.filter((item) => !item.hidden);
   `fixed` so it stays put while the page scrolls. It also hides (fades + slides
   up) when scrolling down and reappears when scrolling up — see the script.
 */}
+{/*
+  `pointer-events-none` on the <header> itself: the menu panel below is laid out
+  (not display:none) even when closed, so the header's box extends down over the
+  hero. Without this, the transparent header would swallow taps meant for hero
+  content beneath it (e.g. the eyebrow link). The pill and the open panel below
+  re-enable pointer events on themselves.
+*/}
 <header
-  class="pre-init fixed inset-x-0 top-0 z-30 px-5 pt-[14px] lg:mx-auto lg:max-w-[760px] lg:px-0 lg:pt-5"
+  class="pre-init pointer-events-none fixed inset-x-0 top-0 z-30 px-5 pt-[14px] lg:mx-auto lg:max-w-[760px] lg:px-0 lg:pt-5"
   data-mobile-header
 >
   <div
-    class="flex items-center justify-between rounded-full bg-lavender py-1 pl-8 pr-1 backdrop-blur-[20px]"
+    class="pointer-events-auto flex items-center justify-between rounded-full bg-lavender py-1 pl-8 pr-1 backdrop-blur-[20px]"
   >
     <!-- Sword icon-mark (left) -->
     <a
@@ -234,7 +241,10 @@ const mobileItems = site.mobileMenu.items.filter((item) => !item.hidden);
       // Closed-state classes; removing them lets the panel fade + slide in.
       panel?.classList.toggle("opacity-0", !open);
       panel?.classList.toggle("-translate-y-2", !open);
+      // Header is pointer-events-none, so the open panel must opt back IN to
+      // pointer events (a removed `none` would otherwise inherit none).
       panel?.classList.toggle("pointer-events-none", !open);
+      panel?.classList.toggle("pointer-events-auto", open);
       iconOpen?.classList.toggle("hidden", open);
       iconClose?.classList.toggle("hidden", !open);
     };
