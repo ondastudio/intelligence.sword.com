@@ -54,7 +54,7 @@
           "stat": "15%",
           "statPlus": true,
           "statOnly": true,
-          "statLabel": "Guaranteed DN reduction (contractual floor)",
+          "statLabel": "Guaranteed DNA reduction",
           "cta": {
             "label": "Read case study",
             "href": "#"
@@ -62,7 +62,7 @@
           "mobile": {
             "stat": "15%",
             "statPlus": true,
-            "statLabel": "Guaranteed DN reduction (contractual floor)",
+            "statLabel": "Guaranteed DNA reduction",
             "hideLogo": true
           }
         }
@@ -102,7 +102,7 @@
           "logoAlt": "US Medicare-focused VBC Provider",
           "stat": "69%",
           "statOnly": true,
-          "statLabel": "US autonomous appointment confirmation rate",
+          "statLabel": "Autonomous appointment confirmation rate",
           "cta": {
             "label": "Read case study",
             "href": "#"
