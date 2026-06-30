@@ -35,6 +35,7 @@
   --color-ink-mid: #4d4f60; /* grayscale/default — Triage mobile carousel active pagination dot */
   --color-gray-200: #dcdde4; /* hairline borders on light chips; Numbers stat-panel tint */
   --color-gray-400: #85889c; /* mid gray — Numbers bar-chart dots (Figma Gray 400) */
+  --color-video-stage: #adadad; /* neutral gray backdrop behind the desktop "spotlight" product video */
   --color-ink-wash: rgba(
     77,
     79,

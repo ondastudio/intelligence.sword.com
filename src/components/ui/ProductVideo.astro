@@ -12,6 +12,13 @@
  * Generic and content-free: pass the `MediaFrame` source (`src`/`poster`/`alt`).
  * Shared by the home `Intro` and the Solutions page so there's a single copy of
  * the scrubber script (querying every `[data-video-scroll]` once).
+ *
+ * `spotlight` swaps the desktop (xl+) treatment from the full-bleed fullscreen
+ * takeover to a Ramp-style "stage": the section becomes a tall scroll track with
+ * a gray backdrop, and the frame is pinned (sticky-centred) and scrubbed as a
+ * rounded, contained 16:9 card — growing toward full width with side gutters,
+ * dwelling at peak, then shrinking. Mobile/tablet (<1280px) keep the existing
+ * contained-grow regardless, so the variant only changes desktop.
  */
 import MediaFrame from "./MediaFrame.astro";
 
@@ -19,21 +26,27 @@ interface Props {
   src: string;
   poster?: string;
   alt: string;
+  spotlight?: boolean;
   class?: string;
 }
-const { src, poster, alt, class: className = "" } = Astro.props;
+const { src, poster, alt, spotlight = false, class: className = "" } = Astro.props;
 ---
 
 <div
   data-reveal
   data-video-scroll
+  data-spotlight={spotlight ? "" : undefined}
   class:list={["video-scroll relative z-10 w-full", className]}
 >
-  <div
-    data-video-frame
-    class="video-frame mx-auto overflow-hidden bg-white will-change-transform"
-  >
-    <MediaFrame src={src} poster={poster} alt={alt} fill progress />
+  {/* `.video-pin` is display:contents everywhere except the spotlight desktop
+      stage, where it becomes the sticky 100vh positioner that centres the card. */}
+  <div data-video-pin class="video-pin">
+    <div
+      data-video-frame
+      class="video-frame mx-auto overflow-hidden bg-white will-change-transform"
+    >
+      <MediaFrame src={src} poster={poster} alt={alt} fill progress />
+    </div>
   </div>
 </div>
 
@@ -43,6 +56,11 @@ const { src, poster, alt, class: className = "" } = Astro.props;
      sm+ so the video never overflows on phones. */
   .video-scroll {
     padding: 120px 16px 80px;
+  }
+  /* Layout-neutral by default — only the spotlight desktop stage promotes it to
+     the sticky positioner (see the [data-spotlight] block below). */
+  .video-pin {
+    display: contents;
   }
   .video-frame {
     width: 100%;
@@ -71,10 +89,10 @@ const { src, poster, alt, class: className = "" } = Astro.props;
      so tablets (~1024px, often portrait) don't stretch the 16:9 video to full
      height — they keep the contained 16:9 grow below instead. */
   @media (prefers-reduced-motion: no-preference) and (min-width: 1280px) {
-    :global(html.js) .video-scroll {
+    :global(html.js) .video-scroll:not([data-spotlight]) {
       padding: 80px 0;
     }
-    :global(html.js) .video-frame {
+    :global(html.js) .video-scroll:not([data-spotlight]) .video-frame {
       max-width: none;
       width: 100%;
       height: 100svh;
@@ -82,6 +100,39 @@ const { src, poster, alt, class: className = "" } = Astro.props;
       transform-origin: center center;
       transform: scale(0.82);
       /* radius + scale are driven per-frame by the scrubber; no CSS easing. */
+    }
+
+    /* Spotlight desktop stage (Ramp-style): a tall scroll track with the frame
+       pinned and scrubbed as a contained rounded card. The 200vh track gives
+       ~100vh of pinned scrubbing; the dim is a huge box-shadow cast by the card
+       itself (driven per-frame in JS) — one continuous translucent layer that
+       fills the viewport around the card with no seams. */
+    :global(html.js) .video-scroll[data-spotlight] {
+      padding: 0;
+      height: 200vh;
+    }
+    :global(html.js) .video-scroll[data-spotlight] .video-pin {
+      display: grid;
+      place-items: center;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 100%;
+    }
+    :global(html.js) .video-scroll[data-spotlight] .video-frame {
+      /* Contained: capped at 1600px, ~92vw, and height-bounded so a generous
+         band always frames the card top and bottom. Rounded corners hold
+         throughout (the scrubber drives scale only). z-index lifts the card +
+         its dim shadow above the surrounding section content. */
+      position: relative;
+      z-index: 1;
+      width: min(92vw, 1600px, calc((100vh - 112px) * 16 / 9));
+      max-width: none;
+      height: auto;
+      aspect-ratio: 1920 / 1080;
+      border-radius: 24px;
+      transform-origin: center center;
+      transform: scale(0.72);
     }
   }
 
@@ -121,13 +172,80 @@ const { src, poster, alt, class: className = "" } = Astro.props;
       return;
 
     const mobileMQ = window.matchMedia("(max-width: 639px)");
+    const desktopMQ = window.matchMedia("(min-width: 1280px)");
+    const spotlight = stage.hasAttribute("data-spotlight");
     const MAX_RADIUS = 40; // px — matches --radius-card
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+    // Smootherstep: zero velocity AND acceleration at both ends, so it joins the
+    // peak dwell with no kink — the curve stays C2-continuous end to end.
+    const smootherstep = (x: number) => {
+      x = Math.min(1, Math.max(0, x));
+      return x * x * x * (x * (x * 6 - 15) + 10);
+    };
+
+    // Spotlight: a normalized 0→1→0 "bell" (from scroll progress) drives both the
+    // card scale and the dim. We don't snap to it — `current` glides toward
+    // `target` each frame (lerp), so wheel/trackpad steps read as one fluid sweep.
+    const MIN_SCALE = 0.72;
+    const MAX_DIM = 0.8; // peak scrim opacity (kept < 1 so the dim stays translucent)
+    let target = 0;
+    let current = 0;
+    let gliding = false;
+    let primed = false;
+
+    const bell = () => {
+      const srect = stage.getBoundingClientRect();
+      const total = srect.height - window.innerHeight;
+      const p = total > 0 ? Math.min(1, Math.max(0, -srect.top / total)) : 0;
+      // Smooth rise (0–0.4), soft dwell at full (0.4–0.6), smooth fall (0.6–1).
+      if (p < 0.4) return smootherstep(p / 0.4);
+      if (p > 0.6) return smootherstep((1 - p) / 0.4);
+      return 1;
+    };
+
+    const applySpotlight = (v: number) => {
+      frame.style.transform = `scale(${MIN_SCALE + (1 - MIN_SCALE) * v})`;
+      frame.style.borderRadius = "";
+      // Dim = a viewport-filling translucent wash cast around the card as one
+      // continuous box-shadow (no seams; an edge never enters the viewport).
+      // color-mix keeps it on the --color-video-stage token; the % is the alpha.
+      const pct = (v * MAX_DIM * 100).toFixed(1);
+      frame.style.boxShadow = `0 0 0 200vmax color-mix(in srgb, var(--color-video-stage) ${pct}%, transparent)`;
+    };
+
+    const glide = () => {
+      current += (target - current) * 0.15;
+      if (Math.abs(target - current) < 0.0008) current = target;
+      applySpotlight(current);
+      if (current !== target) requestAnimationFrame(glide);
+      else gliding = false;
+    };
 
     let ticking = false;
 
     const render = () => {
       ticking = false;
+
+      // Spotlight desktop: the sticky-pinned card scales + dims off the track's
+      // scroll progress via a smooth bell. We update the target and let the glide
+      // loop ease toward it (snap on first paint so there's no startup sweep).
+      if (spotlight && desktopMQ.matches) {
+        target = bell();
+        if (!primed) {
+          primed = true;
+          current = target;
+          applySpotlight(current);
+        } else if (!gliding) {
+          gliding = true;
+          requestAnimationFrame(glide);
+        }
+        return;
+      }
+
+      // A spotlight stage dropped below desktop falls through here — drop the
+      // box-shadow dim so it doesn't linger on the tablet/mobile treatment.
+      if (spotlight) frame.style.boxShadow = "";
+
       const minScale = mobileMQ.matches ? 0.7 : 0.82;
       const rect = frame.getBoundingClientRect();
       const vh = window.innerHeight;
