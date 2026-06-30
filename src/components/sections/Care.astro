@@ -17,10 +17,10 @@ import FeatureCard from "../ui/FeatureCard.astro";
 // shows each animation at its native proportions, the card's overflow-hidden
 // trimming only the frame's empty top/bottom margin so the motion reads large.
 const lottieFill = "h-full w-full";
-// Document processing (idx 4): its artwork spans the full frame width, so the
-// body box widens to content+both paddings and pulls itself back with matching
-// negative margins, letting the animation bleed through the left/right padding
-// to the card edges (the card's overflow-hidden + rounded corners trim it).
+// Most cards (0–4): the body box widens to content+both paddings and pulls
+// itself back with matching negative margins, letting the animation bleed
+// through the left/right padding to the card edges (the card's overflow-hidden +
+// rounded corners trim it) so every clip reads at the same edge-to-edge scale.
 const bleedX =
   "relative -mx-8 flex min-h-0 w-[calc(100%+4rem)] flex-1 items-center justify-center md:-mx-10 md:w-[calc(100%+5rem)]";
 // Autonomous browsing (idx 5): its artwork is right-biased, so the box widens
@@ -38,10 +38,10 @@ const cardImage: Record<
     align?: [number, number];
   }
 > = {
-  0: { img: lottieFill, fit: "cover" },
-  1: { img: lottieFill, fit: "cover" },
-  2: { img: lottieFill, fit: "cover" },
-  3: { img: lottieFill, fit: "cover" },
+  0: { img: lottieFill, fit: "cover", wrap: bleedX },
+  1: { img: lottieFill, fit: "cover", wrap: bleedX },
+  2: { img: lottieFill, fit: "cover", wrap: bleedX },
+  3: { img: lottieFill, fit: "cover", wrap: bleedX },
   4: { img: lottieFill, fit: "cover", wrap: bleedX },
   5: { img: lottieFill, fit: "cover", wrap: bleedRight, align: [1, 0.5] },
 };
