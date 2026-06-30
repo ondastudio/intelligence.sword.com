@@ -107,7 +107,12 @@ export async function getCustomersPage() {
       if (storySlug && rest.cta) {
         rest.cta = { ...rest.cta, href: `/customers/${storySlug}` };
       }
-      return rest;
+      // GROQ returns null for absent fields; strip them so StoryCard's prop
+      // defaults apply (Astro defaults only kick in for undefined, not null —
+      // e.g. logoClass → its max-h-[48.97px] cap).
+      return Object.fromEntries(
+        Object.entries(rest).filter(([, v]) => v != null),
+      );
     });
   }
   return page;
