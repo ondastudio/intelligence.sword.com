@@ -152,6 +152,28 @@
     ),
     linear-gradient(100deg, #d6c7ff 0%, #ece7ff 45%, #d8dafc 70%, #cdc7fb 100%);
 
+  /* care swirl: a soft purple bloom that sits BEHIND the AI Care Managers cards
+     so the white frosted cards lift off the page. Three off-centre radial blobs
+     (deep purple top-left, mid purple bottom-right, a broad brand wash through
+     the middle) read as a gentle swirl. Layer behind content on bg-surface.
+     Use as: bg-[image:var(--gradient-care-swirl)] */
+  --gradient-care-swirl:
+    radial-gradient(
+      55% 50% at 24% 28%,
+      rgba(140, 74, 255, 0.3) 0%,
+      rgba(140, 74, 255, 0) 66%
+    ),
+    radial-gradient(
+      58% 52% at 78% 70%,
+      rgba(166, 132, 255, 0.32) 0%,
+      rgba(166, 132, 255, 0) 64%
+    ),
+    radial-gradient(
+      90% 80% at 50% 52%,
+      rgba(119, 0, 238, 0.14) 0%,
+      rgba(119, 0, 238, 0) 74%
+    );
+
   /* solution outcome card: white pane that blooms purple from the bottom edge.
      Faithful to the Figma export (Card-01.svg): a #a684ff radial centred on the
      bottom-middle, ellipse ~163%×100% of the card, solid for the first ~15% of

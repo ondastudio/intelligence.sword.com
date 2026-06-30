@@ -73,7 +73,18 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
       </div>
 
       <!-- Cards + banner share a 16px gap (one container in the design) -->
-      <div class="flex flex-col gap-4">
+      <div class="relative isolate flex flex-col gap-4">
+        <!-- Purple swirl sitting BEHIND the cards (negative z within this
+             isolated stacking context) so the white frosted cards lift off the
+             page. The blobs spill a little past the grid for a soft halo; the
+             section's overflow-hidden trims the horizontal bleed. The cards'
+             backdrop-blur samples this, giving a faint frosted-purple tint. -->
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute -inset-x-[160px] -inset-y-32 -z-10 bg-[image:var(--gradient-care-swirl)] [mask-image:linear-gradient(to_bottom,transparent_0%,#000_14%,#000_86%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,#000_14%,#000_86%,transparent_100%)]"
+        >
+        </div>
+
         <!-- Capability grid: 3 columns × 2 rows on desktop. Each card carries
              its own reveal with a stepped delay so they cascade in. Hidden on
              mobile, where the swipe-through deck below takes over. -->
