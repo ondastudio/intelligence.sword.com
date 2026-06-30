@@ -245,7 +245,10 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
 
     function measure() {
       const vh = window.innerHeight;
-      stageH = Math.min(Math.max(Math.round(vh * 0.6), 360), 520);
+      // Tall cards so the portrait video illustrations read large instead of
+      // being cropped to a thin band: take most of the viewport height, but
+      // leave ≥16px top/bottom so the pinned stage never overflows the screen.
+      stageH = Math.min(Math.max(Math.round(vh * 0.82), 460), vh - 32);
       const perCard = vh * 0.7; // scroll distance to bring in each next card
       pinTravel = perCard * (N - 1);
       centerTop = Math.max(16, Math.round((vh - stageH) / 2));
@@ -372,11 +375,21 @@ const cardImage: Record<number, { img: string; wrap?: string }> = {
     }
 
     sync();
+    // Re-measure only when the viewport WIDTH changes (orientation / real
+    // layout change). On mobile the browser chrome (URL bar) grows and shrinks
+    // the viewport HEIGHT constantly while scrolling; re-measuring on those
+    // height-only changes would recompute the vh-based pin geometry mid-scroll
+    // and shift the scroll→card mapping, making the deck advance to the next
+    // card on its own. We ignore height-only resizes (re-rendering is enough to
+    // keep the pin tracking the real scroll position).
+    let lastWidth = window.innerWidth;
     window.addEventListener("resize", () => {
-      if (active) {
+      if (!active) return;
+      if (window.innerWidth !== lastWidth) {
+        lastWidth = window.innerWidth;
         measure();
-        render();
       }
+      render();
     });
     mq.addEventListener("change", sync);
   }
