@@ -1,12 +1,18 @@
 ---
 /**
  * Triage — the "agentic workforce" use-case section below Care.
- * On arrival: a centered serif headline, the Triage navbar, and a lime-themed
- * Clinical Triage SolutionCard. As the section pins and the user scrolls, the
- * navbar swaps instantly (a trigger — one state is shown at a time, no
- * crossfade) to the Care Orchestration navbar the moment the first purple card
- * takes over; the remaining purple cards then slide in over the lime card, one
- * per scroll segment.
+ * On arrival: a centered serif headline that leads the Triage block.
+ *
+ * Desktop (lg): Triage and Care Orchestration are two separate things. First a
+ * static Triage block — the Triage navbar + the lime Clinical Triage card —
+ * sits on its own. Below it the Care Orchestration block pins and scrubs: its
+ * own (always-on) Care Orchestration navbar over the four purple cards, where
+ * the first card is the static base and the remaining three slide in, one per
+ * scroll segment.
+ *
+ * Mobile (<lg): unchanged — a single combined sequence. The lime Triage card is
+ * the base, the navbar label swaps Triage → Care Orchestration as the first
+ * purple card takes over, and all four purple cards slide in over the lime one.
  * Content comes from src/data/triage.json.
  */
 import triage from "../../data/triage.json";
@@ -49,6 +55,46 @@ const cardBg: Record<number, string> = {
       {heading.before}<span class="text-brand">{heading.highlight}</span><br
       />{heading.afterBreak}{heading.after}
     </h2>
+  </div>
+
+  <!-- Desktop-only static Triage block (lg+): the Triage navbar and the lime
+       Clinical Triage card stand on their own, separate from the Care
+       Orchestration sequence below. Hidden on mobile, where the combined
+       scroll-scrub track (below) still shows Triage as its first card. -->
+  <div
+    class="relative z-10 mx-auto hidden w-full max-w-[1440px] flex-col items-center px-4 pb-24 sm:px-6 lg:flex lg:px-20"
+  >
+    <div class="flex w-full max-w-[1064px] flex-col items-center gap-8">
+      <div class="flex w-full justify-center">
+        <div class="relative max-w-full rounded-[40px] bg-ink-wash">
+          <div class="flex items-center gap-6 py-2 pl-8 pr-2">
+            <span class="shrink-0 text-sm font-semibold uppercase opacity-70"
+              >{tabs.label}</span
+            >
+            <span
+              class="flex shrink-0 items-center justify-center whitespace-pre-line rounded-[40px] border border-gray-200 bg-accent px-8 py-4 text-center text-sm font-semibold uppercase"
+              >{tabs.active}</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="w-full">
+        <SolutionCard
+          theme="lime"
+          title={card.title}
+          headline={`${card.headline.highlight}${card.headline.rest}`}
+          points={card.points}
+          glow="/triage/card-bg.svg"
+          logo={useCase.logo}
+          logoAlt={useCase.logoAlt}
+          stat={useCase.stat}
+          statLabel={useCase.statLabel}
+          cta={useCase.cta}
+        >
+          <TriageMedia slot="media" media={card.media} />
+        </SolutionCard>
+      </div>
+    </div>
   </div>
 
   <!-- Pinned card column: on lg the track runs taller than the viewport so the
@@ -148,10 +194,13 @@ const cardBg: Record<number, string> = {
                Orchestration cards share one relative box so the purple cards can
                slide in horizontally and overlap the lime card as the section pins. -->
           <div class="relative w-full" data-cards>
-          <!-- The lime Clinical Triage card is the initial, static card — no
-               entrance animation. The inner [data-triage-card] wrapper carries
-               the scroll-driven fade as the purple cards take over. -->
-          <div class="w-full" data-triage-reveal>
+          <!-- The lime Clinical Triage card is the initial, static base of the
+               combined mobile sequence — no entrance animation; the inner
+               [data-triage-card] wrapper carries the scroll-driven fade as the
+               purple cards take over. On desktop it is hidden (lg:hidden): the
+               static Triage block above owns the lime card, and this track holds
+               only the Care Orchestration cards. -->
+          <div class="w-full lg:hidden" data-triage-reveal>
             <div data-triage-card>
               <SolutionCard
                 theme="lime"
@@ -387,6 +436,11 @@ const cardBg: Record<number, string> = {
     // carousel index (0 = lime Clinical Triage, 1…N = the purple cards).
     let mode: "pinned" | "mobile" | "settle" = "settle";
     let current = 0;
+    // limeBase = the lime Triage card is the static base of the scrub sequence
+    // (mobile, <lg). On desktop (lg) Triage is split off into its own static
+    // block, so the first Care Orchestration card becomes the base instead and
+    // only the remaining purple cards slide in.
+    let limeBase = true;
 
     const clamp = (n: number) => Math.min(1, Math.max(0, n));
     // Smoothstep for an eased slide.
@@ -440,13 +494,16 @@ const cardBg: Record<number, string> = {
 
     // offset = pinned scroll distance travelled (0 … scrub), in px.
     const apply = (offset: number) => {
-      // Each card i slides in horizontally over its own segment [i, i+1)·cardLen.
-      // While none is past halfway the lime card shows and no pill is active.
+      // Each card i slides in horizontally over its own segment. With a lime
+      // base (mobile) card i occupies slot i. On desktop there is no lime base,
+      // so the first purple card is the base (slot -1 → always fully in) and the
+      // rest shift down one slot, sliding in over the remaining segments.
       let active = -1;
       // Per-card slide-in progress (0→1 across its own segment).
-      const prog = orchCardEls.map((_, i) =>
-        clamp((offset - i * cardLen) / cardLen),
-      );
+      const prog = orchCardEls.map((_, i) => {
+        const slot = limeBase ? i : i - 1;
+        return clamp((offset - slot * cardLen) / cardLen);
+      });
       orchCardEls.forEach((el, i) => {
         const r = prog[i];
         const e = ease(r);
@@ -460,12 +517,15 @@ const cardBg: Record<number, string> = {
         el.style.pointerEvents = "none";
         if (r >= 0.5) active = i;
       });
-      // The lime base card likewise fades out as the first purple card enters.
-      if (triageCard) triageCard.style.opacity = String(1 - ease(prog[0] ?? 0));
-      // The instant a purple card takes over (becomes active) the navbar swaps
-      // from Triage to Care Orchestration; the topmost card is interactive and
-      // its nav pill is highlighted.
-      wrap.classList.toggle("show-b", active >= 0);
+      // The lime base card (mobile only) likewise fades out as the first purple
+      // card enters.
+      if (limeBase && triageCard)
+        triageCard.style.opacity = String(1 - ease(prog[0] ?? 0));
+      // Mobile: the navbar swaps from Triage to Care Orchestration the instant a
+      // purple card takes over. Desktop: this track is Care Orchestration only,
+      // so its navbar stays on Care Orchestration throughout. The topmost active
+      // card is interactive and its nav pill is highlighted.
+      wrap.classList.toggle("show-b", limeBase ? active >= 0 : true);
       if (active >= 0) orchCardEls[active].style.pointerEvents = "auto";
       setActiveTab(active);
       // Card 0 = lime Clinical Triage; card i (purple) active → mobile index i+1.
@@ -473,16 +533,19 @@ const cardBg: Record<number, string> = {
     };
 
     const settle = () => {
-      // Non-pinned state: only the lime Clinical Triage card shows, so the Triage
-      // navbar (state A) stays; orchestration cards hidden, no nav pill active.
-      wrap.classList.remove("show-b");
+      // Non-pinned, lg only (reduced motion): no scrub. Triage lives in its own
+      // static block above; here the Care Orchestration navbar stays on and one
+      // purple card (`current`, default 0) shows statically. Clicking a nav pill
+      // swaps which card is shown so all four stay reachable without motion.
+      wrap.classList.add("show-b");
       if (triageCard) triageCard.style.opacity = "";
-      orchCardEls.forEach((el) => {
-        el.style.transform = "";
-        el.style.opacity = "";
-        el.style.pointerEvents = "none";
+      orchCardEls.forEach((el, i) => {
+        const on = i === current;
+        el.style.transform = "none";
+        el.style.opacity = on ? "1" : "0";
+        el.style.pointerEvents = on ? "auto" : "none";
       });
-      setActiveTab(-1);
+      setActiveTab(current);
     };
 
     // Reserve the tallest card's height so the absolutely-stacked purple cards
@@ -503,8 +566,11 @@ const cardBg: Record<number, string> = {
       cardsBox.style.height = "";
       const vh = window.innerHeight;
       const isLg = lgMQ.matches;
+      // Desktop splits Triage into its own static block, so the scrub here has no
+      // lime base; mobile keeps the lime card as the base of the combined run.
+      limeBase = !isLg;
       // Both mobile and lg scroll-pin the card reveal; reduced motion falls back
-      // to the static lime card (lg) or the native horizontal carousel (mobile).
+      // to a single static card (lg) or the native horizontal carousel (mobile).
       pinned = !reduceMotion;
       mode = pinned ? "pinned" : isLg ? "settle" : "mobile";
       // The carousel strip layout only applies in the mobile reduced-motion case.
@@ -513,7 +579,9 @@ const cardBg: Record<number, string> = {
       if (mode === "pinned") {
         reserveCardHeight();
         cardLen = Math.round(vh * 0.6);
-        scrub = N * cardLen;
+        // One segment per card that slides in: N on mobile (lime base + N
+        // purple), N − 1 on desktop (first purple card is the static base).
+        scrub = (limeBase ? N : N - 1) * cardLen;
         // Land the stage centered when it fits; otherwise anchor near the top so
         // the navbar stays on screen on shorter viewports. On mobile the fixed
         // page nav floats over the top, so keep a larger inset to clear it.
@@ -621,7 +689,9 @@ const cardBg: Record<number, string> = {
     // Clicking a Care Orchestration nav pill jumps to the scroll position where
     // that card is fully revealed (the end of its own horizontal-reveal segment).
     // Only meaningful while pinned — otherwise only the lime card shows.
-    const offsetForCard = (i: number) => (i + 1) * cardLen;
+    // With a lime base (mobile) card i is fully revealed at the end of segment
+    // i+1; on desktop (no lime base) card i lands one segment earlier.
+    const offsetForCard = (i: number) => (limeBase ? i + 1 : i) * cardLen;
 
     const scrollToCard = (i: number) => {
       if (!pinned) return;
@@ -638,7 +708,16 @@ const cardBg: Record<number, string> = {
     };
 
     tabEls.forEach((tab, i) => {
-      tab.addEventListener("click", () => scrollToCard(i));
+      tab.addEventListener("click", () => {
+        // While pinned, scroll to where the card is fully revealed. In the
+        // desktop reduced-motion settle state there is no scrub, so just swap
+        // which card shows.
+        if (pinned) scrollToCard(i);
+        else {
+          current = i;
+          render();
+        }
+      });
     });
 
     // --- Mobile carousel inputs (only act while in "mobile" mode) ------------
