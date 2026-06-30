@@ -328,6 +328,10 @@ const cardBg: Record<number, string> = {
     color: #fff;
     border-color: transparent;
   }
+  /* Hover (non-active pills): soft purple fill (--color-purple-100 / #E1D6FF). */
+  .orch-tab:not(.is-active):hover {
+    background-color: var(--color-purple-100);
+  }
 
   /* Mobile (below lg) ----------------------------------------------------------
      By default mobile uses the same scroll-pinned reveal as lg: the stage pins
