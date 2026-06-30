@@ -2,6 +2,7 @@ import { styledHeadline } from "./objects/styledHeadline";
 import { richText } from "./objects/richText";
 import { stat } from "./objects/stat";
 import { figure } from "./objects/figure";
+import { videoFile } from "./objects/videoFile";
 import { cta } from "./objects/cta";
 import { storyCell } from "./objects/storyCell";
 import { customerRow } from "./objects/customerRow";
@@ -14,6 +15,7 @@ export const schemaTypes = [
   richText,
   stat,
   figure,
+  videoFile,
   cta,
   storyCell,
   customerRow,

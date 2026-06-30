@@ -113,21 +113,31 @@ const assetCache = new Map<string, string>();
 async function uploadAsset(
   client: AnyClient | null,
   publicPath: string,
+  kind: "image" | "file" = "image",
 ): Promise<string> {
   if (assetCache.has(publicPath)) return assetCache.get(publicPath)!;
   let id: string;
   if (DRY || !client) {
     // Deterministic placeholder so dry-run output is stable + diffable.
-    id = `image-DRYRUN-${basename(publicPath).replace(/[^a-z0-9]/gi, "_")}`;
+    id = `${kind}-DRYRUN-${basename(publicPath).replace(/[^a-z0-9]/gi, "_")}`;
   } else {
     const buf = readFileSync(resolve(ROOT, "public", publicPath.replace(/^\//, "")));
-    const res = await client.assets.upload("image", buf, {
+    const res = await client.assets.upload(kind, buf, {
       filename: basename(publicPath),
     });
     id = res._id;
   }
   assetCache.set(publicPath, id);
   return id;
+}
+
+/** A videoFile reference (uploads the optimized mp4 as a Sanity file asset). */
+async function video(client: AnyClient | null, path: string | undefined) {
+  if (!path) return undefined;
+  return {
+    _type: "file",
+    asset: { _type: "reference", _ref: await uploadAsset(client, path, "file") },
+  };
 }
 
 async function figure(
