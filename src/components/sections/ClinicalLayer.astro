@@ -480,12 +480,12 @@ const { heading, steps, cards, integrationLogos, closing } = data;
     const E_IN: [number, number] = [0.64, 0.72]; // Data foundation resolves in
     const E_OUT: [number, number] = [0.79, 0.87]; // Data foundation fades + scales away
     const F_IN: [number, number] = [0.81, 0.89]; // Closing view resolves in
-    // Crisp crossfade (no blur): an incoming beat resolves UP from SCALE_IN→1 as
-    // it fades in; a leaving beat keeps going 1→SCALE_OUT as it fades out — a
-    // gentle push-through. Both layers stay sharp and readable across the swap,
-    // matching the reference clip (vs the old soft blur dissolve).
-    const SCALE_IN = 0.96; // incoming start scale (resolves up to 1)
-    const SCALE_OUT = 1.04; // leaving end scale (pushes on from 1)
+    // Pure opacity crossfade (no zoom): both beats stay at scale 1 across the
+    // swap, so the illustrations simply dissolve into each other with no scaling
+    // push. (Setting SCALE_IN/OUT to 1 makes scaleOf() rest at 1 and paint()
+    // drop the transform to `none`.)
+    const SCALE_IN = 1; // no incoming zoom
+    const SCALE_OUT = 1; // no outgoing zoom
     const IN_AMT = 1 - SCALE_IN;
     const OUT_AMT = SCALE_OUT - 1;
 
@@ -722,10 +722,10 @@ const { heading, steps, cards, integrationLogos, closing } = data;
     const D_IN: [number, number] = [0.6, 0.68];
     const D_OUT: [number, number] = [0.78, 0.86];
     const E_IN: [number, number] = [0.8, 0.88];
-    // Crisp crossfade (no blur) — see the desktop scrubber: incoming beats resolve
-    // up from SCALE_IN→1, leaving beats push on 1→SCALE_OUT, both staying sharp.
-    const SCALE_IN = 0.96;
-    const SCALE_OUT = 1.04;
+    // Pure opacity crossfade (no zoom) — see the desktop scrubber: both beats
+    // hold at scale 1, so the illustrations dissolve without any scaling push.
+    const SCALE_IN = 1;
+    const SCALE_OUT = 1;
     const IN_AMT = 1 - SCALE_IN;
     const OUT_AMT = SCALE_OUT - 1;
 
@@ -876,9 +876,7 @@ const { heading, steps, cards, integrationLogos, closing } = data;
       position: absolute;
       inset: 0;
       opacity: 0;
-      /* Pre-set the incoming start scale so the first paint matches the scrubber;
-         the crossfade itself (opacity + scale) is driven from JS. */
-      transform: scale(0.96);
+      /* Pure opacity crossfade — no start scale (the scrubber holds scale at 1). */
     }
     /* The closing illustration (ClinicalDiagram06) is wider than the others, so
        at the shared column width it scales shorter — bottom-align it within the
@@ -907,7 +905,6 @@ const { heading, steps, cards, integrationLogos, closing } = data;
          takes the column width and lays its cards out in normal flow.) */
       width: 100%;
       opacity: 0;
-      transform: scale(0.96);
     }
   }
 
@@ -1026,7 +1023,6 @@ const { heading, steps, cards, integrationLogos, closing } = data;
     :global(html.js) [data-cm-state="d"],
     :global(html.js) [data-cm-state="e"] {
       opacity: 0;
-      transform: scale(0.96);
     }
   }
 </style>
