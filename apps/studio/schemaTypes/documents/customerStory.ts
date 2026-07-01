@@ -1,5 +1,6 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
 import { CaseIcon } from "@sanity/icons";
+import { withSection } from "../lib/section";
 
 /**
  * customerStory — one /customers/<slug> detail page. Faithful to the shape
@@ -33,7 +34,7 @@ export const customerStory = defineType({
     defineField({ name: "metaTitle", type: "string", group: "seo" }),
     defineField({ name: "metaDescription", type: "text", rows: 3, group: "seo" }),
 
-    defineField({
+    defineField(withSection({
       name: "hero",
       type: "object",
       group: "content",
@@ -54,9 +55,9 @@ export const customerStory = defineType({
           validation: (r) => r.max(3),
         }),
       ],
-    }),
+    })),
 
-    defineField({
+    defineField(withSection({
       name: "id",
       title: "ID fact sheet",
       type: "object",
@@ -75,9 +76,9 @@ export const customerStory = defineType({
           of: [defineArrayMember({ type: "string" })],
         }),
       ],
-    }),
+    })),
 
-    defineField({
+    defineField(withSection({
       name: "overview",
       type: "object",
       group: "content",
@@ -85,9 +86,9 @@ export const customerStory = defineType({
         defineField({ name: "title", type: "string", initialValue: "Overview" }),
         defineField({ name: "body", type: "richText" }),
       ],
-    }),
+    })),
 
-    defineField({
+    defineField(withSection({
       name: "testimonial",
       type: "object",
       group: "content",
@@ -112,9 +113,9 @@ export const customerStory = defineType({
           ],
         }),
       ],
-    }),
+    })),
 
-    defineField({
+    defineField(withSection({
       name: "related",
       title: "Related stories",
       type: "object",
@@ -164,7 +165,7 @@ export const customerStory = defineType({
           ],
         }),
       ],
-    }),
+    })),
   ],
 
   preview: {

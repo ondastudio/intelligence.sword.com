@@ -1,5 +1,6 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
 import { InfoOutlineIcon } from "@sanity/icons";
+import { withSection } from "../lib/section";
 
 /**
  * aboutPage — the About page (singleton). Named fields per beat (composition
@@ -40,7 +41,7 @@ export const aboutPage = defineType({
     { name: "closing", title: "CTAs" },
   ],
   fields: [
-    defineField({
+    defineField(withSection({
       name: "hero",
       type: "object",
       group: "top",
@@ -49,9 +50,9 @@ export const aboutPage = defineType({
         defineField({ name: "statement", type: "text", rows: 3 }),
         defineField({ name: "video", type: "videoFile", title: "Manifesto film" }),
       ],
-    }),
+    })),
 
-    defineField({
+    defineField(withSection({
       name: "story",
       type: "object",
       group: "top",
@@ -68,9 +69,9 @@ export const aboutPage = defineType({
           ],
         }),
       ],
-    }),
+    })),
 
-    defineField({
+    defineField(withSection({
       name: "storySoFar",
       title: "The story so far",
       type: "object",
@@ -121,9 +122,9 @@ export const aboutPage = defineType({
           ],
         }),
       ],
-    }),
+    })),
 
-    defineField({
+    defineField(withSection({
       name: "operations",
       type: "object",
       group: "operations",
@@ -184,9 +185,9 @@ export const aboutPage = defineType({
           ],
         }),
       ],
-    }),
+    })),
 
-    defineField({
+    defineField(withSection({
       name: "cta",
       type: "object",
       group: "closing",
@@ -194,11 +195,11 @@ export const aboutPage = defineType({
         defineField({ name: "heading", type: "styledHeadline" }),
         defineField({ name: "cta", type: "cta" }),
       ],
-    }),
+    })),
 
     defineField({ name: "finalCta", type: "styledHeadline", group: "closing" }),
 
-    defineField({
+    defineField(withSection({
       name: "team",
       type: "object",
       group: "team",
@@ -224,7 +225,7 @@ export const aboutPage = defineType({
           ],
         }),
       ],
-    }),
+    })),
   ],
 
   preview: { prepare: () => ({ title: "About page" }) },

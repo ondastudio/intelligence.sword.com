@@ -1,6 +1,7 @@
 import { defineType, defineField } from "sanity";
 import { HomeIcon } from "@sanity/icons";
 import { CompactImageInput } from "../../components/CompactImageInput";
+import { withSection } from "../lib/section";
 
 /**
  * homePage — the home page singleton, fully modeled for editing.
@@ -40,9 +41,11 @@ const arr = (name: string, fields: any[], opts: any = {}) =>
   } as any);
 const strArr = (name: string, title?: string) =>
   defineField({ name, type: "array", of: [{ type: "string" }], title } as any);
-// A top-level page section pinned to a group tab.
+// A top-level page section pinned to a group tab. Rendered with the SectionField
+// chrome (bold header + collapse toggle) so the form scans as distinct sections.
+// Expanded by default; a caller can still override via opts.options / opts.components.
 const section = (name: string, group: string, fields: any[], title?: string, opts: any = {}) =>
-  defineField({ name, type: "object", title, group, fields, ...opts } as any);
+  defineField(withSection({ name, type: "object", title, group, fields, ...opts }) as any);
 // Collapse-by-default for the dense nested objects.
 const collapsed = { options: { collapsed: true } };
 // Flatten a styledHeadline / Portable Text value to plain text for previews.
