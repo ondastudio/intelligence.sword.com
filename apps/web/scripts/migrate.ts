@@ -316,6 +316,25 @@ async function buildHomePage(client: AnyClient | null) {
   doc.triage.card.headline = flat(doc.triage.card.headline);
   doc.triage.card.points = points(doc.triage.card.points);
 
+  // triage.case CTA links to a customer story by reference (schema change) —
+  // derive the reference from its /customers/<slug> href, same as story cells.
+  const caseCta = doc.triage.case?.cta;
+  if (caseCta) {
+    const slug = (caseCta.href ?? "").replace(/^\/customers\//, "");
+    doc.triage.case.cta = {
+      label: caseCta.label,
+      ...(slug
+        ? {
+            story: {
+              _type: "reference",
+              _ref: `customerStory.${slug}`,
+              _weak: true,
+            },
+          }
+        : {}),
+    };
+  }
+
   return doc;
 }
 

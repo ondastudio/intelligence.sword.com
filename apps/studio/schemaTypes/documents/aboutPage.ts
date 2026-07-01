@@ -1,4 +1,5 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
+import { InfoOutlineIcon } from "@sanity/icons";
 
 /**
  * aboutPage — the About page (singleton). Named fields per beat (composition
@@ -30,10 +31,19 @@ export const aboutPage = defineType({
   name: "aboutPage",
   title: "About page",
   type: "document",
+  icon: InfoOutlineIcon,
+  groups: [
+    { name: "top", title: "Hero & story", default: true },
+    { name: "storySoFar", title: "Story so far" },
+    { name: "operations", title: "Operations" },
+    { name: "team", title: "Team" },
+    { name: "closing", title: "CTAs" },
+  ],
   fields: [
     defineField({
       name: "hero",
       type: "object",
+      group: "top",
       fields: [
         defineField({ name: "eyebrow", type: "string" }),
         defineField({ name: "statement", type: "text", rows: 3 }),
@@ -44,6 +54,7 @@ export const aboutPage = defineType({
     defineField({
       name: "story",
       type: "object",
+      group: "top",
       fields: [
         defineField({
           name: "paragraphs",
@@ -63,6 +74,7 @@ export const aboutPage = defineType({
       name: "storySoFar",
       title: "The story so far",
       type: "object",
+      group: "storySoFar",
       fields: [
         defineField({ name: "eyebrow", type: "string" }),
         defineField({ name: "title", type: "string" }),
@@ -114,6 +126,7 @@ export const aboutPage = defineType({
     defineField({
       name: "operations",
       type: "object",
+      group: "operations",
       fields: [
         defineField({
           name: "intro",
@@ -159,8 +172,8 @@ export const aboutPage = defineType({
                       name: "badge",
                       fields: [
                         defineField({ name: "image", type: "figure" }),
-                        defineField({ name: "w", type: "number" }),
-                        defineField({ name: "h", type: "number" }),
+                        defineField({ name: "w", type: "number", title: "Width (px)" }),
+                        defineField({ name: "h", type: "number", title: "Height (px)" }),
                       ],
                       preview: { select: { media: "image" } },
                     }),
@@ -176,17 +189,19 @@ export const aboutPage = defineType({
     defineField({
       name: "cta",
       type: "object",
+      group: "closing",
       fields: [
         defineField({ name: "heading", type: "styledHeadline" }),
         defineField({ name: "cta", type: "cta" }),
       ],
     }),
 
-    defineField({ name: "finalCta", type: "styledHeadline" }),
+    defineField({ name: "finalCta", type: "styledHeadline", group: "closing" }),
 
     defineField({
       name: "team",
       type: "object",
+      group: "team",
       fields: [
         defineField({ name: "eyebrow", type: "string" }),
         defineField({ name: "title", type: "string" }),

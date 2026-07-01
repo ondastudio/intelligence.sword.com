@@ -1,4 +1,5 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
+import { CaseIcon } from "@sanity/icons";
 
 /**
  * customerStory — one /customers/<slug> detail page. Faithful to the shape
@@ -10,6 +11,7 @@ export const customerStory = defineType({
   name: "customerStory",
   title: "Customer story",
   type: "document",
+  icon: CaseIcon,
   groups: [
     { name: "content", title: "Content", default: true },
     { name: "seo", title: "SEO" },

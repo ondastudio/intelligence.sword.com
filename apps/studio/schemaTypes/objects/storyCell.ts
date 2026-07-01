@@ -1,4 +1,5 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
+import { BlockElementIcon } from "@sanity/icons";
 
 /**
  * storyCell — one editorial card in the Customers masonry. Heterogeneous by
@@ -11,6 +12,7 @@ export const storyCell = defineType({
   name: "storyCell",
   title: "Card",
   type: "object",
+  icon: BlockElementIcon,
   fields: [
     defineField({
       name: "type",

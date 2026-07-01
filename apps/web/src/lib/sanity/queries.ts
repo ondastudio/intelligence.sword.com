@@ -43,7 +43,19 @@ let homePromise: Promise<any> | null = null;
 
 export function getHomePage() {
   return (homePromise ??= sanityClient
-    .fetch<any>(`*[_type == "homePage"][0]`)
+    // Faithful passthrough (`...`), except triage.case.cta links to a customer
+    // story by reference — resolve it to the flat { label, href } the section
+    // component consumes.
+    .fetch<any>(`*[_type == "homePage"][0]{
+      ...,
+      "triage": triage{
+        ...,
+        "case": case{
+          ...,
+          "cta": cta{ label, "href": "/customers/" + story->slug.current }
+        }
+      }
+    }`)
     .then((doc) => (doc ? resolveAssets(doc) : null)));
 }
 

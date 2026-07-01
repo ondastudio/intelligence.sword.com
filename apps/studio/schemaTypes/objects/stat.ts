@@ -1,10 +1,12 @@
 import { defineType, defineField } from "sanity";
+import { TrendUpwardIcon } from "@sanity/icons";
 
 /** stat — a value + label pair (hero stats, ID sheet, related-card stat). */
 export const stat = defineType({
   name: "stat",
   title: "Stat",
   type: "object",
+  icon: TrendUpwardIcon,
   fields: [
     defineField({
       name: "value",

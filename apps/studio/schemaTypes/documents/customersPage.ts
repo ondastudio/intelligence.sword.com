@@ -1,4 +1,5 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
+import { UsersIcon } from "@sanity/icons";
 
 /**
  * customersPage — the "Our Customers" index (singleton). title + reorderable
@@ -9,6 +10,7 @@ export const customersPage = defineType({
   name: "customersPage",
   title: "Customers page",
   type: "document",
+  icon: UsersIcon,
   fields: [
     defineField({
       name: "title",

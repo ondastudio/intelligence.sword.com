@@ -1,4 +1,5 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
+import { StackCompactIcon } from "@sanity/icons";
 
 /**
  * customerRow — one masonry row. `layout` selects the column template in
@@ -9,6 +10,7 @@ export const customerRow = defineType({
   name: "customerRow",
   title: "Row",
   type: "object",
+  icon: StackCompactIcon,
   fields: [
     defineField({
       name: "layout",
