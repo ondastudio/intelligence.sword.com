@@ -20,9 +20,11 @@ function resolveAssets(node: any): any {
     }
     if (node._type === "file" && node.asset?._ref) {
       const m = /^file-([a-f0-9]+)-(\w+)$/.exec(node.asset._ref);
-      return m
-        ? `https://cdn.sanity.io/files/${projectId}/${dataset}/${m[1]}.${m[2]}`
-        : undefined;
+      if (!m) return undefined;
+      // dotLottie assets are CORS-blocked on Sanity's file CDN, so the pre-build
+      // step mirrors them into /public/lottie — serve that same-origin copy.
+      if (m[2] === "lottie") return `/lottie/${m[1]}.lottie`;
+      return `https://cdn.sanity.io/files/${projectId}/${dataset}/${m[1]}.${m[2]}`;
     }
     const out: any = {};
     for (const k in node) out[k] = resolveAssets(node[k]);

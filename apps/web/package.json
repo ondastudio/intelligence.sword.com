@@ -6,8 +6,9 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "lottie": "node --env-file-if-exists=.env.local scripts/fetch-lottie.mjs",
+    "dev": "npm run lottie && astro dev",
+    "build": "npm run lottie && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "migrate": "node --env-file=.env.local --experimental-strip-types scripts/migrate.ts",

@@ -144,11 +144,11 @@ async function video(client: AnyClient | null, path: string | undefined) {
 
 const IMG_EXT = /\.(png|jpe?g|svg|webp|gif|avif)$/i;
 const VID_EXT = /\.(mp4|webm|mov|m4v|ogg)$/i;
-// NOTE on .lottie: dotLottie animations are left as /public path strings (served
-// same-origin) and NOT uploaded to Sanity. The dotlottie-web player loads them
-// via fetch(), and Sanity's file CDN (cdn.sanity.io/files) sends no CORS header
-// for file assets (only image assets get one) — a Sanity-hosted .lottie is
-// therefore blocked by CORS and the canvas renders blank. See queries note.
+// dotLottie animations upload as file assets so editors can manage them, BUT
+// dotlottie-web loads via fetch() and Sanity's file CDN sends no CORS header for
+// file assets. So the pre-build step (scripts/fetch-lottie.mjs) pulls them into
+// /public/lottie and resolveAssets() rewrites their URL to that same-origin path.
+const LOTTIE_EXT = /\.lottie$/i;
 
 /**
  * Deep-copy a section's JSON, converting any /public asset path string into a
@@ -171,6 +171,12 @@ async function refs(client: AnyClient | null, node: any): Promise<any> {
       return {
         _type: "file",
         asset: { _type: "reference", _ref: await uploadAsset(client, mp4, "file") },
+      };
+    }
+    if (node.startsWith("/") && LOTTIE_EXT.test(node)) {
+      return {
+        _type: "file",
+        asset: { _type: "reference", _ref: await uploadAsset(client, node, "file") },
       };
     }
     return node;

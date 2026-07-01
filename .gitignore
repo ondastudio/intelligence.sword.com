@@ -28,3 +28,6 @@ pnpm-debug.log*
 .env.local
 .env.*.local
 .worktrees
+
+# Build-time mirror of Sanity dotLottie assets (see scripts/fetch-lottie.mjs)
+apps/web/public/lottie/
