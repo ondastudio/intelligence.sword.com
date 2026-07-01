@@ -12,6 +12,7 @@
  */
 import ArrowCircle from "../ui/ArrowCircle.astro";
 import { getAboutPage } from "../../lib/sanity/queries";
+import { serializeHeadline } from "../../lib/sanity/portableText";
 const about = await getAboutPage();
 
 const { heading, cta } = about.cta;
@@ -24,9 +25,9 @@ const { heading, cta } = about.cta;
     <h2
       data-reveal="title"
       class="font-serif text-xlg font-normal"
-    >
-      {heading.line1}<br />{heading.line2}
-    </h2>
+      set:html={serializeHeadline(heading)}
+    />
+
 
     <div data-reveal class="flex items-center" style="transition-delay:140ms">
       <span

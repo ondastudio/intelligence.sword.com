@@ -562,7 +562,7 @@ async function buildAboutPage(client: AnyClient | null) {
         certs: { label: a.operations.born.certs?.label, badges },
       },
     },
-    cta: a.cta,
+    cta: { heading: headline(a.cta.heading), cta: a.cta.cta },
     finalCta: headline(a.finalCta),
     team: { eyebrow: a.team.eyebrow, title: a.team.title, members },
   };

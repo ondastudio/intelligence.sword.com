@@ -177,14 +177,7 @@ export const aboutPage = defineType({
       name: "cta",
       type: "object",
       fields: [
-        defineField({
-          name: "heading",
-          type: "object",
-          fields: [
-            defineField({ name: "line1", type: "string" }),
-            defineField({ name: "line2", type: "string" }),
-          ],
-        }),
+        defineField({ name: "heading", type: "styledHeadline" }),
         defineField({ name: "cta", type: "cta" }),
       ],
     }),
