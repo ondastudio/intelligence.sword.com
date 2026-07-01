@@ -10,6 +10,13 @@ const hero = (await getHomePage()).hero;
 import Navbar from "../layout/Navbar.astro";
 import Eyebrow from "../ui/Eyebrow.astro";
 import CircleButton from "../ui/CircleButton.astro";
+
+// `swirlEnd` — carries `data-swirl-end` when this section is the configured
+// swirl fade-target (homePage.swirlEndSection). See SwirlBackground.astro.
+interface Props {
+  swirlEnd?: boolean;
+}
+const { swirlEnd = false } = Astro.props;
 ---
 
 <section class="relative flex min-h-screen flex-col overflow-hidden text-black">
@@ -33,7 +40,11 @@ import CircleButton from "../ui/CircleButton.astro";
           >
         </Eyebrow>
       </div>
-      <h1 data-reveal="title" class="mt-8 font-serif font-normal text-h1">
+      <h1
+        data-reveal="title"
+        data-swirl-end={swirlEnd ? "" : undefined}
+        class="mt-8 font-serif font-normal text-h1"
+      >
         {hero.headline}
       </h1>
     </div>

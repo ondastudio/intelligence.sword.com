@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { getHomePage } from "../lib/sanity/queries";
 import SwirlBackground from "../components/sections/SwirlBackground.astro";
 import Hero from "../components/sections/Hero.astro";
 import Intro from "../components/sections/Intro.astro";
@@ -14,6 +15,42 @@ import ClinicalLayer from "../components/sections/ClinicalLayer.astro";
 import Scaling from "../components/sections/Scaling.astro";
 import Cta from "../components/sections/Cta.astro";
 import Footer from "../components/sections/Footer.astro";
+
+// Section registry — keys MUST match homePage.order in the Studio
+// (apps/studio/schemaTypes/documents/homePage.ts → SECTION_ORDER). Each section
+// self-fetches its own slice via the memoized getHomePage(); no props threaded
+// except the optional `swirlEnd` marker.
+const REGISTRY = {
+  hero: Hero,
+  intro: Intro,
+  care: Care,
+  triage: Triage,
+  triageCta: TriageCta,
+  platform: Platform,
+  trust: Trust,
+  operations: Operations,
+  numbers: Numbers,
+  clinicalLayer: ClinicalLayer,
+  scaling: Scaling,
+  cta: Cta,
+} as const;
+type SectionKey = keyof typeof REGISTRY;
+const KEYS = Object.keys(REGISTRY) as SectionKey[];
+
+const home = await getHomePage();
+
+// CMS-driven order, defensively normalised: keep only known keys, then append
+// any section the list omits so content can never silently vanish. An empty or
+// missing `order` falls back to the default sequence (KEYS).
+const wanted = ((home?.order ?? []) as { key?: string }[])
+  .map((o) => o.key)
+  .filter((k): k is SectionKey => !!k && (KEYS as string[]).includes(k));
+const base: SectionKey[] = wanted.length ? wanted : KEYS;
+const seen = new Set(base);
+const order: SectionKey[] = base.concat(KEYS.filter((k) => !seen.has(k)));
+
+// Which opening section the hero swirl fades into (default: care).
+const swirlEndSection: string = home?.swirlEndSection ?? "care";
 ---
 
 <Layout
@@ -23,42 +60,21 @@ import Footer from "../components/sections/Footer.astro";
   {
     /* Everything above the footer scrolls as one opaque pane; the footer is
       pinned behind it (see .page-content / .footer in global.css) so the page
-      slides up to reveal the footer underneath at the end of the scroll. */
+      slides up to reveal the footer underneath at the end of the scroll.
+
+      Sections render from `order` (CMS-driven, drag-to-reorder in the Studio's
+      Layout tab). SwirlBackground is a page-level background layer, not a
+      section — it anchors to .page-content and bleeds down to whichever section
+      carries `data-swirl-end` (see swirlEndSection). */
   }
   <div class="page-content">
-    <!-- Hero + Intro share one swirl background that bleeds across the boundary.
-         `isolate` keeps the canvas (z-0) behind each section's z-10 content;
-         `bg-surface` shows through where the swirl fades out into Intro. -->
-    <div class="relative isolate bg-surface">
-      <SwirlBackground />
-      <Hero />
-      <Intro />
-      <Care />
-    </div>
-    <div class="triage-usecase-bg bg-surface">
-      <Triage />
-      <TriageCta />
-    </div>
-    <Platform />
-    <Trust />
-    <Operations />
-    <Numbers />
-    <ClinicalLayer />
-    <Scaling />
-    <Cta />
+    <SwirlBackground />
+    {
+      order.map((key) => {
+        const Section = REGISTRY[key] as any;
+        return <Section swirlEnd={key === swirlEndSection} />;
+      })
+    }
   </div>
   <Footer />
 </Layout>
-
-<style>
-  @media (max-width: 1023.98px) {
-    .triage-usecase-bg {
-      background: linear-gradient(45deg, #f4f3fb, transparent);
-    }
-
-    .triage-usecase-bg :global([data-triage-section]),
-    .triage-usecase-bg :global([data-triage-cta-section]) {
-      background-color: transparent;
-    }
-  }
-</style>

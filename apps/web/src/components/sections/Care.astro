@@ -12,6 +12,14 @@ const care = (await getHomePage()).care;
 import LabelPill from "../ui/LabelPill.astro";
 import FeatureCard from "../ui/FeatureCard.astro";
 
+// `swirlEnd` — when this section is the configured fade-target, its heading
+// carries `data-swirl-end` so the page-level SwirlBackground fades out as it
+// reaches here. Driven by homePage.swirlEndSection (default: care).
+interface Props {
+  swirlEnd?: boolean;
+}
+const { swirlEnd = false } = Astro.props;
+
 // Per-card illustration styling (keyed by card index). Every card carries a
 // dotLottie animation (authored in a 416×600 frame with the artwork centred and
 // empty margins around it) rendered into a <canvas> that fills the card body.
@@ -49,9 +57,9 @@ const cardImage: Record<
 };
 ---
 
-<!-- No own background: this section sits inside the shared swirl wrapper (see
-     index.astro) so the hero swirl can bleed down behind the heading. The
-     wrapper's bg-surface shows through below where the swirl fades out. -->
+<!-- No own background: the page-level SwirlBackground (a child of .page-content)
+     bleeds down behind this heading and fades out here when this section is the
+     configured swirl fade-target. .page-content's bg-surface shows through below. -->
 <section class="relative overflow-hidden text-black">
   <div
     class="relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-20"
@@ -63,7 +71,7 @@ const cardImage: Record<
       <div class="flex flex-col items-center gap-8">
         <h2
           data-reveal="title"
-          data-swirl-end
+          data-swirl-end={swirlEnd ? "" : undefined}
           class="max-w-[290px] text-center font-serif font-normal text-h5 md:max-w-[923px]"
         >
           <Fragment set:html={serializeHeadline(care.heading)} />

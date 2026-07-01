@@ -65,12 +65,34 @@ const pointsPreview = {
   },
 };
 
+// Reorderable page sections. Keys MUST match the REGISTRY in
+// apps/web/src/pages/index.astro. Footer is not a section; the swirl is page
+// chrome, not a list entry. See prds/section-reorder-plan.md.
+const SECTION_ORDER: { key: string; title: string }[] = [
+  { key: "hero", title: "Hero" },
+  { key: "intro", title: "Intro" },
+  { key: "care", title: "Care" },
+  { key: "triage", title: "Triage" },
+  { key: "triageCta", title: "Triage CTA" },
+  { key: "platform", title: "Platform" },
+  { key: "trust", title: "Trust" },
+  { key: "operations", title: "Operations" },
+  { key: "numbers", title: "Numbers" },
+  { key: "clinicalLayer", title: "Clinical layer" },
+  { key: "scaling", title: "Scaling" },
+  { key: "cta", title: "Closing CTA" },
+];
+const SECTION_TITLES: Record<string, string> = Object.fromEntries(
+  SECTION_ORDER.map((s) => [s.key, s.title]),
+);
+
 export const homePage = defineType({
   name: "homePage",
   title: "Home page",
   type: "document",
   icon: HomeIcon,
   groups: [
+    { name: "layout", title: "Layout" },
     { name: "hero", title: "Hero & intro", default: true },
     { name: "care", title: "Care" },
     { name: "triage", title: "Triage" },
@@ -79,6 +101,59 @@ export const homePage = defineType({
     { name: "closing", title: "Closing" },
   ],
   fields: [
+    // ---- Layout: section order + swirl target ----
+    defineField({
+      name: "order",
+      title: "Section order",
+      type: "array",
+      group: "layout",
+      description:
+        "Drag to reorder the page's sections. Keep Hero / Intro / Care first — the opening swirl overlays whatever sits at the top of the page. Any section left out of this list still renders (appended at the end).",
+      of: [
+        {
+          type: "object",
+          name: "sectionRef",
+          fields: [
+            defineField({
+              name: "key",
+              title: "Section",
+              type: "string",
+              options: {
+                list: SECTION_ORDER.map((s) => ({ value: s.key, title: s.title })),
+              },
+              validation: (r) => r.required(),
+            }),
+          ],
+          preview: {
+            select: { key: "key" },
+            prepare: ({ key }: any) => ({ title: SECTION_TITLES[key] ?? (key || "(unset)") }),
+          },
+        },
+      ],
+      validation: (r) =>
+        r.custom((items: any) => {
+          const keys = (items ?? []).map((i: any) => i?.key).filter(Boolean);
+          return new Set(keys).size === keys.length || "Each section can appear only once";
+        }),
+      initialValue: SECTION_ORDER.map((s) => ({ _type: "sectionRef", _key: s.key, key: s.key })),
+    }),
+    defineField({
+      name: "swirlEndSection",
+      title: "Swirl fades into",
+      type: "string",
+      group: "layout",
+      description:
+        "Which opening section the hero swirl bleeds down into before fading out.",
+      options: {
+        list: [
+          { value: "hero", title: "Hero (shortest bleed)" },
+          { value: "intro", title: "Intro" },
+          { value: "care", title: "Care (default)" },
+        ],
+      },
+      initialValue: "care",
+    }),
+
     // ---- Hero ----
     section("hero", "hero", [
       obj("eyebrow", [str("prefix"), str("link"), str("href"), str("hrefMobile", "string", "Href (mobile)")]),
@@ -113,6 +188,20 @@ export const homePage = defineType({
 
     // ---- Triage ----
     section("triage", "triage", [
+      defineField({
+        name: "background",
+        title: "Background wash colour",
+        type: "string",
+        description:
+          "Tint for the mobile diagonal wash behind the Triage area (hex, e.g. #f4f3fb). Desktop stays neutral. Leave blank for the default lavender.",
+        initialValue: "#f4f3fb",
+        validation: (r) =>
+          r.custom((v: any) =>
+            !v || /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(v)
+              ? true
+              : "Enter a hex colour like #f4f3fb",
+          ),
+      }),
       str("eyebrow"),
       defineField({ name: "heading", type: "styledHeadline" }),
       obj("tabs", [str("label"), str("active")]),

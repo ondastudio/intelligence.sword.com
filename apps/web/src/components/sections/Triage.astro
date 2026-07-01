@@ -26,6 +26,10 @@ import ArrowCircle from "../ui/ArrowCircle.astro";
 const { eyebrow, heading, tabs, card, case: useCase, orchestration } = triage;
 const orchCards = orchestration.cards;
 
+// Mobile diagonal-wash tint — CMS-driven (homePage.triage.background), falling
+// back to the original lavender so the visual is unchanged when unset.
+const washColor = triage.background || "#f4f3fb";
+
 // Per-card baked full-card backgrounds (index-aligned to orchCards). A null/
 // missing entry falls back to the shared overlay bloom (card-glow-purple.svg).
 const cardBg: Record<number, string> = {
@@ -38,6 +42,7 @@ const cardBg: Record<number, string> = {
 <section
   data-triage-section
   class="triage-section relative overflow-x-clip bg-surface text-black"
+  style={`--triage-wash: ${washColor}`}
 >
   <!-- Heading -->
   <div
@@ -267,6 +272,16 @@ const cardBg: Record<number, string> = {
 </section>
 
 <style>
+  /* Self-contained mobile wash — formerly painted by the `.triage-usecase-bg`
+     wrapper in index.astro. Below lg the section swaps its bg-surface for the
+     faint lavender diagonal; on lg+ the Tailwind bg-surface stands. Sized to
+     this section so Triage no longer depends on a shared page-level wrapper. */
+  @media (max-width: 1023.98px) {
+    .triage-section {
+      background: linear-gradient(45deg, var(--triage-wash, #f4f3fb), transparent);
+    }
+  }
+
   /* Trigger nav -----------------------------------------------------------
      State A and State B share a single grid cell (stacked), but only one is
      displayed at a time so the wrapper auto-sizes to whichever shows. JS adds
