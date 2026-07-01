@@ -62,7 +62,8 @@
         "alt": "Monitor",
         "segments": [
           { "text": "Customize what you ", "br": true },
-          { "text": "monitor in real-time", "bold": true }
+          { "text": "monitor in real-time", "bold": true },
+          { "text": "." }
         ]
       },
       {
@@ -72,7 +73,7 @@
           { "text": "Set " },
           { "text": "watchtowers", "bold": true },
           { "text": " that detect ", "br": true },
-          { "text": "anomalies and compliance risks" }
+          { "text": "anomalies and compliance risks." }
         ]
       },
       {
@@ -81,7 +82,7 @@
         "segments": [
           { "text": "Train agents", "bold": true },
           { "text": " on historical data ", "br": true },
-          { "text": "from human and AI interactions" }
+          { "text": "from human and AI interactions." }
         ]
       }
     ]
