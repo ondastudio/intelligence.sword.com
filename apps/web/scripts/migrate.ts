@@ -144,6 +144,11 @@ async function video(client: AnyClient | null, path: string | undefined) {
 
 const IMG_EXT = /\.(png|jpe?g|svg|webp|gif|avif)$/i;
 const VID_EXT = /\.(mp4|webm|mov|m4v|ogg)$/i;
+// NOTE on .lottie: dotLottie animations are left as /public path strings (served
+// same-origin) and NOT uploaded to Sanity. The dotlottie-web player loads them
+// via fetch(), and Sanity's file CDN (cdn.sanity.io/files) sends no CORS header
+// for file assets (only image assets get one) — a Sanity-hosted .lottie is
+// therefore blocked by CORS and the canvas renders blank. See queries note.
 
 /**
  * Deep-copy a section's JSON, converting any /public asset path string into a
