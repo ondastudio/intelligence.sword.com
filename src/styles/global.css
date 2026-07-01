@@ -209,7 +209,7 @@
 
   body {
     font-family: var(--font-sans);
-    background-color: #fff;
+    background-color: var(--color-surface); /* #f9f9f9 — page background */
     color: #000;
     /* body copy is 16px → +1% */
     letter-spacing: 0.01em;
