@@ -5,7 +5,6 @@ import Hero from "../components/sections/Hero.astro";
 import Intro from "../components/sections/Intro.astro";
 import Care from "../components/sections/Care.astro";
 import Triage from "../components/sections/Triage.astro";
-import TriageCta from "../components/sections/TriageCta.astro";
 import Platform from "../components/sections/Platform.astro";
 import Trust from "../components/sections/Trust.astro";
 import Numbers from "../components/sections/Numbers.astro";
@@ -37,7 +36,6 @@ import Footer from "../components/sections/Footer.astro";
     </div>
     <div class="triage-usecase-bg bg-surface">
       <Triage />
-      <TriageCta />
     </div>
     <Platform />
     <Trust />
@@ -56,8 +54,7 @@ import Footer from "../components/sections/Footer.astro";
       background: linear-gradient(45deg, #f4f3fb, transparent);
     }
 
-    .triage-usecase-bg :global([data-triage-section]),
-    .triage-usecase-bg :global([data-triage-cta-section]) {
+    .triage-usecase-bg :global([data-triage-section]) {
       background-color: transparent;
     }
   }
