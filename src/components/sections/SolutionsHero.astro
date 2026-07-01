@@ -66,12 +66,25 @@ const { eyebrow, headline, paragraph } = solutions.hero;
         </p>
       </div>
 
-      <!-- Placeholder for motion / illustration (per design annotation). -->
+      <!-- Media card — the same looping surgery clip used by the Care
+           Orchestration "Surgery Prehab and Rehab" card (TriageMedia `video`
+           variant). object-cover fills the card; overflow-hidden clips it to the
+           32px radius; bg-white shows while the clip loads. -->
       <div
         data-reveal
-        class="aspect-[305/381] w-full max-w-[305px] shrink-0 self-end rounded-[32px] bg-white"
+        class="relative aspect-[305/381] w-full max-w-[305px] shrink-0 self-end overflow-hidden rounded-[32px] bg-white"
         style="transition-delay:200ms"
       >
+        <video
+          src="/triage/surgery.webm"
+          class="absolute inset-0 h-full w-full object-cover"
+          autoplay
+          loop
+          muted
+          playsinline
+          preload="auto"
+          aria-hidden="true"
+        ></video>
       </div>
     </div>
   </div>

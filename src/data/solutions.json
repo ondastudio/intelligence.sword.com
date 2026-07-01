@@ -1,6 +1,6 @@
 {
   "hero": {
-    "eyebrow": "Surgery prehab and rehab.",
+    "eyebrow": "Surgery prehab and rehab",
     "headline": "Prepare every patient, support every recovery.",
     "paragraph": "Intelligence enrolls every patient on your surgical list, identifies who's at risk, delivers personalized preparation and stays with them all the way through recovery."
   },
@@ -20,7 +20,7 @@
     "alt": "Sword Intelligence AI Care Manager handling a patient call"
   },
   "problem": {
-    "eyebrow": "Problem.",
+    "eyebrow": "Problem",
     "heading": "The wait and the recovery are intervention windows. Most systems stay passive through both.",
     "subheading": "Here’s what they can do for you and your patients.",
     "cards": [
