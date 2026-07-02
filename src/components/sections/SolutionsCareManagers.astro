@@ -43,8 +43,11 @@ const cardFrame =
       {/* ---- Header --------------------------------------------------------- */}
       <div class="flex flex-col gap-6" data-reveal>
         <Eyebrow>{eyebrow}</Eyebrow>
+        {/* Align by the last text baseline (not the box bottom): the Lora
+            heading and the Figtree paragraph have different line-heights, so
+            box-bottom alignment leaves their bottom lines visually offset. */}
         <div
-          class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-16"
+          class="flex flex-col gap-6 md:flex-row md:[align-items:last_baseline] md:justify-between md:gap-16"
         >
           <h2 class="max-w-[437px] font-serif text-h5 font-normal">
             {heading}
