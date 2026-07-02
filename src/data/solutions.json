@@ -109,14 +109,8 @@
     ],
     "trust": {
       "label": "Trusted by the most regulated industry in the world.",
-      "badges": [
-        { "src": "/solutions/care-managers/badges/13485.png", "alt": "ISO 13485 Accredited" },
-        { "src": "/solutions/care-managers/badges/soc2.png", "alt": "SOC 2 Compliant" },
-        { "src": "/solutions/care-managers/badges/mdr.png", "alt": "MDR Class IIa Compliant" },
-        { "src": "/solutions/care-managers/badges/nhs.png", "alt": "NHS Compliant" },
-        { "src": "/solutions/care-managers/badges/hipaa.png", "alt": "HIPAA Compliant" },
-        { "src": "/solutions/care-managers/badges/cyber.png", "alt": "Cyber Essentials Plus" }
-      ]
+      "badgesImage": "/solutions/care-managers/trust-badges.svg",
+      "badgesAlt": "Certifications: ISO 13485 Accredited, SOC 2 Compliant, MDR Class IIa Compliant, NHS Compliant, HIPAA Compliant, Cyber Essentials Plus"
     },
     "ehr": {
       "label": "No EHR migration. No platform overhaul.",
