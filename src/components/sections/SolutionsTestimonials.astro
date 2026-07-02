@@ -101,8 +101,9 @@ const { eyebrow, heading, items } = solutions.testimonials;
       }
     </ul>
 
-    {/* Testimonials — one panel per tab; only the active one is shown */}
-    <div class="w-full">
+    {/* Testimonials — all panels stacked in one grid cell; the active one
+        crossfades over the others (see .tt-stack in <style>). */}
+    <div data-reveal class="tt-stack grid w-full">
       {
         items.map((item, i) => (
           <div
@@ -111,13 +112,10 @@ const { eyebrow, heading, items } = solutions.testimonials;
             role="tabpanel"
             aria-labelledby={`tt-tab-${i}`}
             hidden={i !== 0}
-            class="flex w-full flex-col gap-12 lg:flex-row lg:items-stretch lg:justify-between lg:gap-8"
+            class="tt-panel flex w-full flex-col gap-12 lg:flex-row lg:items-stretch lg:justify-between lg:gap-8"
           >
             {/* Left — optional avatar + quote */}
-            <div
-              data-reveal
-              class="flex flex-col gap-8 sm:flex-row sm:gap-8 lg:max-w-[772px] lg:flex-1"
-            >
+            <div class="flex flex-col gap-8 sm:flex-row sm:gap-8 lg:max-w-[772px] lg:flex-1">
               {item.author.avatar && (
                 <img
                   src={item.author.avatar}
@@ -138,11 +136,7 @@ const { eyebrow, heading, items } = solutions.testimonials;
             </div>
 
             {/* Right — stat + CTA */}
-            <div
-              data-reveal
-              class="flex flex-col justify-between gap-10 lg:items-end lg:text-right"
-              style="transition-delay:120ms"
-            >
+            <div class="flex flex-col justify-between gap-10 lg:items-end lg:text-right">
               <div class="flex flex-col items-start gap-4 lg:items-end">
                 <div class="flex items-start gap-2">
                   <span class="relative">
@@ -181,6 +175,39 @@ const { eyebrow, heading, items } = solutions.testimonials;
 </section>
 
 <style>
+  /* Testimonial crossfade — every panel shares one grid cell (grid-area 1/1)
+     and the active one fades over the inactive one, so switching tabs never
+     jumps the layout. Inactive panels keep their box (forced `display: flex`,
+     which outweighs the UA `[hidden]` rule) so the cell stays sized to the
+     tallest testimonial; `[hidden]` only fades + de-activates them. */
+  .tt-stack > .tt-panel {
+    grid-area: 1 / 1;
+    display: flex;
+  }
+  .tt-panel {
+    transition:
+      opacity 0.5s ease-out,
+      transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .tt-panel[hidden] {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(8px);
+    transition:
+      opacity 0.5s ease-out,
+      transform 0.6s cubic-bezier(0.33, 1, 0.68, 1),
+      visibility 0s linear 0.5s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tt-panel,
+    .tt-panel[hidden] {
+      transition: none;
+      transform: none;
+    }
+  }
+
   /* Swirl bloom layer — fills the section behind the content. A soft radial
      mask keeps it a contained centred bloom that fades to the page background
      before the section edges. */
@@ -220,29 +247,27 @@ const { eyebrow, heading, items } = solutions.testimonials;
     document.querySelectorAll<HTMLElement>("[data-tt-panel]"),
   );
 
+  let current = 0;
+
   function activate(index: number) {
+    if (index === current) return;
+    current = index;
     tabs.forEach((tab) =>
       tab.setAttribute(
         "aria-selected",
         Number(tab.dataset.ttTab) === index ? "true" : "false",
       ),
     );
-    panels.forEach((panel) => {
-      const active = Number(panel.dataset.ttPanel) === index;
-      panel.hidden = !active;
-      // The panel was display:none when the reveal observer ran, so force its
-      // entrance elements into their final state now that it's shown.
-      if (active)
-        panel
-          .querySelectorAll<HTMLElement>("[data-reveal]")
-          .forEach((el) => el.classList.add("in-view"));
-    });
+    // `[hidden]` drives both the crossfade (via .tt-panel CSS) and the a11y
+    // tree; the forced `display: flex` keeps every panel in the same grid cell
+    // so the area stays sized to the tallest testimonial — no layout jump.
+    panels.forEach((panel) =>
+      panel.toggleAttribute("hidden", Number(panel.dataset.ttPanel) !== index),
+    );
   }
 
   tabs.forEach((tab) =>
-    tab.addEventListener("click", () =>
-      activate(Number(tab.dataset.ttTab)),
-    ),
+    tab.addEventListener("click", () => activate(Number(tab.dataset.ttTab))),
   );
 </script>
 
