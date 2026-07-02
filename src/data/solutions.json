@@ -70,6 +70,71 @@
       { "value": "£405K", "label": "saved for one NHS Trust in 3 months" }
     ]
   },
+  "careManagers": {
+    "eyebrow": "Technology",
+    "heading": "Meet your AI Care Managers.",
+    "description": "Behind every interaction is an intelligent agent purpose-built for healthcare operations. They contact patients, read documents, navigate legacy platforms, and act on what they find. Every action is logged, auditable, and configurable to your clinical protocols.",
+    "features": [
+      {
+        "media": "lottie",
+        "lottie": "/care/always-on.lottie",
+        "lead": "Always on",
+        "rest": ", answering every call and monitoring your population."
+      },
+      {
+        "media": "lottie",
+        "lottie": "/care/multichannel.lottie",
+        "lead": "Communication",
+        "rest": " across every channel the patient already uses, without losing context."
+      },
+      {
+        "media": "lottie",
+        "lottie": "/care/conversational.lottie",
+        "lead": "Conversational AI",
+        "rest": " that speaks naturally in any language and local accent."
+      },
+      {
+        "media": "icon",
+        "icon": "/solutions/care-managers/icon-coordination.svg",
+        "lead": "Coordination with qualified Prehabilitation Specialists",
+        "rest": " for every patient throughout the journey."
+      },
+      {
+        "media": "icon",
+        "icon": "/solutions/care-managers/icon-academy.svg",
+        "lead": "Powered by Sword's Academy",
+        "rest": ", an evidence-informed content library covering exercise, nutrition, sleep, mindfulness, smoking cessation, and surgical preparation."
+      }
+    ],
+    "trust": {
+      "label": "Trusted by the most regulated industry in the world.",
+      "badges": [
+        { "src": "/solutions/care-managers/badges/13485.png", "alt": "ISO 13485 Accredited" },
+        { "src": "/solutions/care-managers/badges/soc2.png", "alt": "SOC 2 Compliant" },
+        { "src": "/solutions/care-managers/badges/mdr.png", "alt": "MDR Class IIa Compliant" },
+        { "src": "/solutions/care-managers/badges/nhs.png", "alt": "NHS Compliant" },
+        { "src": "/solutions/care-managers/badges/hipaa.png", "alt": "HIPAA Compliant" },
+        { "src": "/solutions/care-managers/badges/cyber.png", "alt": "Cyber Essentials Plus" }
+      ]
+    },
+    "ehr": {
+      "label": "No EHR migration. No platform overhaul.",
+      "logos": [
+        { "src": "/solutions/care-managers/ehr/advancedmd.png", "alt": "AdvancedMD" },
+        { "src": "/solutions/care-managers/ehr/trubridge.png", "alt": "TruBridge" },
+        { "src": "/solutions/care-managers/ehr/veradigm.png", "alt": "Veradigm" },
+        { "src": "/solutions/care-managers/ehr/cerner.png", "alt": "Cerner" },
+        { "src": "/solutions/care-managers/ehr/elation.png", "alt": "Elation" },
+        { "src": "/solutions/care-managers/ehr/eclinicalworks.png", "alt": "eClinicalWorks" },
+        { "src": "/solutions/care-managers/ehr/greenway.png", "alt": "Greenway Health" },
+        { "src": "/solutions/care-managers/ehr/nextech.png", "alt": "Nextech" },
+        { "src": "/solutions/care-managers/ehr/modmed.png", "alt": "ModMed" },
+        { "src": "/solutions/care-managers/ehr/athenahealth.png", "alt": "athenahealth" },
+        { "src": "/solutions/care-managers/ehr/meditech.png", "alt": "MEDITECH Expanse" },
+        { "src": "/solutions/care-managers/ehr/epic.png", "alt": "Epic" }
+      ]
+    }
+  },
   "howItWorks": {
     "eyebrow": "How it works",
     "headline": "Enroll. Coach. Prepare. Recover.",
