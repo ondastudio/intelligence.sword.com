@@ -8,9 +8,8 @@
  *
  *   node --env-file=.env.local scripts/sync-main-content.mjs
  *
- * NOT synced (need manual Studio edits — don't map cleanly to a delta):
- *  - triage "Health Triage line" heading restructure (no matching Sanity field)
- *  - clinical-layer closing-segment punctuation (trivial)
+ * NOT synced (trivial, left for manual Studio edits):
+ *  - clinical-layer closing-segment punctuation
  */
 import { createClient } from "@sanity/client";
 
@@ -78,6 +77,14 @@ for (const doc of docs) {
     // --- clinical layer: remove step "05 Clinical data foundation" ---
     if (Array.isArray(doc.clinicalLayer?.steps) && doc.clinicalLayer.steps.some((s) => s?.num === "05"))
       set["clinicalLayer.steps"] = doc.clinicalLayer.steps.filter((s) => s?.num !== "05");
+
+    // --- triage: card headline reworded + fully highlighted (main's restructure) ---
+    const ch = doc.triage?.card?.headline;
+    if (Array.isArray(ch) && ch[0]?.children?.[0]?.text?.includes("Health Triage line")) {
+      const blk = structuredClone(ch[0]);
+      blk.children = [{ ...blk.children[0], text: "Guide every patient to the right care.", marks: ["highlight"] }];
+      set["triage.card.headline"] = [blk];
+    }
 
     // --- triage: "predicts DNAs" → "predicts no-shows" (surgical span text) ---
     const cards = doc.triage?.orchestration?.cards;
