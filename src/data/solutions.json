@@ -83,7 +83,7 @@
       {
         "icon": "content-writing",
         "navLabel": "Automatic enrollment",
-        "eyebrow": "Automatic Enrollment.",
+        "eyebrow": "Automatic Enrollment",
         "heading": "Enroll patients before they even think to ask.",
         "body": "The moment a surgery is scheduled in your system, Intelligence picks it up and enrollment starts automatically — no manual referrals, or patient actions required before preparation starts."
       },

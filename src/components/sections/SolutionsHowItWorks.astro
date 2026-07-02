@@ -68,15 +68,17 @@ const icons: Record<string, string> = {
     </header>
 
     {/* ---- Stepper -------------------------------------------------------- */}
+    {/* NB: no data-reveal on this wrapper — its will-change/transform would make
+        it a backdrop-filter boundary and kill the frosted tooltip inside the
+        nav. The reveal lives on the panel stack below instead. */}
     <div
-      data-reveal
       class="relative flex w-full max-w-[1064px] flex-col gap-8 lg:max-w-[1208px] lg:flex-row lg:items-start lg:gap-[clamp(2rem,4vw,52px)]"
     >
       {/* Lateral icon navbar — horizontal row on mobile, vertical pill at lg+ */}
       <nav
         role="tablist"
         aria-label="How it works steps"
-        class="flex shrink-0 flex-row gap-2 self-center rounded-card bg-ink-wash p-2 lg:flex-col lg:self-start"
+        class="flex shrink-0 flex-row gap-2 self-center rounded-card bg-ink-wash p-2 lg:flex-col lg:self-center"
       >
         {
           steps.map((step, i) => (
@@ -88,7 +90,7 @@ const icons: Record<string, string> = {
               aria-controls={`hiw-panel-${i}`}
               aria-selected={i === 0 ? "true" : "false"}
               aria-label={step.navLabel}
-              class="grid size-10 place-items-center rounded-3xl border transition-colors duration-300 ease-[cubic-bezier(0.33,1,0.68,1)] border-gray-200 text-black/40 hover:text-black/70 aria-selected:border-brand aria-selected:bg-white aria-selected:text-brand"
+              class="group/step relative grid size-10 place-items-center rounded-3xl border transition-colors duration-300 ease-[cubic-bezier(0.33,1,0.68,1)] border-gray-200 text-black/40 hover:border-purple-100 hover:bg-purple-tint hover:text-black aria-selected:border-transparent aria-selected:bg-brand aria-selected:text-white"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -101,6 +103,14 @@ const icons: Record<string, string> = {
                 aria-hidden="true"
                 set:html={icons[step.icon]}
               />
+              {/* Hover tooltip: the step title in a frosted-glass pill floating to
+                  the right of the icon (design node). Desktop-only. */}
+              <span
+                aria-hidden="true"
+                class="pointer-events-none absolute left-full top-1/2 z-20 ml-4 hidden h-10 -translate-y-1/2 items-center whitespace-nowrap rounded-full border border-gray-200 bg-white/45 px-6 text-sm font-semibold uppercase text-black opacity-0 backdrop-blur-[20px] transition-opacity duration-200 lg:inline-flex lg:group-hover/step:opacity-100"
+              >
+                {step.navLabel}
+              </span>
             </button>
           ))
         }
@@ -108,7 +118,7 @@ const icons: Record<string, string> = {
 
       {/* Panels — stacked in one grid cell so the area sizes to the tallest
           step and panels crossfade in place. */}
-      <div class="hiw-stack grid flex-1">
+      <div data-reveal class="hiw-stack grid flex-1">
         {
           steps.map((step, i) => (
             <div
