@@ -105,14 +105,22 @@ const { eyebrow, heading, items } = solutions.testimonials;
         crossfades over the others (see .tt-stack in <style>). */}
     <div data-reveal class="tt-stack grid w-full">
       {
-        items.map((item, i) => (
+        items.map((item, i) => {
+          // A testimonial may carry one stat (`stat`) or several (`stats`);
+          // normalise to an array. Two-plus stats render side by side.
+          const stats = item.stats ?? [item.stat];
+          const multiStat = stats.length > 1;
+          return (
           <div
             id={`tt-panel-${i}`}
             data-tt-panel={i}
             role="tabpanel"
             aria-labelledby={`tt-tab-${i}`}
-            hidden={i !== 0}
-            class="tt-panel flex w-full flex-col gap-12 lg:flex-row lg:items-stretch lg:justify-between lg:gap-8"
+            aria-hidden={i !== 0 ? "true" : "false"}
+            class:list={[
+              "tt-panel flex w-full flex-col gap-12 lg:flex-row lg:items-stretch lg:justify-between lg:gap-8",
+              { "is-active": i === 0 },
+            ]}
           >
             {/* Left — optional avatar + quote */}
             <div class="flex flex-col gap-8 sm:flex-row sm:gap-8 lg:max-w-[772px] lg:flex-1">
@@ -125,7 +133,7 @@ const { eyebrow, heading, items } = solutions.testimonials;
                 />
               )}
               <div class="flex flex-1 flex-col justify-between gap-8">
-                <p class="text-md text-ink">{item.quote}</p>
+                <p class="text-md text-ink whitespace-pre-line">{item.quote}</p>
                 <div class="flex flex-col gap-1">
                   <p class="text-sm font-semibold uppercase">
                     {item.author.name}
@@ -135,20 +143,47 @@ const { eyebrow, heading, items } = solutions.testimonials;
               </div>
             </div>
 
-            {/* Right — stat + CTA */}
-            <div class="flex flex-col justify-between gap-10 lg:items-end lg:text-right">
-              <div class="flex flex-col items-start gap-4 lg:items-end">
-                <div class="flex items-start gap-2">
-                  <span class="relative">
-                    <span
-                      aria-hidden="true"
-                      class="absolute inset-x-0 bottom-[0.14em] -z-10 h-2 bg-purple-tint"
-                    />
-                    <span class="font-serif text-h3">{item.stat.value}</span>
-                  </span>
-                  {item.stat.plus && <PlusChip class="mt-3" />}
-                </div>
-                <p class="text-sm font-semibold uppercase">{item.stat.label}</p>
+            {/* Right — stat(s) + CTA */}
+            <div class="flex flex-col justify-between gap-10 lg:items-end">
+              {/* One stat sits right-aligned; two stats sit side by side
+                  (stacked below sm), each left-aligned, per the Figma spec. */}
+              <div
+                class:list={[
+                  "flex flex-col gap-8",
+                  multiStat && "sm:flex-row sm:gap-16",
+                ]}
+              >
+                {stats.map((stat) => (
+                  <div
+                    class:list={[
+                      "flex flex-col gap-4",
+                      multiStat ? "items-start" : "items-start lg:items-end",
+                    ]}
+                  >
+                    <div class="flex items-start gap-2">
+                      <span class="relative font-serif text-h3">
+                        {/* Highlight bar — bottom sits on the number's baseline
+                            and height/offset are in `em` (relative to this span's
+                            text-h3 font size) so the bar tracks the number at every
+                            size, per the Figma spec (8px bar on the 76px number). */}
+                        <span
+                          aria-hidden="true"
+                          class="absolute inset-x-0 bottom-[0.24em] -z-10 h-[0.105em] bg-purple-tint"
+                        />
+                        <span class="font-serif text-h3">{stat.value}</span>
+                      </span>
+                      {stat.plus && <PlusChip class="mt-3" />}
+                    </div>
+                    <p
+                      class:list={[
+                        "whitespace-pre-line text-sm font-semibold uppercase",
+                        !multiStat && "lg:text-right",
+                      ]}
+                    >
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
               </div>
 
               <div class="group flex items-center">
@@ -168,43 +203,49 @@ const { eyebrow, heading, items } = solutions.testimonials;
               </div>
             </div>
           </div>
-        ))
+          );
+        })
       }
     </div>
   </div>
 </section>
 
 <style>
-  /* Testimonial crossfade — every panel shares one grid cell (grid-area 1/1)
-     and the active one fades over the inactive one, so switching tabs never
-     jumps the layout. Inactive panels keep their box (forced `display: flex`,
-     which outweighs the UA `[hidden]` rule) so the cell stays sized to the
-     tallest testimonial; `[hidden]` only fades + de-activates them. */
+  /* Testimonial swap — every panel shares one grid cell (grid-area 1/1) and
+     stays `display: flex` so the cell stays sized to the tallest testimonial
+     and switching never jumps the layout. The swap is a *sequential* fade
+     (driven by an `.is-active` class, NOT the `[hidden]` attribute — `[hidden]`
+     resolves to `display: none`, which can't be transitioned): the outgoing
+     panel fades fully out first, then the incoming one fades in, so the two
+     testimonials are never visible at the same time (no ghosting/overlap).
+     Delays sequence the two halves — out (0–0.28s) then in (0.28–0.56s). */
   .tt-stack > .tt-panel {
     grid-area: 1 / 1;
     display: flex;
   }
   .tt-panel {
-    transition:
-      opacity 0.5s ease-out,
-      transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
-  }
-  .tt-panel[hidden] {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translateY(8px);
+    /* Outgoing: fade out immediately, then hide once faded. */
     transition:
-      opacity 0.5s ease-out,
-      transform 0.6s cubic-bezier(0.33, 1, 0.68, 1),
-      visibility 0s linear 0.5s;
+      opacity 0.28s ease-in-out,
+      visibility 0s linear 0.28s;
+  }
+  .tt-panel.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    /* Incoming: wait for the outgoing panel to clear, then fade in. */
+    transition:
+      opacity 0.28s ease-in-out 0.28s,
+      visibility 0s linear 0.28s;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .tt-panel,
-    .tt-panel[hidden] {
+    .tt-panel.is-active {
       transition: none;
-      transform: none;
     }
   }
 
@@ -212,27 +253,31 @@ const { eyebrow, heading, items } = solutions.testimonials;
      mask keeps it a contained centred bloom that fades to the page background
      before the section edges. */
   .testimonials-swirl {
+    /* The vertical radius stays small enough that the fade fully completes
+       before the section's bottom/top edge (0.64 × 0.64 ≈ 0.41 of the height
+       from centre → done by ~91%), so `overflow-hidden` never clips a still-
+       visible band of the bloom. */
     -webkit-mask-image: radial-gradient(
-      ellipse 78% 78% at 50% 50%,
+      ellipse 76% 64% at 50% 50%,
       #000 0%,
-      #000 30%,
-      transparent 68%
+      #000 28%,
+      transparent 64%
     );
     mask-image: radial-gradient(
-      ellipse 78% 78% at 50% 50%,
+      ellipse 76% 64% at 50% 50%,
       #000 0%,
-      #000 30%,
-      transparent 68%
+      #000 28%,
+      transparent 64%
     );
   }
 
   /* No-JS / reduced-motion fallback: a static soft-purple radial bloom. */
   .testimonials-swirl-fallback {
     background: radial-gradient(
-      ellipse 62% 72% at 50% 50%,
+      ellipse 60% 58% at 50% 50%,
       #d3c2ff 0%,
       #e1d6ff 40%,
-      transparent 72%
+      transparent 68%
     );
   }
 </style>
@@ -258,12 +303,16 @@ const { eyebrow, heading, items } = solutions.testimonials;
         Number(tab.dataset.ttTab) === index ? "true" : "false",
       ),
     );
-    // `[hidden]` drives both the crossfade (via .tt-panel CSS) and the a11y
-    // tree; the forced `display: flex` keeps every panel in the same grid cell
-    // so the area stays sized to the tallest testimonial — no layout jump.
-    panels.forEach((panel) =>
-      panel.toggleAttribute("hidden", Number(panel.dataset.ttPanel) !== index),
-    );
+    // `.is-active` drives the crossfade (via .tt-panel CSS) while every panel
+    // stays `display: flex` in the same grid cell, so the area stays sized to
+    // the tallest testimonial — no layout jump. `aria-hidden` keeps the a11y
+    // tree in sync (the CSS `visibility: hidden` also hides inactive panels
+    // from assistive tech and takes their links out of the tab order).
+    panels.forEach((panel) => {
+      const active = Number(panel.dataset.ttPanel) === index;
+      panel.classList.toggle("is-active", active);
+      panel.setAttribute("aria-hidden", active ? "false" : "true");
+    });
   }
 
   tabs.forEach((tab) =>

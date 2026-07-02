@@ -320,7 +320,7 @@
         },
         "cta": {
           "label": "Read case study",
-          "href": "/customers/nhs-surgery-readiness"
+          "href": "/customers/greece"
         }
       },
       {
@@ -328,16 +328,23 @@
           "src": "/logos/nhs-south-tee.png",
           "alt": "South Tees Hospitals NHS Foundation Trust"
         },
-        "quote": "“Our patients appreciate the detailed, supportive guidance that has helped them feel more in control and better equipped to handle their surgeries and recoveries.”",
+        "quote": "“Our patients appreciate the detailed, supportive guidance\nthat has helped them feel more in control and better equipped\nto handle their surgeries and recoveries.”",
         "author": {
           "name": "Professor Gerard Danjoux",
           "role": "Consultant Anaesthetist and Perioperative Care Lead"
         },
-        "stat": {
-          "value": "10M",
-          "plus": true,
-          "label": "Citizens served"
-        },
+        "stats": [
+          {
+            "value": "84%",
+            "plus": false,
+            "label": "Improvement in patient-reported\nquality of life"
+          },
+          {
+            "value": "£250",
+            "plus": false,
+            "label": "Saved per patient"
+          }
+        ],
         "cta": {
           "label": "Read case study",
           "href": "/customers/nhs-deprived-communities"
