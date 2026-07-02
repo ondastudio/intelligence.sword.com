@@ -77,19 +77,19 @@
     "features": [
       {
         "media": "lottie",
-        "lottie": "/care/always-on.lottie",
+        "lottie": "/solutions/care-managers/anim/always-on.lottie",
         "lead": "Always on",
         "rest": ", answering every call and monitoring your population."
       },
       {
         "media": "lottie",
-        "lottie": "/care/multichannel.lottie",
+        "lottie": "/solutions/care-managers/anim/multichannel.lottie",
         "lead": "Communication",
         "rest": " across every channel the patient already uses, without losing context."
       },
       {
         "media": "lottie",
-        "lottie": "/care/conversational.lottie",
+        "lottie": "/solutions/care-managers/anim/conversational.lottie",
         "lead": "Conversational AI",
         "rest": " that speaks naturally in any language and local accent."
       },
