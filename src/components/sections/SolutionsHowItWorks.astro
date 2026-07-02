@@ -37,10 +37,24 @@ const icons: Record<string, string> = {
 
 <section
   data-howitworks
-  class="bg-surface text-black"
+  class="relative overflow-hidden bg-surface text-black"
 >
+  {/* Purple swirl bloom behind the header — the shared hero swirl recoloured to
+      the soft-purple palette (same as TriageCta). Sits at z-0 below the content
+      (z-10); a radial mask keeps it a contained bloom around the headline. */}
   <div
-    class="mx-auto flex w-full max-w-[1440px] flex-col items-center gap-[clamp(3rem,8vw,80px)] px-4 pb-[clamp(5rem,12vw,120px)] pt-[clamp(5rem,14vw,200px)] md:px-8"
+    data-hiw-swirl-stage
+    aria-hidden="true"
+    class="hiw-swirl pointer-events-none absolute inset-x-0 top-0 z-0"
+  >
+    <canvas
+      data-hiw-swirl
+      class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+    ></canvas>
+  </div>
+
+  <div
+    class="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col items-center gap-[clamp(3rem,8vw,80px)] px-4 pb-[clamp(5rem,12vw,120px)] pt-[clamp(5rem,14vw,200px)] md:px-8"
   >
     {/* ---- Header --------------------------------------------------------- */}
     <header class="flex flex-col items-center gap-8 text-center md:gap-10">
@@ -228,4 +242,54 @@ const icons: Record<string, string> = {
       transform: none;
     }
   }
+
+  /* Purple swirl bloom layer — spans from the header down through the stepper
+     cards. A large elliptical mask keeps it a soft bloom that invades the card
+     area and fades to the surface at the edges. */
+  .hiw-swirl {
+    height: clamp(760px, 100vw, 1200px);
+    -webkit-mask-image: radial-gradient(
+      72% 62% at 50% 48%,
+      #000 0%,
+      #000 26%,
+      transparent 74%
+    );
+    mask-image: radial-gradient(
+      72% 62% at 50% 48%,
+      #000 0%,
+      #000 26%,
+      transparent 74%
+    );
+  }
 </style>
+
+<script>
+  // Animated purple swirl bloom behind the "Enroll. Coach. Prepare. Recover."
+  // headline — the shared hero swirl recoloured to the soft-purple palette
+  // (body ~#bda4ff, highlights from the purple-100 / tint tokens).
+  import { initSwirl } from "../../lib/swirl";
+
+  const stage = document.querySelector<HTMLElement>("[data-hiw-swirl-stage]");
+  const canvas = stage?.querySelector<HTMLCanvasElement>(
+    "canvas[data-hiw-swirl]",
+  );
+
+  if (stage && canvas) {
+    initSwirl(canvas, stage, {
+      grainUrl: "/hero/swirl/perlin1.png",
+      circular: true,
+      warp: 0.7, // cohesive, rounded blob with a filled centre
+      speed: 2.2,
+      falloffStart: 0.5, // keep the centre filled; only the outer edge fades out
+      falloffEnd: 0.92,
+      colors: {
+        bgColor: [0.976, 0.969, 1.0], // outer field — near-white with a faint lilac
+        soft: [0.882, 0.839, 1.0], // inner highlight — purple-100 (#e1d6ff)
+        body: [0.741, 0.643, 1.0], // dominant bloom — soft purple (~#bda4ff)
+        lavender: [0.933, 0.91, 1.0], // secondary highlight — purple-tint
+        crest: [0.97, 0.97, 0.97], // gradient crest — white
+      },
+    });
+    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
+  }
+</script>
