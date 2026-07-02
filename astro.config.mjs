@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,6 +12,8 @@ export default defineConfig({
   // so absolute OG/canonical URLs always resolve to the host actually serving the site.
   // Falls back to the canonical domain for local builds.
   site: process.env.URL || 'https://intelligence.sword.com',
+  // Excludes the internal component catalog (/styleguide) — not real content.
+  integrations: [sitemap({ filter: (page) => !page.includes('/styleguide') })],
   vite: {
     plugins: [tailwindcss()]
   }
