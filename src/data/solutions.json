@@ -351,5 +351,58 @@
         }
       }
     ]
+  },
+  "faqs": {
+    "heading": "FAQs",
+    "items": [
+      {
+        "question": "How does Intelligence personalize different surgical preparation programs?",
+        "answer": "Our AI Care Managers build a unique profile for each patient the moment they're enrolled — drawing on history, behavioral indicators, and contextual factors. More complex cases are automatically assigned more intensive preparation pathways. Additional criteria can be included to train bespoke risk models for your population."
+      },
+      {
+        "question": "What happens the moment a patient is added to the surgical list?",
+        "answer": "AI Care Managers act immediately. The patient is enrolled automatically, a conversational assessment begins, and their preparation journey starts — no manual referral, no action required from the patient before their first message arrives. The programme adapts in real time as the patient's profile develops throughout the waiting period."
+      },
+      {
+        "question": "Do agents adapt outreach to different patients?",
+        "answer": "Yes — it doesn't deliver the same journey to everyone. The frequency of check-ins, coaching content, channel, and intensity all adapt to each patient's risk profile, engagement patterns, and progress. A patient who is highly engaged and low-risk receives a lighter-touch program. A patient with multiple modifiable risk factors receives more intensive support. Every sequence runs until the patient is prepared — or escalated to a human specialist."
+      },
+      {
+        "question": "What if a patient situation needs human judgment?",
+        "answer": "A qualified Prehabilitation Health Specialist is always in the loop. When the AI detects complexity or identifies predefined escalation criteria (e.g., a question it can't answer, or a patient who needs more than coaching) it routes immediately to the right person. Human escalation is built into every workflow, not added as an afterthought."
+      },
+      {
+        "question": "What are AI Care Managers?",
+        "answer": "AI Care Managers are the AI agents that run the workflows built by Intelligence. They contact patients, process responses, deliver coaching content, navigate scheduling systems, and trigger the next action — 24/7, across every channel, in any language. They're not chatbots. They are objective-driven and like your best care teams, they're trained on healthcare operations and adapt to your existing infrastructure."
+      },
+      {
+        "question": "What can AI Care Managers actually do?",
+        "answer": "AI Care Managers can make and receive calls, send and interpret chat messages, SMS and email, read and act on documents, navigate legacy portals and platforms, deliver personalized coaching content, track patient progress, confirm appointments, offer reschedule slots, and escalate to a human when needed. They can be trained to handle any administrative task or logic the workflow requires. Every action is logged, auditable, and configurable to your protocols."
+      },
+      {
+        "question": "Do patients know they're talking to an AI?",
+        "answer": "Our agents always disclose they are AI, following your organization's guidelines and applicable regulatory requirements. This is communicated naturally — adapting tone, language, and channel to each patient. What patients consistently experience is fast, clear, helpful contact that never feels scripted or limited."
+      },
+      {
+        "question": "How does Intelligence integrate with our existing systems?",
+        "answer": "Intelligence sits between your patients and your existing infrastructure — connecting to EHRs, scheduling systems, CRMs, and national health platforms via FHIR APIs and HL7 messaging. It's designed to work with what you have, not replace it."
+      },
+      {
+        "question": "Can your agents actually navigate the platforms we already use?",
+        "answer": "Yes. AI Care Managers can log into, read, and act within legacy portals and third-party platforms — not just systems with open APIs. They use computer vision and document understanding to operate in environments that weren't built for integration. If your team navigates it today, our agents can be trained to navigate it too."
+      },
+      {
+        "question": "Does this require replacing our EHR/EPR or scheduling system?",
+        "answer": "No. Intelligence is an interoperability layer — it connects to your existing systems and operates within them. There's no rip-and-replace. Your data stays where it is, your workflows stay familiar, and Intelligence adds the coordination layer on top."
+      },
+      {
+        "question": "Is this a compliance-ready solution?",
+        "answer": "Every deployment meets HIPAA, HITRUST, SOC 2, and GDPR standards where applicable. All patient data is encrypted in transit and at rest. Every AI interaction is fully auditable, with role-based access controls throughout. Compliance requirements are scoped during the discovery phase and built into deployment from day one."
+      },
+      {
+        "question": "What is Sword, and why are we building this?",
+        "answer": "Sword has spent over a decade pioneering AI Care — trusted by more than 1 million patients, covering 100 million lives, across 5 continents. Intelligence was built because we ran into the same operational bottlenecks our customers face today. We acquired Surgery Hero, the NHS-proven digital prehabilitation platform with peer-reviewed outcomes across several NHS deployments. The clinical protocols, coaching methodology, and evidence base are built directly into Intelligence."
+      }
+    ]
   }
 }
