@@ -7,11 +7,26 @@
   "logos": {
     "title": "Join the Healthcare Organizations Scaling with Intelligence",
     "items": [
-      { "src": "/logos/hellenic-health.png", "alt": "Hellenic Republic Ministry of Health" },
-      { "src": "/logos/nhs.svg", "alt": "NHS" },
-      { "src": "/logos/ne-london.png", "alt": "North East London Health & Care Partnership" },
-      { "src": "/logos/cheshire-merseyside.png", "alt": "Cheshire and Merseyside Health and Care Partnership" },
-      { "src": "/logos/vivamas.svg", "alt": "VivaMás Medical Centers" }
+      {
+        "src": "/logos/hellenic-health.png",
+        "alt": "Hellenic Republic Ministry of Health"
+      },
+      {
+        "src": "/logos/nhs.svg",
+        "alt": "NHS"
+      },
+      {
+        "src": "/logos/ne-london.png",
+        "alt": "North East London Health & Care Partnership"
+      },
+      {
+        "src": "/logos/cheshire-merseyside.png",
+        "alt": "Cheshire and Merseyside Health and Care Partnership"
+      },
+      {
+        "src": "/logos/vivamas.svg",
+        "alt": "VivaMás Medical Centers"
+      }
     ]
   },
   "media": {
@@ -64,10 +79,22 @@
     "headingAccent": "a preparation and recovery list.",
     "subheading": "They enroll every patient autonomously, coach them through the crucial weeks, and keep supporting them through recovery, while your surgical team focuses on the clinical procedures.",
     "cards": [
-      { "value": "57%", "label": "More patients ready for surgery" },
-      { "value": "72%", "label": "Reduction in surgical complications" },
-      { "value": "83%", "label": "Reduction in post-op pulmonary complications" },
-      { "value": "£405K", "label": "saved for one NHS Trust in 3 months" }
+      {
+        "value": "57%",
+        "label": "More patients ready for surgery"
+      },
+      {
+        "value": "72%",
+        "label": "Reduction in surgical complications"
+      },
+      {
+        "value": "83%",
+        "label": "Reduction in post-op pulmonary complications"
+      },
+      {
+        "value": "£405K",
+        "label": "saved for one NHS Trust in 3 months"
+      }
     ]
   },
   "careManagers": {
@@ -140,10 +167,26 @@
           "progressLabel": "Matching population…",
           "progressValue": 80,
           "patients": [
-            { "name": "Amelia Carter", "surgery": "Hip replacement", "avatar": "/solutions/patients/amelia.png" },
-            { "name": "Jullie Smith", "surgery": "Knee surgery", "avatar": "/solutions/patients/jullie.png" },
-            { "name": "Kim Chen", "surgery": "Hip replacement", "avatar": "/solutions/patients/kim.png" },
-            { "name": "Charlie Webber", "surgery": "Ankle surgery", "avatar": "/solutions/patients/charlie.png" }
+            {
+              "name": "Amelia Carter",
+              "surgery": "Hip replacement",
+              "avatar": "/solutions/patients/amelia.png"
+            },
+            {
+              "name": "Jullie Smith",
+              "surgery": "Knee surgery",
+              "avatar": "/solutions/patients/jullie.png"
+            },
+            {
+              "name": "Kim Chen",
+              "surgery": "Hip replacement",
+              "avatar": "/solutions/patients/kim.png"
+            },
+            {
+              "name": "Charlie Webber",
+              "surgery": "Ankle surgery",
+              "avatar": "/solutions/patients/charlie.png"
+            }
           ],
           "waitingCount": 80
         }
@@ -167,9 +210,23 @@
         "body": "Our AI agents deliver fully adaptive, responsive coaching around the clock, backed by a qualified prehabilitation specialist, always reachable for 1-to-1\nsupport when it matters the most.",
         "media": "journey",
         "journey": [
-          { "icon": "bubble-chat", "title": "SMS", "meta": "14 days out", "detail": "Suggest light exercise" },
-          { "icon": "phone", "title": "Call", "meta": "14 days out", "detail": "clarify on medication instructions" },
-          { "icon": "check", "title": "Surgery completed", "detail": "Hip surgery" }
+          {
+            "icon": "bubble-chat",
+            "title": "SMS",
+            "meta": "14 days out",
+            "detail": "Suggest light exercise"
+          },
+          {
+            "icon": "phone",
+            "title": "Call",
+            "meta": "14 days out",
+            "detail": "clarify on medication instructions"
+          },
+          {
+            "icon": "check",
+            "title": "Surgery completed",
+            "detail": "Hip surgery"
+          }
         ]
       },
       {
@@ -183,9 +240,21 @@
         "contactName": "Roberta Armond",
         "contactStatus": "prefers",
         "preferences": [
-          { "icon": "sms", "label": "SMS", "when": "all day" },
-          { "icon": "call", "label": "Call", "when": "after 6pm" },
-          { "icon": "email", "label": "Email", "when": "after 6pm" }
+          {
+            "icon": "sms",
+            "label": "SMS",
+            "when": "all day"
+          },
+          {
+            "icon": "call",
+            "label": "Call",
+            "when": "after 6pm"
+          },
+          {
+            "icon": "email",
+            "label": "Email",
+            "when": "after 6pm"
+          }
         ]
       },
       {
@@ -200,13 +269,31 @@
             "icon": "logout",
             "title": "Immediate Outreach",
             "channels": [
-              { "icon": "bubble-chat", "label": "SMS", "meta": "Discharge day", "highlight": true },
-              { "icon": "phone", "label": "Call", "meta": "2 days after" }
+              {
+                "icon": "bubble-chat",
+                "label": "SMS",
+                "meta": "Discharge day",
+                "highlight": true
+              },
+              {
+                "icon": "phone",
+                "label": "Call",
+                "meta": "2 days after"
+              }
             ]
           },
-          { "icon": "pill", "title": "Medication Adherence" },
-          { "icon": "route", "title": "Follow-up Navigation" },
-          { "icon": "home-10", "title": "Ongoing Monitoring" }
+          {
+            "icon": "pill",
+            "title": "Medication Adherence"
+          },
+          {
+            "icon": "route",
+            "title": "Follow-up Navigation"
+          },
+          {
+            "icon": "home-10",
+            "title": "Ongoing Monitoring"
+          }
         ]
       }
     ]
@@ -214,31 +301,48 @@
   "testimonials": {
     "eyebrow": "Testimonials",
     "heading": "Don’t take our word for it, take theirs.",
-    "logos": [
+    "items": [
       {
-        "src": "/logos/ne-london.png",
-        "alt": "North East London Health & Care Partnership"
+        "logo": {
+          "src": "/logos/ne-london.png",
+          "alt": "North East London Health & Care Partnership"
+        },
+        "quote": "“Working with Sword Intelligence has revolutionised our preoperative care, significantly improving patient outcomes and reducing complication rates.”",
+        "author": {
+          "name": "Lucy Gladman",
+          "role": "Deputy Divisional Manager of Anaesthetics",
+          "avatar": "/solutions/testimonials/lucy-gladman.jpg"
+        },
+        "stat": {
+          "value": "10M",
+          "plus": true,
+          "label": "Citizens served"
+        },
+        "cta": {
+          "label": "Read case study",
+          "href": "/customers/nhs-surgery-readiness"
+        }
       },
       {
-        "src": "/logos/nhs-south-tee.png",
-        "alt": "South Tees Hospitals NHS Foundation Trust",
-        "muted": true
+        "logo": {
+          "src": "/logos/nhs-south-tee.png",
+          "alt": "South Tees Hospitals NHS Foundation Trust"
+        },
+        "quote": "“Our patients appreciate the detailed, supportive guidance that has helped them feel more in control and better equipped to handle their surgeries and recoveries.”",
+        "author": {
+          "name": "Professor Gerard Danjoux",
+          "role": "Consultant Anaesthetist and Perioperative Care Lead"
+        },
+        "stat": {
+          "value": "10M",
+          "plus": true,
+          "label": "Citizens served"
+        },
+        "cta": {
+          "label": "Read case study",
+          "href": "/customers/nhs-deprived-communities"
+        }
       }
-    ],
-    "quote": "“Working with Sword Intelligence has revolutionised our preoperative care, significantly improving patient outcomes and reducing complication rates.”",
-    "author": {
-      "name": "Lucy Gladman",
-      "role": "Deputy Divisional Manager of Anaesthetics",
-      "avatar": "/solutions/testimonials/lucy-gladman.jpg"
-    },
-    "stat": {
-      "value": "10M",
-      "plus": true,
-      "label": "Citizens served"
-    },
-    "cta": {
-      "label": "Read case study",
-      "href": "/customers/nhs-surgery-readiness"
-    }
+    ]
   }
 }

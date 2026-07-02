@@ -3,36 +3,58 @@
  * SolutionsTestimonials — the "TESTIMONIALS / Don't take our word for it, take
  * theirs." block on the Solutions page (Figma node 9298:1043, "Testimonial").
  *
- * A centered Eyebrow + Lora headline sit above a two-cell customer-logo
- * row (each cell topped by a hairline; the second logo dimmed) leading into the
- * testimonial itself: on the left an avatar photo card beside the quote and its
- * attribution; on the right a big serif stat ("10M+" citizens served, its
- * number underlined by a lavender highlight bar) above a "Read case study" CTA
- * pill + filled arrow circle.
+ * The whole section sits over a soft-purple swirl bloom (the shared WebGL hero
+ * swirl recoloured to purple, same mechanism as TriageCta; a static radial
+ * gradient is the no-JS / reduced-motion fallback). A centered Eyebrow + Lora
+ * headline sit above a customer-logo row that doubles as tabs: each cell is a
+ * button topped by a hairline (brand-purple + full-opacity logo when active,
+ * black/24 hairline + dimmed logo when not). Clicking a logo swaps the
+ * testimonial below it (Figma node 8091:20552 is the second, NHS-South-Tees
+ * state).
+ *
+ * Each testimonial: on the left an optional avatar photo card beside the quote
+ * and its attribution; on the right a big serif stat ("10M+" citizens served,
+ * its number underlined by a lavender highlight bar) above a "Read case study"
+ * CTA pill + filled arrow circle.
  *
  * Below `lg` the two halves stack (avatar over quote, stat/CTA left-aligned).
- * Entrance uses the shared `[data-reveal]` observer (see global.css / Layout).
+ * Entrance uses the shared `[data-reveal]` observer (see global.css / Layout);
+ * activating a tab force-reveals its panel's `[data-reveal]` descendants.
  *
- * Content-free — copy comes from src/data/solutions.json (`testimonials`).
+ * Content-free — copy comes from src/data/solutions.json (`testimonials.items`).
  */
 import Eyebrow from "../ui/Eyebrow.astro";
 import PlusChip from "../ui/PlusChip.astro";
 import ArrowCircle from "../ui/ArrowCircle.astro";
 import solutions from "../../data/solutions.json";
 
-const { eyebrow, heading, logos, quote, author, stat, cta } =
-  solutions.testimonials;
+const { eyebrow, heading, items } = solutions.testimonials;
 ---
 
 <section
-  class="testimonials relative overflow-hidden px-6 py-20 lg:px-20 lg:py-[120px]"
+  class="testimonials relative isolate overflow-hidden px-6 py-20 lg:px-20 lg:py-[120px]"
 >
+  <!-- Soft-purple swirl bloom filling the section, behind the content (z-0).
+       The static gradient is the no-JS / reduced-motion fallback; the canvas
+       fades in over it once the swirl mounts. -->
   <div
-    class="relative mx-auto flex max-w-[1280px] flex-col items-center gap-16 lg:gap-[120px]"
+    data-testimonials-swirl-stage
+    aria-hidden="true"
+    class="testimonials-swirl pointer-events-none absolute inset-0 z-0"
+  >
+    <div class="testimonials-swirl-fallback absolute inset-0"></div>
+    <canvas
+      data-testimonials-swirl
+      class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+    ></canvas>
+  </div>
+
+  <div
+    class="relative z-10 mx-auto flex max-w-[1280px] flex-col items-center gap-16 lg:gap-[120px]"
   >
     {/* Header */}
     <div class="flex flex-col items-center gap-6 lg:gap-10">
-      <div data-reveal><Eyebrow>{eyebrow}</Eyebrow></div>
+      <div data-reveal><Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow></div>
       <h2
         data-reveal="title"
         class="max-w-[952px] text-center font-serif text-h5"
@@ -41,93 +63,218 @@ const { eyebrow, heading, logos, quote, author, stat, cta } =
       </h2>
     </div>
 
-    {/* Customer logos */}
-    <ul class="flex w-full flex-col gap-7 sm:flex-row">
+    {/* Customer logos — tabs that swap the testimonial below */}
+    <ul
+      class="flex w-full flex-col gap-7 sm:flex-row"
+      role="tablist"
+      aria-label="Customer testimonials"
+    >
       {
-        logos.map((logo, i) => (
+        items.map((item, i) => (
           <li
             data-reveal
-            class="flex flex-1 flex-col items-center gap-6"
+            class="flex flex-1"
             style={`transition-delay:${i * 100}ms`}
           >
-            <span
-              data-reveal="line"
-              class="h-px w-full origin-left bg-black/24"
-            />
-            <img
-              src={logo.src}
-              alt={logo.alt}
-              loading="lazy"
-              class:list={[
-                "max-h-[52px] w-auto object-contain [filter:brightness(0)]",
-                logo.muted && "opacity-15",
-              ]}
-            />
+            <button
+              type="button"
+              role="tab"
+              id={`tt-tab-${i}`}
+              data-tt-tab={i}
+              aria-selected={i === 0 ? "true" : "false"}
+              aria-controls={`tt-panel-${i}`}
+              class="group flex w-full cursor-pointer flex-col items-center gap-6"
+            >
+              <span
+                data-reveal="line"
+                class="h-px w-full origin-left bg-black/24 transition-colors group-aria-[selected=true]:bg-brand"
+              />
+              <img
+                src={item.logo.src}
+                alt={item.logo.alt}
+                loading="lazy"
+                class="max-h-[52px] w-auto object-contain opacity-15 transition-opacity [filter:brightness(0)] group-aria-[selected=true]:opacity-100"
+              />
+            </button>
           </li>
         ))
       }
     </ul>
 
-    {/* Testimonial */}
-    <div
-      class="flex w-full flex-col gap-12 lg:flex-row lg:items-stretch lg:justify-between lg:gap-8"
-    >
-      {/* Left — avatar + quote */}
-      <div
-        data-reveal
-        class="flex flex-col gap-8 sm:flex-row sm:gap-8 lg:max-w-[772px] lg:flex-1"
-      >
-        <img
-          src={author.avatar}
-          alt={author.name}
-          loading="lazy"
-          class="h-[219px] w-full shrink-0 rounded-card object-cover sm:w-[227px]"
-        />
-        <div class="flex flex-1 flex-col justify-between gap-8">
-          <p class="text-md text-ink">{quote}</p>
-          <div class="flex flex-col gap-1">
-            <p class="text-sm font-semibold uppercase">{author.name}</p>
-            <p class="text-base text-black">{author.role}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Right — stat + CTA */}
-      <div
-        data-reveal
-        class="flex flex-col justify-between gap-10 lg:items-end lg:text-right"
-        style="transition-delay:120ms"
-      >
-        <div class="flex flex-col items-start gap-4 lg:items-end">
-          <div class="flex items-start gap-2">
-            <span class="relative">
-              <span
-                aria-hidden="true"
-                class="absolute inset-x-0 bottom-[0.14em] -z-10 h-2 bg-purple-tint"
-              ></span>
-              <span class="font-serif text-h3">{stat.value}</span>
-            </span>
-            {stat.plus && <PlusChip class="mt-3" />}
-          </div>
-          <p class="text-sm font-semibold uppercase">{stat.label}</p>
-        </div>
-
-        <div class="group flex items-center">
-          <a
-            href={cta.href}
-            class="flex h-10 items-center rounded-full bg-brand px-6 text-sm font-semibold uppercase text-white"
+    {/* Testimonials — one panel per tab; only the active one is shown */}
+    <div class="w-full">
+      {
+        items.map((item, i) => (
+          <div
+            id={`tt-panel-${i}`}
+            data-tt-panel={i}
+            role="tabpanel"
+            aria-labelledby={`tt-tab-${i}`}
+            hidden={i !== 0}
+            class="flex w-full flex-col gap-12 lg:flex-row lg:items-stretch lg:justify-between lg:gap-8"
           >
-            {cta.label}
-          </a>
-          <ArrowCircle
-            variant="filled"
-            href={cta.href}
-            label={cta.label}
-            detach
-            class="-ml-px"
-          />
-        </div>
-      </div>
+            {/* Left — optional avatar + quote */}
+            <div
+              data-reveal
+              class="flex flex-col gap-8 sm:flex-row sm:gap-8 lg:max-w-[772px] lg:flex-1"
+            >
+              {item.author.avatar && (
+                <img
+                  src={item.author.avatar}
+                  alt={item.author.name}
+                  loading="lazy"
+                  class="h-[219px] w-full shrink-0 rounded-card object-cover sm:w-[227px]"
+                />
+              )}
+              <div class="flex flex-1 flex-col justify-between gap-8">
+                <p class="text-md text-ink">{item.quote}</p>
+                <div class="flex flex-col gap-1">
+                  <p class="text-sm font-semibold uppercase">
+                    {item.author.name}
+                  </p>
+                  <p class="text-base text-black">{item.author.role}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right — stat + CTA */}
+            <div
+              data-reveal
+              class="flex flex-col justify-between gap-10 lg:items-end lg:text-right"
+              style="transition-delay:120ms"
+            >
+              <div class="flex flex-col items-start gap-4 lg:items-end">
+                <div class="flex items-start gap-2">
+                  <span class="relative">
+                    <span
+                      aria-hidden="true"
+                      class="absolute inset-x-0 bottom-[0.14em] -z-10 h-2 bg-purple-tint"
+                    />
+                    <span class="font-serif text-h3">{item.stat.value}</span>
+                  </span>
+                  {item.stat.plus && <PlusChip class="mt-3" />}
+                </div>
+                <p class="text-sm font-semibold uppercase">{item.stat.label}</p>
+              </div>
+
+              <div class="group flex items-center">
+                <a
+                  href={item.cta.href}
+                  class="flex h-10 items-center rounded-full bg-brand px-6 text-sm font-semibold uppercase text-white"
+                >
+                  {item.cta.label}
+                </a>
+                <ArrowCircle
+                  variant="filled"
+                  href={item.cta.href}
+                  label={item.cta.label}
+                  detach
+                  class="-ml-px"
+                />
+              </div>
+            </div>
+          </div>
+        ))
+      }
     </div>
   </div>
 </section>
+
+<style>
+  /* Swirl bloom layer — fills the section behind the content. A soft radial
+     mask keeps it a contained centred bloom that fades to the page background
+     before the section edges. */
+  .testimonials-swirl {
+    -webkit-mask-image: radial-gradient(
+      ellipse 78% 78% at 50% 50%,
+      #000 0%,
+      #000 30%,
+      transparent 68%
+    );
+    mask-image: radial-gradient(
+      ellipse 78% 78% at 50% 50%,
+      #000 0%,
+      #000 30%,
+      transparent 68%
+    );
+  }
+
+  /* No-JS / reduced-motion fallback: a static soft-purple radial bloom. */
+  .testimonials-swirl-fallback {
+    background: radial-gradient(
+      ellipse 62% 72% at 50% 50%,
+      #d3c2ff 0%,
+      #e1d6ff 40%,
+      transparent 72%
+    );
+  }
+</style>
+
+<script>
+  // Logo tabs — clicking a customer logo swaps in its testimonial panel and
+  // moves the active state (purple hairline + full-opacity logo) to that tab.
+  const tabs = Array.from(
+    document.querySelectorAll<HTMLButtonElement>("[data-tt-tab]"),
+  );
+  const panels = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-tt-panel]"),
+  );
+
+  function activate(index: number) {
+    tabs.forEach((tab) =>
+      tab.setAttribute(
+        "aria-selected",
+        Number(tab.dataset.ttTab) === index ? "true" : "false",
+      ),
+    );
+    panels.forEach((panel) => {
+      const active = Number(panel.dataset.ttPanel) === index;
+      panel.hidden = !active;
+      // The panel was display:none when the reveal observer ran, so force its
+      // entrance elements into their final state now that it's shown.
+      if (active)
+        panel
+          .querySelectorAll<HTMLElement>("[data-reveal]")
+          .forEach((el) => el.classList.add("in-view"));
+    });
+  }
+
+  tabs.forEach((tab) =>
+    tab.addEventListener("click", () =>
+      activate(Number(tab.dataset.ttTab)),
+    ),
+  );
+</script>
+
+<script>
+  // Animated swirl bloom filling the section — the shared hero swirl recoloured
+  // to a soft-purple palette (body ~#bda4ff, highlights from the purple-100 /
+  // tint tokens), same mechanism as TriageCta.
+  import { initSwirl } from "../../lib/swirl";
+
+  const stage = document.querySelector<HTMLElement>(
+    "[data-testimonials-swirl-stage]",
+  );
+  const canvas = stage?.querySelector<HTMLCanvasElement>(
+    "canvas[data-testimonials-swirl]",
+  );
+
+  if (stage && canvas) {
+    initSwirl(canvas, stage, {
+      grainUrl: "/hero/swirl/perlin1.png",
+      circular: true,
+      warp: 0.7, // cohesive, rounded blob with a filled centre
+      speed: 2.2,
+      falloffStart: 0.5, // keep the centre filled; only the outer edge fades out
+      falloffEnd: 0.92,
+      colors: {
+        bgColor: [0.976, 0.969, 1.0], // outer field — near-white with a faint lilac
+        soft: [0.882, 0.839, 1.0], // inner highlight — purple-100 (#e1d6ff)
+        body: [0.741, 0.643, 1.0], // dominant bloom — soft purple (~#bda4ff)
+        lavender: [0.933, 0.91, 1.0], // secondary highlight — purple-tint
+        crest: [0.97, 0.97, 0.97], // gradient crest — white
+      },
+    });
+    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
+  }
+</script>
