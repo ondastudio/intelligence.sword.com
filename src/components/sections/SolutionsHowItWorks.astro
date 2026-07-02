@@ -62,20 +62,26 @@ const channelTile: Record<string, string> = {
 
 <section
   data-howitworks
-  class="relative overflow-hidden bg-surface text-black"
+  class="relative overflow-x-clip bg-surface text-black"
 >
   {/* Purple swirl bloom behind the header — the shared hero swirl recoloured to
       the soft-purple palette (same as TriageCta). Sits at z-0 below the content
-      (z-10); a radial mask keeps it a contained bloom around the headline. */}
-  <div
-    data-hiw-swirl-stage
-    aria-hidden="true"
-    class="hiw-swirl pointer-events-none absolute inset-x-0 top-0 z-0"
-  >
-    <canvas
-      data-hiw-swirl
-      class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
-    ></canvas>
+      (z-10); a radial mask keeps it a contained bloom around the headline.
+      The outer layer spans the whole (now tall, pinned) section without taking
+      layout space; the inner stage is `sticky` so the bloom stays in view behind
+      the pinned cards as the steps scrub, rather than scrolling off with the
+      section top. It releases at the section's bottom, so it never bleeds into
+      the next section. */}
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-0">
+    <div
+      data-hiw-swirl-stage
+      class="hiw-swirl sticky top-0"
+    >
+      <canvas
+        data-hiw-swirl
+        class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+      ></canvas>
+    </div>
   </div>
 
   <div
@@ -107,12 +113,18 @@ const channelTile: Record<string, string> = {
     </header>
 
     {/* ---- Stepper -------------------------------------------------------- */}
-    {/* NB: no data-reveal on this wrapper — its will-change/transform would make
-        it a backdrop-filter boundary and kill the frosted tooltip inside the
-        nav. The reveal lives on the panel stack below instead. */}
-    <div
-      class="relative flex w-full max-w-[1064px] flex-col gap-8 lg:max-w-[1208px] lg:flex-row lg:items-start lg:gap-[clamp(2rem,4vw,52px)]"
-    >
+    {/* On lg + motion the stage pins and vertical scroll advances the active step
+        (one step per scroll segment; see the pin script below), the icon navbar
+        syncs to it and a click smooth-scrolls to that step. Below lg / reduced
+        motion the pin is off and it's the plain click stepper.
+        NB: no data-reveal on the stage — its will-change/transform would make it a
+        backdrop-filter boundary and kill the frosted tooltip inside the nav. The
+        reveal lives on the panel stack below instead. */}
+    <div data-hiw-track class="hiw-track w-full">
+      <div
+        data-hiw-stage
+        class="hiw-stage relative mx-auto flex w-full max-w-[1064px] flex-col gap-8 lg:max-w-[1208px] lg:flex-row lg:items-start lg:gap-[clamp(2rem,4vw,52px)]"
+      >
       {/* Lateral icon navbar — horizontal row on mobile, vertical pill at lg+ */}
       <nav
         role="tablist"
@@ -488,50 +500,187 @@ const channelTile: Record<string, string> = {
           ))
         }
       </div>
+      </div>
     </div>
   </div>
 </section>
 
 <script>
-  // Icon navbar drives the active step: clicking a tab swaps aria-selected and
-  // reveals its panel. Panels share one grid cell (CSS), so this is just a
-  // visibility toggle — the stack handles the crossfade.
+  // The How-it-works stepper runs in one of two modes (like the homepage Care
+  // Orchestration cards):
+  //  • pinned (lg + motion allowed): the stage sticks and continued scroll is
+  //    scrubbed into one segment per step — the active step advances as you
+  //    scroll, panels crossfading in place (no horizontal slide). The icon navbar
+  //    stays in sync; clicking an icon smooth-scrolls to that step's segment.
+  //  • static (below lg, or reduced motion): no pin — the plain click stepper;
+  //    clicking / arrow-keying a tab swaps the active step directly.
   function initHowItWorks(section: HTMLElement) {
+    const track = section.querySelector<HTMLElement>("[data-hiw-track]");
+    const stage = section.querySelector<HTMLElement>("[data-hiw-stage]");
     const tabs = Array.from(
       section.querySelectorAll<HTMLButtonElement>("[data-step-btn]"),
     );
     const panels = Array.from(
       section.querySelectorAll<HTMLElement>("[data-step-panel]"),
     );
-    if (!tabs.length) return;
+    if (!tabs.length || !track || !stage) return;
 
+    const N = tabs.length;
+    const clamp = (n: number, lo: number, hi: number) =>
+      Math.min(hi, Math.max(lo, n));
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const lgMQ = window.matchMedia("(min-width: 1024px)");
+
+    // Active step. `select` only mutates the DOM when the step actually changes
+    // so the crossfade isn't re-triggered every scroll frame.
+    let active = -1;
     const select = (index: number) => {
+      index = clamp(index, 0, N - 1);
+      if (index === active) return;
+      active = index;
       tabs.forEach((tab, i) =>
         tab.setAttribute("aria-selected", i === index ? "true" : "false"),
       );
       panels.forEach((panel, i) => {
         // `[hidden]` drives both the crossfade (via CSS) and the a11y tree; the
-        // forced `display: grid` keeps every panel in the same grid cell so the
+        // forced `display: flex` keeps every panel in the same grid cell so the
         // area stays sized to the tallest step.
         panel.toggleAttribute("hidden", i !== index);
       });
     };
 
+    // --- Pin geometry (recomputed on resize / breakpoint change) -------------
+    let pinned = false;
+    let segPx = 0; // scroll px each step segment is scrubbed across
+    let scrub = 0; // total pinned scroll distance
+    let stickTop = 0; // sticky `top` that lands the stage vertically centred
+    let ticking = false;
+
+    // While the scrub is holding the scroll, flag the document so the site's
+    // secondary nav (MobileHeader) stays put instead of reading the reverse
+    // scroll-up through the steps as a genuine scroll-up.
+    const setNavLocked = (on: boolean) =>
+      document.documentElement.classList.toggle("secondary-nav-locked", on);
+
+    const measure = () => {
+      section.classList.remove("is-pinned");
+      track.style.height = "";
+      stage.style.top = "";
+      stage.style.transform = "";
+      stage.style.transformOrigin = "";
+      pinned = lgMQ.matches && !reduceMotion;
+      if (!pinned) return;
+      const vh = window.innerHeight;
+      // Scroll distance each step dwells for; larger = more scroll per step.
+      segPx = Math.round(vh * 0.6);
+      scrub = N * segPx;
+      const minTop = 24;
+      const stageH = stage.offsetHeight;
+      // Scale the stage down to fit shorter viewports (keeping Figma proportions)
+      // so the whole card stays visible while pinned rather than overflowing.
+      const fitScale = Math.min(1, (vh - minTop * 2) / stageH);
+      stage.style.transformOrigin = "top center";
+      stage.style.transform = fitScale < 1 ? `scale(${fitScale})` : "";
+      const scaledH = stageH * fitScale;
+      stickTop = Math.max(minTop, Math.round((vh - scaledH) / 2));
+      stage.style.top = `${stickTop}px`;
+      section.classList.add("is-pinned");
+      track.style.height = `${stageH + scrub}px`;
+    };
+
+    const render = () => {
+      ticking = false;
+      if (!pinned) {
+        setNavLocked(false);
+        return;
+      }
+      // The stage sticks at top:stickTop and holds for `scrub` px; track top runs
+      // stickTop → stickTop − scrub across that span. Map it to an equal segment
+      // per step.
+      const raw = (stickTop - track.getBoundingClientRect().top) / scrub;
+      setNavLocked(raw > 0 && raw < 1);
+      select(clamp(Math.floor(clamp(raw, 0, 1) * N), 0, N - 1));
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    };
+
+    // --- Eased scroll tween for nav clicks -----------------------------------
+    // Native `behavior:"smooth"` snaps too fast when a click spans several
+    // segments; tweening over an eased, distance-scaled duration glides the step
+    // scrubbing in at a steady pace. A manual wheel/touch cancels it.
+    const easeOutQuint = (t: number) => 1 - Math.pow(1 - t, 5);
+    let scrollAnim = 0;
+    const cancelScrollTween = () => {
+      if (scrollAnim) {
+        cancelAnimationFrame(scrollAnim);
+        scrollAnim = 0;
+      }
+    };
+    const smoothScrollTo = (target: number) => {
+      cancelScrollTween();
+      const start = window.scrollY;
+      const dist = target - start;
+      if (Math.abs(dist) < 1) return;
+      const segments = segPx ? Math.abs(dist) / segPx : 1;
+      const duration = Math.min(2000, Math.max(700, 520 * segments));
+      const startTime = performance.now();
+      const stepTween = (now: number) => {
+        const t = Math.min(1, (now - startTime) / duration);
+        window.scrollTo(0, start + dist * easeOutQuint(t));
+        scrollAnim = t < 1 ? requestAnimationFrame(stepTween) : 0;
+      };
+      scrollAnim = requestAnimationFrame(stepTween);
+    };
+    window.addEventListener("wheel", cancelScrollTween, { passive: true });
+    window.addEventListener("touchstart", cancelScrollTween, { passive: true });
+
+    // Scroll to a step's segment centre (only meaningful while pinned).
+    const scrollToStep = (i: number) => {
+      const trackTop = window.scrollY + track.getBoundingClientRect().top;
+      smoothScrollTo(trackTop - stickTop + (clamp(i, 0, N - 1) + 0.5) * segPx);
+    };
+
+    const goTo = (i: number) => {
+      if (pinned) scrollToStep(i);
+      else select(i);
+    };
+
     tabs.forEach((tab, i) => {
-      tab.addEventListener("click", () => select(i));
+      tab.addEventListener("click", () => goTo(i));
       // Roving arrow-key navigation across the tablist.
       tab.addEventListener("keydown", (e) => {
-        if (e.key !== "ArrowDown" && e.key !== "ArrowRight" &&
-            e.key !== "ArrowUp" && e.key !== "ArrowLeft") return;
+        if (
+          e.key !== "ArrowDown" &&
+          e.key !== "ArrowRight" &&
+          e.key !== "ArrowUp" &&
+          e.key !== "ArrowLeft"
+        )
+          return;
         e.preventDefault();
         const dir = e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : -1;
-        const next = (i + dir + tabs.length) % tabs.length;
-        select(next);
+        const next = (Math.max(0, active) + dir + N) % N;
+        goTo(next);
         tabs[next].focus();
       });
     });
 
+    const onResize = () => {
+      measure();
+      render();
+    };
+
     select(0);
+    measure();
+    render();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    lgMQ.addEventListener("change", onResize);
   }
 
   document
@@ -570,6 +719,19 @@ const channelTile: Record<string, string> = {
       transition: none;
       transform: none;
     }
+  }
+
+  /* Pin: on lg + motion the stage sticks while vertical scroll is scrubbed into
+     one segment per step (JS drives the active step against the pinned progress,
+     panels crossfade in place — no horizontal slide). The stage stays in normal
+     flow until it sticks; JS sets `top` so it lands vertically centred, the track
+     height (taller than the viewport) reserves the scrub distance, and is-pinned
+     turns the sticky on. `overflow-x: clip` on the section clips horizontally
+     without creating a scroll container, so this sticky resolves to the viewport.
+     Off is-pinned (below lg / reduced motion) the stage is static — the plain
+     click stepper. */
+  [data-howitworks].is-pinned .hiw-stage {
+    position: sticky;
   }
 
   /* Purple swirl bloom layer — spans from the header down through the stepper
