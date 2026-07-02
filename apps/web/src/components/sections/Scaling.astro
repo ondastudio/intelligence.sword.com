@@ -23,7 +23,7 @@ const { eyebrow, heading, body, stats } = data;
 <!-- overflow-x-clip (not overflow-hidden) so the bloom can bleed past the
      section's top/bottom into the neighbouring sections without adding a
      horizontal scrollbar. -->
-<section class="scaling relative overflow-x-clip py-[120px] text-black lg:pt-[240px]">
+<section id="scaling" class="scaling relative overflow-x-clip py-[120px] text-black lg:pt-[240px]">
   <!-- Animated neon-lime swirl bloom blooming from the right, behind the copy
        and stats. The shared hero swirl recoloured to the lime palette; a CSS
        lime wash is the no-JS / reduced-motion fallback. Sits at z-0 below the
@@ -40,7 +40,8 @@ const { eyebrow, heading, body, stats } = data;
   </div>
 
   <div
-    class="relative z-10 mx-auto w-full max-w-[1440px] px-5 sm:px-6 lg:px-20"
+    id="scaling-heading"
+    class="relative z-10 mx-auto w-full max-w-[1440px] scroll-mt-20 px-5 sm:px-6 lg:px-20"
   >
     <!-- Heading block -->
     <div class="flex flex-col gap-6">

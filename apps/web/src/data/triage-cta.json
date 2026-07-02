@@ -1,7 +1,7 @@
 {
   "heading": {
     "line1": "Looking for another use case?",
-    "line2": "We can custom-build a solution for you."
+    "line2": "If it's care ops, we can build it."
   },
-  "cta": { "label": "Book a meeting", "href": "/book-an-intro" }
+  "cta": { "label": "Book a meeting", "href": "/book" }
 }

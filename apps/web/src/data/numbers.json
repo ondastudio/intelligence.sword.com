@@ -17,7 +17,7 @@
     },
     "workdays": {
       "value": "686",
-      "label": "Admin workdays saved in one year.",
+      "label": "Admin workdays saved in one year",
       "href": "#"
     }
   },
@@ -33,6 +33,6 @@
   },
   "cta": {
     "label": "Book a Meeting",
-    "href": "/book-an-intro"
+    "href": "/book"
   }
 }

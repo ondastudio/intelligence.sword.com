@@ -1,0 +1,53 @@
+---
+/**
+ * ErrorHero — the 404 hero (Figma node 9291:1332 "Error Page").
+ *
+ * A full-viewport hero (transparent over the page's SwirlBackground): the shared
+ * Navbar overlaid on top, then a large Lora statement (64px / text-h4) centered
+ * in the viewport with a purple
+ * "Go back" pill below it. The pill is a merged shape — a filled arrow circle
+ * (arrow rotated 180° so it points back) butted against the label pill, both in
+ * brand purple; on hover the circle slides away from the pill.
+ *
+ * Content comes from src/data/error.json. The Footer is composed by the page.
+ */
+import error from "../../data/error.json";
+import Navbar from "../layout/Navbar.astro";
+import ArrowCircle from "../ui/ArrowCircle.astro";
+
+const { heading, cta } = error;
+---
+
+{/* Transparent over the SwirlBackground the page places behind it (z-0); the
+    content sits at z-10. See src/pages/404.astro. */}
+<section
+  class="relative z-10 flex min-h-screen flex-col justify-center text-ink"
+>
+  <Navbar />
+
+  <div class="relative z-10 mx-auto w-full max-w-[1440px] px-6 lg:px-20">
+    <div class="flex flex-col items-start gap-10 py-40">
+      <h1 data-reveal="title" class="max-w-[709px] font-serif font-normal text-h4">
+        {heading}
+      </h1>
+
+      <!-- Merged back-CTA: arrow circle butted against the label pill. -->
+      <div data-reveal class="group flex items-center" style="transition-delay:120ms">
+        <ArrowCircle
+          variant="filled"
+          glyph="arrow"
+          rotate={180}
+          href={cta.href}
+          label={cta.label}
+          class="-mr-px transition-transform duration-300 ease-out group-hover:-translate-x-1"
+        />
+        <a
+          href={cta.href}
+          class="flex h-10 items-center rounded-full bg-brand px-6 text-sm font-semibold uppercase text-white"
+        >
+          {cta.label}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

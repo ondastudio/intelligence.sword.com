@@ -5,5 +5,5 @@
     "accent": "don’t wait",
     "after": "."
   },
-  "cta": { "label": "Get started", "href": "/book-an-intro" }
+  "cta": { "label": "Get started", "href": "/book" }
 }

@@ -1,6 +1,6 @@
 {
   "hero": {
-    "eyebrow": "Surgery prehab and rehab.",
+    "eyebrow": "Surgery prehab and rehab",
     "headline": "Prepare every patient, support every recovery.",
     "paragraph": "Intelligence enrolls every patient on your surgical list, identifies who's at risk, delivers personalized preparation and stays with them all the way through recovery."
   },
@@ -20,9 +20,9 @@
     "alt": "Sword Intelligence AI Care Manager handling a patient call"
   },
   "problem": {
-    "eyebrow": "Problem.",
+    "eyebrow": "Problem",
     "heading": "The wait and the recovery are intervention windows. Most systems stay passive through both.",
-    "subheading": "Here’s what they can do for you and your patients:",
+    "subheading": "Here’s what they can do for you and your patients.",
     "cards": [
       {
         "value": "~1 in 5",
@@ -59,7 +59,7 @@
     ]
   },
   "solution": {
-    "eyebrow": "Solution.",
+    "eyebrow": "Solution",
     "headingLead": "Our AI Care Managers turn your waiting list into ",
     "headingAccent": "a preparation and recovery list.",
     "subheading": "They enroll every patient autonomously, coach them through the crucial weeks, and keep supporting them through recovery, while your surgical team focuses on the clinical procedures.",
@@ -70,8 +70,74 @@
       { "value": "£405K", "label": "saved for one NHS Trust in 3 months" }
     ]
   },
+  "careManagers": {
+    "eyebrow": "Technology",
+    "heading": "Meet your AI Care Managers.",
+    "description": "Behind every interaction is an intelligent agent purpose-built for healthcare operations. They contact patients, read documents, navigate legacy platforms, and act on what they find. Every action is logged, auditable, and configurable to your clinical protocols.",
+    "features": [
+      {
+        "media": "lottie",
+        "lottie": "/solutions/care-managers/anim/always-on.lottie",
+        "lead": "Always on",
+        "rest": ", answering every call and monitoring your population."
+      },
+      {
+        "media": "lottie",
+        "lottie": "/solutions/care-managers/anim/multichannel.lottie",
+        "lead": "Communication",
+        "rest": " across every channel the patient already uses, without losing context."
+      },
+      {
+        "media": "lottie",
+        "lottie": "/solutions/care-managers/anim/conversational.lottie",
+        "lead": "Conversational AI",
+        "rest": " that speaks naturally in any language and local accent."
+      },
+      {
+        "media": "icon",
+        "icon": "/solutions/care-managers/icon-coordination.svg",
+        "lead": "Coordination with qualified Prehabilitation Specialists",
+        "rest": " for every patient throughout the journey."
+      },
+      {
+        "media": "icon",
+        "icon": "/solutions/care-managers/icon-academy.svg",
+        "iconFull": true,
+        "lead": "Powered by Sword's Academy",
+        "rest": ", an evidence-informed content library covering exercise, nutrition, sleep, mindfulness, smoking cessation, and surgical preparation."
+      }
+    ],
+    "trust": {
+      "label": "Trusted by the most regulated industry in the world.",
+      "badges": [
+        { "src": "/solutions/care-managers/badges/13485.png", "alt": "ISO 13485 Accredited" },
+        { "src": "/solutions/care-managers/badges/soc2.png", "alt": "SOC 2 Compliant" },
+        { "src": "/solutions/care-managers/badges/mdr.png", "alt": "MDR Class IIa Compliant" },
+        { "src": "/solutions/care-managers/badges/nhs.png", "alt": "NHS Compliant" },
+        { "src": "/solutions/care-managers/badges/hipaa.png", "alt": "HIPAA Compliant" },
+        { "src": "/solutions/care-managers/badges/cyber.png", "alt": "Cyber Essentials Plus" }
+      ]
+    },
+    "ehr": {
+      "label": "No EHR migration. No platform overhaul.",
+      "logos": [
+        { "src": "/solutions/care-managers/ehr/advancedmd.png", "alt": "AdvancedMD" },
+        { "src": "/solutions/care-managers/ehr/trubridge.png", "alt": "TruBridge" },
+        { "src": "/solutions/care-managers/ehr/veradigm.png", "alt": "Veradigm" },
+        { "src": "/solutions/care-managers/ehr/cerner.png", "alt": "Cerner" },
+        { "src": "/solutions/care-managers/ehr/elation.png", "alt": "Elation" },
+        { "src": "/solutions/care-managers/ehr/eclinicalworks.png", "alt": "eClinicalWorks" },
+        { "src": "/solutions/care-managers/ehr/greenway.png", "alt": "Greenway Health" },
+        { "src": "/solutions/care-managers/ehr/nextech.png", "alt": "Nextech" },
+        { "src": "/solutions/care-managers/ehr/modmed.png", "alt": "ModMed" },
+        { "src": "/solutions/care-managers/ehr/athenahealth.png", "alt": "athenahealth" },
+        { "src": "/solutions/care-managers/ehr/meditech.png", "alt": "MEDITECH Expanse" },
+        { "src": "/solutions/care-managers/ehr/epic.png", "alt": "Epic" }
+      ]
+    }
+  },
   "howItWorks": {
-    "eyebrow": "How it works.",
+    "eyebrow": "How it works",
     "headline": "Enroll. Coach. Prepare. Recover.",
     "capabilities": [
       "Voice, SMS, Email, Chat",
@@ -83,37 +149,83 @@
       {
         "icon": "content-writing",
         "navLabel": "Automatic enrollment",
-        "eyebrow": "Automatic Enrollment.",
+        "eyebrow": "Automatic Enrollment",
         "heading": "Enroll patients before they even think to ask.",
-        "body": "The moment a surgery is scheduled in your system, Intelligence picks it up and enrollment starts automatically — no manual referrals, or patient actions required before preparation starts."
+        "body": "The moment a surgery is scheduled in your system, Intelligence picks it up and enrollment starts automatically — no manual referrals, or patient actions required before preparation starts.",
+        "media": "enrollment",
+        "enrollment": {
+          "title": "Waiting list activation",
+          "progressLabel": "Matching population…",
+          "progressValue": 80,
+          "patients": [
+            { "name": "Amelia Carter", "surgery": "Hip replacement", "avatar": "/solutions/patients/amelia.png" },
+            { "name": "Jullie Smith", "surgery": "Knee surgery", "avatar": "/solutions/patients/jullie.png" },
+            { "name": "Kim Chen", "surgery": "Hip replacement", "avatar": "/solutions/patients/kim.png" },
+            { "name": "Charlie Webber", "surgery": "Ankle surgery", "avatar": "/solutions/patients/charlie.png" }
+          ],
+          "waitingCount": 80
+        }
       },
       {
         "icon": "bubble-chat",
-        "navLabel": "Personalized coaching",
-        "eyebrow": "Personalized Coaching.",
-        "heading": "Coach every patient through the weeks that matter.",
-        "body": "Across voice, SMS, email and chat, Intelligence guides each patient through their own preparation plan — answering questions, sending reminders and keeping momentum, without adding to your team's workload."
+        "navLabel": "Conversational health assessment",
+        "eyebrow": "Conversational Health Assessment",
+        "heading": "Start by figuring out where each patient actually is.",
+        "body": "Before coaching begins, our AI Care Managers reach out to understand where each patient is starting from — their lifestyle, habits, and goals, so we can adapt the journey to their unique context.",
+        "media": "calling",
+        "avatar": "/solutions/conversational-health-assessment.jpg",
+        "contactName": "Sarah McDermott",
+        "contactStatus": "Calling…"
       },
       {
         "icon": "orthogonal-edge",
-        "navLabel": "Surgical risk prediction",
-        "eyebrow": "Surgical Risk Prediction.",
-        "heading": "Spot the patients who need attention first.",
-        "body": "Real-time EHR integration lets Intelligence read every signal and predict surgical risk, surfacing the patients most likely to face complications or cancellation so your team can act early."
+        "navLabel": "AI+Human coaching journey",
+        "eyebrow": "AI+Human Coaching Journey",
+        "heading": "Offer the right support, at every stage.",
+        "body": "Our AI agents deliver fully adaptive, responsive coaching around the clock, backed by a qualified prehabilitation specialist, always reachable for 1-to-1\nsupport when it matters the most.",
+        "media": "journey",
+        "journey": [
+          { "icon": "bubble-chat", "title": "SMS", "meta": "14 days out", "detail": "Suggest light exercise" },
+          { "icon": "phone", "title": "Call", "meta": "14 days out", "detail": "clarify on medication instructions" },
+          { "icon": "check", "title": "Surgery completed", "detail": "Hip surgery" }
+        ]
       },
       {
         "icon": "ai-audio",
-        "navLabel": "Always-on communication",
-        "eyebrow": "Always-on Communication.",
-        "heading": "A care manager that never sleeps.",
-        "body": "Patients reach Intelligence whenever they need it, and it reaches back in their own language, on their own channel — turning weeks of silence into continuous, two-way support."
+        "navLabel": "Hyper personalized interactions",
+        "eyebrow": "Hyper Personalized Interactions",
+        "heading": "Meet patients where they already are.",
+        "body": "Voice calls, chat messages, SMS — our AI Care Managers will adapt to the channels your patients choose, and plan interactions to fit their existing routines. No additional apps to download.",
+        "media": "preferences",
+        "avatar": "/solutions/roberta-armond.png",
+        "contactName": "Roberta Armond",
+        "contactStatus": "prefers",
+        "preferences": [
+          { "icon": "sms", "label": "SMS", "when": "all day" },
+          { "icon": "call", "label": "Call", "when": "after 6pm" },
+          { "icon": "email", "label": "Email", "when": "after 6pm" }
+        ]
       },
       {
         "icon": "home-10",
-        "navLabel": "Recovery at home",
-        "eyebrow": "Recovery at Home.",
-        "heading": "Stay with every patient long after discharge.",
-        "body": "Intelligence follows each patient home, monitoring recovery, flagging warning signs early and keeping a human coach in the loop — so readmissions drop and outcomes hold."
+        "navLabel": "Post-surgery recovery support",
+        "eyebrow": "Post-Surgery Recovery Support",
+        "heading": "Stay on for the critical weeks after surgery.",
+        "body": "On the weeks after surgery, Intelligence checks back in — covering activity, sleep, nutrition, and general wellbeing — through the same channels the patient already knows.",
+        "media": "recovery",
+        "recovery": [
+          {
+            "icon": "logout",
+            "title": "Immediate Outreach",
+            "channels": [
+              { "icon": "bubble-chat", "label": "SMS", "meta": "Discharge day", "highlight": true },
+              { "icon": "phone", "label": "Call", "meta": "2 days after" }
+            ]
+          },
+          { "icon": "pill", "title": "Medication Adherence" },
+          { "icon": "route", "title": "Follow-up Navigation" },
+          { "icon": "home-10", "title": "Ongoing Monitoring" }
+        ]
       }
     ]
   }

@@ -9,6 +9,7 @@
  */
 import '../styles/global.css';
 import MobileHeader from '../components/layout/MobileHeader.astro';
+import organization from '../data/organization.json';
 
 interface Props {
   title: string;
@@ -17,14 +18,47 @@ interface Props {
   mobileNav?: boolean;
   /** Social-share card, root-relative path in /public. Defaults to the brand card. */
   ogImage?: string;
+  /** Keep this page out of search results (e.g. the internal /styleguide catalog). */
+  noindex?: boolean;
 }
 
-const { title, description = '', mobileNav = true, ogImage: ogImagePath = '/og-image.png' } = Astro.props;
+const {
+  title,
+  description = '',
+  mobileNav = true,
+  ogImage: ogImagePath = '/og-image.png',
+  noindex = false,
+} = Astro.props;
 
 // Absolute URLs for social sharing. Astro.site is the canonical origin set in
 // astro.config.mjs; both fall back gracefully if a page is viewed standalone.
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(ogImagePath, Astro.site);
+
+// Sitewide Organization + WebSite structured data (JSON-LD). Org identity
+// (name, logo, social profiles) lives in src/data/organization.json.
+const siteUrl = new URL(Astro.site ?? '/');
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${siteUrl}#organization`,
+      name: organization.name,
+      legalName: organization.legalName,
+      url: siteUrl.toString(),
+      logo: new URL(organization.logo, Astro.site).toString(),
+      sameAs: organization.sameAs,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}#website`,
+      name: organization.name,
+      url: siteUrl.toString(),
+      publisher: { '@id': `${siteUrl}#organization` },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -45,6 +79,7 @@ const ogImage = new URL(ogImagePath, Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonicalUrl} />
 
     <!-- Open Graph / social sharing card. Image is a fixed brand card in
@@ -56,7 +91,7 @@ const ogImage = new URL(ogImagePath, Astro.site);
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:height" content="639" />
     <meta property="og:image:alt" content="Sword Intelligence" />
 
     <!-- Twitter / X large-image card -->
@@ -72,6 +107,9 @@ const ogImage = new URL(ogImagePath, Astro.site);
       rel="stylesheet"
     />
     <title>{title}</title>
+
+    <!-- Sitewide Organization + WebSite structured data -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body>
     {/* Global mobile nav — rendered at the body root so it always stays above

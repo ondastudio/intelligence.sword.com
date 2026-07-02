@@ -1,0 +1,28 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SwirlBackground from "../components/sections/SwirlBackground.astro";
+import ErrorHero from "../components/sections/ErrorHero.astro";
+import Footer from "../components/sections/Footer.astro";
+---
+
+<Layout
+  title="Page not found | Sword Intelligence"
+  description="The page you’re looking for isn’t part of the system. Head back to Sword Intelligence."
+  ogImage="/og-image-error.png"
+>
+  {/* Footer-reveal shell (same as the other pages): the hero lives in the opaque
+      `.page-content` pane, and the footer is pinned behind it — the last stretch
+      of scroll lifts the pane to uncover the footer underneath.
+
+      Inside it, the purple swirl sits behind the hero. `contain` caps it to the
+      hero height and fades it out before the bottom edge so it never spills onto
+      the footer (same standalone-hero pattern as book). The wrapper
+      carries the surface background; ErrorHero is transparent and sits at z-10. */}
+  <div class="page-content">
+    <div class="relative isolate bg-surface">
+      <SwirlBackground contain />
+      <ErrorHero />
+    </div>
+  </div>
+  <Footer variant="purple" />
+</Layout>

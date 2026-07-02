@@ -28,7 +28,7 @@
         "points": [
           {
             "before": "Behavioral risk model ",
-            "strong": "predicts DNAs",
+            "strong": "predicts no-shows",
             "rest": "."
           },
           {
@@ -207,8 +207,8 @@
       "alt": "MDR Class IIa Compliant"
     },
     "headline": {
-      "highlight": "Health Triage line that ",
-      "rest": "guides every patient to the right care."
+      "highlight": "Guide every patient to the right care.",
+      "rest": ""
     },
     "media": {
       "variant": "video",

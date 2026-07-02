@@ -73,7 +73,6 @@ const SECTION_ORDER: { key: string; title: string }[] = [
   { key: "intro", title: "Intro" },
   { key: "care", title: "Care" },
   { key: "triage", title: "Triage" },
-  { key: "triageCta", title: "Triage CTA" },
   { key: "platform", title: "Platform" },
   { key: "trust", title: "Trust" },
   { key: "operations", title: "Operations" },
@@ -285,17 +284,6 @@ export const homePage = defineType({
         collapsed,
       ),
     ]),
-
-    // ---- Triage CTA ----
-    section(
-      "triageCta",
-      "triage",
-      [
-        defineField({ name: "heading", type: "styledHeadline" }),
-        defineField({ name: "cta", type: "cta" }),
-      ],
-      "Triage CTA",
-    ),
 
     // ---- Trust ----
     section("trust", "trust", [

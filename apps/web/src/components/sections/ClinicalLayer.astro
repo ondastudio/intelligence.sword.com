@@ -24,9 +24,7 @@ import ClinicalStepPill from "../ui/ClinicalStepPill.astro";
 import ClinicalDiagram from "../ui/ClinicalDiagram.astro";
 import ClinicalDiagram02 from "../ui/ClinicalDiagram02.astro";
 import ClinicalDiagram03 from "../ui/ClinicalDiagram03.astro";
-import ClinicalDiagram31 from "../ui/ClinicalDiagram31.astro";
 import ClinicalDiagram04 from "../ui/ClinicalDiagram04.astro";
-import ClinicalDiagram05 from "../ui/ClinicalDiagram05.astro";
 import ClinicalDiagram06 from "../ui/ClinicalDiagram06.astro";
 import ClinicalLogoMarquee from "../ui/ClinicalLogoMarquee.astro";
 import { getHomePage } from "../../lib/sanity/queries";
@@ -74,10 +72,10 @@ const integrationLogos = (data.integrationLogos ?? []).map(
           ></canvas>
         </div>
         <div
-          class="clinical-row mt-12 flex flex-col items-center gap-16 lg:mt-[120px] lg:flex-row lg:items-center lg:justify-between lg:gap-0"
+          class="clinical-row mt-12 flex flex-col items-center gap-16 lg:mt-[120px] lg:flex-row lg:items-start lg:justify-between lg:gap-0"
         >
           <!-- Card column: two layers share one slot. The original capability
-             cards (state "a") are held through beats A–F; on the final beat they
+             cards (state "a") are held through beats A–E; on the final beat they
              crossfade out to the alternate "Complex operations" card set
              (state "b"), in sync with the diagram swapping to ClinicalDiagram06.
              On mobile / no-JS both layers stack in normal flow. -->
@@ -202,20 +200,7 @@ const integrationLogos = (data.integrationLogos ?? []).map(
                 <ClinicalDiagram03 />
               </div>
             </div>
-            <!-- Sub-beat of step 03: keeps the same "03 / AI Skills" chip. -->
             <div data-clinical-state="d" class="clinical-state">
-              <div
-                class="clinical-figure relative mx-auto w-full max-w-[827px]"
-              >
-                <ClinicalStepPill
-                  num={steps[2].num}
-                  label={steps[2].label}
-                  class="absolute left-0 top-0 z-10"
-                />
-                <ClinicalDiagram31 />
-              </div>
-            </div>
-            <div data-clinical-state="e" class="clinical-state">
               <div
                 class="clinical-figure relative mx-auto w-full max-w-[827px]"
               >
@@ -227,20 +212,8 @@ const integrationLogos = (data.integrationLogos ?? []).map(
                 <ClinicalDiagram04 logos={integrationLogos} />
               </div>
             </div>
-            <div data-clinical-state="f" class="clinical-state">
-              <div
-                class="clinical-figure relative mx-auto w-full max-w-[827px]"
-              >
-                <ClinicalStepPill
-                  num={steps[4].num}
-                  label={steps[4].label}
-                  class="absolute left-0 top-0 z-10"
-                />
-                <ClinicalDiagram05 />
-              </div>
-            </div>
             <!-- Closing beat: no step chip — pairs with the alternate card set. -->
-            <div data-clinical-state="g" class="clinical-state">
+            <div data-clinical-state="e" class="clinical-state">
               <div
                 class="clinical-figure relative mx-auto w-full max-w-[827px]"
               >
@@ -255,7 +228,7 @@ const integrationLogos = (data.integrationLogos ?? []).map(
 
   <!-- MOBILE (below lg). Three stacked blocks, matching the mobile Figma
        (8797:51970): (1) title + capability cards; (2) a pinned crossfade of the
-       Channels→Data-foundation beats (A–F); (3) the closing "Complex operations"
+       Channels→Integrations beats (A–D); (3) the closing "Complex operations"
        beat pulled into its own static section with its own title + card set.
        The desktop side-by-side pin above is hidden here. -->
   <div class="clinical-mobile lg:hidden">
@@ -306,8 +279,8 @@ const integrationLogos = (data.integrationLogos ?? []).map(
       </div>
     </div>
 
-    <!-- Block 2 — pinned crossfade of beats A–F. Each state is a step chip above
-         its diagram; the six states overlap in one slot and crossfade as the pin
+    <!-- Block 2 — pinned crossfade of beats A–D. Each state is a step chip above
+         its diagram; the four states overlap in one slot and crossfade as the pin
          scrolls. No-JS / reduced-motion: the states fall back to a normal stack. -->
     <div data-clinical-m-pin class="clinical-m-pin mt-[120px]">
       <div class="clinical-m-sticky">
@@ -339,14 +312,6 @@ const integrationLogos = (data.integrationLogos ?? []).map(
             </div>
             <div data-cm-state="d" class="clinical-m-state">
               <ClinicalStepPill
-                num={steps[2].num}
-                label={steps[2].label}
-                class="mb-6"
-              />
-              <ClinicalDiagram31 class="mt-8" />
-            </div>
-            <div data-cm-state="e" class="clinical-m-state">
-              <ClinicalStepPill
                 num={steps[3].num}
                 label={steps[3].label}
                 class="mb-6"
@@ -363,14 +328,6 @@ const integrationLogos = (data.integrationLogos ?? []).map(
                   <ClinicalLogoMarquee rows={integrationLogos} />
                 </div>
               </div>
-            </div>
-            <div data-cm-state="f" class="clinical-m-state">
-              <ClinicalStepPill
-                num={steps[4].num}
-                label={steps[4].label}
-                class="mb-6"
-              />
-              <ClinicalDiagram05 class="mt-8" />
             </div>
           </div>
         </div>
@@ -466,12 +423,6 @@ const integrationLogos = (data.integrationLogos ?? []).map(
     const stateE = section.querySelector<HTMLElement>(
       '[data-clinical-state="e"]',
     );
-    const stateF = section.querySelector<HTMLElement>(
-      '[data-clinical-state="f"]',
-    );
-    const stateG = section.querySelector<HTMLElement>(
-      '[data-clinical-state="g"]',
-    );
     const cardsA = section.querySelector<HTMLElement>(
       '[data-clinical-cards="a"]',
     );
@@ -479,65 +430,60 @@ const integrationLogos = (data.integrationLogos ?? []).map(
       '[data-clinical-cards="b"]',
     );
     const title = section.querySelector<HTMLElement>('[data-reveal="title"]');
-    if (
-      !stateA ||
-      !stateB ||
-      !stateC ||
-      !stateD ||
-      !stateE ||
-      !stateF ||
-      !stateG
-    )
-      return;
+    if (!stateA || !stateB || !stateC || !stateD || !stateE) return;
 
-    // Timeline windows over the section's scrub distance (easy to tune). Seven
+    // Timeline windows over the section's scrub distance (easy to tune). Five
     // beats chain through one slot: Channels (A) is held first, then crossfades
-    // to Clinical intelligence (B) → AI Skills (C) → a second AI Skills view (D)
-    // → Integrations (E) → Clinical data foundation (F) → the closing "Complex
-    // operations" view (G), each holding before crossfading on to the next; G
-    // settles and holds just before the pin releases. On the final beat the LEFT
-    // card column crossfades too (cardsA → cardsB), in sync with F→G. Each beat
-    // gets a hold so the reader sees the whole illustration before it resolves.
-    const TITLE_OUT: [number, number] = [0.02, 0.07]; // title fades up + out early
-    const A_OUT: [number, number] = [0.1, 0.17]; // Channels fades + blurs away
-    const B_IN: [number, number] = [0.12, 0.19]; // Clinical resolves out of blur
-    const B_OUT: [number, number] = [0.24, 0.31]; // Clinical fades + blurs away
-    const C_IN: [number, number] = [0.26, 0.33]; // AI Skills resolves out of blur
-    const C_OUT: [number, number] = [0.38, 0.45]; // AI Skills fades + blurs away
-    const D_IN: [number, number] = [0.4, 0.47]; // 2nd AI Skills resolves out of blur
-    const D_OUT: [number, number] = [0.52, 0.59]; // 2nd AI Skills fades + blurs away
-    const E_IN: [number, number] = [0.54, 0.61]; // Integrations resolves out of blur
-    const E_OUT: [number, number] = [0.66, 0.73]; // Integrations fades + blurs away
-    const F_IN: [number, number] = [0.68, 0.75]; // Data foundation resolves out of blur
-    const F_OUT: [number, number] = [0.8, 0.87]; // Data foundation fades + blurs away
-    const G_IN: [number, number] = [0.82, 0.89]; // Closing view resolves out of blur
-    const BLUR = 12; // px — start blur for each incoming/outgoing state
+    // to Clinical intelligence (B) → AI Skills (C) → Integrations (D) → the
+    // closing "Complex operations" view (E), each holding before crossfading on
+    // to the next; E settles and holds just before the pin releases. On the final
+    // beat the LEFT card column crossfades too (cardsA → cardsB), in sync with
+    // D→E. Each beat gets a hold so the reader sees the whole illustration before
+    // it resolves.
+    const TITLE_OUT: [number, number] = [0.02, 0.08]; // title fades up + out early
+    const A_OUT: [number, number] = [0.13, 0.22]; // Channels fades + scales away
+    const B_IN: [number, number] = [0.15, 0.24]; // Clinical resolves in
+    const B_OUT: [number, number] = [0.34, 0.43]; // Clinical fades + scales away
+    const C_IN: [number, number] = [0.36, 0.45]; // AI Skills resolves in
+    const C_OUT: [number, number] = [0.55, 0.64]; // AI Skills fades + scales away
+    const D_IN: [number, number] = [0.57, 0.66]; // Integrations resolves in
+    const D_OUT: [number, number] = [0.76, 0.85]; // Integrations fades + scales away
+    const E_IN: [number, number] = [0.78, 0.87]; // Closing view resolves in
+    // Pure opacity crossfade (no zoom): both beats stay at scale 1 across the
+    // swap, so the illustrations simply dissolve into each other with no scaling
+    // push. (Setting SCALE_IN/OUT to 1 makes scaleOf() rest at 1 and paint()
+    // drop the transform to `none`.)
+    const SCALE_IN = 1; // no incoming zoom
+    const SCALE_OUT = 1; // no outgoing zoom
+    const IN_AMT = 1 - SCALE_IN;
+    const OUT_AMT = SCALE_OUT - 1;
 
     const track = (p: number, [a, b]: [number, number]) =>
       Math.min(1, Math.max(0, (p - a) / (b - a)));
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+    // Combined scale for a beat from its incoming + outgoing progress: rests at 1
+    // while held, dips to SCALE_IN before it resolves, rises to SCALE_OUT as it
+    // leaves.
+    const scaleOf = (inT: number, outT: number) =>
+      SCALE_IN + IN_AMT * inT + OUT_AMT * outT;
 
     const clearStyles = (el: HTMLElement) => {
       el.style.opacity = "";
-      el.style.filter = "";
+      el.style.transform = "";
     };
 
-    // Apply a beat's opacity + blur. iOS Safari vibrates a `position: sticky`
-    // element through the whole momentum tail whenever a `filter` layer lives
-    // inside it and the page is still scrolling — and these states otherwise
-    // keep a `filter: blur()` set at ALL times, including on fully-hidden beats
-    // (blur 12px at opacity 0) and on the resting/held beat (blur 0). Those idle
-    // filter layers are exactly what shakes. So only keep `filter` set while a
-    // beat is actually mid-transition (visible AND blurred); drop it entirely
-    // once the beat is hidden or fully resolved. The visible blur-resolve is
-    // unchanged — it only ever runs while opacity and blur are both non-trivial.
-    const paint = (el: HTMLElement, opacity: number, blurPx: number) => {
+    // Apply a beat's opacity + scale. A `transform` is GPU-composited and (unlike
+    // the old `filter: blur()`) doesn't make iOS Safari vibrate the pinned sticky
+    // element during momentum scrolling — but we still mirror that hygiene: only
+    // keep a transform set while a beat is mid-transition (visible AND off 1).
+    // Drop it to `none` once the beat is hidden or fully resolved so held/hidden
+    // beats carry no idle compositing layer.
+    const paint = (el: HTMLElement, opacity: number, scale: number) => {
       el.style.opacity = String(opacity);
-      // `none` (not "") so it overrides the CSS pre-set `filter: blur(12px)` on
-      // the hidden states — clearing to "" would fall back to that and both keep
-      // the idle layer and blur a held-visible beat.
-      el.style.filter =
-        opacity < 0.01 || blurPx < 0.15 ? "none" : `blur(${blurPx}px)`;
+      el.style.transform =
+        opacity < 0.01 || Math.abs(scale - 1) < 0.001
+          ? "none"
+          : `scale(${scale})`;
     };
 
     let ticking = false;
@@ -553,10 +499,11 @@ const integrationLogos = (data.integrationLogos ?? []).map(
         clearStyles(stateC);
         clearStyles(stateD);
         clearStyles(stateE);
-        clearStyles(stateF);
-        clearStyles(stateG);
         if (cardsA) clearStyles(cardsA);
-        if (cardsB) clearStyles(cardsB);
+        if (cardsB) {
+          clearStyles(cardsB);
+          cardsB.style.top = "";
+        }
         if (title) {
           title.style.transition = "";
           title.style.opacity = "";
@@ -590,44 +537,51 @@ const integrationLogos = (data.integrationLogos ?? []).map(
       }
 
       const aOut = easeOutCubic(track(p, A_OUT));
-      paint(stateA, 1 - aOut, aOut * BLUR);
+      paint(stateA, 1 - aOut, scaleOf(1, aOut));
 
-      // B both resolves in (from A) and later blurs back out (to C): opacity is
-      // the product of the two tracks, blur is the sum of the incoming +
-      // outgoing amounts (both 0 during B's hold).
+      // B both resolves in (from A) and later scales back out (to C): opacity is
+      // the product of the two tracks, scale chains the incoming resolve into the
+      // outgoing push (resting at 1 during B's hold).
       const bIn = easeOutCubic(track(p, B_IN));
       const bOut = easeOutCubic(track(p, B_OUT));
-      paint(stateB, bIn * (1 - bOut), (1 - bIn + bOut) * BLUR);
+      paint(stateB, bIn * (1 - bOut), scaleOf(bIn, bOut));
 
-      // C, like B, resolves in (from B) then later blurs out (to D).
+      // C, like B, resolves in (from B) then later scales out (to D).
       const cIn = easeOutCubic(track(p, C_IN));
       const cOut = easeOutCubic(track(p, C_OUT));
-      paint(stateC, cIn * (1 - cOut), (1 - cIn + cOut) * BLUR);
+      paint(stateC, cIn * (1 - cOut), scaleOf(cIn, cOut));
 
-      // D, like B and C, resolves in (from C) then later blurs out (to E).
+      // D, like B and C, resolves in (from C) then later scales out (to E).
       const dIn = easeOutCubic(track(p, D_IN));
       const dOut = easeOutCubic(track(p, D_OUT));
-      paint(stateD, dIn * (1 - dOut), (1 - dIn + dOut) * BLUR);
+      paint(stateD, dIn * (1 - dOut), scaleOf(dIn, dOut));
 
-      // E, like B–D, resolves in (from D) then later blurs out (to F).
+      // E resolves in (from D) and holds on the final beat.
       const eIn = easeOutCubic(track(p, E_IN));
-      const eOut = easeOutCubic(track(p, E_OUT));
-      paint(stateE, eIn * (1 - eOut), (1 - eIn + eOut) * BLUR);
+      paint(stateE, eIn, scaleOf(eIn, 0));
 
-      // F resolves in (from E) then blurs out (to G) on the final beat.
-      const fIn = easeOutCubic(track(p, F_IN));
-      const fOut = easeOutCubic(track(p, F_OUT));
-      paint(stateF, fIn * (1 - fOut), (1 - fIn + fOut) * BLUR);
-
-      const gIn = easeOutCubic(track(p, G_IN));
-      paint(stateG, gIn, (1 - gIn) * BLUR);
-
-      // Left card column swaps in lockstep with the F→G diagram crossfade: the
-      // original cards (A) blur out over F_OUT, the alternate set (B) resolves in
-      // over G_IN.
+      // Left card column swaps in lockstep with the D→E diagram crossfade: the
+      // original cards (A) scale out over D_OUT, the alternate set (B) resolves in
+      // over E_IN.
       if (cardsA && cardsB) {
-        paint(cardsA, 1 - fOut, fOut * BLUR);
-        paint(cardsB, gIn, (1 - gIn) * BLUR);
+        paint(cardsA, 1 - dOut, scaleOf(1, dOut));
+        paint(cardsB, eIn, scaleOf(eIn, 0));
+
+        // Centre the closing set (heading + subtext + cards) on the viewport's
+        // vertical midline while the pin is held. The pinned row is anchored 80px
+        // from the top — not viewport-centred — so a static column-relative centre
+        // reads low; offset cardsB to the true viewport centre instead. Once the
+        // pin releases (rawP > 1) clear the override so it scrolls away with the
+        // column.
+        const rawP =
+          scrub > 0 ? -section.getBoundingClientRect().top / scrub : 0;
+        const col = cardsB.parentElement;
+        if (col && rawP >= 0 && rawP <= 1) {
+          const colTop = col.getBoundingClientRect().top;
+          cardsB.style.top = `${window.innerHeight / 2 - colTop - cardsB.offsetHeight / 2}px`;
+        } else {
+          cardsB.style.top = "";
+        }
       }
     };
 
@@ -646,23 +600,23 @@ const integrationLogos = (data.integrationLogos ?? []).map(
     .querySelectorAll<HTMLElement>("[data-clinical-layer]")
     .forEach(initClinicalLayer);
 
-  // Mobile (<lg) crossfade: the same pinned-scrubber mechanism, but over the six
-  // beats A–F only (the closing beat lives in its own static block below). The
+  // Mobile (<lg) crossfade: the same pinned-scrubber mechanism, but over the four
+  // beats A–D only (the closing beat lives in its own static block below). The
   // pin is a tall section with a sticky stage; progress is how far the pin has
   // scrolled past the top of the viewport. Gated on motion + max-width:1023px
-  // (matching the CSS); otherwise the six states stay in normal stacked flow.
+  // (matching the CSS); otherwise the four states stay in normal stacked flow.
   function initClinicalMobile(pin: HTMLElement) {
     const enabled = () =>
       window.matchMedia(
         "(prefers-reduced-motion: no-preference) and (max-width: 1023px)",
       ).matches;
 
-    const keys = ["a", "b", "c", "d", "e", "f"] as const;
+    const keys = ["a", "b", "c", "d"] as const;
     const states = keys.map((k) =>
       pin.querySelector<HTMLElement>(`[data-cm-state="${k}"]`),
     );
     if (states.some((s) => !s)) return;
-    const [a, b, c, d, e, f] = states as HTMLElement[];
+    const [a, b, c, d] = states as HTMLElement[];
 
     // The pinned diagram stage, driven through three phases (before → fixed →
     // after) instead of `position: sticky` — see the CSS note. `position: fixed`
@@ -721,39 +675,39 @@ const integrationLogos = (data.integrationLogos ?? []).map(
       bloom.style.opacity = String(BLOOM_MAX * inT * (1 - outT));
     };
 
-    // Timeline windows over the pin's scrub distance: A holds then blurs out,
-    // B–E each resolve in then blur back out, F resolves in last and holds.
-    const A_OUT: [number, number] = [0.12, 0.2];
-    const B_IN: [number, number] = [0.14, 0.22];
-    const B_OUT: [number, number] = [0.3, 0.38];
-    const C_IN: [number, number] = [0.32, 0.4];
-    const C_OUT: [number, number] = [0.48, 0.56];
-    const D_IN: [number, number] = [0.5, 0.58];
-    const D_OUT: [number, number] = [0.66, 0.74];
-    const E_IN: [number, number] = [0.68, 0.76];
-    const E_OUT: [number, number] = [0.82, 0.9];
-    const F_IN: [number, number] = [0.84, 0.92];
-    const BLUR = 12;
+    // Timeline windows over the pin's scrub distance: A holds then scales out,
+    // B–C each resolve in then scale back out, D resolves in last and holds.
+    const A_OUT: [number, number] = [0.16, 0.26];
+    const B_IN: [number, number] = [0.18, 0.28];
+    const B_OUT: [number, number] = [0.48, 0.58];
+    const C_IN: [number, number] = [0.5, 0.6];
+    const C_OUT: [number, number] = [0.74, 0.84];
+    const D_IN: [number, number] = [0.76, 0.86];
+    // Pure opacity crossfade (no zoom) — see the desktop scrubber: both beats
+    // hold at scale 1, so the illustrations dissolve without any scaling push.
+    const SCALE_IN = 1;
+    const SCALE_OUT = 1;
+    const IN_AMT = 1 - SCALE_IN;
+    const OUT_AMT = SCALE_OUT - 1;
 
     const track = (p: number, [x, y]: [number, number]) =>
       Math.min(1, Math.max(0, (p - x) / (y - x)));
     const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+    const scaleOf = (inT: number, outT: number) =>
+      SCALE_IN + IN_AMT * inT + OUT_AMT * outT;
     const clear = (el: HTMLElement) => {
       el.style.opacity = "";
-      el.style.filter = "";
+      el.style.transform = "";
     };
-    // Only keep a `filter: blur()` layer set on a beat while it is actually
-    // mid-transition (visible AND blurred). Hidden and fully-resolved beats drop
-    // the filter entirely — an idle filter layer inside the sticky stage is what
-    // makes iOS Safari vibrate the pinned block through the momentum tail. The
-    // visible blur-resolve is unchanged (it only runs while both are non-zero).
-    const paint = (el: HTMLElement, opacity: number, blurPx: number) => {
+    // Opacity + scale. A `transform` is GPU-composited and doesn't trigger the iOS
+    // Safari momentum vibration the old `filter: blur()` did; we still drop it to
+    // `none` on hidden / fully-resolved beats so they carry no idle layer.
+    const paint = (el: HTMLElement, opacity: number, scale: number) => {
       el.style.opacity = String(opacity);
-      // `none` (not "") so it overrides the CSS pre-set `filter: blur(12px)` on
-      // the hidden states — clearing to "" would fall back to that and both keep
-      // the idle layer and blur a held-visible beat.
-      el.style.filter =
-        opacity < 0.01 || blurPx < 0.15 ? "none" : `blur(${blurPx}px)`;
+      el.style.transform =
+        opacity < 0.01 || Math.abs(scale - 1) < 0.001
+          ? "none"
+          : `scale(${scale})`;
     };
 
     let ticking = false;
@@ -775,26 +729,18 @@ const integrationLogos = (data.integrationLogos ?? []).map(
           : 0;
 
       const aOut = ease(track(p, A_OUT));
-      paint(a, 1 - aOut, aOut * BLUR);
+      paint(a, 1 - aOut, scaleOf(1, aOut));
 
       const bIn = ease(track(p, B_IN));
       const bOut = ease(track(p, B_OUT));
-      paint(b, bIn * (1 - bOut), (1 - bIn + bOut) * BLUR);
+      paint(b, bIn * (1 - bOut), scaleOf(bIn, bOut));
 
       const cIn = ease(track(p, C_IN));
       const cOut = ease(track(p, C_OUT));
-      paint(c, cIn * (1 - cOut), (1 - cIn + cOut) * BLUR);
+      paint(c, cIn * (1 - cOut), scaleOf(cIn, cOut));
 
       const dIn = ease(track(p, D_IN));
-      const dOut = ease(track(p, D_OUT));
-      paint(d, dIn * (1 - dOut), (1 - dIn + dOut) * BLUR);
-
-      const eIn = ease(track(p, E_IN));
-      const eOut = ease(track(p, E_OUT));
-      paint(e, eIn * (1 - eOut), (1 - eIn + eOut) * BLUR);
-
-      const fIn = ease(track(p, F_IN));
-      paint(f, fIn, (1 - fIn) * BLUR);
+      paint(d, dIn, scaleOf(dIn, 0));
     };
 
     const onScroll = () => {
@@ -836,7 +782,7 @@ const integrationLogos = (data.integrationLogos ?? []).map(
      loop runs. */
   @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
     :global(html.js) .clinical-layer {
-      height: calc(100svh + 540vh);
+      height: calc(100svh + 360vh);
     }
     /* Stage + its inner container span the whole tall section so the pin can
        stay stuck across the full scrub distance. */
@@ -882,13 +828,18 @@ const integrationLogos = (data.integrationLogos ?? []).map(
     :global(html.js) [data-clinical-state="b"],
     :global(html.js) [data-clinical-state="c"],
     :global(html.js) [data-clinical-state="d"],
-    :global(html.js) [data-clinical-state="e"],
-    :global(html.js) [data-clinical-state="f"],
-    :global(html.js) [data-clinical-state="g"] {
+    :global(html.js) [data-clinical-state="e"] {
       position: absolute;
       inset: 0;
       opacity: 0;
-      filter: blur(12px);
+      /* Pure opacity crossfade — no start scale (the scrubber holds scale at 1). */
+    }
+    /* The closing illustration (ClinicalDiagram06) is wider than the others, so
+       at the shared column width it scales shorter — bottom-align it within the
+       slot so its baseline matches the previous beats instead of floating up. */
+    :global(html.js) [data-clinical-state="e"] {
+      display: flex;
+      align-items: flex-end;
     }
     /* Card column becomes a positioning context too: the original cards (A) stay
        in flow and define the column height; the alternate set (B) overlays from
@@ -899,6 +850,10 @@ const integrationLogos = (data.integrationLogos ?? []).map(
     }
     :global(html.js) [data-clinical-cards="b"] {
       position: absolute;
+      /* `top` is driven by the scrubber so the closing set sits on the viewport's
+         vertical midline while the pin is held (the pinned row is anchored 80px
+         from the top, so a static column-relative centre reads low). This `top: 0`
+         is just the pre-script default. */
       top: 0;
       left: 0;
       /* Full width of the 340px card column. (This is now HTML that reflows, so
@@ -906,7 +861,6 @@ const integrationLogos = (data.integrationLogos ?? []).map(
          takes the column width and lays its cards out in normal flow.) */
       width: 100%;
       opacity: 0;
-      filter: blur(12px);
     }
   }
 
@@ -921,7 +875,7 @@ const integrationLogos = (data.integrationLogos ?? []).map(
   }
 
   /* ====================================================================
-     MOBILE (<lg) — cards stacked above the illustration; A–F crossfade in
+     MOBILE (<lg) — cards stacked above the illustration; A–D crossfade in
      a pinned stage; the closing beat is its own static block.
      ==================================================================== */
   .clinical-mobile {
@@ -944,17 +898,17 @@ const integrationLogos = (data.integrationLogos ?? []).map(
     height: 0;
   }
 
-  /* Fallback (no-JS / reduced-motion): the six A–F states stack vertically,
+  /* Fallback (no-JS / reduced-motion): the four A–D states stack vertically,
      each its own chip + diagram. */
   .clinical-m-state + .clinical-m-state {
     margin-top: clamp(2.5rem, 8vw, 64px);
   }
 
-  /* Enhanced: pin the stage and crossfade the six states as one. Pre-setting
+  /* Enhanced: pin the stage and crossfade the four states as one. Pre-setting
      the start state keeps the first paint flash-free before the rAF loop runs. */
   @media (prefers-reduced-motion: no-preference) and (max-width: 1023px) {
     :global(html.js) .clinical-m-pin {
-      height: calc(100svh + 420vh);
+      height: calc(100svh + 252vh);
       /* Positioning context for the JS-driven pin's before/after parked phases. */
       position: relative;
     }
@@ -1001,7 +955,7 @@ const integrationLogos = (data.integrationLogos ?? []).map(
       left: 0;
       width: 100%;
     }
-    /* All six states stack in one grid cell. The cell sizes to the tallest beat
+    /* All four states stack in one grid cell. The cell sizes to the tallest beat
        — Integrations, which carries the extra EHR logo card below its diagram —
        so every beat stays top-aligned with a consistent step-chip + diagram
        position, and the shorter beats simply leave the lower space empty
@@ -1022,11 +976,8 @@ const integrationLogos = (data.integrationLogos ?? []).map(
     }
     :global(html.js) [data-cm-state="b"],
     :global(html.js) [data-cm-state="c"],
-    :global(html.js) [data-cm-state="d"],
-    :global(html.js) [data-cm-state="e"],
-    :global(html.js) [data-cm-state="f"] {
+    :global(html.js) [data-cm-state="d"] {
       opacity: 0;
-      filter: blur(12px);
     }
   }
 </style>

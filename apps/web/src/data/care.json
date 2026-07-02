@@ -5,7 +5,7 @@
     "highlight": "AI Care Managers",
     "after": "."
   },
-  "subheading": "Here's what they can do for you and your patients:",
+  "subheading": "Here's what they can do for you and your patients.",
   "cards": [
     {
       "label": "Always on",
@@ -40,8 +40,8 @@
   ],
   "banner": {
     "label": "Humans in the loop",
-    "before": "AI handles 99% of the busywork. Your care teams stay in control, stepping in whenever needed and owning the ",
-    "highlight": "1% that only humans can.",
+    "before": "AI handles most of the busywork. Your care teams stay in control, owning the interactions and decisions that ",
+    "highlight": "only humans can.",
     "graphic": "/care/humans-globe.svg",
     "graphicAlt": ""
   }

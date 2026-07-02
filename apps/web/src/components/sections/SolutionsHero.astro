@@ -17,6 +17,21 @@ const { eyebrow, headline, paragraph } = solutions.hero;
 <section
   class="relative flex min-h-screen flex-col overflow-hidden bg-purple-tint text-black"
 >
+  <!-- Animated neon-lime swirl bloom blooming from the right, behind the hero
+       content. The shared hero swirl recoloured to the lime palette; a static
+       CSS lime wash is the no-JS / reduced-motion / mobile fallback. Sits at
+       z-0 below the content (z-10) and the navbar (z-20). -->
+  <div
+    data-sol-swirl-stage
+    aria-hidden="true"
+    class="sol-swirl pointer-events-none absolute z-0"
+  >
+    <canvas
+      data-sol-swirl
+      class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+    ></canvas>
+  </div>
+
   <Navbar />
 
   <div
@@ -24,10 +39,12 @@ const { eyebrow, headline, paragraph } = solutions.hero;
   >
     <!-- Eyebrow label + full-width hairline divider -->
     <div class="pt-[140px] lg:pt-[200px]">
-      <div data-reveal class="lg:pl-[11px]"><Eyebrow>{eyebrow}</Eyebrow></div>
+      <div data-reveal class="lg:pl-[11px]">
+        <Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow>
+      </div>
       <div
         data-reveal="line"
-        class="mt-5 mx-5 border-t border-black/24 lg:-mx-9"
+        class="mt-5 -mx-2 border-t border-black/24 lg:-mx-16"
       >
       </div>
     </div>
@@ -49,13 +66,112 @@ const { eyebrow, headline, paragraph } = solutions.hero;
         </p>
       </div>
 
-      <!-- Placeholder for motion / illustration (per design annotation). -->
+      <!-- Media card — the same looping surgery clip used by the Care
+           Orchestration "Surgery Prehab and Rehab" card (TriageMedia `video`
+           variant). object-cover fills the card; overflow-hidden clips it to the
+           32px radius; bg-white shows while the clip loads. -->
       <div
         data-reveal
-        class="aspect-[305/381] w-full max-w-[305px] shrink-0 self-end rounded-[32px] bg-white"
+        class="relative aspect-[305/381] w-full max-w-[305px] shrink-0 self-end overflow-hidden rounded-[32px] bg-white"
         style="transition-delay:200ms"
       >
+        <video
+          src="/triage/surgery.webm"
+          class="absolute inset-0 h-full w-full object-cover"
+          autoplay
+          loop
+          muted
+          playsinline
+          preload="auto"
+          aria-hidden="true"
+        ></video>
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* Mobile / no-JS fallback: a soft neon-lime wash blooming from the centre,
+     fading out toward the edges so it never overpowers the copy. The animated
+     canvas is hidden here (desktop re-enables it below). */
+  .sol-swirl {
+    inset: 0;
+    background: radial-gradient(
+      90% 70% at 50% 50%,
+      color-mix(in srgb, var(--color-accent) 55%, transparent),
+      color-mix(in srgb, var(--color-accent) 24%, transparent) 40%,
+      transparent 70%
+    );
+  }
+  .sol-swirl canvas {
+    display: none;
+  }
+
+  /* Desktop: the animated circular lime swirl, centred behind the hero content.
+     `top`/`left` mark the bloom's centre (the layer is pulled back by half its
+     own size); a radial mask keeps it a soft circular bloom. The background is
+     the no-JS / reduced-motion fallback wash. */
+  @media (min-width: 1024px) {
+    .sol-swirl {
+      inset: auto;
+      left: 50%;
+      top: 50%;
+      width: 90%;
+      height: 150%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(
+        circle closest-side at 50% 50%,
+        color-mix(in srgb, var(--color-accent) 42%, transparent),
+        transparent 68%
+      );
+      -webkit-mask-image: radial-gradient(
+        circle closest-side at 50% 50%,
+        #000 0%,
+        #000 16%,
+        transparent 70%
+      );
+      mask-image: radial-gradient(
+        circle closest-side at 50% 50%,
+        #000 0%,
+        #000 16%,
+        transparent 70%
+      );
+    }
+    .sol-swirl canvas {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  // Animated neon-lime swirl bloom — the shared hero swirl recoloured to the
+  // lime palette, blooming from the right (circular, gentle drift). Matches the
+  // Scaling section's lime bloom so the two read as one visual language.
+  import { initSwirl } from "../../lib/swirl";
+
+  const stage = document.querySelector<HTMLElement>("[data-sol-swirl-stage]");
+  const canvas = stage?.querySelector<HTMLCanvasElement>(
+    "canvas[data-sol-swirl]",
+  );
+
+  // Desktop-only: on mobile the bloom is a static CSS wash (see the <style>
+  // block) and the canvas is hidden, so there's no need to spin up WebGL there.
+  if (stage && canvas && window.matchMedia("(min-width: 1024px)").matches) {
+    initSwirl(canvas, stage, {
+      grainUrl: "/hero/swirl/perlin1.png",
+      circular: true,
+      warp: 0.6, // gentle drift, cohesive blob
+      speed: 4.6, // fast drift
+      falloffStart: 0.5,
+      falloffEnd: 0.94,
+      colors: {
+        bgColor: [0.98, 0.99, 0.96], // outer field — near-white
+        soft: [0.9, 0.99, 0.62], // inner core — bright lime
+        body: [0.8, 1.0, 0.22], // dominant bloom — neon lime (#ccff33)
+        lavender: [0.92, 0.99, 0.72], // secondary highlight — pale lime
+        crest: [0.97, 0.97, 0.97], // gradient crest — white
+      },
+    });
+    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
+  }
+</script>

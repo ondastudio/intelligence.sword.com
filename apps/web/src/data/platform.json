@@ -16,7 +16,7 @@
       { "src": "/platform/icon-chat.svg", "alt": "Chat" }
     ]
   },
-  "audits": { "icon": "/platform/icon-search.svg", "label": "Full audits" },
+  "audits": { "icon": "/platform/icon-search.svg", "label": "Full Auditability" },
   "stats": [
     { "value": "85K", "plus": true, "label": "Physician invested" },
     { "value": "14M", "plus": true, "label": "Care interactions" }

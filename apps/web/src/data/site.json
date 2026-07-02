@@ -2,11 +2,11 @@
   "logo": { "bold": "sword", "regular": "Intelligence" },
   "nav": [
     { "label": "Solution", "href": "/solutions", "hidden": true },
-    { "label": "About", "href": "/about" },
+    { "label": "Customers", "href": "/customers" },
     { "label": "Resources", "href": "#", "hidden": true },
-    { "label": "Customers", "href": "/customers" }
+    { "label": "About", "href": "/about" }
   ],
-  "cta": { "label": "Book a meeting", "href": "/book-an-intro" },
+  "cta": { "label": "Book a meeting", "href": "/book" },
   "mobileMenu": {
     "items": [
       {

@@ -1,0 +1,223 @@
+---
+/**
+ * SolutionsCareManagers — the "TECHNOLOGY / Meet your AI Care Managers." bento
+ * on the Solutions page (Figma `8063:12078`).
+ *
+ * A header (Eyebrow + Lora heading left, supporting paragraph seated bottom-right)
+ * over a three-row bento of frosted cards:
+ *   Row A — three tall feature cards, each a mixed-weight caption under the same
+ *     dotLottie animations the home `Care` capability grid uses (Always on →
+ *     `always-on`, Communication → `multichannel`, Conversational AI →
+ *     `conversational`). Rendered into a looping `<canvas>` via
+ *     `@lottiefiles/dotlottie-web`, lazily built on first intersection and frozen
+ *     while offscreen — the same mechanism as `ui/FeatureCard`.
+ *   Row B — two wide cards, each a `purple-150` icon disc over a caption
+ *     (Prehabilitation Specialists / Sword's Academy).
+ *   Row C — two panels: a grey "Trusted by the most regulated industry" wall of
+ *     six compliance badges, and a `purple-tint` "No EHR migration" wall of twelve
+ *     EHR-vendor logos.
+ *
+ * Media are decorative (`aria-hidden`) — all editable copy (heading, captions,
+ * label + logo alts) lives in `data/solutions.json` (`careManagers`). Cards stack
+ * on mobile, snapping to the 3 / 2 / 2 column rows at `md`+; blocks fade up on the
+ * shared `[data-reveal]` entrance.
+ */
+import Eyebrow from "../ui/Eyebrow.astro";
+import LabelPill from "../ui/LabelPill.astro";
+import solutions from "../../data/solutions.json";
+
+const { eyebrow, heading, description, features, trust, ehr } =
+  solutions.careManagers;
+
+// Row A carries the three animated feature cards; row B the two icon cards.
+const lottieFeatures = features.slice(0, 3);
+const iconFeatures = features.slice(3);
+
+const cardFrame =
+  "flex flex-col rounded-card border border-black/25 backdrop-blur-[12px]";
+---
+
+<section class="care-managers text-black">
+  <div class="mx-auto w-full max-w-[1440px] px-4 md:px-8">
+    <div class="flex flex-col gap-16 md:gap-[120px]">
+      {/* ---- Header --------------------------------------------------------- */}
+      <div class="flex flex-col gap-6" data-reveal>
+        <Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow>
+        {/* Align by the last text baseline (not the box bottom): the Lora
+            heading and the Figtree paragraph have different line-heights, so
+            box-bottom alignment leaves their bottom lines visually offset. */}
+        <div
+          class="flex flex-col gap-6 md:flex-row md:[align-items:last_baseline] md:justify-between md:gap-16"
+        >
+          <h2 class="max-w-[437px] font-serif text-h5 font-normal">
+            {heading}
+          </h2>
+          <p class="max-w-[630px] text-xmd font-normal">{description}</p>
+        </div>
+      </div>
+
+      {/* ---- Bento ---------------------------------------------------------- */}
+      <div class="flex flex-col gap-4">
+        {/* Row A — three tall feature cards driven by the home Care Lotties */}
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {
+            lottieFeatures.map((f, i) => (
+              <div
+                class={`${cardFrame} items-center justify-between gap-6 overflow-clip px-6 pb-10 pt-10 md:min-h-[540px] md:px-10 md:pt-10`}
+                data-reveal
+                style={`transition-delay:${i * 80}ms`}
+              >
+                {/* The animation bleeds through the card's side padding to the
+                    edges (overflow-clip + rounded corners trim it), so each clip
+                    reads large — mirroring the home Care grid framing. */}
+                <div class="relative -mx-6 flex min-h-0 w-[calc(100%+3rem)] flex-1 items-center justify-center md:-mx-10 md:w-[calc(100%+5rem)]">
+                  <canvas
+                    class="h-full w-full"
+                    data-lottie={f.lottie}
+                    data-lottie-fit={f.fit ?? "cover"}
+                    aria-hidden="true"
+                  />
+                </div>
+                <p class="text-center text-md">
+                  <span class="font-semibold">{f.lead}</span>{f.rest}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+
+        {/* Row B — two icon cards */}
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {
+            iconFeatures.map((f, i) => (
+              <div
+                class="flex flex-col justify-between gap-8 rounded-card border border-black/25 p-8 md:min-h-[262px] md:p-10"
+                data-reveal
+                style={`transition-delay:${i * 80}ms`}
+              >
+                {/* Most icons are line glyphs centred on a `purple-150` disc;
+                    `iconFull` icons already bake in their own disc, so they
+                    render standalone at the full 48px. */}
+                {f.iconFull ? (
+                  <img
+                    src={f.icon}
+                    alt=""
+                    aria-hidden="true"
+                    class="size-12 shrink-0"
+                  />
+                ) : (
+                  <span class="grid size-12 shrink-0 place-items-center rounded-card bg-purple-150">
+                    <img src={f.icon} alt="" aria-hidden="true" class="size-8" />
+                  </span>
+                )}
+                <p class="text-md">
+                  <span class="font-semibold">{f.lead}</span>{f.rest}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+
+        {/* Row C — trust + EHR walls */}
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {/* Trusted by the most regulated industry */}
+          <div
+            class="flex flex-col items-center gap-6 overflow-clip rounded-[50px] bg-gray-200/35 px-6 py-8"
+            data-reveal
+          >
+            <LabelPill class="text-center">{trust.label}</LabelPill>
+            <div class="grid flex-1 grid-cols-3 place-items-center gap-x-8 gap-y-3">
+              {
+                trust.badges.map((b) => (
+                  <img
+                    src={b.src}
+                    alt={b.alt}
+                    class="h-[42px] w-auto object-contain"
+                  />
+                ))
+              }
+            </div>
+          </div>
+
+          {/* No EHR migration */}
+          <div
+            class="flex flex-col items-center gap-8 overflow-clip rounded-[50px] bg-purple-tint px-6 py-8"
+            data-reveal
+            style="transition-delay:80ms"
+          >
+            <LabelPill>{ehr.label}</LabelPill>
+            <div class="flex flex-1 flex-wrap items-center justify-center gap-x-8 gap-y-6">
+              {
+                ehr.logos.map((l) => (
+                  <img
+                    src={l.src}
+                    alt={l.alt}
+                    class="h-7 w-auto object-contain"
+                  />
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { DotLottie } from "@lottiefiles/dotlottie-web";
+  // Self-host the player wasm (bundled by Vite) instead of the default CDN, so
+  // the cards animate without an external runtime fetch. Same setup as
+  // ui/FeatureCard — the home Care grid and this section share the mechanism.
+  import wasmUrl from "@lottiefiles/dotlottie-web/dotlottie-player.wasm?url";
+
+  DotLottie.setWasmUrl(wasmUrl);
+
+  // Build each player only once its canvas nears the viewport (this section is
+  // well below the fold; a player constructed offscreen never loads its
+  // animation). freezeOnOffscreen pauses rendering while scrolled away.
+  const init = (canvas: HTMLCanvasElement) => {
+    const src = canvas.dataset.lottie;
+    if (!src || canvas.dataset.lottieReady) return;
+    canvas.dataset.lottieReady = "1";
+    const fit = (canvas.dataset.lottieFit || "cover") as
+      | "cover"
+      | "contain"
+      | "fill"
+      | "fit-width"
+      | "fit-height";
+    new DotLottie({
+      canvas,
+      src,
+      loop: true,
+      autoplay: true,
+      // Transparent clear colour so the frosted card shows through (the home
+      // Care grid sits on white cards, so it never needed this).
+      backgroundColor: "transparent",
+      layout: { fit, align: [0.5, 0.5] },
+      renderConfig: { autoResize: true, freezeOnOffscreen: true },
+    });
+  };
+
+  const canvases = document.querySelectorAll<HTMLCanvasElement>(
+    ".care-managers canvas[data-lottie]",
+  );
+  const io = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        init(entry.target as HTMLCanvasElement);
+        obs.unobserve(entry.target);
+      });
+    },
+    { rootMargin: "200px" },
+  );
+  canvases.forEach((canvas) => io.observe(canvas));
+</script>
+
+<style>
+  .care-managers {
+    background-color: var(--color-surface); /* #f9f9f9 — page background */
+    padding-block: clamp(5rem, 12vw, 120px);
+  }
+</style>
