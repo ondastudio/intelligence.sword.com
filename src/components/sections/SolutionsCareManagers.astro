@@ -126,16 +126,12 @@ const cardFrame =
             data-reveal
           >
             <LabelPill class="text-center">{trust.label}</LabelPill>
-            <div class="grid flex-1 grid-cols-3 place-items-center gap-x-8 gap-y-3">
-              {
-                trust.badges.map((b) => (
-                  <img
-                    src={b.src}
-                    alt={b.alt}
-                    class="h-[42px] w-auto object-contain"
-                  />
-                ))
-              }
+            <div class="flex flex-1 items-center justify-center">
+              <img
+                src={trust.badgesImage}
+                alt={trust.badgesAlt}
+                class="w-full max-w-[504px] object-contain"
+              />
             </div>
           </div>
 
@@ -146,16 +142,12 @@ const cardFrame =
             style="transition-delay:80ms"
           >
             <LabelPill>{ehr.label}</LabelPill>
-            <div class="flex flex-1 flex-wrap items-center justify-center gap-x-8 gap-y-6">
-              {
-                ehr.logos.map((l) => (
-                  <img
-                    src={l.src}
-                    alt={l.alt}
-                    class="h-7 w-auto object-contain"
-                  />
-                ))
-              }
+            <div class="flex flex-1 items-center justify-center">
+              <img
+                src={ehr.logosImage}
+                alt={ehr.logosAlt}
+                class="w-full max-w-[562px] object-contain"
+              />
             </div>
           </div>
         </div>

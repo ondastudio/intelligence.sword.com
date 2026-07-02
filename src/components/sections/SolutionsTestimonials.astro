@@ -1,0 +1,354 @@
+---
+/**
+ * SolutionsTestimonials — the "TESTIMONIALS / Don't take our word for it, take
+ * theirs." block on the Solutions page (Figma node 9298:1043, "Testimonial").
+ *
+ * The whole section sits over a soft-purple swirl bloom (the shared WebGL hero
+ * swirl recoloured to purple, same mechanism as TriageCta; a static radial
+ * gradient is the no-JS / reduced-motion fallback). A centered Eyebrow + Lora
+ * headline sit above a customer-logo row that doubles as tabs: each cell is a
+ * button topped by a hairline (brand-purple + full-opacity logo when active,
+ * black/24 hairline + dimmed logo when not). Clicking a logo swaps the
+ * testimonial below it (Figma node 8091:20552 is the second, NHS-South-Tees
+ * state).
+ *
+ * Each testimonial: on the left an optional avatar photo card beside the quote
+ * and its attribution; on the right a big serif stat ("10M+" citizens served,
+ * its number underlined by a lavender highlight bar) above a "Read case study"
+ * CTA pill + filled arrow circle.
+ *
+ * Below `lg` the two halves stack (avatar over quote, stat/CTA left-aligned).
+ * Entrance uses the shared `[data-reveal]` observer (see global.css / Layout);
+ * activating a tab force-reveals its panel's `[data-reveal]` descendants.
+ *
+ * Content-free — copy comes from src/data/solutions.json (`testimonials.items`).
+ */
+import Eyebrow from "../ui/Eyebrow.astro";
+import PlusChip from "../ui/PlusChip.astro";
+import ArrowCircle from "../ui/ArrowCircle.astro";
+import solutions from "../../data/solutions.json";
+
+const { eyebrow, heading, items } = solutions.testimonials;
+---
+
+<section
+  class="testimonials relative isolate overflow-hidden px-6 py-20 lg:px-20 lg:py-[120px]"
+>
+  <!-- Soft-purple swirl bloom filling the section, behind the content (z-0).
+       The static gradient is the no-JS / reduced-motion fallback; the canvas
+       fades in over it once the swirl mounts. -->
+  <div
+    data-testimonials-swirl-stage
+    aria-hidden="true"
+    class="testimonials-swirl pointer-events-none absolute inset-0 z-0"
+  >
+    <div class="testimonials-swirl-fallback absolute inset-0"></div>
+    <canvas
+      data-testimonials-swirl
+      class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+    ></canvas>
+  </div>
+
+  <div
+    class="relative z-10 mx-auto flex max-w-[1280px] flex-col items-center gap-16 lg:gap-[120px]"
+  >
+    {/* Header */}
+    <div class="flex flex-col items-center gap-6 lg:gap-10">
+      <div data-reveal><Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow></div>
+      <h2
+        data-reveal="title"
+        class="max-w-[952px] text-center font-serif text-h5"
+      >
+        {heading}
+      </h2>
+    </div>
+
+    {/* Customer logos — tabs that swap the testimonial below */}
+    <ul
+      class="flex w-full flex-col gap-7 sm:flex-row"
+      role="tablist"
+      aria-label="Customer testimonials"
+    >
+      {
+        items.map((item, i) => (
+          <li
+            data-reveal
+            class="flex flex-1"
+            style={`transition-delay:${i * 100}ms`}
+          >
+            <button
+              type="button"
+              role="tab"
+              id={`tt-tab-${i}`}
+              data-tt-tab={i}
+              aria-selected={i === 0 ? "true" : "false"}
+              aria-controls={`tt-panel-${i}`}
+              class="group flex w-full cursor-pointer flex-col items-center gap-6"
+            >
+              <span
+                data-reveal="line"
+                class="h-px w-full origin-left bg-black/24 transition-colors group-aria-[selected=true]:bg-brand"
+              />
+              <img
+                src={item.logo.src}
+                alt={item.logo.alt}
+                loading="lazy"
+                class="max-h-[52px] w-auto object-contain opacity-15 transition-opacity [filter:brightness(0)] group-aria-[selected=true]:opacity-100"
+              />
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+
+    {/* Testimonials — all panels stacked in one grid cell; the active one
+        crossfades over the others (see .tt-stack in <style>). */}
+    <div data-reveal class="tt-stack grid w-full">
+      {
+        items.map((item, i) => {
+          // A testimonial may carry one stat (`stat`) or several (`stats`);
+          // normalise to an array. Two-plus stats render side by side.
+          const stats = item.stats ?? [item.stat];
+          const multiStat = stats.length > 1;
+          return (
+          <div
+            id={`tt-panel-${i}`}
+            data-tt-panel={i}
+            role="tabpanel"
+            aria-labelledby={`tt-tab-${i}`}
+            aria-hidden={i !== 0 ? "true" : "false"}
+            class:list={[
+              "tt-panel flex w-full flex-col gap-12 lg:flex-row lg:items-stretch lg:justify-between lg:gap-8",
+              { "is-active": i === 0 },
+            ]}
+          >
+            {/* Left — optional avatar + quote */}
+            <div class="flex flex-col gap-8 sm:flex-row sm:gap-8 lg:max-w-[772px] lg:flex-1">
+              {item.author.avatar && (
+                <img
+                  src={item.author.avatar}
+                  alt={item.author.name}
+                  loading="lazy"
+                  class="h-[219px] w-full shrink-0 rounded-card object-cover sm:w-[227px]"
+                />
+              )}
+              <div class="flex flex-1 flex-col justify-between gap-8">
+                <p class="text-md text-ink whitespace-pre-line">{item.quote}</p>
+                <div class="flex flex-col gap-1">
+                  <p class="text-sm font-semibold uppercase">
+                    {item.author.name}
+                  </p>
+                  <p class="text-base text-black">{item.author.role}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right — stat(s) + CTA */}
+            <div class="flex flex-col justify-between gap-10 lg:items-end">
+              {/* One stat sits right-aligned; two stats sit side by side
+                  (stacked below sm), each left-aligned, per the Figma spec. */}
+              <div
+                class:list={[
+                  "flex flex-col gap-8",
+                  multiStat && "sm:flex-row sm:gap-16",
+                ]}
+              >
+                {stats.map((stat) => (
+                  <div
+                    class:list={[
+                      "flex flex-col gap-4",
+                      multiStat ? "items-start" : "items-start lg:items-end",
+                    ]}
+                  >
+                    <div class="flex items-start gap-2">
+                      <span class="relative font-serif text-h3">
+                        {/* Highlight bar — bottom sits on the number's baseline
+                            and height/offset are in `em` (relative to this span's
+                            text-h3 font size) so the bar tracks the number at every
+                            size, per the Figma spec (8px bar on the 76px number). */}
+                        <span
+                          aria-hidden="true"
+                          class="absolute inset-x-0 bottom-[0.24em] -z-10 h-[0.105em] bg-purple-tint"
+                        />
+                        <span class="font-serif text-h3">{stat.value}</span>
+                      </span>
+                      {stat.plus && <PlusChip class="mt-3" />}
+                    </div>
+                    <p
+                      class:list={[
+                        "whitespace-pre-line text-sm font-semibold uppercase",
+                        !multiStat && "lg:text-right",
+                      ]}
+                    >
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div class="group flex items-center">
+                <a
+                  href={item.cta.href}
+                  class="flex h-10 items-center rounded-full bg-brand px-6 text-sm font-semibold uppercase text-white"
+                >
+                  {item.cta.label}
+                </a>
+                <ArrowCircle
+                  variant="filled"
+                  href={item.cta.href}
+                  label={item.cta.label}
+                  detach
+                  class="-ml-px"
+                />
+              </div>
+            </div>
+          </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Testimonial swap — every panel shares one grid cell (grid-area 1/1) and
+     stays `display: flex` so the cell stays sized to the tallest testimonial
+     and switching never jumps the layout. The swap is a *sequential* fade
+     (driven by an `.is-active` class, NOT the `[hidden]` attribute — `[hidden]`
+     resolves to `display: none`, which can't be transitioned): the outgoing
+     panel fades fully out first, then the incoming one fades in, so the two
+     testimonials are never visible at the same time (no ghosting/overlap).
+     Delays sequence the two halves — out (0–0.28s) then in (0.28–0.56s). */
+  .tt-stack > .tt-panel {
+    grid-area: 1 / 1;
+    display: flex;
+  }
+  .tt-panel {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    /* Outgoing: fade out immediately, then hide once faded. */
+    transition:
+      opacity 0.28s ease-in-out,
+      visibility 0s linear 0.28s;
+  }
+  .tt-panel.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    /* Incoming: wait for the outgoing panel to clear, then fade in. */
+    transition:
+      opacity 0.28s ease-in-out 0.28s,
+      visibility 0s linear 0.28s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tt-panel,
+    .tt-panel.is-active {
+      transition: none;
+    }
+  }
+
+  /* Swirl bloom layer — fills the section behind the content. A soft radial
+     mask keeps it a contained centred bloom that fades to the page background
+     before the section edges. */
+  .testimonials-swirl {
+    /* The vertical radius stays small enough that the fade fully completes
+       before the section's bottom/top edge (0.64 × 0.64 ≈ 0.41 of the height
+       from centre → done by ~91%), so `overflow-hidden` never clips a still-
+       visible band of the bloom. */
+    -webkit-mask-image: radial-gradient(
+      ellipse 76% 64% at 50% 50%,
+      #000 0%,
+      #000 28%,
+      transparent 64%
+    );
+    mask-image: radial-gradient(
+      ellipse 76% 64% at 50% 50%,
+      #000 0%,
+      #000 28%,
+      transparent 64%
+    );
+  }
+
+  /* No-JS / reduced-motion fallback: a static soft-purple radial bloom. */
+  .testimonials-swirl-fallback {
+    background: radial-gradient(
+      ellipse 60% 58% at 50% 50%,
+      #d3c2ff 0%,
+      #e1d6ff 40%,
+      transparent 68%
+    );
+  }
+</style>
+
+<script>
+  // Logo tabs — clicking a customer logo swaps in its testimonial panel and
+  // moves the active state (purple hairline + full-opacity logo) to that tab.
+  const tabs = Array.from(
+    document.querySelectorAll<HTMLButtonElement>("[data-tt-tab]"),
+  );
+  const panels = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-tt-panel]"),
+  );
+
+  let current = 0;
+
+  function activate(index: number) {
+    if (index === current) return;
+    current = index;
+    tabs.forEach((tab) =>
+      tab.setAttribute(
+        "aria-selected",
+        Number(tab.dataset.ttTab) === index ? "true" : "false",
+      ),
+    );
+    // `.is-active` drives the crossfade (via .tt-panel CSS) while every panel
+    // stays `display: flex` in the same grid cell, so the area stays sized to
+    // the tallest testimonial — no layout jump. `aria-hidden` keeps the a11y
+    // tree in sync (the CSS `visibility: hidden` also hides inactive panels
+    // from assistive tech and takes their links out of the tab order).
+    panels.forEach((panel) => {
+      const active = Number(panel.dataset.ttPanel) === index;
+      panel.classList.toggle("is-active", active);
+      panel.setAttribute("aria-hidden", active ? "false" : "true");
+    });
+  }
+
+  tabs.forEach((tab) =>
+    tab.addEventListener("click", () => activate(Number(tab.dataset.ttTab))),
+  );
+</script>
+
+<script>
+  // Animated swirl bloom filling the section — the shared hero swirl recoloured
+  // to a soft-purple palette (body ~#bda4ff, highlights from the purple-100 /
+  // tint tokens), same mechanism as TriageCta.
+  import { initSwirl } from "../../lib/swirl";
+
+  const stage = document.querySelector<HTMLElement>(
+    "[data-testimonials-swirl-stage]",
+  );
+  const canvas = stage?.querySelector<HTMLCanvasElement>(
+    "canvas[data-testimonials-swirl]",
+  );
+
+  if (stage && canvas) {
+    initSwirl(canvas, stage, {
+      grainUrl: "/hero/swirl/perlin1.png",
+      circular: true,
+      warp: 0.7, // cohesive, rounded blob with a filled centre
+      speed: 2.2,
+      falloffStart: 0.5, // keep the centre filled; only the outer edge fades out
+      falloffEnd: 0.92,
+      colors: {
+        bgColor: [0.976, 0.969, 1.0], // outer field — near-white with a faint lilac
+        soft: [0.882, 0.839, 1.0], // inner highlight — purple-100 (#e1d6ff)
+        body: [0.741, 0.643, 1.0], // dominant bloom — soft purple (~#bda4ff)
+        lavender: [0.933, 0.91, 1.0], // secondary highlight — purple-tint
+        crest: [0.97, 0.97, 0.97], // gradient crest — white
+      },
+    });
+    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
+  }
+</script>
