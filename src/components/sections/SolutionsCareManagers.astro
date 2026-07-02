@@ -142,16 +142,12 @@ const cardFrame =
             style="transition-delay:80ms"
           >
             <LabelPill>{ehr.label}</LabelPill>
-            <div class="flex flex-1 flex-wrap items-center justify-center gap-x-8 gap-y-6">
-              {
-                ehr.logos.map((l) => (
-                  <img
-                    src={l.src}
-                    alt={l.alt}
-                    class="h-7 w-auto object-contain"
-                  />
-                ))
-              }
+            <div class="flex flex-1 items-center justify-center">
+              <img
+                src={ehr.logosImage}
+                alt={ehr.logosAlt}
+                class="w-full max-w-[562px] object-contain"
+              />
             </div>
           </div>
         </div>
