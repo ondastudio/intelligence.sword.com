@@ -210,5 +210,35 @@
         ]
       }
     ]
+  },
+  "testimonials": {
+    "eyebrow": "Testimonials",
+    "heading": "Don’t take our word for it, take theirs.",
+    "logos": [
+      {
+        "src": "/logos/ne-london.png",
+        "alt": "North East London Health & Care Partnership"
+      },
+      {
+        "src": "/logos/nhs-south-tee.png",
+        "alt": "South Tees Hospitals NHS Foundation Trust",
+        "muted": true
+      }
+    ],
+    "quote": "“Working with Sword Intelligence has revolutionised our preoperative care, significantly improving patient outcomes and reducing complication rates.”",
+    "author": {
+      "name": "Lucy Gladman",
+      "role": "Deputy Divisional Manager of Anaesthetics",
+      "avatar": "/solutions/testimonials/lucy-gladman.jpg"
+    },
+    "stat": {
+      "value": "10M",
+      "plus": true,
+      "label": "Citizens served"
+    },
+    "cta": {
+      "label": "Read case study",
+      "href": "/customers/nhs-surgery-readiness"
+    }
   }
 }
