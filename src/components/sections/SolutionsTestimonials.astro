@@ -3,9 +3,8 @@
  * SolutionsTestimonials — the "TESTIMONIALS / Don't take our word for it, take
  * theirs." block on the Solutions page (Figma node 9298:1043, "Testimonial").
  *
- * A centered Eyebrow + Lora headline sit over a decorative purple/blue swirl
- * (a blurred radial blob exported from Figma). Below, a two-cell customer-logo
- * row (each cell topped by a hairline; the second logo dimmed) leads into the
+ * A centered Eyebrow + Lora headline sit above a two-cell customer-logo
+ * row (each cell topped by a hairline; the second logo dimmed) leading into the
  * testimonial itself: on the left an avatar photo card beside the quote and its
  * attribution; on the right a big serif stat ("10M+" citizens served, its
  * number underlined by a lavender highlight bar) above a "Read case study" CTA
@@ -28,14 +27,6 @@ const { eyebrow, heading, logos, quote, author, stat, cta } =
 <section
   class="testimonials relative overflow-hidden px-6 py-20 lg:px-20 lg:py-[120px]"
 >
-  {/* Decorative swirl — a soft blurred purple/blue bloom behind the content. */}
-  <img
-    src="/solutions/testimonials/swirl.svg"
-    alt=""
-    aria-hidden="true"
-    class="pointer-events-none absolute left-1/2 top-16 -z-10 w-[1200px] max-w-none -translate-x-1/2 select-none lg:top-24"
-  />
-
   <div
     class="relative mx-auto flex max-w-[1280px] flex-col items-center gap-16 lg:gap-[120px]"
   >
