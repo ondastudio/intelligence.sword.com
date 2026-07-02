@@ -95,14 +95,21 @@ const cardFrame =
                 data-reveal
                 style={`transition-delay:${i * 80}ms`}
               >
-                <span class="grid size-12 shrink-0 place-items-center rounded-card bg-purple-150">
+                {/* Most icons are line glyphs centred on a `purple-150` disc;
+                    `iconFull` icons already bake in their own disc, so they
+                    render standalone at the full 48px. */}
+                {f.iconFull ? (
                   <img
                     src={f.icon}
                     alt=""
                     aria-hidden="true"
-                    class="size-8"
+                    class="size-12 shrink-0"
                   />
-                </span>
+                ) : (
+                  <span class="grid size-12 shrink-0 place-items-center rounded-card bg-purple-150">
+                    <img src={f.icon} alt="" aria-hidden="true" class="size-8" />
+                  </span>
+                )}
                 <p class="text-md">
                   <span class="font-semibold">{f.lead}</span>{f.rest}
                 </p>

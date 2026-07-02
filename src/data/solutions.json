@@ -102,6 +102,7 @@
       {
         "media": "icon",
         "icon": "/solutions/care-managers/icon-academy.svg",
+        "iconFull": true,
         "lead": "Powered by Sword's Academy",
         "rest": ", an evidence-informed content library covering exercise, nutrition, sleep, mindfulness, smoking cessation, and surgical preparation."
       }
