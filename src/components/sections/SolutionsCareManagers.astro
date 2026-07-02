@@ -63,7 +63,7 @@ const cardFrame =
           {
             lottieFeatures.map((f, i) => (
               <div
-                class={`${cardFrame} items-center justify-between gap-8 overflow-clip px-6 pb-10 pt-12 md:min-h-[509px] md:px-10 md:pt-[67px]`}
+                class={`${cardFrame} items-center justify-between gap-6 overflow-clip px-6 pb-10 pt-10 md:min-h-[540px] md:px-10 md:pt-10`}
                 data-reveal
                 style={`transition-delay:${i * 80}ms`}
               >
@@ -74,7 +74,7 @@ const cardFrame =
                   <canvas
                     class="h-full w-full"
                     data-lottie={f.lottie}
-                    data-lottie-fit="cover"
+                    data-lottie-fit={f.fit ?? "cover"}
                     aria-hidden="true"
                   />
                 </div>
@@ -184,6 +184,9 @@ const cardFrame =
       src,
       loop: true,
       autoplay: true,
+      // Transparent clear colour so the frosted card shows through (the home
+      // Care grid sits on white cards, so it never needed this).
+      backgroundColor: "transparent",
       layout: { fit, align: [0.5, 0.5] },
       renderConfig: { autoResize: true, freezeOnOffscreen: true },
     });
