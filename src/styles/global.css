@@ -58,6 +58,11 @@
   --color-blue-green: #bae0eb; /* pale teal — Numbers "34%" readmissions card background */
   --color-blue-100: #ecf3fe; /* brand/blue-100 — Triage card "incoming call" pill */
 
+  /* ---- Channel icon tiles (Solutions "Hyper-personalized interactions" card) ---- */
+  --color-channel-row: #d6ecf0; /* pale teal — channel preference row background */
+  --color-channel-green: #3ecf6a; /* SMS + Call icon tiles */
+  --color-channel-blue: #3b9bf5; /* Email icon tile */
+
   /* ---- Lime ramp (Figma color/lime/*) ---- */
   --color-accent: #ccff33; /* lime/Default — CTAs, active controls, accents */
   --color-lime-400: #d9ff66; /* lime/Lime 400 — gradient mid-stop */

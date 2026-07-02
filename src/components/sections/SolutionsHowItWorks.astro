@@ -33,6 +33,31 @@ const icons: Record<string, string> = {
   "ai-audio": `<path d="M11.5 6C7.02166 6 4.78249 6 3.39124 7.17157C2 8.34315 2 10.2288 2 14C2 17.7712 2 19.6569 3.39124 20.8284C4.78249 22 7.02166 22 11.5 22C15.9783 22 18.2175 22 19.6088 20.8284C21 19.6569 21 17.7712 21 14C21 12.8302 21 11.8419 20.9585 11"/><path d="M18.5 2L18.7579 2.69703C19.0961 3.61102 19.2652 4.06802 19.5986 4.40139C19.932 4.73477 20.389 4.90387 21.303 5.24208L22 5.5L21.303 5.75792C20.389 6.09613 19.932 6.26524 19.5986 6.59861C19.2652 6.93198 19.0961 7.38898 18.7579 8.30297L18.5 9L18.2421 8.30297C17.9039 7.38898 17.7348 6.93198 17.4014 6.59861C17.068 6.26524 16.611 6.09613 15.697 5.75792L15 5.5L15.697 5.24208C16.611 4.90387 17.068 4.73477 17.4014 4.40139C17.7348 4.06802 17.9039 3.61102 18.2421 2.69703L18.5 2Z"/><path d="M12 10V18"/><path d="M9 12V16"/><path d="M6 13V15"/><path d="M15 12V16"/><path d="M18 13V15"/>`,
   "home-10": `<path d="M8.9412 6.34883L10.7549 8.90093C11.1244 9.42085 11.3092 9.68081 11.4046 9.98004C11.5 10.2793 11.5 10.5987 11.5 11.2377V20H5.5C3.61438 20 2.67157 20 2.08579 19.4112C1.5 18.8225 1.5 17.8749 1.5 15.9797V11.2377C1.5 10.5987 1.5 10.2793 1.59541 9.98004C1.69082 9.68081 1.87557 9.42085 2.24507 8.90093L4.0588 6.34883C5.17165 4.78294 5.72807 4 6.5 4C7.27193 4 7.82835 4.78294 8.9412 6.34883Z"/><path d="M8.5 20V16C8.5 15.2523 8.5 14.8785 8.33923 14.6C8.23391 14.4176 8.08242 14.2661 7.9 14.1608C7.62154 14 7.24769 14 6.5 14C5.75231 14 5.37846 14 5.1 14.1608C4.91758 14.2661 4.76609 14.4176 4.66077 14.6C4.5 14.8785 4.5 15.2523 4.5 16V20"/><path d="M8.5 20H18.5C20.3856 20 21.3284 20 21.9142 19.4142C22.5 18.8284 22.5 17.8856 22.5 16V11.4482C22.5 10.7315 22.5 10.3732 22.3805 10.0432C22.2611 9.7133 22.0317 9.43802 21.5729 8.88746L18.6994 5.43926C18.1096 4.73152 17.8147 4.37764 17.4116 4.18882C17.0084 4 16.5478 4 15.6265 4H6.5"/><path d="M22 10H11.5"/>`,
 };
+
+// Line glyphs for the "AI+Human coaching journey" timeline cards.
+const journeyIcons: Record<string, string> = {
+  "bubble-chat": icons["bubble-chat"],
+  phone: `<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/>`,
+  check: `<path d="M20 6 9 17l-5-5"/>`,
+  logout: `<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>`,
+  pill: `<path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/>`,
+  route: `<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>`,
+  "home-10": icons["home-10"],
+};
+
+// Filled white glyphs for the channel-preference tiles ("Hyper-personalized
+// interactions" card). Rendered on a coloured rounded-square tile.
+const channelIcons: Record<string, string> = {
+  sms: `<path d="M12 4C7 4 3 7.03 3 10.77c0 1.7.79 3.25 2.09 4.43a.5.5 0 0 1 .16.42c-.07.83-.35 1.6-.79 2.27-.16.24.05.56.33.5 1.17-.2 2.25-.6 3.13-1.24a.5.5 0 0 1 .4-.08c1.06.28 2.2.42 3.68.42 5 0 9-3.03 9-6.77S17 4 12 4Z"/>`,
+  call: `<path d="M17.7 15.15c-1.16 0-2.29-.18-3.35-.53a.94.94 0 0 0-.96.23l-1.48 1.48a14.16 14.16 0 0 1-6.2-6.2l1.47-1.48a.94.94 0 0 0 .24-.96 10.6 10.6 0 0 1-.53-3.36c0-.52-.42-.94-.94-.94H3.14c-.52 0-1.14.23-1.14.94C2 10.98 7.02 22 16.6 22c.67 0 .94-.6.94-1.13v-2.31c0-.52-.42-.94-.94-.94Z"/>`,
+  email: `<path d="M4 5h16c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V7c0-1.1.9-2 2-2Zm.5 2 7.5 4.7L19.5 7h-15Zm15.5 1.9-7.47 4.66a1 1 0 0 1-1.06 0L4 8.9V17h16V8.9Z"/>`,
+};
+// Tile background per channel — see @theme tokens in global.css.
+const channelTile: Record<string, string> = {
+  sms: "bg-channel-green",
+  call: "bg-channel-green",
+  email: "bg-channel-blue",
+};
 ---
 
 <section
@@ -150,11 +175,315 @@ const icons: Record<string, string> = {
                 <h3 class="font-serif text-h6 font-normal">
                   {step.heading}
                 </h3>
-                <p class="text-[clamp(1.125rem,2vw,24px)] font-normal">
+                <p class="whitespace-pre-line text-[clamp(1.125rem,2vw,24px)] font-normal">
                   {step.body}
                 </p>
               </div>
-              <div class="aspect-square w-full shrink-0 rounded-card bg-white lg:aspect-auto lg:h-[616px] lg:w-[522px]" />
+              <div class="relative grid aspect-square w-full shrink-0 place-items-center overflow-hidden rounded-card bg-white lg:aspect-auto lg:h-[616px] lg:w-[522px]">
+                {step.media === "enrollment" ? (
+                  <div class="flex w-full max-w-[380px] flex-col gap-5 rounded-3xl bg-lavender p-6">
+                    <p class="text-lg font-semibold text-ink">
+                      {step.enrollment?.title}
+                    </p>
+
+                    {/* Progress bar */}
+                    <div class="h-1.5 w-full overflow-hidden rounded-full bg-white">
+                      <div
+                        class="h-full rounded-full bg-gradient-to-r from-purple-200 to-brand"
+                        style={`width:${step.enrollment?.progressValue}%`}
+                      />
+                    </div>
+
+                    {/* Matching-population row */}
+                    <div class="flex items-center gap-3">
+                      <span class="grid size-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-purple-200 to-purple-300 text-white">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          class="size-4"
+                          aria-hidden="true"
+                          set:html={`<path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/>`}
+                        />
+                      </span>
+                      <span class="text-ink">{step.enrollment?.progressLabel}</span>
+                      <span class="ml-auto font-semibold text-ink">
+                        {step.enrollment?.progressValue}%
+                      </span>
+                    </div>
+
+                    {/* Patient list — fades out down the queue */}
+                    <div class="flex flex-col">
+                      {step.enrollment?.patients.map((patient, i) => (
+                        <div
+                          class="flex items-center gap-3 border-b border-ink/10 py-3 last:border-b-0"
+                          style={`opacity:${[1, 0.55, 0.35, 0.22][i] ?? 0.2}`}
+                        >
+                          <span class="size-8 shrink-0 overflow-hidden rounded-full">
+                            <img
+                              src={patient.avatar}
+                              alt=""
+                              loading="lazy"
+                              class="size-full object-cover"
+                            />
+                          </span>
+                          <span class="flex-1 font-semibold text-ink">
+                            {patient.name}
+                          </span>
+                          <span class="flex-1 text-ink-soft">
+                            {patient.surgery}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Waiting-count pill */}
+                    <div class="flex items-center gap-3 rounded-full border border-ink/20 bg-white/50 px-2 py-1.5">
+                      <span class="flex -space-x-2">
+                        {step.enrollment?.patients.slice(0, 3).map((patient) => (
+                          <span class="size-7 overflow-hidden rounded-full ring-2 ring-lavender">
+                            <img
+                              src={patient.avatar}
+                              alt=""
+                              loading="lazy"
+                              class="size-full object-cover"
+                            />
+                          </span>
+                        ))}
+                      </span>
+                      <span class="font-semibold text-ink">
+                        +{step.enrollment?.waitingCount} Patients waiting
+                      </span>
+                    </div>
+                  </div>
+                ) : step.media === "recovery" ? (
+                  <div class="flex w-full max-w-[380px] flex-col gap-2">
+                    {step.recovery?.map((card, c) => (
+                      <div
+                        class:list={[
+                          "relative flex gap-4 rounded-3xl p-5",
+                          c === 0 ? "bg-blue-100" : "bg-ink-wash",
+                        ]}
+                      >
+                        {/* Left rail — dotted icon disc; the first card also
+                            drops a connector line to the next stage. */}
+                        <div class="flex flex-col items-center self-stretch">
+                          <span class="grid size-11 shrink-0 place-items-center rounded-full border border-dotted border-ink/25 text-ink">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="size-5"
+                              aria-hidden="true"
+                              set:html={journeyIcons[card.icon]}
+                            />
+                          </span>
+                          {c === 0 && (
+                            <div class="mt-2 flex flex-1 flex-col items-center">
+                              <span class="w-px flex-[2] bg-ink/70" />
+                              <span class="w-0 flex-1 border-l border-dotted border-ink/40" />
+                            </div>
+                          )}
+                        </div>
+
+                        <div
+                          class:list={[
+                            "flex flex-col gap-4",
+                            c === 0 ? "pt-2" : "min-h-11 justify-center",
+                          ]}
+                        >
+                          <p class="text-lg font-semibold text-ink">
+                            {card.title}
+                          </p>
+                          {card.channels && (
+                            <div class="flex flex-col gap-3">
+                              {card.channels.map((ch) => (
+                                <div class="flex items-center gap-3">
+                                  <span
+                                    class:list={[
+                                      "grid size-8 shrink-0 place-items-center rounded-full text-ink",
+                                      ch.highlight
+                                        ? "bg-accent"
+                                        : "border border-dotted border-ink/25",
+                                    ]}
+                                  >
+                                    <svg
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      stroke-width="1.5"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      class="size-[18px]"
+                                      aria-hidden="true"
+                                      set:html={journeyIcons[ch.icon]}
+                                    />
+                                  </span>
+                                  <p class="font-semibold text-ink">
+                                    {ch.label}
+                                    <span class="font-normal text-ink-soft">
+                                      {" "}• {ch.meta}
+                                    </span>
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : step.media === "preferences" ? (
+                  <div class="flex w-full max-w-[360px] flex-col gap-4 rounded-3xl bg-lavender p-4">
+                    {/* Contact header */}
+                    <div class="flex items-center gap-4 px-2 pt-2">
+                      <span class="size-12 shrink-0 overflow-hidden rounded-full">
+                        <img
+                          src={step.avatar}
+                          alt=""
+                          loading="lazy"
+                          class="size-full object-cover"
+                        />
+                      </span>
+                      <span class="flex flex-col leading-tight">
+                        <span class="text-lg font-semibold text-ink">
+                          {step.contactName}
+                        </span>
+                        <span class="text-sm text-ink-soft">
+                          {step.contactStatus}
+                        </span>
+                      </span>
+                    </div>
+
+                    {/* Channel preference rows */}
+                    <div class="flex flex-col gap-2.5">
+                      {step.preferences?.map((pref) => (
+                        <div class="flex items-center gap-3 rounded-full bg-channel-row py-2 pl-2 pr-6">
+                          <span
+                            class:list={[
+                              "grid size-8 shrink-0 place-items-center rounded-[9px] text-white",
+                              channelTile[pref.icon],
+                            ]}
+                          >
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="size-[18px]"
+                              aria-hidden="true"
+                              set:html={channelIcons[pref.icon]}
+                            />
+                          </span>
+                          <span class="w-14 shrink-0 font-semibold text-ink">
+                            {pref.label}
+                          </span>
+                          <span class="text-sm text-ink-soft">{pref.when}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : step.media === "journey" ? (
+                  <div class="flex w-full max-w-[380px] flex-col gap-2">
+                    {step.journey?.map((item, j) => (
+                      <div
+                        class:list={[
+                          "relative flex gap-4 rounded-3xl p-5",
+                          j === 0
+                            ? "bg-blue-100 pb-24"
+                            : "bg-ink-wash",
+                        ]}
+                      >
+                        {/* Left rail — dotted icon disc + (on the first card) a
+                            connector line running down to the next step. */}
+                        <div class="flex flex-col items-center self-stretch">
+                          <span class="grid size-11 shrink-0 place-items-center rounded-full border border-dotted border-ink/25 text-ink">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="size-5"
+                              aria-hidden="true"
+                              set:html={journeyIcons[item.icon]}
+                            />
+                          </span>
+                          {j === 0 && (
+                            <div class="mt-2 flex flex-1 flex-col items-center">
+                              <span class="w-px flex-[2] bg-ink/70" />
+                              <span class="w-0 flex-1 border-l border-dotted border-ink/40" />
+                            </div>
+                          )}
+                        </div>
+                        <div class="flex flex-col gap-1 pt-1">
+                          <p class="font-semibold text-ink">
+                            {item.title}
+                            {item.meta && (
+                              <span class="font-normal"> • {item.meta}</span>
+                            )}
+                          </p>
+                          <p class="text-ink-soft">{item.detail}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : step.media === "calling" ? (
+                  <div class="flex flex-col items-center gap-14">
+                    {/* Incoming-call contact pill */}
+                    <div class="flex items-center gap-4 rounded-full bg-lavender py-2 pl-2 pr-8">
+                      <span class="size-12 shrink-0 overflow-hidden rounded-full">
+                        <img
+                          src={step.avatar}
+                          alt=""
+                          loading="lazy"
+                          class="size-full object-cover object-[center_20%]"
+                        />
+                      </span>
+                      <span class="flex flex-col leading-tight">
+                        <span class="text-lg font-semibold text-ink">
+                          {step.contactName}
+                        </span>
+                        <span class="text-sm text-ink-soft">
+                          {step.contactStatus}
+                        </span>
+                      </span>
+                    </div>
+
+                    {/* Lime call button with pulsing rings */}
+                    <div class="relative grid size-[104px] place-items-center">
+                      <span class="absolute inset-0 rounded-full border border-accent/50" />
+                      <span class="absolute inset-3 rounded-full border border-accent/80" />
+                      <span class="relative grid size-16 place-items-center rounded-full bg-accent">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          class="size-7 text-ink"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M17.7 15.15c-1.16 0-2.29-.18-3.35-.53a.94.94 0 0 0-.96.23l-1.48 1.48a14.16 14.16 0 0 1-6.2-6.2l1.47-1.48a.94.94 0 0 0 .24-.96 10.6 10.6 0 0 1-.53-3.36c0-.52-.42-.94-.94-.94H3.14c-.52 0-1.14.23-1.14.94C2 10.98 7.02 22 16.6 22c.67 0 .94-.6.94-1.13v-2.31c0-.52-.42-.94-.94-.94Z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  step.image && (
+                    <img
+                      src={step.image}
+                      alt={step.imageAlt ?? ""}
+                      loading="lazy"
+                      class="size-full object-cover"
+                    />
+                  )
+                )}
+              </div>
             </div>
           ))
         }
