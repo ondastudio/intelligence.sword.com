@@ -6,13 +6,12 @@
  * right form column (name, email, company details, interests, message) closing
  * on a SUBMIT pill seamed to a filled ArrowCircle, then the privacy line.
  *
- * Submissions are captured by **Netlify Forms**. The markup carries the
- * detection attributes (`data-netlify`, hidden `form-name`, honeypot) so
- * Netlify registers the form at build time, and because the submit handler
- * intercepts the event (custom dropdown validation), the encoded fields are
- * POSTed back to the site with `fetch` rather than a native navigation.
- * Recipient/notification routing is configured in the Netlify dashboard.
- * Content lives in `data/book-intro.json`.
+ * Submissions are captured by **Formspree**. Because the submit handler
+ * intercepts the event (custom dropdown validation), the fields are POSTed to
+ * the Formspree endpoint with `fetch` (Accept: application/json) rather than a
+ * native navigation. The endpoint and recipient/notification routing are
+ * configured in the Formspree dashboard; the endpoint URL and all other
+ * content live in `data/book-intro.json`.
  */
 import data from "../../data/book-intro.json";
 import countries from "../../data/countries.json";
@@ -22,11 +21,7 @@ import FormField from "../ui/FormField.astro";
 import SelectMenu from "../ui/SelectMenu.astro";
 import ArrowCircle from "../ui/ArrowCircle.astro";
 
-const { eyebrow, heading, subtext, form, privacy, success, error } = data;
-
-// Netlify identifies submissions by this name (must match the hidden
-// `form-name` input and the AJAX POST body below).
-const formName = "book-intro";
+const { formEndpoint, eyebrow, heading, subtext, form, privacy, success, error } = data;
 ---
 
 <section class="relative z-10 min-h-screen text-ink">
@@ -54,17 +49,14 @@ const formName = "book-intro";
     <div class="w-full lg:w-[522px] lg:shrink-0">
     <form
       data-book-intro-form
-      name={formName}
+      action={formEndpoint}
       method="POST"
-      data-netlify="true"
-      netlify-honeypot="bot-field"
       class="flex w-full flex-col gap-[72px]"
     >
-      {/* Netlify Forms: ties the POST to the registered form + a honeypot the
-          bot trap fills but humans never see. */}
-      <input type="hidden" name="form-name" value={formName} />
+      {/* Formspree honeypot: a field bots fill but humans never see. Formspree
+          silently discards any submission where `_gotcha` is non-empty. */}
       <p hidden>
-        <label>Don’t fill this out if you’re human: <input name="bot-field" /></label>
+        <label>Don’t fill this out if you’re human: <input name="_gotcha" /></label>
       </p>
 
       <div class="flex flex-col gap-10">
@@ -214,9 +206,10 @@ const formName = "book-intro";
 </section>
 
 <script>
-  // Submissions are sent to Netlify Forms. The handler intercepts submit (to
-  // validate the custom dropdowns), so the encoded fields are POSTed back to
-  // the site origin — Netlify captures any POST whose body carries `form-name`.
+  // Submissions are sent to Formspree. The handler intercepts submit (to
+  // validate the custom dropdowns), then POSTs the fields to the form's
+  // Formspree endpoint (`action`) with `Accept: application/json` so Formspree
+  // responds with JSON instead of redirecting.
   const form = document.querySelector<HTMLFormElement>("[data-book-intro-form]");
   const success = document.querySelector<HTMLElement>("[data-book-intro-success]");
   const backBtn = document.querySelector<HTMLButtonElement>("[data-book-intro-back]");
@@ -256,20 +249,17 @@ const formName = "book-intro";
 
     if (!form.reportValidity()) return;
 
-    // POST the encoded fields back to the site so Netlify records the
-    // submission (form-name + honeypot ride along in the FormData). Lock the
-    // button so a slow network can't be double-submitted, and clear any error
-    // left over from a previous attempt.
+    // POST the fields to the Formspree endpoint (the honeypot rides along in
+    // the FormData). Lock the button so a slow network can't be
+    // double-submitted, and clear any error left over from a previous attempt.
     if (errorMsg) errorMsg.hidden = true;
     if (submitBtn) submitBtn.disabled = true;
 
     try {
-      const res = await fetch("/", {
+      const res = await fetch(form.action, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(
-          new FormData(form) as unknown as Record<string, string>,
-        ).toString(),
+        headers: { Accept: "application/json" },
+        body: new FormData(form),
       });
       // fetch only rejects on network failure, not on 4xx/5xx — check the
       // status too so a server-side rejection isn't reported as success.
