@@ -81,19 +81,23 @@
     "cards": [
       {
         "value": "57%",
-        "label": "More patients ready for surgery"
+        "label": "More patients ready for surgery",
+        "href": "/customers/nhs-surgery-readiness"
       },
       {
         "value": "72%",
-        "label": "Reduction in surgical complications"
+        "label": "Reduction in surgical complications",
+        "href": "/customers/nhs-surgical-complications"
       },
       {
         "value": "83%",
-        "label": "Reduction in post-op pulmonary complications"
+        "label": "Reduction in post-op pulmonary complications",
+        "href": "/customers/nhs-surgical-complications"
       },
       {
         "value": "£405K",
-        "label": "saved for one NHS Trust in 3 months"
+        "label": "saved for one NHS Trust in 3 months",
+        "href": "/customers/nhs-prehabilitation"
       }
     ]
   },
