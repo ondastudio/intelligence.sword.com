@@ -19,8 +19,9 @@ if (!token) {
 }
 
 // Must match SECTION_ORDER in apps/studio/schemaTypes/documents/homePage.ts.
+// (triageCta dropped when home was reconciled with main.)
 const KEYS = [
-  "hero", "intro", "care", "triage", "triageCta", "platform",
+  "hero", "intro", "care", "triage", "platform",
   "trust", "operations", "numbers", "clinicalLayer", "scaling", "cta",
 ];
 
@@ -40,9 +41,12 @@ if (!docs.length) {
 }
 
 for (const doc of docs) {
-  // Preserve any existing (possibly editor-arranged) items, then append the
-  // canonical keys that are missing so the list is complete. Non-destructive.
-  const existing = Array.isArray(doc.order) ? doc.order : [];
+  // Preserve any existing (possibly editor-arranged) items, dropping keys no
+  // longer in the section set (e.g. triageCta), then append canonical keys
+  // that are missing so the list is complete. Idempotent.
+  const existing = (Array.isArray(doc.order) ? doc.order : []).filter((o) =>
+    KEYS.includes(o?.key),
+  );
   const present = new Set(existing.map((o) => o?.key).filter(Boolean));
   const appended = KEYS.filter((k) => !present.has(k)).map((key) => ({
     _type: "sectionRef",
