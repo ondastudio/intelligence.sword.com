@@ -1,6 +1,6 @@
 import { defineType, defineField } from "sanity";
 import { HomeIcon } from "@sanity/icons";
-import { CompactImageInput } from "../../components/CompactImageInput";
+import { AspectImageInput, CompactImageInput } from "../../components/AspectImageInput";
 import { withSection } from "../lib/section";
 
 /**
@@ -25,8 +25,9 @@ const img = (name: string, title?: string) =>
     name,
     type: "image",
     title,
-    // `icon` images are small — cap their form preview at 150px.
-    ...(name === "icon" ? { components: { input: CompactImageInput } } : {}),
+    // Every preview respects the asset's natural aspect ratio (no stretch);
+    // small `icon` images additionally cap the preview width at 150px.
+    components: { input: name === "icon" ? CompactImageInput : AspectImageInput },
   } as any);
 const file = (name: string, title = "Video") =>
   defineField({ name, type: "file", title } as any);
@@ -187,32 +188,27 @@ export const homePage = defineType({
 
     // ---- Triage ----
     section("triage", "triage", [
-      defineField({
-        name: "background",
-        title: "Background wash colour",
-        type: "string",
-        description:
-          "Tint for the mobile diagonal wash behind the Triage area (hex, e.g. #f4f3fb). Desktop stays neutral. Leave blank for the default lavender.",
-        initialValue: "#f4f3fb",
-        validation: (r) =>
-          r.custom((v: any) =>
-            !v || /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(v)
-              ? true
-              : "Enter a hex colour like #f4f3fb",
-          ),
-      }),
       str("eyebrow"),
       defineField({ name: "heading", type: "styledHeadline" }),
-      obj("tabs", [str("label"), str("active")]),
+      // Label + Active laid out side by side (two-column fieldset).
+      defineField({
+        name: "tabs",
+        title: "Tabs",
+        type: "object",
+        fieldsets: [{ name: "row", options: { columns: 2 } }],
+        fields: [
+          defineField({ name: "label", type: "string", fieldset: "row" }),
+          defineField({ name: "active", type: "string", fieldset: "row" }),
+        ],
+      }),
       // Card comes before Orchestration to match the site's render order.
       obj(
         "card",
         [
           img("icon"),
           str("title"),
-          obj("badge", [img("icon"), img("text"), str("alt")]),
           defineField({ name: "headline", type: "styledHeadline" }),
-          obj("media", [str("variant"), file("src")]),
+          file("media"),
           arr("points", [defineField({ name: "content", type: "styledHeadline" })], pointsPreview),
         ],
         undefined,
@@ -260,7 +256,7 @@ export const homePage = defineType({
               str("title"),
               defineField({ name: "headline", type: "styledHeadline" }),
               arr("points", [defineField({ name: "content", type: "styledHeadline" })], pointsPreview),
-              obj("media", [str("variant"), file("src")]),
+              file("media"),
               obj("case", [
                 img("logo"),
                 str("logoAlt"),
@@ -309,33 +305,22 @@ export const homePage = defineType({
       }),
     ]),
 
-    // ---- Platform (fixed diagram; content-editable) ----
+    // ---- Platform (fixed diagram) ----
+    // Only the stats are CMS-driven; the rest of the diagram (headings, orb,
+    // labels, icons) is baked from src/data/platform.json in Platform.astro.
     section(
       "platform",
       "trust",
       [
-        str("heading"),
-        str("subheading"),
-        obj("orb", [str("title"), str("badgeLine1"), str("badgeLine2")]),
-        str("learnsLabel"),
-        str("governedLabel"),
-        obj("patients", [
-          str("label"),
-          arr("icons", [img("src"), str("alt")], {
-            preview: { select: { media: "src", title: "alt" } },
-          }),
-        ]),
-        obj("audits", [img("icon"), str("label")]),
         arr("stats", [str("value"), str("plus", "boolean", "Show + suffix"), str("label")], {
           preview: { select: { title: "value", subtitle: "label" } },
-        }),
-        obj("memory", [img("icon"), str("label")]),
-        arr("governance", [img("icon"), str("label")], {
-          preview: { select: { title: "label", media: "icon" } },
         }),
       ],
       undefined,
     ),
+
+    // ---- Operations (renders between Trust and Numbers on the site) ----
+    section("operations", "proof", [str("eyebrow"), strArr("heading")]),
 
     // ---- Numbers (fixed bento — named slots, not an array) ----
     section("numbers", "proof", [
@@ -367,21 +352,38 @@ export const homePage = defineType({
         arr("steps", [str("num", "string", "Number"), str("label")], {
           preview: { select: { title: "label", subtitle: "num" } },
         }),
-        arr("cards", [str("label"), strArr("lines")], {
+        arr("cards", [str("label"), defineField({ name: "lines", title: "Body", type: "richText" })], {
           preview: { select: { title: "label" } },
         }),
         // restructured from array-of-arrays → rows of { logos: [...] }
-        arr("integrationLogos", [
-          arr("logos", [img("src"), str("alt"), str("h", "number", "Height (px)")], {
-            preview: { select: { media: "src", title: "alt" } },
-          }),
-        ]),
+        arr(
+          "integrationLogos",
+          [
+            arr("logos", [img("src"), str("alt"), str("h", "number", "Height (px)")], {
+              preview: { select: { media: "src", title: "alt" } },
+            }),
+          ],
+          {
+            // Rows have no meaningful field of their own; label them "Row N"
+            // (derived from the seeded _key) instead of dumping raw JSON.
+            preview: {
+              select: { key: "_key", a0: "logos.0.alt", a1: "logos.1.alt", a2: "logos.2.alt" },
+              prepare: ({ key, a0, a1, a2 }: any) => {
+                const m = /(\d+)$/.exec(key || "");
+                return {
+                  title: m ? `Row ${Number(m[1]) + 1}` : "Logo row",
+                  subtitle: [a0, a1, a2].filter(Boolean).join(", "),
+                };
+              },
+            },
+          },
+        ),
         obj("closing", [
           strArr("heading"),
-          arr("subtitle", [str("text"), str("br", "boolean", "Line break after")]),
+          defineField({ name: "subtitle", type: "richText" }),
           arr(
             "cards",
-            [img("icon"), str("alt"), arr("segments", [str("text"), str("br", "boolean", "Line break after")])],
+            [img("icon"), str("alt"), defineField({ name: "segments", title: "Body", type: "richText" })],
             { preview: { select: { title: "alt", media: "icon" } } },
           ),
         ]),
@@ -399,9 +401,6 @@ export const homePage = defineType({
         preview: { select: { title: "value", subtitle: "label", media: "icon" } },
       }),
     ]),
-
-    // ---- Operations ----
-    section("operations", "closing", [str("eyebrow"), strArr("heading")]),
 
     // ---- CTA ----
     section(

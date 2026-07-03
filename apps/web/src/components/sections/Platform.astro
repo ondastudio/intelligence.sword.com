@@ -14,8 +14,14 @@
  * comes from src/data/platform.json.
  */
 import { getHomePage } from "../../lib/sanity/queries";
-const data = (await getHomePage()).platform;
+import platformJson from "../../data/platform.json";
 import PlusChip from "../ui/PlusChip.astro";
+
+// The diagram's structure (headings, orb, labels, icons) is baked from JSON —
+// only the stats are CMS-driven (homePage.platform.stats), falling back to the
+// JSON copy when unset.
+const cms = (await getHomePage())?.platform ?? {};
+const data = { ...platformJson, stats: cms.stats ?? platformJson.stats };
 
 const {
   heading,

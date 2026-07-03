@@ -26,9 +26,9 @@ import ArrowCircle from "../ui/ArrowCircle.astro";
 const { eyebrow, heading, tabs, card, case: useCase, orchestration } = triage;
 const orchCards = orchestration.cards;
 
-// Mobile diagonal-wash tint — CMS-driven (homePage.triage.background), falling
-// back to the original lavender so the visual is unchanged when unset.
-const washColor = triage.background || "#f4f3fb";
+// Mobile diagonal-wash tint behind the Triage area (desktop stays neutral).
+// Fixed lavender — not worth exposing as a CMS field.
+const washColor = "#f4f3fb";
 
 // Per-card baked full-card backgrounds (index-aligned to orchCards). A null/
 // missing entry falls back to the shared overlay bloom (card-glow-purple.svg).

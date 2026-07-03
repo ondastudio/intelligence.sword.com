@@ -37,6 +37,25 @@ const { heading, steps, cards, closing } = data;
 const integrationLogos = (data.integrationLogos ?? []).map(
   (r: { logos: unknown[] }) => r.logos,
 );
+
+// `cards[].lines`, `closing.subtitle` and `closing.cards[].segments` are now
+// Portable Text (richText). Render real Portable Text via serializeHeadline;
+// tolerate the legacy string[] / {text,br,bold}[] shapes too so an un-reseeded
+// CMS document keeps rendering.
+const esc = (s: unknown) =>
+  String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const isPortableText = (v: any) => Array.isArray(v) && v[0]?._type === "block";
+const linesHtml = (v: any) =>
+  isPortableText(v) ? serializeHeadline(v) : (v ?? []).map(esc).join("<br />");
+const segmentsHtml = (v: any) =>
+  isPortableText(v)
+    ? serializeHeadline(v)
+    : (v ?? [])
+        .map((s: any) => {
+          const t = s.bold ? `<strong class="font-semibold">${esc(s.text)}</strong>` : esc(s.text);
+          return t + (s.br ? "<br />" : "");
+        })
+        .join("");
 ---
 
 <section data-clinical-layer class="clinical-layer relative text-black">
@@ -89,14 +108,11 @@ const integrationLogos = (data.integrationLogos ?? []).map(
                     style={`transition-delay:${120 + (cards.length - 1 - i) * 120}ms`}
                   >
                     <LabelPill>{card.label}</LabelPill>
-                    <p class="text-center text-xmd leading-[1.25]">
-                      {card.lines.map((line, j) => (
-                        <>
-                          {j > 0 && <br />}
-                          {line}
-                        </>
-                      ))}
-                    </p>
+                    <p
+                      class="text-center text-xmd leading-[1.25]"
+                      set:html={linesHtml(card.lines)}
+                    />
+
                   </div>
                 ))
               }
@@ -113,20 +129,10 @@ const integrationLogos = (data.integrationLogos ?? []).map(
                 <h3 class="text-[1.75rem] font-normal leading-[1.15]">
                   {closing.heading[0]}<br />{closing.heading[1]}
                 </h3>
-                <p class="text-[1.25rem] leading-[1.2]">
-                  {
-                    closing.subtitle.map((seg) =>
-                      seg.bold ? (
-                        <span class="font-semibold">{seg.text}</span>
-                      ) : (
-                        <>
-                          {seg.text}
-                          {seg.br && <br />}
-                        </>
-                      ),
-                    )
-                  }
-                </p>
+                <p
+                  class="text-[1.25rem] leading-[1.2]"
+                  set:html={segmentsHtml(closing.subtitle)}
+                />
               </div>
               <div class="flex w-full flex-col gap-4">
                 {
@@ -141,18 +147,10 @@ const integrationLogos = (data.integrationLogos ?? []).map(
                           class="size-[25px]"
                         />
                       </span>
-                      <p class="text-center text-xmd leading-[1.25]">
-                        {card.segments.map((seg) =>
-                          seg.bold ? (
-                            <span class="font-semibold">{seg.text}</span>
-                          ) : (
-                            <>
-                              {seg.text}
-                              {seg.br && <br />}
-                            </>
-                          ),
-                        )}
-                      </p>
+                      <p
+                        class="text-center text-xmd leading-[1.25]"
+                        set:html={segmentsHtml(card.segments)}
+                      />
                     </div>
                   ))
                 }
@@ -265,14 +263,11 @@ const integrationLogos = (data.integrationLogos ?? []).map(
               style={`transition-delay:${i * 80}ms`}
             >
               <LabelPill>{card.label}</LabelPill>
-              <p class="text-center text-xmd leading-[1.25]">
-                {card.lines.map((line, j) => (
-                  <>
-                    {j > 0 && <br />}
-                    {line}
-                  </>
-                ))}
-              </p>
+              <p
+                class="text-center text-xmd leading-[1.25]"
+                set:html={linesHtml(card.lines)}
+              />
+
             </div>
           ))
         }
@@ -344,20 +339,11 @@ const integrationLogos = (data.integrationLogos ?? []).map(
             <h3 class="text-h5 font-normal leading-[1.15]">
               {closing.heading[0]}<br />{closing.heading[1]}
             </h3>
-            <p class="mx-auto mt-4 max-w-[300px] text-[1.25rem] leading-[1.2]">
-              {
-                closing.subtitle.map((seg) =>
-                  seg.bold ? (
-                    <span class="font-semibold">{seg.text}</span>
-                  ) : (
-                    <>
-                      {seg.text}
-                      {seg.br && <br />}
-                    </>
-                  ),
-                )
-              }
-            </p>
+            <p
+              class="mx-auto mt-4 max-w-[300px] text-[1.25rem] leading-[1.2]"
+              set:html={segmentsHtml(closing.subtitle)}
+            />
+
           </div>
           <div data-reveal class="mt-16">
             <ClinicalDiagram06 />
@@ -376,18 +362,11 @@ const integrationLogos = (data.integrationLogos ?? []).map(
               <span class="grid size-10 place-items-center rounded-full border border-black/24">
                 <img src={card.icon} alt={card.alt} width="25" height="25" class="size-[25px]" />
               </span>
-              <p class="text-center text-xmd leading-[1.25]">
-                {card.segments.map((seg) =>
-                  seg.bold ? (
-                    <span class="font-semibold">{seg.text}</span>
-                  ) : (
-                    <>
-                      {seg.text}
-                      {seg.br && <br />}
-                    </>
-                  ),
-                )}
-              </p>
+              <p
+                class="text-center text-xmd leading-[1.25]"
+                set:html={segmentsHtml(card.segments)}
+              />
+
             </div>
           ))
         }

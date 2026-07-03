@@ -44,10 +44,7 @@
             "rest": "."
           }
         ],
-        "media": {
-          "variant": "video",
-          "src": "/triage/no-shows.webm"
-        },
+        "media": "/triage/no-shows.webm",
         "case": {
           "logo": "/triage/ministry-logo.png",
           "logoAlt": "Hellenic Republic Ministry of Health",
@@ -93,10 +90,7 @@
             "rest": "Trained for screenings, vaccinations, med adherence, and other campaigns."
           }
         ],
-        "media": {
-          "variant": "video",
-          "src": "/triage/population-health.webm"
-        },
+        "media": "/triage/population-health.webm",
         "case": {
           "logoText": "US Medicare-focused VBC Provider",
           "logoAlt": "US Medicare-focused VBC Provider",
@@ -139,10 +133,7 @@
             "rest": " assistance."
           }
         ],
-        "media": {
-          "variant": "video",
-          "src": "/triage/surgery.webm"
-        },
+        "media": "/triage/surgery.webm",
         "case": {
           "logo": "/triage/nhs-logo.png",
           "logoAlt": "NHS Cheshire and Merseyside",
@@ -181,10 +172,7 @@
             "rest": "."
           }
         ],
-        "media": {
-          "variant": "video",
-          "src": "/triage/readmission.webm"
-        },
+        "media": "/triage/readmission.webm",
         "case": {
           "logo": "/triage/nhs-logo.png",
           "logoAlt": "NHS Cheshire and Merseyside",
@@ -201,19 +189,11 @@
   "card": {
     "icon": "/triage/logo-icon.svg",
     "title": "Clinical Triage",
-    "badge": {
-      "icon": "/triage/mdr-badge-icon.svg",
-      "text": "/triage/mdr-badge-text.svg",
-      "alt": "MDR Class IIa Compliant"
-    },
     "headline": {
       "highlight": "Guide every patient to the right care.",
       "rest": ""
     },
-    "media": {
-      "variant": "video",
-      "src": "/triage/triage.webm"
-    },
+    "media": "/triage/triage.webm",
     "points": [
       {
         "strong": "Certified",

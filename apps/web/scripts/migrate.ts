@@ -244,6 +244,48 @@ function headline(p: any) {
   ];
 }
 
+/** A single richText block from segments carrying an optional mark + break. */
+function segBlock(
+  segs: { text: string; mark?: string }[],
+  key: string,
+): Block[] {
+  return [
+    {
+      _type: "block",
+      _key: key,
+      style: "normal",
+      markDefs: [],
+      children: segs.map((s, i) => ({
+        _type: "span",
+        _key: `${key}s${i}`,
+        text: s.text,
+        marks: s.mark ? [s.mark] : [],
+      })),
+    },
+  ];
+}
+
+/** Plain string[] (soft-broken copy) → one richText block. */
+function linesToRichText(lines: any[], key: string): Block[] {
+  const segs: { text: string; mark?: string }[] = [];
+  (lines ?? []).forEach((line: string, i: number) => {
+    if (i > 0) segs.push({ text: "\n" });
+    if (line) segs.push({ text: line });
+  });
+  return segBlock(segs, key);
+}
+
+/** {text, br, bold}[] run → one richText block (bold → strong, br → soft break). */
+function runToRichText(run: any[], key: string): Block[] {
+  const segs: { text: string; mark?: string }[] = [];
+  (run ?? []).forEach((s: any) => {
+    if (s.text != null && s.text !== "")
+      segs.push({ text: s.text, mark: s.bold ? "strong" : undefined });
+    if (s.br) segs.push({ text: "\n" });
+  });
+  return segBlock(segs, key);
+}
+
 const HOME_SECTIONS: Record<string, string> = {
   hero: "hero",
   intro: "intro",
@@ -298,6 +340,22 @@ async function buildHomePage(client: AnyClient | null) {
   };
   doc.scaling.heading = headline(doc.scaling.heading);
   doc.clinicalLayer.heading = headline(doc.clinicalLayer.heading);
+
+  // Clinical layer body copy moved from bespoke arrays to richText.
+  doc.clinicalLayer.cards = (doc.clinicalLayer.cards ?? []).map(
+    (c: any, i: number) => ({ ...c, lines: linesToRichText(c.lines, `clCard${i}`) }),
+  );
+  const closing = doc.clinicalLayer.closing;
+  if (closing) {
+    closing.subtitle = runToRichText(closing.subtitle, "clSub");
+    closing.cards = (closing.cards ?? []).map((c: any, i: number) => ({
+      ...c,
+      segments: runToRichText(c.segments, `clClose${i}`),
+    }));
+  }
+
+  // Platform: only the stats are CMS-driven now (the rest lives in JSON).
+  doc.platform = { stats: doc.platform?.stats };
   doc.cta.heading = headline(doc.cta.heading);
   doc.triageCta.heading = headline(doc.triageCta.heading);
 
