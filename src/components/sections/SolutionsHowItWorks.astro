@@ -517,13 +517,20 @@ const channelTile: Record<string, string> = {
   function initHowItWorks(section: HTMLElement) {
     const track = section.querySelector<HTMLElement>("[data-hiw-track]");
     const stage = section.querySelector<HTMLElement>("[data-hiw-stage]");
+    const stack = section.querySelector<HTMLElement>(".hiw-stack");
     const tabs = Array.from(
       section.querySelectorAll<HTMLButtonElement>("[data-step-btn]"),
     );
     const panels = Array.from(
       section.querySelectorAll<HTMLElement>("[data-step-panel]"),
     );
-    if (!tabs.length || !track || !stage) return;
+    if (!tabs.length || !track || !stage || !stack) return;
+
+    // Enhance: co-render every panel and drive the active step via `.is-active`
+    // instead of the `[hidden]` attribute, so the panels can crossfade over each
+    // other (see the CSS note — `[hidden]` would collapse them to display:none).
+    stack.classList.add("is-enhanced");
+    panels.forEach((panel) => panel.removeAttribute("hidden"));
 
     const N = tabs.length;
     const clamp = (n: number, lo: number, hi: number) =>
@@ -544,10 +551,12 @@ const channelTile: Record<string, string> = {
         tab.setAttribute("aria-selected", i === index ? "true" : "false"),
       );
       panels.forEach((panel, i) => {
-        // `[hidden]` drives both the crossfade (via CSS) and the a11y tree; the
-        // forced `display: flex` keeps every panel in the same grid cell so the
-        // area stays sized to the tallest step.
-        panel.toggleAttribute("hidden", i !== index);
+        // `.is-active` drives the crossfade (via CSS); `aria-hidden` mirrors it
+        // in the a11y tree. Every panel stays `display: flex` in the shared grid
+        // cell so the area stays sized to the tallest step.
+        const on = i === index;
+        panel.classList.toggle("is-active", on);
+        panel.setAttribute("aria-hidden", on ? "false" : "true");
       });
     };
 
@@ -574,7 +583,7 @@ const channelTile: Record<string, string> = {
       if (!pinned) return;
       const vh = window.innerHeight;
       // Scroll distance each step dwells for; larger = more scroll per step.
-      segPx = Math.round(vh * 0.6);
+      segPx = Math.round(vh * 0.85);
       scrub = N * segPx;
       const minTop = 24;
       const stageH = stage.offsetHeight;
@@ -693,31 +702,38 @@ const channelTile: Record<string, string> = {
      and the active one crossfades over the inactive ones — no layout jump on
      switch. Inactive panels keep their box (forced `display`) so the grid stays
      sized to the tallest step; `[hidden]` only fades + de-activates them. */
+  /* All panels share the one grid cell so the area sizes to the tallest step.
+     Without JS, Tailwind's preflight collapses the `[hidden]` panels
+     (display:none !important) and only the first shows — a fine static fallback. */
   .hiw-stack > .hiw-panel {
     grid-area: 1 / 1;
+  }
+
+  /* Enhanced (JS) mode: the script strips `[hidden]` and drives the active step
+     via `.is-active`, so every panel stays rendered in the shared cell and the
+     active one gently crossfades over the others. We avoid `[hidden]` here on
+     purpose — Tailwind's `[hidden] { display:none !important }` (in @layer base)
+     would collapse inactive panels and defeat the crossfade, and an unlayered
+     `!important` can't beat a layered one. */
+  .hiw-stack.is-enhanced > .hiw-panel {
     display: flex;
-  }
-  .hiw-panel {
-    transition:
-      opacity 0.5s ease-out,
-      transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
-  }
-  .hiw-panel[hidden] {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translateY(8px);
     transition:
-      opacity 0.5s ease-out,
-      transform 0.6s cubic-bezier(0.33, 1, 0.68, 1),
-      visibility 0s linear 0.5s;
+      opacity 0.9s ease-in-out,
+      visibility 0s linear 0.9s;
+  }
+  .hiw-stack.is-enhanced > .hiw-panel.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 0.9s ease-in-out;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hiw-panel,
-    .hiw-panel[hidden] {
+    .hiw-stack.is-enhanced > .hiw-panel {
       transition: none;
-      transform: none;
     }
   }
 
