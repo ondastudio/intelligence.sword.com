@@ -518,6 +518,12 @@ const channelTile: Record<string, string> = {
     const track = section.querySelector<HTMLElement>("[data-hiw-track]");
     const stage = section.querySelector<HTMLElement>("[data-hiw-stage]");
     const stack = section.querySelector<HTMLElement>(".hiw-stack");
+    // Swirl bloom layer (its sticky stage + the absolute containing block around
+    // it) — kept in sync with the pin below so the bloom doesn't drift early.
+    const swirlStage = section.querySelector<HTMLElement>(
+      "[data-hiw-swirl-stage]",
+    );
+    const swirlLayer = swirlStage?.parentElement ?? null;
     const tabs = Array.from(
       section.querySelectorAll<HTMLButtonElement>("[data-step-btn]"),
     );
@@ -579,6 +585,10 @@ const channelTile: Record<string, string> = {
       stage.style.top = "";
       stage.style.transform = "";
       stage.style.transformOrigin = "";
+      if (swirlLayer) {
+        swirlLayer.style.height = "";
+        swirlLayer.style.bottom = "";
+      }
       pinned = lgMQ.matches && !reduceMotion;
       if (!pinned) return;
       const vh = window.innerHeight;
@@ -597,6 +607,25 @@ const channelTile: Record<string, string> = {
       stage.style.top = `${stickTop}px`;
       section.classList.add("is-pinned");
       track.style.height = `${stageH + scrub}px`;
+
+      // Keep the swirl bloom pinned in sync with the cards. On its own the swirl
+      // is a plain `sticky top:0`, so it detaches from the viewport one swirl-
+      // height before its containing block ends — which, with the tall pinned
+      // track, lands midway through the LAST step and makes the bloom drift while
+      // the final card is still on screen. Extend the sticky containing block so
+      // the swirl only releases once the cards unpin (the raw===1 scroll point,
+      // plus any fit-scale slack), so the bloom stays put behind every step and
+      // lets go together with the stack.
+      if (swirlLayer && swirlStage) {
+        const secTop = section.getBoundingClientRect().top + window.scrollY;
+        const trackTop = track.getBoundingClientRect().top + window.scrollY;
+        const trackOffset = trackTop - secTop; // header height above the track
+        const swirlH = swirlStage.offsetHeight;
+        swirlLayer.style.bottom = "auto";
+        swirlLayer.style.height = `${Math.round(
+          trackOffset + scrub - stickTop + (stageH - scaledH) + swirlH,
+        )}px`;
+      }
     };
 
     const render = () => {
