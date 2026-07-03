@@ -710,25 +710,38 @@ const channelTile: Record<string, string> = {
   }
 
   /* Enhanced (JS) mode: the script strips `[hidden]` and drives the active step
-     via `.is-active`, so every panel stays rendered in the shared cell and the
-     active one gently crossfades over the others. We avoid `[hidden]` here on
-     purpose — Tailwind's `[hidden] { display:none !important }` (in @layer base)
-     would collapse inactive panels and defeat the crossfade, and an unlayered
-     `!important` can't beat a layered one. */
+     via `.is-active`, so every panel stays rendered in the shared cell. We avoid
+     `[hidden]` here on purpose — Tailwind's `[hidden] { display:none !important }`
+     (in @layer base) would collapse inactive panels and defeat the fade, and an
+     unlayered `!important` can't beat a layered one.
+
+     The swap is SEQUENTIAL, not a true crossfade: the outgoing panel fades fully
+     out first, then the incoming one fades in after that. A simultaneous crossfade
+     leaves both panels at ~50% opacity mid-transition, and because they share one
+     grid cell (and the text columns have no background) the old step ghosts through
+     the new one. Staggering the two fades means only one panel is ever visible, so
+     there's no see-through double exposure. */
+  .hiw-stack.is-enhanced {
+    --hiw-fade: 0.42s;
+  }
   .hiw-stack.is-enhanced > .hiw-panel {
     display: flex;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+    /* Fade out immediately; hide once faded. */
     transition:
-      opacity 0.9s ease-in-out,
-      visibility 0s linear 0.9s;
+      opacity var(--hiw-fade) ease-in,
+      visibility 0s linear var(--hiw-fade);
   }
   .hiw-stack.is-enhanced > .hiw-panel.is-active {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    transition: opacity 0.9s ease-in-out;
+    /* Fade in only after the outgoing panel has finished fading out. */
+    transition:
+      opacity var(--hiw-fade) ease-out var(--hiw-fade),
+      visibility 0s linear 0s;
   }
 
   @media (prefers-reduced-motion: reduce) {
