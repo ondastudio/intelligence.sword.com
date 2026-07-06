@@ -227,7 +227,7 @@ const channelTile: Record<string, string> = {
               id={`hiw-panel-${i}`}
               aria-labelledby={`hiw-tab-${i}`}
               hidden={i !== 0}
-              class="hiw-panel flex flex-col items-stretch gap-8 overflow-hidden rounded-card lg:flex-row lg:items-center lg:justify-between lg:gap-12"
+              class="hiw-panel flex flex-col items-stretch gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12"
             >
               <div class="flex flex-col gap-6 lg:max-w-[473px]">
                 <p class="text-sm font-semibold uppercase">
@@ -242,7 +242,7 @@ const channelTile: Record<string, string> = {
                   {step.body}
                 </p>
               </div>
-              <div class="relative grid aspect-square w-full shrink-0 place-items-center overflow-hidden rounded-card bg-white lg:aspect-auto lg:h-[616px] lg:w-[522px]">
+              <div class="relative grid w-full shrink-0 place-items-center overflow-hidden rounded-card bg-white py-10 lg:aspect-auto lg:h-[616px] lg:w-[522px] lg:py-0">
                 {step.media === "enrollment" ? (
                   <div class="flex w-full max-w-[380px] flex-col gap-5 rounded-3xl bg-lavender p-6">
                     <p class="text-lg font-semibold text-ink">
