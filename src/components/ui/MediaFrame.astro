@@ -18,6 +18,8 @@
  * `progress` adds a 4px reproduction bar pinned to the bottom edge: a faint
  * track with a `purple-200` fill that tracks playback and is click-to-seek.
  */
+import fs from "node:fs";
+
 interface Props {
   src: string;
   alt: string;
@@ -26,6 +28,12 @@ interface Props {
   controls?: boolean;
   fill?: boolean;
   progress?: boolean;
+  /**
+   * Defer download + playback until the frame nears the viewport (see the
+   * site-wide observer in Layout). On by default; pass `false` for a video whose
+   * playback is driven by its own scrubber (e.g. the About hero film).
+   */
+  lazy?: boolean;
   class?: string;
 }
 const {
@@ -36,6 +44,7 @@ const {
   controls = true,
   fill = false,
   progress = false,
+  lazy = true,
   class: className = "",
 } = Astro.props;
 
@@ -44,21 +53,40 @@ const showControls = isVideo && controls;
 const showProgress = isVideo && progress;
 
 // Safari/WebKit can't decode AV1 (our WebM is AV1) in software, so a lone
-// .webm src silently fails to play there. For a .webm source we emit two
-// <source>s — the AV1 WebM first (small, for Chrome/Firefox) and an H.264 MP4
-// sibling (same basename) second for Safari. The WebM's `type` carries its full
-// AV1 codec string so Safari correctly rejects it and falls through to the MP4
-// instead of selecting the WebM container and failing to decode.
+// .webm src silently fails to play there. We emit AV1 WebM first (small, for
+// Chrome/Firefox) then an H.264 MP4 sibling for Safari. The WebM's `type`
+// carries its full AV1 codec string so Safari correctly rejects it and falls
+// through to the MP4 instead of failing to decode the WebM container.
+//
+// Each resolution tier is emitted only for the files that actually exist on
+// disk, and a downscaled `-mobile` sibling — when present — is served to phones
+// via a media query (ahead of the full-res master), so mobile pulls far fewer
+// bytes while desktop keeps the full-quality video.
 const webmAv1Type = 'video/webm; codecs="av01.0.08M.08, opus"';
-const sources =
-  isVideo && /\.webm$/i.test(src)
-    ? [
-        { src, type: webmAv1Type },
-        { src: src.replace(/\.webm$/i, ".mp4"), type: "video/mp4" },
-      ]
-    : isVideo
-      ? [{ src, type: undefined }]
-      : [];
+const mp4Type = "video/mp4";
+const exists = (publicPath: string) => {
+  try {
+    return fs.existsSync(`public${publicPath}`);
+  } catch {
+    return false;
+  }
+};
+const base = src.replace(/\.(webm|mp4|mov|m4v|ogg)$/i, "");
+const tier = (path: string, media?: string) => {
+  const out: { src: string; type?: string; media?: string }[] = [];
+  if (exists(`${path}.webm`)) out.push({ src: `${path}.webm`, type: webmAv1Type, media });
+  if (exists(`${path}.mp4`)) out.push({ src: `${path}.mp4`, type: mp4Type, media });
+  return out;
+};
+let sources: { src: string; type?: string; media?: string }[] = [];
+if (isVideo) {
+  sources = [
+    ...tier(`${base}-mobile`, "(max-width: 768px)"),
+    ...tier(base),
+  ];
+  // Safety net: if disk lookup found nothing (unexpected), use the raw src.
+  if (!sources.length) sources = [{ src, type: undefined, media: undefined }];
+}
 
 // `fill` defers sizing + radius to the parent; otherwise the frame owns its
 // aspect ratio and the design's large card radius.
@@ -94,14 +122,15 @@ const iconBase = "size-6";
           class="size-full object-cover"
           poster={poster}
           aria-label={alt}
-          autoplay
+          autoplay={lazy ? undefined : true}
           loop
           muted
           playsinline
-          preload="metadata"
+          preload={lazy ? "none" : "metadata"}
+          data-lazy-video={lazy ? "" : undefined}
         >
           {sources.map((s) => (
-            <source src={s.src} type={s.type} />
+            <source src={s.src} type={s.type} media={s.media} />
           ))}
         </video>
         {showControls && (
@@ -232,8 +261,15 @@ const iconBase = "size-6";
     };
 
     toggle?.addEventListener("click", () => {
-      if (video.paused) video.play();
-      else video.pause();
+      if (video.paused) {
+        // Clear the manual-pause flag so the lazy observer may resume it again.
+        delete video.dataset.userPaused;
+        video.play();
+      } else {
+        // Mark as user-paused so the lazy observer won't auto-resume on scroll.
+        video.dataset.userPaused = "true";
+        video.pause();
+      }
     });
     mute?.addEventListener("click", () => {
       video.muted = !video.muted;
