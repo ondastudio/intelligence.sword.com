@@ -1,11 +1,18 @@
 ---
 /**
- * SolutionsHero — the "Solution • Desktop" landing screen from the design
- * (Figma node 8634:517). Light-lavender background with the navbar overlaid,
- * an eyebrow label above a full-width hairline divider, then a large Lora
- * headline + supporting paragraph on the left and a white media/illustration
- * card on the right. The card is a placeholder meant to receive motion or
- * illustrations later. Content comes from src/data/solutions.json.
+ * SolutionsHero — the "Solution" landing screen from the design.
+ *
+ * Desktop (Figma node 8634:517): light-lavender background with the navbar
+ * overlaid, an eyebrow label above a full-width hairline divider, then a large
+ * Lora headline + supporting paragraph on the left and a white media card on
+ * the right. The animated lime swirl blooms full-bleed behind everything.
+ *
+ * Mobile (Figma node 9328:194): the same pieces stacked top-down — eyebrow +
+ * divider, headline, paragraph, then a full-width white rounded rectangle at
+ * the bottom that holds the looping surgery animation. The lime swirl keeps its
+ * full-bleed position behind the whole hero (a static lime wash on mobile).
+ *
+ * Content comes from src/data/solutions.json.
  */
 import solutions from "../../data/solutions.json";
 import Navbar from "../layout/Navbar.astro";
@@ -15,12 +22,12 @@ const { eyebrow, headline, paragraph } = solutions.hero;
 ---
 
 <section
-  class="relative flex min-h-screen flex-col overflow-hidden bg-purple-tint text-black"
+  class="relative flex flex-col overflow-hidden bg-purple-tint text-black lg:min-h-screen"
 >
-  <!-- Animated neon-lime swirl bloom blooming from the right, behind the hero
-       content. The shared hero swirl recoloured to the lime palette; a static
-       CSS lime wash is the no-JS / reduced-motion / mobile fallback. Sits at
-       z-0 below the content (z-10) and the navbar (z-20). -->
+  <!-- Animated neon-lime swirl bloom, behind the hero content. The shared hero
+       swirl recoloured to the lime palette; a static CSS lime wash is the
+       no-JS / reduced-motion / mobile fallback. Sits at z-0 below the content
+       (z-10) and the navbar (z-20). -->
   <div
     data-sol-swirl-stage
     aria-hidden="true"
@@ -35,56 +42,60 @@ const { eyebrow, headline, paragraph } = solutions.hero;
   <Navbar />
 
   <div
-    class="relative z-10 mx-auto flex min-h-screen w-full max-w-[1440px] flex-col px-6 lg:px-20"
+    class="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col px-5 lg:min-h-screen lg:px-20"
   >
     <!-- Eyebrow label + full-width hairline divider -->
-    <div class="pt-[140px] lg:pt-[200px]">
+    <div class="pt-[128px] lg:pt-[200px]">
       <div data-reveal class="lg:pl-[11px]">
         <Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow>
       </div>
       <div
         data-reveal="line"
-        class="mt-5 -mx-2 border-t border-black/24 lg:-mx-16"
+        class="mt-10 border-t border-black/24 lg:mt-5 lg:-mx-16"
       >
       </div>
     </div>
 
-    <!-- Headline + paragraph (left) and media/illustration card (right) -->
+    <!-- Headline + paragraph (left) and media card (right) -->
     <div
-      class="mt-auto flex flex-col gap-12 pb-20 lg:flex-row lg:items-stretch lg:justify-between lg:gap-16"
+      class="mt-10 flex flex-col gap-16 pb-12 lg:mt-auto lg:flex-row lg:items-stretch lg:justify-between lg:gap-16 lg:pb-20"
     >
-      <div class="flex max-w-[853px] flex-col justify-between gap-10 lg:gap-0">
+      <div
+        class="flex flex-col gap-16 lg:max-w-[853px] lg:justify-between lg:gap-0"
+      >
         <h1 data-reveal="title" class="font-serif font-normal text-h2">
           {headline}
         </h1>
         <p
           data-reveal
-          class="max-w-[607px] text-lg"
+          class="text-lg lg:max-w-[607px]"
           style="transition-delay:120ms"
         >
           {paragraph}
         </p>
       </div>
 
-      <!-- Media card — the same looping surgery clip used by the Care
-           Orchestration "Surgery Prehab and Rehab" card (TriageMedia `video`
-           variant). object-cover fills the card; overflow-hidden clips it to the
-           32px radius; bg-white shows while the clip loads. -->
+      <!-- Media card — the looping surgery clip (the same clip the Care
+           "Surgery Prehab and Rehab" card uses). Full-width white rectangle on
+           mobile, a portrait card on desktop. On mobile the clip is inset
+           (40px top/bottom, 32px left/right) and object-contained so it's never
+           cropped; on desktop it fills the card (object-cover).
+           overflow-hidden clips it to the radius; bg-white shows while it
+           loads. -->
       <div
         data-reveal
-        class="relative aspect-[305/381] w-full max-w-[305px] shrink-0 self-end overflow-hidden rounded-[32px] bg-white"
+        class="relative aspect-[350/364] w-full overflow-hidden rounded-[40px] bg-white lg:aspect-[305/381] lg:max-w-[305px] lg:shrink-0 lg:self-end lg:rounded-[32px]"
         style="transition-delay:200ms"
       >
         <video
           src="/triage/surgery.webm"
-          class="absolute inset-0 h-full w-full object-cover"
+          class="absolute left-8 top-10 h-[calc(100%-80px)] w-[calc(100%-64px)] object-contain lg:left-0 lg:top-0 lg:h-full lg:w-full lg:object-cover"
           autoplay
           loop
           muted
           playsinline
           preload="auto"
-          aria-hidden="true"
-        ></video>
+          aria-hidden="true"></video>
       </div>
     </div>
   </div>
