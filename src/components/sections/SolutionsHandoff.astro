@@ -21,12 +21,18 @@
  */
 import Eyebrow from "../ui/Eyebrow.astro";
 import ArrowCircle from "../ui/ArrowCircle.astro";
+import SolutionsHandoffMobile from "./SolutionsHandoffMobile.astro";
 import solutions from "../../data/solutions.json";
 
 const { problem, solution } = solutions;
 ---
 
-<section data-solutions-handoff class="solutions-handoff text-black">
+{/* Mobile ( < md ): the pinned scroll reel. Desktop ( md+ ): the crossfade. */}
+<div class="md:hidden">
+  <SolutionsHandoffMobile />
+</div>
+
+<section data-solutions-handoff class="solutions-handoff hidden text-black md:block">
   <div data-handoff-stage class="handoff-stage">
     <div class="handoff-inner relative mx-auto w-full max-w-[1440px] px-4 md:px-8">
       {/* ---- State A — Problem ------------------------------------------------ */}
