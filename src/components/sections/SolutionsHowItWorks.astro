@@ -24,6 +24,16 @@ import solutions from "../../data/solutions.json";
 
 const { eyebrow, headline, capabilities, steps } = solutions.howItWorks;
 
+// Mobile media — the design exports (Figma), all a uniform 358×364. On mobile
+// each card shows its image at one size; desktop keeps the built media card.
+const hiwMedia: Record<string, string> = {
+  enrollment: "/solutions/hiw/enrollment.webp",
+  calling: "/solutions/hiw/conversational.webp",
+  journey: "/solutions/hiw/journey.webp",
+  preferences: "/solutions/hiw/preferences.webp",
+  recovery: "/solutions/hiw/recovery.webp",
+};
+
 // Line glyphs for the navbar, keyed by `step.icon`. Sliced from the Figma export
 // and switched to `currentColor` so the chip colours them via text colour.
 const icons: Record<string, string> = {
@@ -75,7 +85,7 @@ const channelTile: Record<string, string> = {
   <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-0">
     <div
       data-hiw-swirl-stage
-      class="hiw-swirl sticky top-0"
+      class="hiw-swirl lg:sticky lg:top-0"
     >
       <canvas
         data-hiw-swirl
@@ -242,7 +252,16 @@ const channelTile: Record<string, string> = {
                   {step.body}
                 </p>
               </div>
-              <div class="relative grid w-full shrink-0 place-items-center overflow-hidden rounded-card bg-white py-10 lg:aspect-auto lg:h-[616px] lg:w-[522px] lg:py-0">
+              <div class="w-full shrink-0 lg:h-[616px] lg:w-[522px]">
+                {/* Mobile: the uniform design image (Figma export). */}
+                <img
+                  src={hiwMedia[step.media]}
+                  alt=""
+                  loading="lazy"
+                  class="aspect-[358/364] w-full rounded-card object-cover lg:hidden"
+                />
+                {/* Desktop: the built, interactive media card. */}
+                <div class="hidden h-full w-full place-items-center overflow-hidden rounded-card bg-white lg:grid">
                 {step.media === "enrollment" ? (
                   <div class="flex w-full max-w-[380px] flex-col gap-5 rounded-3xl bg-lavender p-6">
                     <p class="text-lg font-semibold text-ink">
@@ -546,6 +565,7 @@ const channelTile: Record<string, string> = {
                     />
                   )
                 )}
+                </div>
               </div>
 
               {/* Body on mobile — below the media (Figma 9335:318). Hidden on
