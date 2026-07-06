@@ -125,12 +125,39 @@ const channelTile: Record<string, string> = {
         data-hiw-stage
         class="hiw-stage relative mx-auto flex w-full max-w-[1064px] flex-col gap-8 lg:max-w-[1208px] lg:flex-row lg:items-start lg:gap-[clamp(2rem,4vw,52px)]"
       >
-      {/* Lateral icon navbar — horizontal row on mobile, vertical pill at lg+ */}
-      <nav
-        role="tablist"
-        aria-label="How it works steps"
-        class="flex shrink-0 flex-row gap-2 self-center rounded-card bg-ink-wash p-2 lg:flex-col lg:self-center"
+      {/* Lateral icon navbar. Mobile: prev/next arrows flank the icon pill
+          (Figma 9335:319), spread full-width. lg+: the plain vertical pill —
+          the arrows hide and the wrapper unwraps (`contents`) so the pill
+          becomes the stage's left column exactly as before. */}
+      <div
+        class="flex w-full items-center justify-between gap-3 lg:contents"
       >
+        <button
+          type="button"
+          data-hiw-prev
+          aria-label="Previous step"
+          class="grid size-10 shrink-0 place-items-center rounded-3xl border border-dotted border-black/30 text-black transition-colors duration-200 hover:border-black/60 lg:hidden"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="size-6 rotate-180"
+            aria-hidden="true"
+          >
+            <path d="M18.5 12H5" />
+            <path d="M13 18C13 18 19 13.5811 19 12C19 10.4188 13 6 13 6" />
+          </svg>
+        </button>
+
+        <nav
+          role="tablist"
+          aria-label="How it works steps"
+          class="flex shrink-0 flex-row gap-2 self-center rounded-card bg-ink-wash p-2 lg:flex-col lg:self-center"
+        >
         {
           steps.map((step, i) => (
             <button
@@ -165,7 +192,29 @@ const channelTile: Record<string, string> = {
             </button>
           ))
         }
-      </nav>
+        </nav>
+
+        <button
+          type="button"
+          data-hiw-next
+          aria-label="Next step"
+          class="grid size-10 shrink-0 place-items-center rounded-3xl border border-dotted border-black/30 text-black transition-colors duration-200 hover:border-black/60 lg:hidden"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="size-6"
+            aria-hidden="true"
+          >
+            <path d="M18.5 12H5" />
+            <path d="M13 18C13 18 19 13.5811 19 12C19 10.4188 13 6 13 6" />
+          </svg>
+        </button>
+      </div>
 
       {/* Panels — stacked in one grid cell so the area sizes to the tallest
           step and panels crossfade in place. */}
@@ -187,7 +236,9 @@ const channelTile: Record<string, string> = {
                 <h3 class="font-serif text-h6 font-normal">
                   {step.heading}
                 </h3>
-                <p class="whitespace-pre-line text-[clamp(1.125rem,2vw,24px)] font-normal">
+                {/* Body sits under the heading on desktop; on mobile it moves
+                    below the media (see the copy after the media card). */}
+                <p class="hidden whitespace-pre-line text-[clamp(1.125rem,2vw,24px)] font-normal lg:block">
                   {step.body}
                 </p>
               </div>
@@ -496,6 +547,12 @@ const channelTile: Record<string, string> = {
                   )
                 )}
               </div>
+
+              {/* Body on mobile — below the media (Figma 9335:318). Hidden on
+                  lg where it lives under the heading in the text column. */}
+              <p class="whitespace-pre-line text-[clamp(1.125rem,2vw,24px)] font-normal lg:hidden">
+                {step.body}
+              </p>
             </div>
           ))
         }
@@ -707,6 +764,14 @@ const channelTile: Record<string, string> = {
         tabs[next].focus();
       });
     });
+
+    // Mobile prev/next arrows step through the panels (clamped at the ends).
+    section
+      .querySelector<HTMLButtonElement>("[data-hiw-prev]")
+      ?.addEventListener("click", () => goTo(Math.max(0, active) - 1));
+    section
+      .querySelector<HTMLButtonElement>("[data-hiw-next]")
+      ?.addEventListener("click", () => goTo(Math.max(0, active) + 1));
 
     const onResize = () => {
       measure();
