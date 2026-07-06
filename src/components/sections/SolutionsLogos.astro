@@ -1,26 +1,44 @@
 ---
 /**
- * SolutionsLogos — partner-logo strip on the Solutions page (Figma node
- * 8634:646, "Logos"): a centered uppercase title over a single row of five
- * healthcare-organization logos, each in an equal-width cell topped by a faint
- * hairline rule. Reuses the shared LogoStrip; content comes from
- * src/data/solutions.json.
+ * SolutionsLogos — partner-logo strip on the Solutions page.
+ *
+ * Desktop (Figma node 8634:646, "Logos"): a centered uppercase title over a
+ * single row of five healthcare-organization logos, each in an equal-width cell
+ * topped by a faint hairline rule (the shared LogoStrip grid).
+ *
+ * Mobile (Figma node 9298:4177): the same title over an infinite auto-scrolling
+ * marquee of the logo cells (the shared LogoMarquee) — segmented top rules, 70px
+ * cells, running within the 20px page padding.
+ *
+ * Content comes from src/data/solutions.json.
  */
 import solutions from "../../data/solutions.json";
 import LogoStrip from "../layout/LogoStrip.astro";
+import LogoMarquee from "../layout/LogoMarquee.astro";
 
 const { title, items } = solutions.logos;
 ---
 
-<section class="px-6 pb-[200px] pt-20 lg:px-20">
-  <div class="mx-auto flex max-w-[1280px] flex-col items-center gap-20">
+<section class="px-5 pb-[120px] pt-20 sm:px-6 lg:px-20 lg:pb-[200px]">
+  <div
+    class="mx-auto flex max-w-[1280px] flex-col items-center gap-16 sm:gap-20"
+  >
     <h2
       data-reveal
       class="max-w-[962px] text-center text-sm font-semibold uppercase"
     >
       {title}
     </h2>
-    <div data-reveal class="w-full" style="transition-delay:120ms">
+
+    {/* Mobile: infinite marquee. sm+: the segmented equal-width grid. */}
+    <div data-reveal class="w-full sm:hidden" style="transition-delay:120ms">
+      <LogoMarquee logos={items} />
+    </div>
+    <div
+      data-reveal
+      class="hidden w-full sm:block"
+      style="transition-delay:120ms"
+    >
       <LogoStrip logos={items} borderClass="border-black/24" />
     </div>
   </div>
