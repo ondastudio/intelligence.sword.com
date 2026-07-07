@@ -504,20 +504,6 @@ const tabItems = site.mobileMenu.items;
       // is read from the hero's viewport position (getBoundingClientRect), which
       // is robust to whichever element actually scrolls.
       if (isMdUp()) {
-        // A pinned, actively-scrubbing section (e.g. Triage) can flag the
-        // document to lock this pill: its in-place scroll moves the page up,
-        // which would otherwise read as a scroll-up and fire the nav. Stay
-        // hidden while locked (unless the menu is open), but keep the direction
-        // refs current so detection resumes cleanly once the lock releases.
-        const locked = document.documentElement.classList.contains(
-          "secondary-nav-locked",
-        );
-        if (locked && !isMenuOpen()) {
-          setHidden(true);
-          if (anchor) lastTop = anchor.getBoundingClientRect().top;
-          lastY = window.scrollY;
-          return;
-        }
         if (!anchor) {
           setHidden(!isMenuOpen());
           lastY = window.scrollY;
@@ -540,19 +526,6 @@ const tabItems = site.mobileMenu.items;
       // Phone — this IS the primary nav, so it shows near the top and hides on
       // scroll-down / reveals on scroll-up.
       const y = window.scrollY;
-      // A pinned, actively-scrubbing section (e.g. the enroll stepper) locks the
-      // pill: scrubbing back through its cards moves the page up, which would
-      // otherwise read as a scroll-up and reveal the nav over the cards. Stay
-      // hidden while locked (unless the menu is open), but keep tracking `lastY`
-      // so direction detection resumes cleanly once the lock releases.
-      if (
-        document.documentElement.classList.contains("secondary-nav-locked") &&
-        !isMenuOpen()
-      ) {
-        setHidden(true);
-        lastY = y;
-        return;
-      }
       if (isMenuOpen() || y <= 80) {
         setHidden(false);
       } else if (y > lastY + 4) {
