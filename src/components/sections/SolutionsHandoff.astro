@@ -200,7 +200,16 @@ const { problem, solution } = solutions;
   // Problem cards: the info "i" button expands a source panel below the card.
   // Toggling [data-open] drives the CSS (max-height reveal); the items-stretch
   // row grows so the sibling cards stretch to match, compressing the open card's
-  // grey pane. Each card is independent.
+  // grey pane. Only one card stays open at a time — opening one closes the rest.
+  const problemCards = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-problem-card]"),
+  );
+  const closeProblemCard = (card: HTMLElement) => {
+    card.setAttribute("data-open", "false");
+    card
+      .querySelector<HTMLButtonElement>("[data-problem-toggle]")
+      ?.setAttribute("aria-expanded", "false");
+  };
   document
     .querySelectorAll<HTMLButtonElement>("[data-problem-toggle]")
     .forEach((btn) => {
@@ -208,6 +217,10 @@ const { problem, solution } = solutions;
         const card = btn.closest<HTMLElement>("[data-problem-card]");
         if (!card) return;
         const open = card.getAttribute("data-open") === "true";
+        // Close any other open card first, so a second "i" swaps the source in.
+        problemCards.forEach((other) => {
+          if (other !== card) closeProblemCard(other);
+        });
         card.setAttribute("data-open", open ? "false" : "true");
         btn.setAttribute("aria-expanded", open ? "false" : "true");
       });
@@ -345,12 +358,17 @@ const { problem, solution } = solutions;
       overflow: hidden;
       padding-block: clamp(1.5rem, 4vw, 48px);
     }
-    /* Stack both panels in the same centred slot so they crossfade in place. */
+    /* Stack both panels in the same centred slot so they crossfade in place.
+       Being absolutely positioned, the state spans the full width of
+       .handoff-inner and ignores its px-8 gutter — so re-apply the gutter here,
+       otherwise the panels bleed to the screen edges between md and the
+       max-w-[1440px] cap (tablet / MacBook Air). */
     :global(html.js) .handoff-state {
       position: absolute;
       inset-inline: 0;
       top: 50%;
       transform: translateY(-50%);
+      padding-inline: 2rem;
     }
     :global(html.js) .handoff-state + .handoff-state {
       margin-top: 0;
