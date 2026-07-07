@@ -175,8 +175,11 @@ const tabItems = site.mobileMenu.items;
                   <div class="flex flex-col gap-4">
                     <p class="w-full">{group.label}</p>
                     <div class="flex flex-col gap-6">
-                      {group.items.map((sub) => (
-                        <a href={sub.href} class="flex items-start gap-4">
+                      {group.items.map((sub) => {
+                        // No href yet ⇒ render a plain <div>, not a link.
+                        const Tag = sub.href ? "a" : "div";
+                        return (
+                        <Tag href={sub.href} class="flex items-start gap-4">
                           <span class="relative grid size-10 shrink-0 place-items-center rounded-full text-black">
                             {/* Dotted ring — round-capped `0.01 8` dashes, the
                                 same ring every circle on the site uses (see
@@ -197,6 +200,7 @@ const tabItems = site.mobileMenu.items;
                                 stroke-width="1.5"
                                 stroke-linecap="round"
                                 stroke-dasharray="0.01 8"
+                                class="group-hover/item:[stroke-dasharray:120_0] group-hover/item:[stroke-width:1]"
                               />
                             </svg>
                             {sub.icon && (
@@ -212,8 +216,9 @@ const tabItems = site.mobileMenu.items;
                             <span class="text-black">{sub.title}</span>
                             <span class="text-ink-mid">{sub.subtitle}</span>
                           </span>
-                        </a>
-                      ))}
+                        </Tag>
+                        );
+                      })}
                     </div>
                   </div>
                 ))}
@@ -293,8 +298,11 @@ const tabItems = site.mobileMenu.items;
                   <div class="flex flex-1 flex-col gap-10">
                     <p class="w-full text-black">{group.label}</p>
                     <div class="flex flex-col gap-6">
-                      {group.items.map((sub) => (
-                        <a href={sub.href} class="flex w-full items-start gap-4">
+                      {group.items.map((sub) => {
+                        // No href yet ⇒ render a plain <div>, not a link.
+                        const Tag = sub.href ? "a" : "div";
+                        return (
+                        <Tag href={sub.href} class="group/item flex w-full items-start gap-4">
                           <span class="relative grid size-10 shrink-0 place-items-center rounded-full text-black">
                             {/* Dotted ring — round-capped `0.01 8` dashes, the
                                 same ring every circle on the site uses (see
@@ -315,6 +323,7 @@ const tabItems = site.mobileMenu.items;
                                 stroke-width="1.5"
                                 stroke-linecap="round"
                                 stroke-dasharray="0.01 8"
+                                class="group-hover/item:[stroke-dasharray:120_0] group-hover/item:[stroke-width:1]"
                               />
                             </svg>
                             {sub.icon && (
@@ -332,8 +341,9 @@ const tabItems = site.mobileMenu.items;
                               {sub.subtitle}
                             </span>
                           </span>
-                        </a>
-                      ))}
+                        </Tag>
+                        );
+                      })}
                     </div>
                   </div>
                 ))}
@@ -530,6 +540,19 @@ const tabItems = site.mobileMenu.items;
       // Phone — this IS the primary nav, so it shows near the top and hides on
       // scroll-down / reveals on scroll-up.
       const y = window.scrollY;
+      // A pinned, actively-scrubbing section (e.g. the enroll stepper) locks the
+      // pill: scrubbing back through its cards moves the page up, which would
+      // otherwise read as a scroll-up and reveal the nav over the cards. Stay
+      // hidden while locked (unless the menu is open), but keep tracking `lastY`
+      // so direction detection resumes cleanly once the lock releases.
+      if (
+        document.documentElement.classList.contains("secondary-nav-locked") &&
+        !isMenuOpen()
+      ) {
+        setHidden(true);
+        lastY = y;
+        return;
+      }
       if (isMenuOpen() || y <= 80) {
         setHidden(false);
       } else if (y > lastY + 4) {
