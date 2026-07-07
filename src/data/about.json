@@ -34,7 +34,7 @@
         { "text": " trusted by the care teams of providers, payors, and national health around the world. Because when your care managers get the capacity boost they need, they can give your patients the attention they deserve." }
       ],
       "stats": [
-        { "value": "85K", "plus": true, "label": "Physician hours invested" },
+        { "value": "85K", "plus": true, "label": "Physician days invested" },
         { "value": "14M", "plus": true, "label": "Care interactions" }
       ],
       "certs": {
