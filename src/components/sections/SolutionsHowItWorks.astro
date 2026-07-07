@@ -666,7 +666,10 @@ const channelTile: Record<string, string> = {
         swirlLayer.style.height = "";
         swirlLayer.style.bottom = "";
       }
-      pinned = lgMQ.matches && !reduceMotion;
+      // Pin on every breakpoint (mobile included) so scrolling is scrubbed
+      // through all five steps — you can't skip past the section without seeing
+      // each card. Only reduced-motion opts out to the plain click stepper.
+      pinned = !reduceMotion;
       if (!pinned) return;
       const vh = window.innerHeight;
       // Scroll distance each step dwells for; larger = more scroll per step.
