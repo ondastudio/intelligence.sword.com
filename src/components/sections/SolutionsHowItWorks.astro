@@ -62,11 +62,12 @@ const channelIcons: Record<string, string> = {
   call: `<path d="M17.7 15.15c-1.16 0-2.29-.18-3.35-.53a.94.94 0 0 0-.96.23l-1.48 1.48a14.16 14.16 0 0 1-6.2-6.2l1.47-1.48a.94.94 0 0 0 .24-.96 10.6 10.6 0 0 1-.53-3.36c0-.52-.42-.94-.94-.94H3.14c-.52 0-1.14.23-1.14.94C2 10.98 7.02 22 16.6 22c.67 0 .94-.6.94-1.13v-2.31c0-.52-.42-.94-.94-.94Z"/>`,
   email: `<path d="M4 5h16c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V7c0-1.1.9-2 2-2Zm.5 2 7.5 4.7L19.5 7h-15Zm15.5 1.9-7.47 4.66a1 1 0 0 1-1.06 0L4 8.9V17h16V8.9Z"/>`,
 };
-// Tile background per channel — see @theme tokens in global.css.
+// Tile gradient per channel — iOS-style app icons (Messages/Phone green, Mail
+// cyan→blue), matching the Figma export. See @theme tokens in global.css.
 const channelTile: Record<string, string> = {
-  sms: "bg-channel-green",
-  call: "bg-channel-green",
-  email: "bg-channel-blue",
+  sms: "bg-gradient-to-b from-imessage-100 to-imessage-600",
+  call: "bg-gradient-to-b from-imessage-100 to-imessage-600",
+  email: "bg-gradient-to-b from-mail-100 to-mail-600",
 };
 ---
 
@@ -263,7 +264,7 @@ const channelTile: Record<string, string> = {
                 {/* Desktop: the built, interactive media card. */}
                 <div class="hidden h-full w-full place-items-center overflow-hidden rounded-card bg-white lg:grid">
                 {step.media === "enrollment" ? (
-                  <div class="flex w-full max-w-[380px] flex-col gap-5 rounded-3xl bg-lavender p-6">
+                  <div class="flex w-full max-w-[380px] flex-col gap-5 rounded-3xl bg-blue-100 p-6">
                     <p class="text-lg font-semibold text-ink">
                       {step.enrollment?.title}
                     </p>
@@ -271,14 +272,14 @@ const channelTile: Record<string, string> = {
                     {/* Progress bar */}
                     <div class="h-1.5 w-full overflow-hidden rounded-full bg-white">
                       <div
-                        class="h-full rounded-full bg-gradient-to-r from-purple-200 to-brand"
+                        class="h-full rounded-full bg-purple-200"
                         style={`width:${step.enrollment?.progressValue}%`}
                       />
                     </div>
 
                     {/* Matching-population row */}
                     <div class="flex items-center gap-3">
-                      <span class="grid size-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-purple-200 to-purple-300 text-white">
+                      <span class="grid size-8 shrink-0 place-items-center rounded-full bg-purple-200 text-ink">
                         <svg
                           viewBox="0 0 24 24"
                           fill="none"
@@ -421,7 +422,7 @@ const channelTile: Record<string, string> = {
                     ))}
                   </div>
                 ) : step.media === "preferences" ? (
-                  <div class="flex w-full max-w-[360px] flex-col gap-4 rounded-3xl bg-lavender p-4">
+                  <div class="flex w-full max-w-[360px] flex-col gap-4 rounded-3xl bg-blue-100 p-4">
                     {/* Contact header */}
                     <div class="flex items-center gap-4 px-2 pt-2">
                       <span class="size-12 shrink-0 overflow-hidden rounded-full">
@@ -446,19 +447,21 @@ const channelTile: Record<string, string> = {
                     <div class="flex flex-col gap-2.5">
                       {step.preferences?.map((pref) => (
                         <div class="flex items-center gap-3 rounded-full bg-channel-row py-2 pl-2 pr-6">
-                          <span
-                            class:list={[
-                              "grid size-8 shrink-0 place-items-center rounded-[9px] text-white",
-                              channelTile[pref.icon],
-                            ]}
-                          >
-                            <svg
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                              class="size-[18px]"
-                              aria-hidden="true"
-                              set:html={channelIcons[pref.icon]}
-                            />
+                          <span class="grid size-11 shrink-0 place-items-center rounded-full bg-blue-100">
+                            <span
+                              class:list={[
+                                "grid size-8 place-items-center rounded-[9px] text-white",
+                                channelTile[pref.icon],
+                              ]}
+                            >
+                              <svg
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                class="size-[18px]"
+                                aria-hidden="true"
+                                set:html={channelIcons[pref.icon]}
+                              />
+                            </span>
                           </span>
                           <span class="w-14 shrink-0 font-semibold text-ink">
                             {pref.label}
@@ -517,7 +520,7 @@ const channelTile: Record<string, string> = {
                 ) : step.media === "calling" ? (
                   <div class="flex flex-col items-center gap-14">
                     {/* Incoming-call contact pill */}
-                    <div class="flex items-center gap-4 rounded-full bg-lavender py-2 pl-2 pr-8">
+                    <div class="flex items-center gap-4 rounded-full bg-blue-100 py-2 pl-2 pr-8">
                       <span class="size-12 shrink-0 overflow-hidden rounded-full">
                         <img
                           src={step.avatar}
