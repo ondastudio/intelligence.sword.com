@@ -18,7 +18,7 @@
   },
   "audits": { "icon": "/platform/icon-search.svg", "label": "Full Auditability" },
   "stats": [
-    { "value": "85K", "plus": true, "label": "Days physician invested" },
+    { "value": "85K", "plus": true, "label": "Physician days invested" },
     { "value": "14M", "plus": true, "label": "Care interactions" }
   ],
   "memory": { "icon": "/platform/icon-brain.svg", "label": "Unified Clinical Memory" },
