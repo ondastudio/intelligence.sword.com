@@ -59,9 +59,11 @@
   --color-blue-100: #ecf3fe; /* brand/blue-100 — Triage card "incoming call" pill */
 
   /* ---- Channel icon tiles (Solutions "Hyper-personalized interactions" card) ---- */
-  --color-channel-row: #d6ecf0; /* pale teal — channel preference row background */
-  --color-channel-green: #3ecf6a; /* SMS + Call icon tiles */
-  --color-channel-blue: #3b9bf5; /* Email icon tile */
+  --color-channel-row: #bae0eb; /* pale teal — channel preference row background */
+  --color-imessage-100: #5bf675; /* Messages/Phone tile — top of green gradient */
+  --color-imessage-600: #0cbd2a; /* Messages/Phone tile — bottom of green gradient */
+  --color-mail-100: #70efff; /* Mail tile — top of cyan→blue gradient */
+  --color-mail-600: #5770ff; /* Mail tile — bottom of cyan→blue gradient */
 
   /* ---- Lime ramp (Figma color/lime/*) ---- */
   --color-accent: #ccff33; /* lime/Default — CTAs, active controls, accents */
