@@ -567,12 +567,24 @@ const metrics = problem.cards.map((p, i) => ({
     // source expands; a ResizeObserver re-runs render() through the whole
     // animation so endY (and the scroll) track the new height — otherwise the
     // last card's freshly opened source would be clipped at the panel bottom.
+    const hmCards = Array.from(
+      section.querySelectorAll<HTMLElement>("[data-hm-card]"),
+    );
     section.querySelectorAll<HTMLButtonElement>("[data-hm-toggle]").forEach(
       (btn) => {
         btn.addEventListener("click", () => {
           const card = btn.closest<HTMLElement>("[data-hm-card]");
           if (!card) return;
           const open = card.getAttribute("data-open") === "true";
+          // Only one source open at a time — opening one closes the others.
+          hmCards.forEach((other) => {
+            if (other !== card) {
+              other.setAttribute("data-open", "false");
+              other
+                .querySelector<HTMLButtonElement>("[data-hm-toggle]")
+                ?.setAttribute("aria-expanded", "false");
+            }
+          });
           card.setAttribute("data-open", open ? "false" : "true");
           btn.setAttribute("aria-expanded", open ? "false" : "true");
         });
