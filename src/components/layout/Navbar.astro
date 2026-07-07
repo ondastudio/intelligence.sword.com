@@ -67,10 +67,14 @@ const solutionGroups =
                       <div class="flex flex-1 flex-col gap-10">
                         <p class="w-full text-black">{group.label}</p>
                         <div class="flex flex-col gap-6">
-                          {group.items.map((sub) => (
-                            <a
+                          {group.items.map((sub) => {
+                            // Items without an href aren't links yet — render a
+                            // plain <div> so nothing is clickable.
+                            const Tag = sub.href ? "a" : "div";
+                            return (
+                            <Tag
                               href={sub.href}
-                              class="flex w-full items-start gap-4"
+                              class="group/item flex w-full items-start gap-4"
                             >
                               <span class="relative grid size-10 shrink-0 place-items-center rounded-full text-black">
                                 {/* Dotted ring — round-capped `0.01 8` dashes,
@@ -92,6 +96,7 @@ const solutionGroups =
                                     stroke-width="1.5"
                                     stroke-linecap="round"
                                     stroke-dasharray="0.01 8"
+                                    class="group-hover/item:[stroke-dasharray:120_0] group-hover/item:[stroke-width:1]"
                                   />
                                 </svg>
                                 {sub.icon && (
@@ -111,8 +116,9 @@ const solutionGroups =
                                   {sub.subtitle}
                                 </span>
                               </span>
-                            </a>
-                          ))}
+                            </Tag>
+                            );
+                          })}
                         </div>
                       </div>
                     ))}
