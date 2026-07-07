@@ -177,17 +177,38 @@ const tabItems = site.mobileMenu.items;
                     <div class="flex flex-col gap-6">
                       {group.items.map((sub) => (
                         <a href={sub.href} class="flex items-start gap-4">
-                          <span class="flex size-10 shrink-0 items-center justify-center rounded-full border-[1.5px] border-dotted border-black">
+                          <span class="relative grid size-10 shrink-0 place-items-center rounded-full text-black">
+                            {/* Dotted ring — round-capped `0.01 8` dashes, the
+                                same ring every circle on the site uses (see
+                                ui/ArrowCircle). */}
+                            <svg
+                              class="col-start-1 row-start-1 size-full"
+                              viewBox="0 0 40 40"
+                              fill="none"
+                              aria-hidden="true"
+                            >
+                              <rect
+                                x="1"
+                                y="1"
+                                width="38"
+                                height="38"
+                                rx="19"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                                stroke-dasharray="0.01 8"
+                              />
+                            </svg>
                             {sub.icon && (
                               <img
                                 src={sub.icon}
                                 alt=""
                                 aria-hidden="true"
-                                class="size-6"
+                                class="col-start-1 row-start-1 size-6"
                               />
                             )}
                           </span>
-                          <span class="flex min-w-0 flex-1 flex-col">
+                          <span class="flex min-w-0 flex-1 flex-col normal-case">
                             <span class="text-black">{sub.title}</span>
                             <span class="text-ink-mid">{sub.subtitle}</span>
                           </span>
@@ -274,17 +295,38 @@ const tabItems = site.mobileMenu.items;
                     <div class="flex flex-col gap-6">
                       {group.items.map((sub) => (
                         <a href={sub.href} class="flex w-full items-start gap-4">
-                          <span class="flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-dotted border-black">
+                          <span class="relative grid size-10 shrink-0 place-items-center rounded-full text-black">
+                            {/* Dotted ring — round-capped `0.01 8` dashes, the
+                                same ring every circle on the site uses (see
+                                ui/ArrowCircle). */}
+                            <svg
+                              class="col-start-1 row-start-1 size-full"
+                              viewBox="0 0 40 40"
+                              fill="none"
+                              aria-hidden="true"
+                            >
+                              <rect
+                                x="1"
+                                y="1"
+                                width="38"
+                                height="38"
+                                rx="19"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                                stroke-dasharray="0.01 8"
+                              />
+                            </svg>
                             {sub.icon && (
                               <img
                                 src={sub.icon}
                                 alt=""
                                 aria-hidden="true"
-                                class="size-6"
+                                class="col-start-1 row-start-1 size-6"
                               />
                             )}
                           </span>
-                          <span class="flex min-w-0 flex-1 flex-col">
+                          <span class="flex min-w-0 flex-1 flex-col normal-case">
                             <span class="w-full text-black">{sub.title}</span>
                             <span class="w-full text-ink-mid">
                               {sub.subtitle}
