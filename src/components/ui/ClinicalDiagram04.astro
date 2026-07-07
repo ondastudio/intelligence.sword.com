@@ -3,10 +3,13 @@
  * ClinicalDiagram04 — fourth state of the ClinicalLayer node diagram, the
  * "Integrations" beat that crossfades in from ClinicalDiagram03 as the pinned
  * section scrolls (Figma source 8711:880). Inlined SVG (native 837x810) so the
- * icon-disc backdrop-filter blur chips render — browsers do not run
- * backdrop-filter on SVGs loaded via <img>. Scales responsively to its wrapper.
- * The "04 / INTEGRATIONS" step chip is an HTML overlay rendered by ClinicalLayer
- * (see ClinicalStepPill), not baked into this artwork.
+ * step-pill overlays + crossfade can compose over it. Scales responsively to its
+ * wrapper. The "04 / INTEGRATIONS" step chip is an HTML overlay rendered by
+ * ClinicalLayer (see ClinicalStepPill), not baked into this artwork.
+ *
+ * NOTE: the Figma export's per-chip `backdrop-filter` frost was removed — Safari
+ * mis-renders backdrop-filter inside a scaled/opacity-animated SVG foreignObject
+ * (detached grey smears beside each chip). See ClinicalDiagram for the full note.
  */
 import ClinicalLogoMarquee from "./ClinicalLogoMarquee.astro";
 interface LogoItem {
@@ -23,6 +26,9 @@ interface Props {
   card?: boolean;
 }
 const { class: className = "", logos = [], card = true } = Astro.props;
+// Per-render unique id for this SVG's own `#frostId` blur filter (see
+// ClinicalDiagram for why a shared/duplicate id breaks the chips in Safari).
+const frostId = "chipFrost-" + Math.random().toString(36).slice(2, 10);
 ---
 
 <svg
@@ -35,7 +41,7 @@ const { class: className = "", logos = [], card = true } = Astro.props;
   aria-label="Diagram of the clinical intelligence layer's integrations"
   xmlns="http://www.w3.org/2000/svg"
   xmlns:xlink="http://www.w3.org/1999/xlink"
->
+><g id={`frostBg-${frostId}`}>
 <g opacity="0.35">
 <path d="M335.517 328.923L5.51947 519.447C-1.14979 523.298 -1.14653 532.925 5.52531 536.771L467.512 803.085C474.936 807.365 484.078 807.361 491.499 803.077L821.496 612.553C828.165 608.702 828.162 599.075 821.49 595.229L359.503 328.915C352.08 324.635 342.938 324.639 335.517 328.923Z" fill="#8C4AFF" stroke="#4D0099"/>
 <path d="M0.507812 521V529M826.508 596.5V604.5" stroke="#4D0099"/>
@@ -186,7 +192,7 @@ const { class: className = "", logos = [], card = true } = Astro.props;
 <path d="M187.5 452V434H222.5V452H187.5Z" fill="#8C4AFF"/>
 <path d="M187.5 434V452M222.5 452V434" stroke="#7700EE"/>
 <ellipse cx="204.963" cy="434" rx="17.4627" ry="10" fill="#EEE8FF" stroke="#7700EE"/>
-<rect x="172.5" y="336" width="63" height="33" rx="16.5" fill="#7700EE"/>
+</g>{card && (<g clip-path={`url(#frostClip-${frostId})`}><use href={`#frostBg-${frostId}`} filter={`url(#frostBlur-${frostId})`}></use></g>)}<rect x="172.5" y="336" width="63" height="33" rx="16.5" fill="#7700EE"/>
 <path d="M193.904 357.168C192.961 357.168 192.121 356.953 191.384 356.524C190.656 356.085 190.082 355.488 189.662 354.732C189.251 353.967 189.046 353.089 189.046 352.1C189.046 351.111 189.251 350.238 189.662 349.482C190.082 348.717 190.656 348.119 191.384 347.69C192.112 347.251 192.947 347.032 193.89 347.032C194.525 347.032 195.122 347.149 195.682 347.382C196.242 347.606 196.737 347.919 197.166 348.32C197.605 348.721 197.941 349.188 198.174 349.72L196.69 350.322C196.522 349.967 196.293 349.655 196.004 349.384C195.724 349.104 195.402 348.889 195.038 348.74C194.674 348.591 194.291 348.516 193.89 348.516C193.274 348.516 192.723 348.67 192.238 348.978C191.762 349.286 191.384 349.711 191.104 350.252C190.833 350.784 190.698 351.4 190.698 352.1C190.698 352.8 190.833 353.421 191.104 353.962C191.384 354.503 191.767 354.928 192.252 355.236C192.747 355.544 193.307 355.698 193.932 355.698C194.343 355.698 194.725 355.619 195.08 355.46C195.444 355.292 195.766 355.063 196.046 354.774C196.335 354.485 196.564 354.149 196.732 353.766L198.216 354.368C197.983 354.919 197.651 355.409 197.222 355.838C196.793 356.258 196.293 356.585 195.724 356.818C195.155 357.051 194.548 357.168 193.904 357.168ZM199.779 357V347.2H203.237C203.909 347.2 204.502 347.331 205.015 347.592C205.529 347.853 205.93 348.217 206.219 348.684C206.509 349.141 206.653 349.673 206.653 350.28C206.653 350.924 206.476 351.493 206.121 351.988C205.767 352.473 205.3 352.833 204.721 353.066L207.045 357H205.211L203.111 353.374C203.055 353.383 202.995 353.388 202.929 353.388C202.873 353.388 202.813 353.388 202.747 353.388H201.403V357H199.779ZM201.403 351.89H203.307C203.625 351.89 203.905 351.82 204.147 351.68C204.399 351.54 204.6 351.349 204.749 351.106C204.908 350.863 204.987 350.588 204.987 350.28C204.987 349.813 204.819 349.431 204.483 349.132C204.147 348.833 203.713 348.684 203.181 348.684H201.403V351.89ZM208.693 357V347.2H210.429L213.509 351.736L216.561 347.2H218.311V357H216.687V349.762L213.495 354.48L210.317 349.79V357H208.693Z" fill="#F9F9F9"/>
 <path d="M204 393.333C202.527 393.333 201.333 394.527 201.333 396C201.333 397.473 202.527 398.667 204 398.667C205.473 398.667 206.667 397.473 206.667 396C206.667 394.527 205.473 393.333 204 393.333ZM204 369L203.5 369L203.5 396L204 396L204.5 396L204.5 369L204 369Z" fill="black"/>
 <ellipse cx="420.265" cy="520.603" rx="37.7647" ry="21.4" fill="#8C4AFF" stroke="#7700EE"/>
@@ -321,7 +327,7 @@ const { class: className = "", logos = [], card = true } = Astro.props;
 {
   card && (
     <>
-      <foreignObject x="527.505" y="-4" width="313" height="193"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(2px);clip-path:url(#bgblur_0_8711_880_clip_path);height:100%;width:100%"></div></foreignObject><g data-figma-bg-blur-radius="4">
+      <g data-figma-bg-blur-radius="4">
       <rect x="531.505" width="305" height="185" rx="24" fill="#4D4F60" fill-opacity="0.05"/>
       <rect x="654.505" y="24.5" width="59" height="32" rx="16" stroke="black" stroke-opacity="0.24"/>
       <path d="M671.167 45V35.2H677.201V36.684H672.791V39.288H676.683V40.744H672.791V43.516H677.243V45H671.167ZM679.425 45V35.2H681.049V39.232H685.977V35.2H687.601V45H685.977V40.716H681.049V45H679.425ZM689.925 45V35.2H693.383C694.055 35.2 694.647 35.3307 695.161 35.592C695.674 35.8533 696.075 36.2173 696.365 36.684C696.654 37.1413 696.799 37.6733 696.799 38.28C696.799 38.924 696.621 39.4933 696.267 39.988C695.912 40.4733 695.445 40.8327 694.867 41.066L697.191 45H695.357L693.257 41.374C693.201 41.3833 693.14 41.388 693.075 41.388C693.019 41.388 692.958 41.388 692.893 41.388H691.549V45H689.925ZM691.549 39.89H693.453C693.77 39.89 694.05 39.82 694.293 39.68C694.545 39.54 694.745 39.3487 694.895 39.106C695.053 38.8633 695.133 38.588 695.133 38.28C695.133 37.8133 694.965 37.4307 694.629 37.132C694.293 36.8333 693.859 36.684 693.327 36.684H691.549V39.89Z" fill="black"/>
@@ -338,7 +344,7 @@ const { class: className = "", logos = [], card = true } = Astro.props;
       </div>
       </foreignObject>
       </g>
-      <defs>
+      <defs><filter id={`frostBlur-${frostId}`} color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4"></feGaussianBlur></filter><clipPath id={`frostClip-${frostId}`}><rect x="531.505" width="305" height="185" rx="24"/></clipPath>
       <clipPath id="bgblur_0_8711_880_clip_path" transform="translate(-527.505 4)"><rect x="531.505" width="305" height="185" rx="24"/>
       </clipPath>
       </defs>
