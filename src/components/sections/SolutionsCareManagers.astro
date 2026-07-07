@@ -83,7 +83,9 @@ const ehrRows = [ehrLogos.slice(0, 6), ehrLogos.slice(6)];
       </div>
 
       {/* ---- Bento ---------------------------------------------------------- */}
-      <div class="flex flex-col gap-4">
+      {/* Mobile shows only the pile deck + Row C (logo walls), so the 64px gap
+          here sets the deck→logos distance; md restores the 16px row rhythm. */}
+      <div class="flex flex-col gap-16 md:gap-4">
         {/* Mobile: the five non-logo cards as a pinned swipe-through deck — the
             same motion as the home Care "AI Care Managers" grid. Each card is a
             uniform 350×459 (Figma 9298:7567). Desktop keeps the bento rows below
