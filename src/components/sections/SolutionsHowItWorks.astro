@@ -717,8 +717,18 @@ const channelTile: Record<string, string> = {
       // The stage sticks at top:stickTop and holds for `scrub` px; track top runs
       // stickTop → stickTop − scrub across that span. Map it to an equal segment
       // per step.
-      const raw = (stickTop - track.getBoundingClientRect().top) / scrub;
-      setNavLocked(raw > 0 && raw < 1);
+      const rect = track.getBoundingClientRect();
+      // Lock the secondary nav for as long as the stepper track is anywhere in the
+      // viewport — i.e. whenever the cards are on screen. Scrubbing back (up) to a
+      // previous card moves the page up, which MobileHeader would otherwise read as
+      // a genuine scroll-up and fire the nav. Gating on the track's visibility
+      // (rather than the exact scrub progress `raw`) keeps the lock stable across
+      // the whole scrub in both directions, immune to the scaled-stage slack at the
+      // endpoints and to the one-frame lag before MobileHeader reads the flag. It
+      // releases only once the section has actually scrolled clear of the viewport.
+      const trackInView = rect.bottom > 0 && rect.top < window.innerHeight;
+      setNavLocked(trackInView);
+      const raw = (stickTop - rect.top) / scrub;
       select(clamp(Math.floor(clamp(raw, 0, 1) * N), 0, N - 1));
     };
 
