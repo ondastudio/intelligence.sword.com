@@ -131,7 +131,7 @@ const cardImage: Record<
                       imageWrapperClass={cardImage[i]?.wrap}
                       lottieFit={cardImage[i]?.fit}
                       lottieAlign={cardImage[i]?.align}
-                      class="h-full min-h-0"
+                      class="h-full min-h-0 border border-black/10"
                     />
                   </div>
                 ))
@@ -145,7 +145,7 @@ const cardImage: Record<
                 style={`z-index:${care.cards.length}`}
               >
                 <div
-                  class="flex h-full flex-col items-center gap-6 overflow-hidden rounded-[24px] bg-[image:var(--gradient-care-banner)] p-8"
+                  class="flex h-full flex-col items-center gap-6 overflow-hidden rounded-[24px] border border-black/10 bg-[image:var(--gradient-care-banner)] p-8"
                 >
                   <LabelPill>{care.banner.label}</LabelPill>
                   <p class="text-center text-lg">
@@ -252,51 +252,71 @@ const cardImage: Record<
     let active = false;
     let ticking = false;
 
+    // Past cards don't vanish — they settle into a pile that peeks above the
+    // front card (design 9298:4465: cards stacked with a 39px vertical offset).
+    // The current card sits full at the bottom-front, already-seen cards stack
+    // upward behind it, and the next card rises from below into the front.
+    const PEEK = 39; // px each past card peeks above the front
+    const MAX_PEEKS = 2; // cap the visible pile depth (older cards fade behind)
+
     function measure() {
       const vh = window.innerHeight;
+      const peeks = Math.min(MAX_PEEKS, N - 1);
+      const pileH = PEEK * peeks; // headroom the pile needs above the front card
       // Tall cards so the portrait video illustrations read large instead of
-      // being cropped to a thin band: take most of the viewport height, but
-      // leave ≥16px top/bottom so the pinned stage never overflows the screen.
-      stageH = Math.min(Math.max(Math.round(vh * 0.82), 460), vh - 32);
+      // being cropped to a thin band, but shrink enough to leave room for the
+      // pile above and a ≥16px margin top & bottom.
+      const desired = Math.max(Math.round(vh * 0.78), 440);
+      stageH = Math.min(desired, vh - 32 - pileH);
       const perCard = vh * 0.7; // scroll distance to bring in each next card
       pinTravel = perCard * (N - 1);
-      centerTop = Math.max(16, Math.round((vh - stageH) / 2));
+      // Seat the whole composition (pile + front card) vertically centred, but
+      // never let the pile ride above a 16px top margin.
+      centerTop = Math.max(pileH + 16, Math.round((vh - stageH + pileH) / 2));
       track.style.height = `${stageH + pinTravel}px`;
       stage.style.height = `${stageH}px`;
     }
 
     // Per-card style for a continuous deck position `s` (0 = first card front,
     // N-1 = last card front). At s=0 only the first card shows. As `s` grows the
-    // next card rises quickly into the front while the card it covers fades out —
-    // cards do NOT stack or peek above one another, so the pile never shows two
-    // half-transparent cards layered together.
-    const ENTER_RISE = 64; // px the entering card rises from as it fades in
+    // next card rises into the front while the card it covers slides up into the
+    // pile behind — already-seen cards peek above the front instead of vanishing.
+    const ENTER_RISE = 88; // px the entering card rises from as it fades in
     // Each card holds fully in front for this fraction of its scroll step before
     // the next one starts sliding in; the remaining fraction plays the hand-off.
     // Lower = the next card starts sooner (lower threshold) and the swap is snappier.
     const HOLD = 0.3;
+    // How much each pile step dims the card toward grey. The design darkens the
+    // stacked cards as they recede (depth 1 → ~90% brightness, depth 2 → ~80%),
+    // so a white card reads as progressively greyer the deeper it sits.
+    const DIM_STEP = 0.1;
     function styleFor(i: number, s: number) {
       const rel = s - i;
       let ty: number;
       let opacity = 1;
-      if (rel <= -1) {
-        // not in yet — parked just below the front, invisible
-        ty = ENTER_RISE;
-        opacity = 0;
-      } else if (rel < 0) {
-        // entering: rise into the front and fade in fast. Opacity reaches full
-        // well before the rise completes so the card is solid early and never
-        // lingers as a half-transparent overlay on the one beneath.
+      let brightness = 1;
+      if (rel >= 0) {
+        // front card (rel 0) or an already-seen card — seated in the pile,
+        // peeking PEEK px higher for each step it sits behind the front. Its
+        // z-index (= card index) keeps it behind the newer cards below it, and
+        // it dims toward grey with depth so the pile reads with real depth.
+        const depth = Math.min(rel, MAX_PEEKS);
+        ty = -PEEK * depth;
+        // Cards deeper than the visible pile fade out behind it.
+        opacity = rel <= MAX_PEEKS ? 1 : Math.max(0, 1 - (rel - MAX_PEEKS));
+        brightness = 1 - DIM_STEP * depth;
+      } else if (rel > -1) {
+        // entering: rise from below into the front and fade in fast. Opacity
+        // reaches full well before the rise completes so the card is solid early.
         const t = rel + 1; // 0 → 1
         ty = (1 - t) * ENTER_RISE;
         opacity = Math.min(1, t * 3.5);
       } else {
-        // behind the front card — fade out quickly so previous cards disappear
-        // instead of stacking up. No upward stagger: nothing peeks above.
-        ty = 0;
-        opacity = Math.max(0, 1 - rel * 3);
+        // not in yet — parked just below the front, invisible.
+        ty = ENTER_RISE;
+        opacity = 0;
       }
-      return { transform: `translateY(${ty}px)`, opacity };
+      return { transform: `translateY(${ty}px)`, opacity, brightness };
     }
 
     function render() {
@@ -341,6 +361,8 @@ const cardImage: Record<
         const st = styleFor(i, s);
         cards[i].style.transform = st.transform;
         cards[i].style.opacity = String(st.opacity);
+        cards[i].style.filter =
+          st.brightness < 1 ? `brightness(${st.brightness})` : "";
       }
     }
 
