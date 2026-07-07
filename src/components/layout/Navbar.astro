@@ -18,6 +18,12 @@ interface Props {
   tone?: "dark" | "light";
 }
 const { tone = "dark" } = Astro.props;
+
+// The Solutions mega-menu content is authored once, under `mobileMenu`, so the
+// primary and secondary navs share a single source of truth. A nav item with a
+// caret reuses those groups for its hover/focus dropdown.
+const solutionGroups =
+  site.mobileMenu.items.find((item) => item.groups)?.groups ?? [];
 ---
 
 {/* Primary header (md+ — tablet + desktop). */}
@@ -32,11 +38,94 @@ const { tone = "dark" } = Astro.props;
       class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex"
     >
       {
-        site.nav.filter((item) => !item.hidden).map((item) => (
-          <Button variant="glass" tone={tone} href={item.href} caret={item.caret}>
-            {item.label}
-          </Button>
-        ))
+        site.nav.filter((item) => !item.hidden).map((item) =>
+          item.caret && solutionGroups.length ? (
+            // Solutions: a pill that links to /solutions AND reveals a mega-menu
+            // on hover/focus. `group/menu` keeps the panel open while the cursor
+            // travels across the pt-3 bridge into the panel.
+            <div class="group/menu relative flex items-center">
+              <Button
+                variant="glass"
+                tone={tone}
+                href={item.href}
+                caret
+                class="[&_svg]:transition-transform group-hover/menu:[&_svg]:rotate-180 group-focus-within/menu:[&_svg]:rotate-180"
+              >
+                {item.label}
+              </Button>
+
+              {/* Dropdown panel — hidden until hover/focus. `pt-3` is a hover
+                  bridge so the pointer doesn't cross a dead gap. */}
+              <div
+                class="invisible absolute left-1/2 top-full -translate-x-1/2 pt-3 opacity-0 transition duration-200 ease-out group-hover/menu:visible group-hover/menu:opacity-100 group-focus-within/menu:visible group-focus-within/menu:opacity-100"
+              >
+                <div
+                  class="max-h-[calc(100dvh-8rem)] overflow-y-auto rounded-[24px] bg-lavender p-8 backdrop-blur-[20px]"
+                >
+                  <div class="flex w-[649px] max-w-[calc(100vw-3rem)] items-start gap-20 font-sans text-sm font-semibold uppercase tracking-[-0.14px] text-black">
+                    {solutionGroups.map((group) => (
+                      <div class="flex flex-1 flex-col gap-10">
+                        <p class="w-full text-black">{group.label}</p>
+                        <div class="flex flex-col gap-6">
+                          {group.items.map((sub) => (
+                            <a
+                              href={sub.href}
+                              class="flex w-full items-start gap-4"
+                            >
+                              <span class="relative grid size-10 shrink-0 place-items-center rounded-full text-black">
+                                {/* Dotted ring — round-capped `0.01 8` dashes,
+                                    the same ring every circle on the site uses
+                                    (see ui/ArrowCircle). */}
+                                <svg
+                                  class="col-start-1 row-start-1 size-full"
+                                  viewBox="0 0 40 40"
+                                  fill="none"
+                                  aria-hidden="true"
+                                >
+                                  <rect
+                                    x="1"
+                                    y="1"
+                                    width="38"
+                                    height="38"
+                                    rx="19"
+                                    stroke="currentColor"
+                                    stroke-width="1.5"
+                                    stroke-linecap="round"
+                                    stroke-dasharray="0.01 8"
+                                  />
+                                </svg>
+                                {sub.icon && (
+                                  <img
+                                    src={sub.icon}
+                                    alt=""
+                                    aria-hidden="true"
+                                    class="col-start-1 row-start-1 size-6"
+                                  />
+                                )}
+                              </span>
+                              <span class="flex min-w-0 flex-1 flex-col normal-case">
+                                <span class="w-full text-black">
+                                  {sub.title}
+                                </span>
+                                <span class="w-full text-ink-mid">
+                                  {sub.subtitle}
+                                </span>
+                              </span>
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <Button variant="glass" tone={tone} href={item.href} caret={item.caret}>
+              {item.label}
+            </Button>
+          ),
+        )
       }
     </div>
 
