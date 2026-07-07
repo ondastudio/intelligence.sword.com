@@ -65,7 +65,7 @@ const { eyebrow, heading, items } = solutions.testimonials;
 
     {/* Customer logos — tabs that swap the testimonial below */}
     <ul
-      class="flex w-full flex-col gap-7 sm:flex-row"
+      class="flex w-full flex-row gap-7"
       role="tablist"
       aria-label="Customer testimonials"
     >
@@ -93,7 +93,7 @@ const { eyebrow, heading, items } = solutions.testimonials;
                 src={item.logo.src}
                 alt={item.logo.alt}
                 loading="lazy"
-                class="max-h-[52px] w-auto object-contain opacity-15 transition-opacity [filter:brightness(0)] group-aria-[selected=true]:opacity-100"
+                class="max-h-10 w-auto object-contain opacity-15 transition-opacity [filter:brightness(0)] group-aria-[selected=true]:opacity-100 sm:max-h-[52px]"
               />
             </button>
           </li>
@@ -129,7 +129,7 @@ const { eyebrow, heading, items } = solutions.testimonials;
                   src={item.author.avatar}
                   alt={item.author.name}
                   loading="lazy"
-                  class="h-[219px] w-full shrink-0 rounded-card object-cover sm:w-[227px]"
+                  class="h-[219px] w-[227px] max-w-full shrink-0 rounded-card object-cover"
                 />
               )}
               <div class="flex flex-1 flex-col justify-between gap-8">
@@ -150,7 +150,7 @@ const { eyebrow, heading, items } = solutions.testimonials;
               <div
                 class:list={[
                   "flex flex-col gap-8",
-                  multiStat && "sm:flex-row sm:gap-16",
+                  multiStat && "flex-row gap-6 sm:gap-16",
                 ]}
               >
                 {stats.map((stat) => (

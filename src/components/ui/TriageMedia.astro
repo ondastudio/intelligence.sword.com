@@ -35,11 +35,11 @@ const ICON: Record<string, string> = {
     <video
       src={media.src}
       class="absolute inset-0 h-full w-full object-cover"
-      autoplay
       loop
       muted
       playsinline
-      preload="auto"
+      preload="none"
+      data-lazy-video
       aria-hidden="true"
     />
   )

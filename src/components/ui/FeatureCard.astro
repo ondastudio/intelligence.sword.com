@@ -74,11 +74,11 @@ const isLottie = !!image && /\.lottie$/i.test(image);
           <video
             src={image}
             class={imageClass}
-            autoplay
             loop
             muted
             playsinline
-            preload="auto"
+            preload="none"
+            data-lazy-video
             aria-hidden="true"
           />
         ) : (

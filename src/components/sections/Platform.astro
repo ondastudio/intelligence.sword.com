@@ -238,13 +238,41 @@ const curves = [
         </span>
 
         <!-- ============ Left column: continuously learns from ============ -->
-        <!-- Dotted container + stat cards + Unified Clinical Memory (one asset) -->
-        <img
-          src="/platform/column-left.svg"
-          alt={`${stats[0].value}+ ${stats[0].label}. ${memory.label}. ${stats[1].value}+ ${stats[1].label}.`}
-          class="absolute h-[542px] w-[308px]"
-          style="left:-1px;top:150px"
-        />
+        <!-- Dotted container holding two stat cards with the Unified Clinical
+             Memory pill between them. Rendered as live HTML (not a baked SVG)
+             so the copy stays editable from src/data/platform.json; geometry
+             matches the Figma spec 1:1 (308×542, 8px inset, 16px gaps). -->
+        <div class="absolute h-[542px] w-[308px]" style="left:-1px;top:150px">
+          <div class="relative size-full">
+            <!-- Dotted border (round dots, 1.5px @ 8px, non-scaling) -->
+            <svg class="pointer-events-none absolute inset-0 size-full overflow-visible" fill="none" aria-hidden="true">
+              <rect x="0.75" y="0.75" width="306" height="540" rx="40" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="0.01 8" />
+            </svg>
+            <div class="flex size-full flex-col gap-4 p-2">
+              {/* Stat card + Unified Clinical Memory pill + stat card */}
+              <div class="flex h-[214px] flex-col items-center justify-center gap-5 rounded-[40px] bg-lavender px-6 text-center">
+                <span class="flex items-start gap-1.5">
+                  <span class="font-serif text-[76px] font-normal leading-[1.1]">{stats[0].value}</span>
+                  {stats[0].plus && <PlusChip class="mt-2.5" />}
+                </span>
+                <span class="text-sm font-semibold uppercase leading-[1.25]">{stats[0].label}</span>
+              </div>
+              <div class="flex h-16 items-center gap-4 rounded-full bg-lavender p-2">
+                <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-white">
+                  <img src={memory.icon} alt="" aria-hidden="true" class="size-6" />
+                </span>
+                <span class="text-sm font-semibold uppercase text-black">{memory.label}</span>
+              </div>
+              <div class="flex h-[214px] flex-col items-center justify-center gap-5 rounded-[40px] bg-lavender px-6 text-center">
+                <span class="flex items-start gap-1.5">
+                  <span class="font-serif text-[76px] font-normal leading-[1.1]">{stats[1].value}</span>
+                  {stats[1].plus && <PlusChip class="mt-2.5" />}
+                </span>
+                <span class="text-sm font-semibold uppercase leading-[1.25]">{stats[1].label}</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- ============ Right column: governed by ============ -->
         <!-- Dotted container + governance pills (one asset) -->
