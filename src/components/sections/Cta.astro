@@ -276,15 +276,28 @@ const { cta } = data;
         const influence = INFLUENCE_D * s;
         const inflSq = influence * influence;
         ctx.save();
+        // Draw this pass in DEVICE pixels (identity transform), with the blur
+        // radius in device px and every coordinate pre-multiplied by `dpr`.
+        // A canvas `ctx.filter` blur radius is interpreted in the CURRENT user
+        // space, and Safari scales it by the canvas' `dpr` transform while
+        // Chrome applies it in device space — so on a Retina screen Safari's
+        // bloom rendered ~dpr× stronger ("more intense"). Pinning the pass to
+        // device space removes that transform ambiguity, so the blur rasterises
+        // identically in every browser (at Chrome's / the design's magnitude).
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.filter = `blur(${BLUR_D * s}px)`;
 
+        const cx = bx * dpr;
+        const cy = by * dpr;
+        const inflPx = influence * dpr;
+
         // Soft blurred halo centered on the cursor.
-        const halo = ctx.createRadialGradient(bx, by, 0, bx, by, influence);
+        const halo = ctx.createRadialGradient(cx, cy, 0, cx, cy, inflPx);
         halo.addColorStop(0, `rgba(${bloomRGB}, ${0.22 * str})`);
         halo.addColorStop(1, `rgba(${bloomRGB}, 0)`);
         ctx.fillStyle = halo;
         ctx.beginPath();
-        ctx.arc(bx, by, influence, 0, Math.PI * 2);
+        ctx.arc(cx, cy, inflPx, 0, Math.PI * 2);
         ctx.fill();
 
         // Blurred, brightened dots near the cursor (one batched fill).
@@ -300,8 +313,8 @@ const { cta } = data;
             const d = 1 - Math.sqrt(distSq) / influence;
             const p = d * d * (3 - 2 * d); // smoothstep proximity
             const radius = maxR * (0.4 + BLOOM_GROW * p);
-            ctx.moveTo(x + radius, y);
-            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.moveTo((x + radius) * dpr, y * dpr);
+            ctx.arc(x * dpr, y * dpr, radius * dpr, 0, Math.PI * 2);
           }
         }
         ctx.fillStyle = `rgba(${bloomRGB}, ${0.55 * str})`;
