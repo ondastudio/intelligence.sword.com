@@ -145,5 +145,42 @@ const jsonLd = {
         items.forEach((el) => obs.observe(el));
       }
     </script>
+
+    <!-- Site-wide lazy video: decorative/looping clips (`data-lazy-video`) carry
+         `preload="none"` and no `autoplay`, so nothing downloads until one nears
+         the viewport. This observer then loads + plays it, and pauses it once it
+         scrolls away — so a phone never buffers or decodes off-screen video (the
+         main mobile cost). A user's manual pause (`data-user-paused`, set by the
+         MediaFrame controls) is respected: we won't auto-resume it. -->
+    <script>
+      const videos = Array.from(
+        document.querySelectorAll<HTMLVideoElement>("video[data-lazy-video]"),
+      );
+      if (videos.length && "IntersectionObserver" in window) {
+        const vobs = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              const v = e.target as HTMLVideoElement;
+              if (e.isIntersecting) {
+                if (v.dataset.userPaused === "true") return;
+                const p = v.play();
+                if (p && typeof p.catch === "function") p.catch(() => {});
+              } else if (!v.paused) {
+                v.pause();
+              }
+            });
+          },
+          // Start loading a little before it scrolls in so playback is seamless.
+          { rootMargin: "300px 0px" },
+        );
+        videos.forEach((v) => vobs.observe(v));
+      } else {
+        // No observer support: fall back to playing everything (old behaviour).
+        videos.forEach((v) => {
+          const p = v.play();
+          if (p && typeof p.catch === "function") p.catch(() => {});
+        });
+      }
+    </script>
   </body>
 </html>
