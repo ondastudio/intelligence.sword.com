@@ -13,7 +13,7 @@
  * next section the stage holds and the illustration resolves into the
  * "02 / Clinical intelligence" beat (`ClinicalDiagram02`), the step chip
  * swapping 01→02 with it. Both diagrams share one slot; a vanilla rAF scrubber
- * maps scroll progress into the crossfade — the same mechanism AboutOperations
+ * maps scroll progress into the crossfade — the same mechanism SolutionsHandoff
  * uses. Gated on motion + JS + lg+: without them the two states render as
  * normal stacked figures (each with its own chip), both fully legible.
  *
@@ -396,8 +396,8 @@ const { heading, steps, cards, integrationLogos, closing } = data;
 <script>
   // Pinned crossfade between the two diagram states. The stage is sticky inside
   // a taller section; progress is how far the section has scrolled past the top,
-  // normalised to its scrub distance (same mechanism as AboutOperations).
-  // Gated on motion + lg+ (matching the CSS); otherwise the
+  // normalised to its scrub distance (same mechanism as SolutionsHandoff /
+  // AboutOperations). Gated on motion + lg+ (matching the CSS); otherwise the
   // two states stay in normal stacked flow.
   function initClinicalLayer(section: HTMLElement) {
     const enabled = () =>

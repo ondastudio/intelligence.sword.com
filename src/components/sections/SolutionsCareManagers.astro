@@ -1,0 +1,605 @@
+---
+/**
+ * SolutionsCareManagers — the "TECHNOLOGY / Meet your AI Care Managers." bento
+ * on the Solutions page (Figma `8063:12078`).
+ *
+ * A header (Eyebrow + Lora heading left, supporting paragraph seated bottom-right)
+ * over a three-row bento of frosted cards:
+ *   Row A — three tall feature cards, each a mixed-weight caption under the same
+ *     dotLottie animations the home `Care` capability grid uses (Always on →
+ *     `always-on`, Communication → `multichannel`, Conversational AI →
+ *     `conversational`). Rendered into a looping `<canvas>` via
+ *     `@lottiefiles/dotlottie-web`, lazily built on first intersection and frozen
+ *     while offscreen — the same mechanism as `ui/FeatureCard`.
+ *   Row B — two wide cards, each a `purple-150` icon disc over a caption
+ *     (Prehabilitation Specialists / Sword's Academy).
+ *   Row C — two panels: a grey "Trusted by the most regulated industry" wall of
+ *     six compliance badges, and a `purple-tint` "No EHR migration" wall of twelve
+ *     EHR-vendor logos.
+ *
+ * Media are decorative (`aria-hidden`) — all editable copy (heading, captions,
+ * label + logo alts) lives in `data/solutions.json` (`careManagers`). Cards stack
+ * on mobile, snapping to the 3 / 2 / 2 column rows at `md`+; blocks fade up on the
+ * shared `[data-reveal]` entrance.
+ */
+import Eyebrow from "../ui/Eyebrow.astro";
+import LabelPill from "../ui/LabelPill.astro";
+import solutions from "../../data/solutions.json";
+
+const { eyebrow, heading, description, features, trust, ehr } =
+  solutions.careManagers;
+
+// Row A carries the three animated feature cards; row B the two icon cards.
+const lottieFeatures = features.slice(0, 3);
+const iconFeatures = features.slice(3);
+
+const cardFrame =
+  "flex flex-col rounded-card border border-black/25 backdrop-blur-[12px]";
+
+// Individual logos for the two "wall" cards — scrolling marquees per the mobile
+// design (Figma 9298:4570 / 9298:4672). Cropped from the combined SVG strips.
+const trustBadges = [
+  { src: "/solutions/care-managers/badges/iso.png", alt: "ISO 13485 Accredited" },
+  { src: "/solutions/care-managers/badges/soc2.png", alt: "SOC 2 Compliant" },
+  { src: "/solutions/care-managers/badges/mdr.png", alt: "MDR Class IIa Compliant" },
+  { src: "/solutions/care-managers/badges/nhs.png", alt: "NHS Compliant" },
+  { src: "/solutions/care-managers/badges/hipaa.png", alt: "HIPAA Compliant" },
+  { src: "/solutions/care-managers/badges/cyber.png", alt: "Cyber Essentials Plus" },
+];
+const ehrLogos = [
+  { src: "/solutions/care-managers/ehr/advancedmd.png", alt: "AdvancedMD" },
+  { src: "/solutions/care-managers/ehr/trubridge.png", alt: "TruBridge" },
+  { src: "/solutions/care-managers/ehr/veradigm.png", alt: "Veradigm" },
+  { src: "/solutions/care-managers/ehr/cerner.png", alt: "Cerner" },
+  { src: "/solutions/care-managers/ehr/elation.png", alt: "Elation" },
+  { src: "/solutions/care-managers/ehr/eclinicalworks.png", alt: "eClinicalWorks" },
+  { src: "/solutions/care-managers/ehr/greenway.png", alt: "Greenway Health" },
+  { src: "/solutions/care-managers/ehr/nextech.png", alt: "Nextech" },
+  { src: "/solutions/care-managers/ehr/modmed.png", alt: "ModMed" },
+  { src: "/solutions/care-managers/ehr/athenahealth.png", alt: "athenahealth" },
+  { src: "/solutions/care-managers/ehr/meditech.png", alt: "MEDITECH Expanse" },
+  { src: "/solutions/care-managers/ehr/epic.png", alt: "Epic" },
+];
+const ehrRows = [ehrLogos.slice(0, 6), ehrLogos.slice(6)];
+---
+
+<section class="care-managers text-black">
+  <div class="mx-auto w-full max-w-[1440px] px-4 md:px-8">
+    <div class="flex flex-col gap-16 md:gap-[120px]">
+      {/* ---- Header --------------------------------------------------------- */}
+      <div class="flex flex-col gap-6" data-reveal>
+        <Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow>
+        {/* Align by the last text baseline (not the box bottom): the Lora
+            heading and the Figtree paragraph have different line-heights, so
+            box-bottom alignment leaves their bottom lines visually offset. */}
+        <div
+          class="flex flex-col gap-6 md:flex-row md:[align-items:last_baseline] md:justify-between md:gap-16"
+        >
+          <h2 class="max-w-[437px] font-serif text-h5 font-normal">
+            {heading}
+          </h2>
+          <p class="max-w-[630px] text-xmd font-normal">{description}</p>
+        </div>
+      </div>
+
+      {/* ---- Bento ---------------------------------------------------------- */}
+      {/* Mobile shows only the pile deck + Row C (logo walls), so the 64px gap
+          here sets the deck→logos distance; md restores the 16px row rhythm. */}
+      <div class="flex flex-col gap-16 md:gap-4">
+        {/* Mobile: the five non-logo cards as a pinned swipe-through deck — the
+            same motion as the home Care "AI Care Managers" grid. Each card is a
+            uniform 350×459 (Figma 9298:7567). Desktop keeps the bento rows below
+            (hidden here). Fallback (no JS / reduced motion): a plain column. */}
+        <div class="cm-deck md:hidden" data-cm-deck>
+          <div data-cm-track class="cm-deck__track">
+            <div data-cm-stage class="cm-deck__stage">
+              {
+                features.map((f, i) => (
+                  <div
+                    class="cm-deck__card flex min-h-[459px] flex-col"
+                    data-cm-card
+                    style={`z-index:${i}`}
+                  >
+                    {f.lottie ? (
+                      <div class="flex h-full min-h-0 flex-1 flex-col items-center justify-between gap-6 overflow-clip rounded-card border border-black/10 bg-white px-6 pb-10 pt-10">
+                        <div class="relative -mx-6 flex min-h-0 w-[calc(100%+3rem)] flex-1 items-center justify-center">
+                          <canvas
+                            class="h-full w-full"
+                            data-lottie={f.lottie}
+                            data-lottie-fit={f.fit ?? "cover"}
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <p class="text-center text-md">
+                          <span class="font-semibold">{f.lead}</span>{f.rest}
+                        </p>
+                      </div>
+                    ) : (
+                      <div class="flex h-full flex-1 flex-col justify-between gap-8 rounded-card border border-black/10 bg-white p-8">
+                        {f.iconFull ? (
+                          <img
+                            src={f.icon}
+                            alt=""
+                            aria-hidden="true"
+                            class="size-12 shrink-0"
+                          />
+                        ) : (
+                          <span class="grid size-12 shrink-0 place-items-center rounded-card bg-purple-150">
+                            <img
+                              src={f.icon}
+                              alt=""
+                              aria-hidden="true"
+                              class="size-8"
+                            />
+                          </span>
+                        )}
+                        <p class="text-md">
+                          <span class="font-semibold">{f.lead}</span>{f.rest}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+
+        {/* Row A — three tall feature cards driven by the home Care Lotties.
+            Tablet ( md–lg ) drops to two per row, so the odd third card spans
+            the full width; desktop ( lg+ ) restores the three-across row. */}
+        <div class="hidden gap-4 md:grid md:grid-cols-2 lg:grid-cols-3">
+          {
+            lottieFeatures.map((f, i) => (
+              <div
+                class={`${cardFrame} items-center justify-between gap-6 overflow-clip px-6 pb-10 pt-10 md:min-h-[540px] md:px-10 md:pt-10${
+                  i === lottieFeatures.length - 1
+                    ? " md:col-span-2 lg:col-span-1"
+                    : ""
+                }`}
+                data-reveal
+                style={`transition-delay:${i * 80}ms`}
+              >
+                {/* The animation bleeds through the card's side padding to the
+                    edges (overflow-clip + rounded corners trim it), so each clip
+                    reads large — mirroring the home Care grid framing. On tablet
+                    the odd third card spans the full width, so its `cover` clip
+                    would crop; there we cap + centre it to keep the same framing,
+                    then restore the full-bleed clip on desktop ( lg+ ). */}
+                <div
+                  class={
+                    i === lottieFeatures.length - 1
+                      ? "relative -mx-6 flex min-h-0 w-[calc(100%+3rem)] flex-1 items-center justify-center md:mx-auto md:w-full md:max-w-[480px] lg:-mx-10 lg:w-[calc(100%+5rem)] lg:max-w-none"
+                      : "relative -mx-6 flex min-h-0 w-[calc(100%+3rem)] flex-1 items-center justify-center md:-mx-10 md:w-[calc(100%+5rem)]"
+                  }
+                >
+                  <canvas
+                    class="h-full w-full"
+                    data-lottie={f.lottie}
+                    data-lottie-fit={f.fit ?? "cover"}
+                    aria-hidden="true"
+                  />
+                </div>
+                <p class="text-center text-md">
+                  <span class="font-semibold">{f.lead}</span>{f.rest}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+
+        {/* Row B — two icon cards */}
+        <div class="hidden gap-4 md:grid md:grid-cols-2">
+          {
+            iconFeatures.map((f, i) => (
+              <div
+                class="flex flex-col justify-between gap-8 rounded-card border border-black/25 p-8 md:min-h-[262px] md:p-10"
+                data-reveal
+                style={`transition-delay:${i * 80}ms`}
+              >
+                {/* Most icons are line glyphs centred on a `purple-150` disc;
+                    `iconFull` icons already bake in their own disc, so they
+                    render standalone at the full 48px. */}
+                {f.iconFull ? (
+                  <img
+                    src={f.icon}
+                    alt=""
+                    aria-hidden="true"
+                    class="size-12 shrink-0"
+                  />
+                ) : (
+                  <span class="grid size-12 shrink-0 place-items-center rounded-card bg-purple-150">
+                    <img src={f.icon} alt="" aria-hidden="true" class="size-8" />
+                  </span>
+                )}
+                <p class="text-md">
+                  <span class="font-semibold">{f.lead}</span>{f.rest}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+
+        {/* Row C — trust + EHR walls */}
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {/* Trusted by the most regulated industry */}
+          <div
+            class="flex flex-col items-center gap-6 overflow-clip rounded-[50px] bg-gray-200/35 px-6 py-8"
+            data-reveal
+          >
+            <LabelPill class="text-center">{trust.label}</LabelPill>
+            <div class="cm-mq flex w-full flex-1 items-center">
+              <div class="cm-mq__track">
+                {
+                  [0, 1].map((copy) =>
+                    trustBadges.map((b) => (
+                      <span class="cm-mq__item">
+                        <img
+                          src={b.src}
+                          alt={copy === 0 ? b.alt : ""}
+                          aria-hidden={copy === 0 ? undefined : "true"}
+                          class="cm-mq__badge"
+                        />
+                      </span>
+                    )),
+                  )
+                }
+              </div>
+            </div>
+          </div>
+
+          {/* No EHR migration */}
+          <div
+            class="flex flex-col items-center gap-8 overflow-clip rounded-[50px] bg-purple-tint px-6 py-8"
+            data-reveal
+            style="transition-delay:80ms"
+          >
+            <LabelPill>{ehr.label}</LabelPill>
+            <div class="flex w-full flex-1 flex-col justify-center gap-8">
+              {
+                ehrRows.map((row, ri) => (
+                  <div class:list={["cm-mq", ri === 1 && "cm-mq--rev"]}>
+                    <div class="cm-mq__track">
+                      {[0, 1].map((copy) =>
+                        row.map((l) => (
+                          <span class="cm-mq__item">
+                            <img
+                              src={l.src}
+                              alt={copy === 0 ? l.alt : ""}
+                              aria-hidden={copy === 0 ? undefined : "true"}
+                              class="cm-mq__logo"
+                            />
+                          </span>
+                        )),
+                      )}
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { DotLottie } from "@lottiefiles/dotlottie-web";
+  // Self-host the player wasm (bundled by Vite) instead of the default CDN, so
+  // the cards animate without an external runtime fetch. Same setup as
+  // ui/FeatureCard — the home Care grid and this section share the mechanism.
+  import wasmUrl from "@lottiefiles/dotlottie-web/dotlottie-player.wasm?url";
+
+  DotLottie.setWasmUrl(wasmUrl);
+
+  // Build each player only once its canvas nears the viewport (this section is
+  // well below the fold; a player constructed offscreen never loads its
+  // animation). freezeOnOffscreen pauses rendering while scrolled away.
+  const init = (canvas: HTMLCanvasElement) => {
+    const src = canvas.dataset.lottie;
+    if (!src || canvas.dataset.lottieReady) return;
+    canvas.dataset.lottieReady = "1";
+    const fit = (canvas.dataset.lottieFit || "cover") as
+      | "cover"
+      | "contain"
+      | "fill"
+      | "fit-width"
+      | "fit-height";
+    new DotLottie({
+      canvas,
+      src,
+      loop: true,
+      autoplay: true,
+      // Transparent clear colour so the frosted card shows through (the home
+      // Care grid sits on white cards, so it never needed this).
+      backgroundColor: "transparent",
+      layout: { fit, align: [0.5, 0.5] },
+      renderConfig: { autoResize: true, freezeOnOffscreen: true },
+    });
+  };
+
+  const canvases = document.querySelectorAll<HTMLCanvasElement>(
+    ".care-managers canvas[data-lottie]",
+  );
+  const io = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        init(entry.target as HTMLCanvasElement);
+        obs.unobserve(entry.target);
+      });
+    },
+    { rootMargin: "200px" },
+  );
+  canvases.forEach((canvas) => io.observe(canvas));
+</script>
+
+<style>
+  .care-managers {
+    background-color: var(--color-surface); /* #f9f9f9 — page background */
+    padding-block: clamp(5rem, 12vw, 120px);
+  }
+
+  /* Logo marquees for the two "wall" cards — a duplicated track translated
+     -50% loops seamlessly. The badges row and the two EHR rows share the track;
+     the second EHR row runs in reverse. */
+  .cm-mq {
+    width: 100%;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+  }
+  .cm-mq__track {
+    display: flex;
+    width: max-content;
+    align-items: center;
+    gap: 48px;
+    animation: cm-mq-scroll 34s linear infinite;
+  }
+  .cm-mq--rev .cm-mq__track {
+    animation-direction: reverse;
+  }
+  .cm-mq__item {
+    display: flex;
+    flex: none;
+    align-items: center;
+  }
+  .cm-mq__badge {
+    display: block;
+    width: auto;
+    height: 36px;
+  }
+  .cm-mq__logo {
+    display: block;
+    width: auto;
+    height: 24px;
+  }
+  @keyframes cm-mq-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-50% - 24px));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cm-mq__track {
+      animation: none;
+    }
+  }
+
+  /* Mobile card deck (mirrors the home Care section). Default (no JS / reduced
+     motion): a plain vertical column. The script adds `.is-active` and switches
+     the stage into the pinned, absolutely-stacked deck. */
+  .cm-deck__stage {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .cm-deck.is-active .cm-deck__track {
+    position: relative;
+  }
+  .cm-deck.is-active .cm-deck__stage {
+    display: block;
+    /* position/top/left/width/height are driven inline by the script */
+  }
+  .cm-deck.is-active .cm-deck__card {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    will-change: transform, opacity;
+  }
+</style>
+
+<script>
+  // Mobile-only swipe-through deck for the five feature cards — same mechanism
+  // as the home Care section: the cards pile in the viewport centre and each
+  // scroll slides the next card up over the previous. position:fixed pin (the
+  // section's overflow would neutralise CSS sticky), measured with rAF +
+  // getBoundingClientRect. Cards are the Figma 350×459.
+  const deck = document.querySelector<HTMLElement>("[data-cm-deck]");
+  if (deck) {
+    const track = deck.querySelector<HTMLElement>("[data-cm-track]")!;
+    const stage = deck.querySelector<HTMLElement>("[data-cm-stage]")!;
+    const cards = Array.from(
+      deck.querySelectorAll<HTMLElement>("[data-cm-card]"),
+    );
+    const N = cards.length;
+    const mq = window.matchMedia(
+      "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
+    );
+
+    let stageH = 0;
+    let pinTravel = 0;
+    let centerTop = 0;
+    let active = false;
+    let ticking = false;
+
+    // Past cards settle into a pile that peeks above the front card rather than
+    // fading away (design 9298:4465: 350×459 cards stacked with a 39px offset).
+    const PEEK = 39; // px each past card peeks above the front
+    const MAX_PEEKS = 4; // cap the visible pile depth (older cards fade behind)
+
+    function measure() {
+      const vh = window.innerHeight;
+      const peeks = Math.min(MAX_PEEKS, N - 1);
+      const pileH = PEEK * peeks; // headroom the pile needs above the front card
+      // Card height = the Figma 459, bounded so pile + card + 16px margins fit.
+      stageH = Math.min(459, vh - 32 - pileH);
+      const perCard = vh * 0.7;
+      pinTravel = perCard * (N - 1);
+      // Seat the whole composition (pile + front card) vertically centred, but
+      // never let the pile ride above a 16px top margin.
+      centerTop = Math.max(pileH + 16, Math.round((vh - stageH + pileH) / 2));
+      track.style.height = `${stageH + pinTravel}px`;
+      stage.style.height = `${stageH}px`;
+    }
+
+    const ENTER_RISE = 88;
+    const HOLD = 0.3;
+    function styleFor(i: number, s: number) {
+      const rel = s - i;
+      let ty: number;
+      let opacity = 1;
+      if (rel >= 0) {
+        // front card (rel 0) or an already-seen card — seated in the pile,
+        // peeking PEEK px higher for each step behind the front. Its z-index
+        // (= card index) keeps it behind the newer cards below it.
+        ty = -PEEK * Math.min(rel, MAX_PEEKS);
+        opacity = rel <= MAX_PEEKS ? 1 : Math.max(0, 1 - (rel - MAX_PEEKS));
+      } else if (rel > -1) {
+        const t = rel + 1;
+        ty = (1 - t) * ENTER_RISE;
+        opacity = Math.min(1, t * 3.5);
+      } else {
+        ty = ENTER_RISE;
+        opacity = 0;
+      }
+      return { transform: `translateY(${ty}px)`, opacity };
+    }
+
+    function render() {
+      ticking = false;
+      if (!active) return;
+      const rect = track.getBoundingClientRect();
+      const progress = centerTop - rect.top;
+      const clamped = Math.max(0, Math.min(pinTravel, progress));
+      const sRaw = pinTravel > 0 ? (clamped / pinTravel) * (N - 1) : 0;
+      const base = Math.min(N - 1, Math.floor(sRaw));
+      const frac = sRaw - base;
+      const adv = frac <= HOLD ? 0 : (frac - HOLD) / (1 - HOLD);
+      const s = base + adv * adv * (3 - 2 * adv);
+
+      if (progress < 0) {
+        stage.style.position = "absolute";
+        stage.style.top = "0px";
+        stage.style.left = "0";
+        stage.style.width = "100%";
+      } else if (progress > pinTravel) {
+        stage.style.position = "absolute";
+        stage.style.top = `${pinTravel}px`;
+        stage.style.left = "0";
+        stage.style.width = "100%";
+      } else {
+        stage.style.position = "fixed";
+        stage.style.top = `${centerTop}px`;
+        stage.style.left = `${rect.left}px`;
+        stage.style.width = `${rect.width}px`;
+      }
+
+      for (let i = 0; i < N; i++) {
+        const st = styleFor(i, s);
+        cards[i].style.transform = st.transform;
+        cards[i].style.opacity = String(st.opacity);
+      }
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    }
+
+    function activate() {
+      if (active) return;
+      active = true;
+      deck.classList.add("is-active");
+      measure();
+      render();
+      window.addEventListener("scroll", onScroll, { passive: true });
+    }
+    function deactivate() {
+      if (!active) return;
+      active = false;
+      deck.classList.remove("is-active");
+      window.removeEventListener("scroll", onScroll);
+      for (const el of [track, stage]) el.style.height = "";
+      stage.style.position = "";
+      stage.style.top = "";
+      stage.style.left = "";
+      stage.style.width = "";
+      cards.forEach((c) => {
+        c.style.transform = "";
+        c.style.opacity = "";
+      });
+    }
+    function sync() {
+      if (mq.matches) activate();
+      else deactivate();
+    }
+
+    sync();
+    // Re-measure on width changes only (mobile URL-bar height jitter would
+    // otherwise shift the scroll→card mapping mid-scroll).
+    let lastWidth = window.innerWidth;
+    window.addEventListener("resize", () => {
+      if (!active) return;
+      if (window.innerWidth !== lastWidth) {
+        lastWidth = window.innerWidth;
+        measure();
+      }
+      render();
+    });
+    mq.addEventListener("change", sync);
+  }
+</script>
+
+<script>
+  // Normalize every logo marquee to one pixel speed. The badge row and the EHR
+  // rows have different content widths, so a shared animation duration would
+  // scroll them at different paces; instead we set each track's duration from
+  // its own width, keeping the badge (grey) and logo (purple) rows in step.
+  const PX_PER_SEC = 28;
+  const normalizeMarquees = () => {
+    document
+      .querySelectorAll<HTMLElement>(".care-managers .cm-mq__track")
+      .forEach((track) => {
+        const oneCopy = track.scrollWidth / 2;
+        if (oneCopy > 40)
+          track.style.animationDuration = `${(oneCopy / PX_PER_SEC).toFixed(2)}s`;
+      });
+  };
+  normalizeMarquees();
+  window.addEventListener("load", normalizeMarquees);
+  window.addEventListener("resize", normalizeMarquees);
+  // Widths settle as the (possibly lazy) logo images decode.
+  document
+    .querySelectorAll<HTMLImageElement>(".care-managers .cm-mq img")
+    .forEach((img) => {
+      if (!img.complete)
+        img.addEventListener("load", normalizeMarquees, { once: true });
+    });
+</script>

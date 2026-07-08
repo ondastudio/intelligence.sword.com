@@ -1,0 +1,41 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import SolutionsHero from "../../components/sections/SolutionsHero.astro";
+import SolutionsLogos from "../../components/sections/SolutionsLogos.astro";
+import SolutionsVideo from "../../components/sections/SolutionsVideo.astro";
+import SolutionsHandoff from "../../components/sections/SolutionsHandoff.astro";
+import SolutionsHowItWorks from "../../components/sections/SolutionsHowItWorks.astro";
+import SolutionsCareManagers from "../../components/sections/SolutionsCareManagers.astro";
+import SolutionsTestimonials from "../../components/sections/SolutionsTestimonials.astro";
+import SolutionsFaqs from "../../components/sections/SolutionsFaqs.astro";
+import Cta from "../../components/sections/Cta.astro";
+import Footer from "../../components/sections/Footer.astro";
+---
+
+<Layout
+  title="Solution — Sword Intelligence"
+  description="Surgery prehab and rehab — Intelligence prepares every patient and supports every recovery across your surgical list."
+  ogImage="/og-image-solutions.png"
+>
+  {/* Same footer-reveal shell as the rest of the site: content scrolls as one
+      opaque pane while the footer is pinned behind it (see .page-content). */}
+  <div class="page-content">
+    <SolutionsHero />
+    <SolutionsLogos />
+    <SolutionsHandoff />
+    <SolutionsVideo />
+    <SolutionsHowItWorks />
+    <SolutionsCareManagers />
+    <SolutionsTestimonials />
+    <SolutionsFaqs />
+    <Cta
+      heading={{
+        line1: "Stop waiting.",
+        line2Before: "Start ",
+        accent: "preparing",
+        after: ".",
+      }}
+    />
+  </div>
+  <Footer variant="purple" />
+</Layout>

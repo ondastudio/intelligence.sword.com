@@ -1,0 +1,937 @@
+---
+/**
+ * SolutionsHowItWorks — the "HOW IT WORKS / Enroll. Coach. Prepare. Recover."
+ * stepper on the Solutions page (Figma `8679:2`, "Triage" frame).
+ *
+ * A centered header (Eyebrow + Lora headline + a hairline-divided row of platform
+ * capabilities) sits above an interactive stepper: a lateral icon navbar (the
+ * design's `bg-ink-wash` pill of five `gray-200`-outlined 40px icon chips) selects
+ * one of five steps, each a card with a left text column (eyebrow / Lora heading /
+ * body) and a white media placeholder card on the right. The icons are line glyphs
+ * inlined with `currentColor` so the active chip can light up in the brand purple
+ * (per the design annotation, the icon set is meant to change per solution).
+ *
+ * All five panels are stacked in one CSS grid cell (`grid-area: 1/1`) so the area
+ * auto-sizes to the tallest step and panels crossfade in place with no layout jump;
+ * the navbar drives `[data-active]` on the section. Below `lg` the navbar becomes a
+ * horizontal row above the card and each panel stacks text over media. Gated on the
+ * shared `[data-reveal]` entrance; reduced motion gets instant swaps.
+ *
+ * Content-free — copy comes from src/data/solutions.json (`howItWorks`).
+ */
+import Eyebrow from "../ui/Eyebrow.astro";
+import solutions from "../../data/solutions.json";
+
+const { eyebrow, headline, capabilities, steps } = solutions.howItWorks;
+
+// Mobile media — the design exports (Figma), all a uniform 358×364. On mobile
+// each card shows its image at one size; desktop keeps the built media card.
+const hiwMedia: Record<string, string> = {
+  enrollment: "/solutions/hiw/enrollment.webp",
+  calling: "/solutions/hiw/conversational.webp",
+  journey: "/solutions/hiw/journey.webp",
+  preferences: "/solutions/hiw/preferences.webp",
+  recovery: "/solutions/hiw/recovery.webp",
+};
+
+// Line glyphs for the navbar, keyed by `step.icon`. Sliced from the Figma export
+// and switched to `currentColor` so the chip colours them via text colour.
+const icons: Record<string, string> = {
+  "content-writing": `<path d="M14.4857 22H13V20.5142C13 20.0427 13.1873 19.5905 13.5206 19.2571L18.3875 14.3905C18.9082 13.8698 19.7523 13.8698 20.2729 14.3905L20.6095 14.7271C21.1301 15.2478 21.1301 16.092 20.6095 16.6127L15.7426 21.4793C15.4093 21.8127 14.9571 22 14.4857 22Z"/><path d="M19 10V9C19 5.70017 19 4.05025 17.9749 3.02513C16.9497 2 15.2998 2 12 2H10C6.70017 2 5.05025 2 4.02512 3.02513C3 4.05025 3 5.70017 3 9V16C3 18.3389 3 19.5083 3.53646 20.3621C3.81621 20.8073 4.19267 21.1838 4.63789 21.4635C5.49167 22 6.66111 22 9 22"/><path d="M11 6H15"/><path d="M7 10H15"/><path d="M7 14H13"/>`,
+  "bubble-chat": `<path d="M21.5 12C21.5 17.2467 17.2467 21.5 12 21.5C10.3719 21.5 8.8394 21.0904 7.5 20.3687C5.63177 19.362 4.37462 20.2979 3.26592 20.4658C3.09774 20.4913 2.93024 20.4302 2.80997 20.31C2.62741 20.1274 2.59266 19.8451 2.6935 19.6074C3.12865 18.5818 3.5282 16.6382 2.98341 15C2.6698 14.057 2.5 13.0483 2.5 12C2.5 6.75329 6.75329 2.5 12 2.5C17.2467 2.5 21.5 6.75329 21.5 12Z"/><path d="M12.1257 12H12.0007M8.125 12H8M16.125 12H16M12.2507 12C12.2507 12.1381 12.1388 12.25 12.0007 12.25C11.8627 12.25 11.7507 12.1381 11.7507 12C11.7507 11.8619 11.8627 11.75 12.0007 11.75C12.1388 11.75 12.2507 11.8619 12.2507 12ZM8.25 12C8.25 12.1381 8.13807 12.25 8 12.25C7.86193 12.25 7.75 12.1381 7.75 12C7.75 11.8619 7.86193 11.75 8 11.75C8.13807 11.75 8.25 11.8619 8.25 12ZM16.25 12C16.25 12.1381 16.1381 12.25 16 12.25C15.8619 12.25 15.75 12.1381 15.75 12C15.75 11.8619 15.8619 11.75 16 11.75C16.1381 11.75 16.25 11.8619 16.25 12Z"/>`,
+  "orthogonal-edge": `<path d="M8 6H9.78046C11.7968 6 12.8049 6 13.3136 6.24139C14.5399 6.82331 15.0779 8.27746 14.5255 9.51737C14.2963 10.0317 13.5309 10.6878 12 12C10.4691 13.3122 9.70366 13.9683 9.47452 14.4826C8.92213 15.7225 9.46006 17.1767 10.6864 17.7586C11.1951 18 12.2032 18 14.2195 18H16" stroke-linecap="round"/><path d="M2 6C2 7.65685 3.34315 9 5 9C6.65685 9 8 7.65685 8 6C8 4.34315 6.65685 3 5 3C3.34315 3 2 4.34315 2 6Z" stroke-linecap="round"/><path d="M16 18C16 19.6569 17.3431 21 19 21C20.6569 21 22 19.6569 22 18C22 16.3431 20.6569 15 19 15C17.3431 15 16 16.3431 16 18Z" stroke-linecap="round"/>`,
+  "ai-audio": `<path d="M11.5 6C7.02166 6 4.78249 6 3.39124 7.17157C2 8.34315 2 10.2288 2 14C2 17.7712 2 19.6569 3.39124 20.8284C4.78249 22 7.02166 22 11.5 22C15.9783 22 18.2175 22 19.6088 20.8284C21 19.6569 21 17.7712 21 14C21 12.8302 21 11.8419 20.9585 11"/><path d="M18.5 2L18.7579 2.69703C19.0961 3.61102 19.2652 4.06802 19.5986 4.40139C19.932 4.73477 20.389 4.90387 21.303 5.24208L22 5.5L21.303 5.75792C20.389 6.09613 19.932 6.26524 19.5986 6.59861C19.2652 6.93198 19.0961 7.38898 18.7579 8.30297L18.5 9L18.2421 8.30297C17.9039 7.38898 17.7348 6.93198 17.4014 6.59861C17.068 6.26524 16.611 6.09613 15.697 5.75792L15 5.5L15.697 5.24208C16.611 4.90387 17.068 4.73477 17.4014 4.40139C17.7348 4.06802 17.9039 3.61102 18.2421 2.69703L18.5 2Z"/><path d="M12 10V18"/><path d="M9 12V16"/><path d="M6 13V15"/><path d="M15 12V16"/><path d="M18 13V15"/>`,
+  "home-10": `<path d="M8.9412 6.34883L10.7549 8.90093C11.1244 9.42085 11.3092 9.68081 11.4046 9.98004C11.5 10.2793 11.5 10.5987 11.5 11.2377V20H5.5C3.61438 20 2.67157 20 2.08579 19.4112C1.5 18.8225 1.5 17.8749 1.5 15.9797V11.2377C1.5 10.5987 1.5 10.2793 1.59541 9.98004C1.69082 9.68081 1.87557 9.42085 2.24507 8.90093L4.0588 6.34883C5.17165 4.78294 5.72807 4 6.5 4C7.27193 4 7.82835 4.78294 8.9412 6.34883Z"/><path d="M8.5 20V16C8.5 15.2523 8.5 14.8785 8.33923 14.6C8.23391 14.4176 8.08242 14.2661 7.9 14.1608C7.62154 14 7.24769 14 6.5 14C5.75231 14 5.37846 14 5.1 14.1608C4.91758 14.2661 4.76609 14.4176 4.66077 14.6C4.5 14.8785 4.5 15.2523 4.5 16V20"/><path d="M8.5 20H18.5C20.3856 20 21.3284 20 21.9142 19.4142C22.5 18.8284 22.5 17.8856 22.5 16V11.4482C22.5 10.7315 22.5 10.3732 22.3805 10.0432C22.2611 9.7133 22.0317 9.43802 21.5729 8.88746L18.6994 5.43926C18.1096 4.73152 17.8147 4.37764 17.4116 4.18882C17.0084 4 16.5478 4 15.6265 4H6.5"/><path d="M22 10H11.5"/>`,
+};
+
+// Line glyphs for the "AI+Human coaching journey" timeline cards.
+const journeyIcons: Record<string, string> = {
+  "bubble-chat": icons["bubble-chat"],
+  phone: `<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/>`,
+  check: `<path d="M20 6 9 17l-5-5"/>`,
+  logout: `<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>`,
+  pill: `<path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/>`,
+  route: `<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>`,
+  "home-10": icons["home-10"],
+};
+
+// Authentic iOS app-icon glyphs for the channel-preference tiles ("Hyper-
+// personalized interactions" card) — Messages bubble, Phone handset, Mail
+// envelope, sliced straight from the Figma export so they match 1:1. Each keeps
+// its own (non-24²) viewBox since the paths live in the export's coordinate
+// space; rendered in `currentColor` (white) on the coloured gradient tile.
+const channelIcons: Record<string, { viewBox: string; path: string }> = {
+  sms: {
+    viewBox: "68.45 169.61 12.74 12.74",
+    path: `<path d="M74.8322 171.871C73.6107 171.871 72.4393 172.275 71.5755 172.995C70.7118 173.714 70.2266 174.69 70.2266 175.707C70.2277 176.369 70.4343 177.019 70.8264 177.595C71.2184 178.171 71.7826 178.652 72.464 178.992C72.2825 179.398 72.0103 179.779 71.6587 180.119C72.3406 180 72.9807 179.748 73.5293 179.385C73.9522 179.489 74.391 179.543 74.8322 179.543C76.0537 179.543 77.2251 179.139 78.0889 178.42C78.9526 177.7 79.4378 176.725 79.4378 175.707C79.4378 174.69 78.9526 173.714 78.0889 172.995C77.2251 172.275 76.0537 171.871 74.8322 171.871Z"/>`,
+  },
+  call: {
+    viewBox: "68.45 214.10 12.74 12.74",
+    path: `<path d="M71.1479 219.602C70.6495 218.695 70.4531 217.955 70.4531 217.457C70.4531 216.958 70.574 216.823 70.6948 216.702C70.8156 216.581 71.3745 216.249 71.4802 216.173C71.5708 216.113 71.9333 215.977 72.1599 216.309C72.3865 216.641 72.8094 217.291 73.1115 217.729C73.5797 218.348 73.2021 218.62 73.0812 218.786C72.8547 219.088 72.7339 219.164 72.7339 219.526C72.7339 219.889 73.7609 220.946 74.0026 221.203C74.2443 221.46 75.2714 222.351 75.5885 222.411C75.9057 222.456 76.3437 222.124 76.4344 222.033C76.9026 221.671 77.1594 221.943 77.3708 222.064C77.5823 222.185 78.549 222.789 78.851 222.985C79.138 223.181 79.1078 223.499 79.1078 223.499C79.1078 223.499 78.9115 224.088 78.4583 224.526C78.3526 224.631 78.1562 224.767 77.688 224.767C77.2198 224.767 76.7062 224.677 75.4979 224.012C74.5161 223.468 73.5797 222.623 73.0812 222.124C72.5828 221.641 71.7219 220.644 71.1479 219.602Z"/>`,
+  },
+  email: {
+    viewBox: "68.45 258.59 12.74 12.74",
+    path: `<path fill-rule="evenodd" clip-rule="evenodd" d="M71.2625 262.215C71.1954 262.215 71.1321 262.226 71.0723 262.25L72.2709 263.484L73.4828 264.74L73.5049 264.767L73.5403 264.802L73.5757 264.838L73.6465 264.913L74.6858 265.979C74.7032 265.99 74.7533 266.036 74.7925 266.056C74.843 266.081 74.8977 266.104 74.954 266.106C75.0149 266.108 75.0771 266.091 75.1318 266.064C75.1728 266.044 75.1911 266.016 75.2387 265.979L76.4418 264.736L77.6581 263.484L78.8302 262.277C78.7549 262.236 78.6716 262.215 78.5825 262.215H71.2625ZM70.8954 262.365C70.7676 262.486 70.6875 262.668 70.6875 262.874V266.925C70.6875 267.092 70.7409 267.243 70.829 267.359L70.9971 267.2L72.2488 265.983L73.359 264.908L73.3368 264.882L72.1205 263.63L70.9042 262.374L70.8954 262.365ZM78.9894 262.405L77.804 263.63L76.5921 264.882L76.57 264.904L77.7244 266.023L78.9761 267.239L79.0513 267.31C79.1187 267.202 79.1575 267.069 79.1575 266.925V262.874C79.1575 262.691 79.094 262.525 78.9894 262.405ZM73.5005 265.054L72.3948 266.129L71.1386 267.345L70.9794 267.5C71.0634 267.554 71.1589 267.589 71.2625 267.589H78.5825C78.707 267.589 78.82 267.541 78.9142 267.465L78.8346 267.385L77.5785 266.169L76.4241 265.054L75.3847 266.125C75.3284 266.162 75.2908 266.203 75.2359 266.229C75.1475 266.27 75.0506 266.304 74.9532 266.303C74.8556 266.301 74.7598 266.263 74.6722 266.22C74.6282 266.198 74.6048 266.177 74.5532 266.134L73.5005 265.054Z"/>`,
+  },
+};
+// Tile gradient per channel — iOS-style app icons (Messages/Phone green, Mail
+// cyan→blue), matching the Figma export. See @theme tokens in global.css.
+const channelTile: Record<string, string> = {
+  sms: "bg-gradient-to-b from-imessage-100 to-imessage-600",
+  call: "bg-gradient-to-b from-imessage-100 to-imessage-600",
+  email: "bg-gradient-to-b from-mail-600 to-mail-100",
+};
+---
+
+<section
+  data-howitworks
+  class="relative overflow-x-clip bg-surface text-black"
+>
+  {/* Purple swirl bloom behind the header — the shared hero swirl recoloured to
+      the soft-purple palette (same as TriageCta). Sits at z-0 below the content
+      (z-10); a radial mask keeps it a contained bloom around the headline.
+      The outer layer spans the whole (now tall, pinned) section without taking
+      layout space; the inner stage is `sticky` so the bloom stays in view behind
+      the pinned cards as the steps scrub, rather than scrolling off with the
+      section top. It releases at the section's bottom, so it never bleeds into
+      the next section. */}
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-0">
+    <div
+      data-hiw-swirl-stage
+      class="hiw-swirl lg:sticky lg:top-0"
+    >
+      <canvas
+        data-hiw-swirl
+        class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+      ></canvas>
+    </div>
+  </div>
+
+  <div
+    class="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col items-center gap-[clamp(3rem,8vw,80px)] px-4 pb-[clamp(5rem,12vw,120px)] pt-[clamp(5rem,14vw,200px)] md:px-8"
+  >
+    {/* ---- Header --------------------------------------------------------- */}
+    <header class="flex flex-col items-center gap-8 text-center md:gap-10">
+      <div data-reveal>
+        <Eyebrow dotClass="bg-purple-500">{eyebrow}</Eyebrow>
+      </div>
+      <h2
+        data-reveal="title"
+        class="max-w-[952px] font-serif text-h5 font-normal"
+      >
+        {headline}
+      </h2>
+      <div
+        data-reveal
+        class="flex flex-wrap items-center justify-center gap-x-4 gap-y-3"
+      >
+        {
+          capabilities.map((label) => (
+            <span class="inline-flex h-8 items-center rounded-full border border-black/24 px-5 text-sm font-semibold uppercase">
+              {label}
+            </span>
+          ))
+        }
+      </div>
+    </header>
+
+    {/* ---- Stepper -------------------------------------------------------- */}
+    {/* On lg + motion the stage pins and vertical scroll advances the active step
+        (one step per scroll segment; see the pin script below), the icon navbar
+        syncs to it and a click smooth-scrolls to that step. Below lg / reduced
+        motion the pin is off and it's the plain click stepper.
+        NB: no data-reveal on the stage — its will-change/transform would make it a
+        backdrop-filter boundary and kill the frosted tooltip inside the nav. The
+        reveal lives on the panel stack below instead. */}
+    <div data-hiw-track class="hiw-track w-full">
+      <div
+        data-hiw-stage
+        class="hiw-stage relative mx-auto flex w-full max-w-[1064px] flex-col gap-8 lg:max-w-[1208px] lg:flex-row lg:items-start lg:gap-[clamp(2rem,4vw,52px)]"
+      >
+      {/* Lateral icon navbar. Mobile: prev/next arrows flank the icon pill
+          (Figma 9335:319), spread full-width. lg+: the plain vertical pill —
+          the arrows hide and the wrapper unwraps (`contents`) so the pill
+          becomes the stage's left column exactly as before. */}
+      <div
+        class="flex w-full items-center justify-between gap-3 lg:contents"
+      >
+        <button
+          type="button"
+          data-hiw-prev
+          aria-label="Previous step"
+          class="grid size-10 shrink-0 place-items-center rounded-3xl border border-dotted border-black/30 text-black transition-colors duration-200 hover:border-black/60 lg:hidden"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="size-6 rotate-180"
+            aria-hidden="true"
+          >
+            <path d="M18.5 12H5" />
+            <path d="M13 18C13 18 19 13.5811 19 12C19 10.4188 13 6 13 6" />
+          </svg>
+        </button>
+
+        <nav
+          role="tablist"
+          aria-label="How it works steps"
+          class="flex shrink-0 flex-row gap-2 self-center rounded-card bg-ink-wash p-2 lg:flex-col lg:self-center"
+        >
+        {
+          steps.map((step, i) => (
+            <button
+              type="button"
+              role="tab"
+              data-step-btn={i}
+              id={`hiw-tab-${i}`}
+              aria-controls={`hiw-panel-${i}`}
+              aria-selected={i === 0 ? "true" : "false"}
+              aria-label={step.navLabel}
+              class="group/step relative grid size-10 place-items-center rounded-3xl border transition-colors duration-300 ease-[cubic-bezier(0.33,1,0.68,1)] border-gray-200 text-black/40 hover:border-purple-100 hover:bg-purple-tint hover:text-black aria-selected:border-transparent aria-selected:bg-brand aria-selected:text-white"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-6"
+                aria-hidden="true"
+                set:html={icons[step.icon]}
+              />
+              {/* Hover tooltip: the step title in a frosted-glass pill floating to
+                  the right of the icon (design node). Desktop-only. */}
+              <span
+                aria-hidden="true"
+                class="pointer-events-none absolute left-full top-1/2 z-20 ml-4 hidden h-10 -translate-y-1/2 items-center whitespace-nowrap rounded-full border border-gray-200 bg-white/45 px-6 text-sm font-semibold uppercase text-black opacity-0 backdrop-blur-[20px] transition-opacity duration-200 lg:inline-flex lg:group-hover/step:opacity-100 lg:group-aria-[selected=true]/step:!opacity-0"
+              >
+                {step.navLabel}
+              </span>
+            </button>
+          ))
+        }
+        </nav>
+
+        <button
+          type="button"
+          data-hiw-next
+          aria-label="Next step"
+          class="grid size-10 shrink-0 place-items-center rounded-3xl border border-dotted border-black/30 text-black transition-colors duration-200 hover:border-black/60 lg:hidden"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="size-6"
+            aria-hidden="true"
+          >
+            <path d="M18.5 12H5" />
+            <path d="M13 18C13 18 19 13.5811 19 12C19 10.4188 13 6 13 6" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Panels — stacked in one grid cell so the area sizes to the tallest
+          step and panels crossfade in place. */}
+      <div data-reveal class="hiw-stack grid flex-1">
+        {
+          steps.map((step, i) => (
+            <div
+              data-step-panel={i}
+              role="tabpanel"
+              id={`hiw-panel-${i}`}
+              aria-labelledby={`hiw-tab-${i}`}
+              hidden={i !== 0}
+              class="hiw-panel flex flex-col items-stretch gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12"
+            >
+              <div class="flex flex-col gap-6 lg:max-w-[473px]">
+                <p class="text-sm font-semibold uppercase">
+                  {step.eyebrow}
+                </p>
+                <h3 class="font-serif text-h6 font-normal">
+                  {step.heading}
+                </h3>
+                {/* Body sits under the heading on desktop; on mobile it moves
+                    below the media (see the copy after the media card). */}
+                <p class="hidden whitespace-pre-line text-[clamp(1.125rem,2vw,24px)] font-normal lg:block">
+                  {step.body}
+                </p>
+              </div>
+              <div class="w-full shrink-0 lg:h-[616px] lg:w-[522px]">
+                {/* Mobile: the uniform design image (Figma export). */}
+                <img
+                  src={hiwMedia[step.media]}
+                  alt=""
+                  loading="lazy"
+                  class="aspect-[358/364] w-full rounded-card object-cover lg:hidden"
+                />
+                {/* Desktop: the built, interactive media card. */}
+                <div class="hidden h-full w-full place-items-center overflow-hidden rounded-card bg-white lg:grid">
+                {step.media === "enrollment" ? (
+                  <div class="flex w-full max-w-[380px] flex-col gap-5 rounded-3xl bg-blue-100 p-6">
+                    <p class="text-lg font-semibold text-ink">
+                      {step.enrollment?.title}
+                    </p>
+
+                    {/* Progress bar */}
+                    <div class="h-1.5 w-full overflow-hidden rounded-full bg-white">
+                      <div
+                        class="h-full rounded-full bg-purple-200"
+                        style={`width:${step.enrollment?.progressValue}%`}
+                      />
+                    </div>
+
+                    {/* Matching-population row */}
+                    <div class="flex items-center gap-3">
+                      <span class="grid size-8 shrink-0 place-items-center rounded-full bg-purple-200 text-ink">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          class="size-4"
+                          aria-hidden="true"
+                          set:html={`<path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/>`}
+                        />
+                      </span>
+                      <span class="text-ink">{step.enrollment?.progressLabel}</span>
+                      <span class="ml-auto font-semibold text-ink">
+                        {step.enrollment?.progressValue}%
+                      </span>
+                    </div>
+
+                    {/* Patient list — fades out down the queue */}
+                    <div class="flex flex-col">
+                      {step.enrollment?.patients.map((patient, i) => (
+                        <div
+                          class="flex items-center gap-3 border-b border-ink/10 py-3 last:border-b-0"
+                          style={`opacity:${[1, 0.55, 0.35, 0.22][i] ?? 0.2}`}
+                        >
+                          <span class="size-8 shrink-0 overflow-hidden rounded-full">
+                            <img
+                              src={patient.avatar}
+                              alt=""
+                              loading="lazy"
+                              class="size-full object-cover"
+                            />
+                          </span>
+                          <span class="flex-1 font-semibold text-ink">
+                            {patient.name}
+                          </span>
+                          <span class="flex-1 text-ink-soft">
+                            {patient.surgery}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Waiting-count pill */}
+                    <div class="flex items-center gap-3 rounded-full border border-ink/20 bg-white/50 px-2 py-1.5">
+                      <span class="flex -space-x-2">
+                        {step.enrollment?.patients.slice(0, 3).map((patient) => (
+                          <span class="size-7 overflow-hidden rounded-full ring-2 ring-lavender">
+                            <img
+                              src={patient.avatar}
+                              alt=""
+                              loading="lazy"
+                              class="size-full object-cover"
+                            />
+                          </span>
+                        ))}
+                      </span>
+                      <span class="font-semibold text-ink">
+                        +{step.enrollment?.waitingCount} Patients waiting
+                      </span>
+                    </div>
+                  </div>
+                ) : step.media === "recovery" ? (
+                  <div class="flex w-full max-w-[380px] flex-col gap-2">
+                    {step.recovery?.map((card, c) => (
+                      <div
+                        class:list={[
+                          "relative flex gap-4 rounded-3xl p-5",
+                          c === 0 ? "bg-blue-100" : "bg-ink-wash",
+                        ]}
+                      >
+                        {/* Left rail — dotted icon disc; the first card also
+                            drops a connector line to the next stage. */}
+                        <div class="flex flex-col items-center self-stretch">
+                          <span class="grid size-11 shrink-0 place-items-center rounded-full border border-dotted border-ink/25 text-ink">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="size-5"
+                              aria-hidden="true"
+                              set:html={journeyIcons[card.icon]}
+                            />
+                          </span>
+                          {c === 0 && (
+                            <div class="mt-2 flex flex-1 flex-col items-center">
+                              <span class="w-px flex-[2] bg-ink/70" />
+                              <span class="w-0 flex-1 border-l border-dotted border-ink/40" />
+                            </div>
+                          )}
+                        </div>
+
+                        <div
+                          class:list={[
+                            "flex flex-col gap-4",
+                            c === 0 ? "pt-2" : "min-h-11 justify-center",
+                          ]}
+                        >
+                          <p class="text-lg font-semibold text-ink">
+                            {card.title}
+                          </p>
+                          {card.channels && (
+                            <div class="flex flex-col gap-3">
+                              {card.channels.map((ch) => (
+                                <div class="flex items-center gap-3">
+                                  <span
+                                    class:list={[
+                                      "grid size-8 shrink-0 place-items-center rounded-full text-ink",
+                                      ch.highlight
+                                        ? "bg-accent"
+                                        : "border border-dotted border-ink/25",
+                                    ]}
+                                  >
+                                    <svg
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      stroke-width="1.5"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      class="size-[18px]"
+                                      aria-hidden="true"
+                                      set:html={journeyIcons[ch.icon]}
+                                    />
+                                  </span>
+                                  <p class="font-semibold text-ink">
+                                    {ch.label}
+                                    <span class="font-normal text-ink-soft">
+                                      {" "}• {ch.meta}
+                                    </span>
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : step.media === "preferences" ? (
+                  <div class="flex w-full max-w-[360px] flex-col gap-4 rounded-3xl bg-blue-100 p-4">
+                    {/* Contact header */}
+                    <div class="flex items-center gap-4 px-2 pt-2">
+                      <span class="size-12 shrink-0 overflow-hidden rounded-full">
+                        <img
+                          src={step.avatar}
+                          alt=""
+                          loading="lazy"
+                          class="size-full object-cover"
+                        />
+                      </span>
+                      <span class="flex flex-col leading-tight">
+                        <span class="text-lg font-semibold text-ink">
+                          {step.contactName}
+                        </span>
+                        <span class="text-sm text-ink-soft">
+                          {step.contactStatus}
+                        </span>
+                      </span>
+                    </div>
+
+                    {/* Channel preference rows */}
+                    <div class="flex flex-col gap-2.5">
+                      {step.preferences?.map((pref) => (
+                        <div class="flex items-center gap-3 rounded-full bg-channel-row py-2 pl-2 pr-6">
+                          <span class="grid size-11 shrink-0 place-items-center rounded-full bg-blue-100">
+                            <span
+                              class:list={[
+                                "grid size-[19px] place-items-center rounded-[5px] text-white",
+                                channelTile[pref.icon],
+                              ]}
+                            >
+                              <svg
+                                viewBox={channelIcons[pref.icon].viewBox}
+                                fill="currentColor"
+                                class="size-full"
+                                aria-hidden="true"
+                                set:html={channelIcons[pref.icon].path}
+                              />
+                            </span>
+                          </span>
+                          <span class="w-14 shrink-0 font-semibold text-ink">
+                            {pref.label}
+                          </span>
+                          <span class="text-sm text-ink-soft">{pref.when}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : step.media === "journey" ? (
+                  <div class="flex w-full max-w-[380px] flex-col gap-2">
+                    {step.journey?.map((item, j) => (
+                      <div
+                        class:list={[
+                          "relative flex gap-4 rounded-3xl p-5",
+                          j === 0
+                            ? "bg-blue-100 pb-24"
+                            : "bg-ink-wash",
+                        ]}
+                      >
+                        {/* Left rail — dotted icon disc + (on the first card) a
+                            connector line running down to the next step. */}
+                        <div class="flex flex-col items-center self-stretch">
+                          <span class="grid size-11 shrink-0 place-items-center rounded-full border border-dotted border-ink/25 text-ink">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="size-5"
+                              aria-hidden="true"
+                              set:html={journeyIcons[item.icon]}
+                            />
+                          </span>
+                          {j === 0 && (
+                            <div class="mt-2 flex flex-1 flex-col items-center">
+                              <span class="w-px flex-[2] bg-ink/70" />
+                              <span class="w-0 flex-1 border-l border-dotted border-ink/40" />
+                            </div>
+                          )}
+                        </div>
+                        <div class="flex flex-col gap-1 pt-1">
+                          <p class="font-semibold text-ink">
+                            {item.title}
+                            {item.meta && (
+                              <span class="font-normal"> • {item.meta}</span>
+                            )}
+                          </p>
+                          <p class="text-ink-soft">{item.detail}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : step.media === "calling" ? (
+                  <div class="flex flex-col items-center gap-14">
+                    {/* Incoming-call contact pill */}
+                    <div class="flex items-center gap-4 rounded-full bg-blue-100 py-2 pl-2 pr-8">
+                      <span class="size-12 shrink-0 overflow-hidden rounded-full">
+                        <img
+                          src={step.avatar}
+                          alt=""
+                          loading="lazy"
+                          class="size-full object-cover object-[center_20%]"
+                        />
+                      </span>
+                      <span class="flex flex-col leading-tight">
+                        <span class="text-lg font-semibold text-ink">
+                          {step.contactName}
+                        </span>
+                        <span class="text-sm text-ink-soft">
+                          {step.contactStatus}
+                        </span>
+                      </span>
+                    </div>
+
+                    {/* Lime call button with pulsing rings */}
+                    <div class="relative grid size-[104px] place-items-center">
+                      <span class="absolute inset-0 rounded-full border border-accent/50" />
+                      <span class="absolute inset-3 rounded-full border border-accent/80" />
+                      <span class="relative grid size-16 place-items-center rounded-full bg-accent">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          class="size-7 text-ink"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M17.7 15.15c-1.16 0-2.29-.18-3.35-.53a.94.94 0 0 0-.96.23l-1.48 1.48a14.16 14.16 0 0 1-6.2-6.2l1.47-1.48a.94.94 0 0 0 .24-.96 10.6 10.6 0 0 1-.53-3.36c0-.52-.42-.94-.94-.94H3.14c-.52 0-1.14.23-1.14.94C2 10.98 7.02 22 16.6 22c.67 0 .94-.6.94-1.13v-2.31c0-.52-.42-.94-.94-.94Z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  step.image && (
+                    <img
+                      src={step.image}
+                      alt={step.imageAlt ?? ""}
+                      loading="lazy"
+                      class="size-full object-cover"
+                    />
+                  )
+                )}
+                </div>
+              </div>
+
+              {/* Body on mobile — below the media (Figma 9335:318). Hidden on
+                  lg where it lives under the heading in the text column. */}
+              <p class="whitespace-pre-line text-[clamp(1.125rem,2vw,24px)] font-normal lg:hidden">
+                {step.body}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // The How-it-works stepper runs in one of two modes (like the homepage Care
+  // Orchestration cards):
+  //  • pinned (lg + motion allowed): the stage sticks and continued scroll is
+  //    scrubbed into one segment per step — the active step advances as you
+  //    scroll, panels crossfading in place (no horizontal slide). The icon navbar
+  //    stays in sync; clicking an icon smooth-scrolls to that step's segment.
+  //  • static (below lg, or reduced motion): no pin — the plain click stepper;
+  //    clicking / arrow-keying a tab swaps the active step directly.
+  function initHowItWorks(section: HTMLElement) {
+    const track = section.querySelector<HTMLElement>("[data-hiw-track]");
+    const stage = section.querySelector<HTMLElement>("[data-hiw-stage]");
+    const stack = section.querySelector<HTMLElement>(".hiw-stack");
+    // Swirl bloom layer (its sticky stage + the absolute containing block around
+    // it) — kept in sync with the pin below so the bloom doesn't drift early.
+    const swirlStage = section.querySelector<HTMLElement>(
+      "[data-hiw-swirl-stage]",
+    );
+    const swirlLayer = swirlStage?.parentElement ?? null;
+    const tabs = Array.from(
+      section.querySelectorAll<HTMLButtonElement>("[data-step-btn]"),
+    );
+    const panels = Array.from(
+      section.querySelectorAll<HTMLElement>("[data-step-panel]"),
+    );
+    if (!tabs.length || !track || !stage || !stack) return;
+
+    // Enhance: co-render every panel and drive the active step via `.is-active`
+    // instead of the `[hidden]` attribute, so the panels can crossfade over each
+    // other (see the CSS note — `[hidden]` would collapse them to display:none).
+    stack.classList.add("is-enhanced");
+    panels.forEach((panel) => panel.removeAttribute("hidden"));
+
+    const N = tabs.length;
+    const clamp = (n: number, lo: number, hi: number) =>
+      Math.min(hi, Math.max(lo, n));
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const lgMQ = window.matchMedia("(min-width: 1024px)");
+
+    // Active step. `select` only mutates the DOM when the step actually changes
+    // so the crossfade isn't re-triggered every scroll frame.
+    let active = -1;
+    const select = (index: number) => {
+      index = clamp(index, 0, N - 1);
+      if (index === active) return;
+      active = index;
+      tabs.forEach((tab, i) =>
+        tab.setAttribute("aria-selected", i === index ? "true" : "false"),
+      );
+      panels.forEach((panel, i) => {
+        // `.is-active` drives the crossfade (via CSS); `aria-hidden` mirrors it
+        // in the a11y tree. Every panel stays `display: flex` in the shared grid
+        // cell so the area stays sized to the tallest step.
+        const on = i === index;
+        panel.classList.toggle("is-active", on);
+        panel.setAttribute("aria-hidden", on ? "false" : "true");
+      });
+    };
+
+    // --- Pin geometry (recomputed on resize / breakpoint change) -------------
+    let pinned = false;
+    let segPx = 0; // scroll px each step segment is scrubbed across
+    let scrub = 0; // total pinned scroll distance
+    let stickTop = 0; // sticky `top` that lands the stage vertically centred
+    let ticking = false;
+
+    const measure = () => {
+      section.classList.remove("is-pinned");
+      track.style.height = "";
+      stage.style.top = "";
+      stage.style.transform = "";
+      stage.style.transformOrigin = "";
+      if (swirlLayer) {
+        swirlLayer.style.height = "";
+        swirlLayer.style.bottom = "";
+      }
+      // Pin on every breakpoint (mobile included) so scrolling is scrubbed
+      // through all five steps — you can't skip past the section without seeing
+      // each card. Only reduced-motion opts out to the plain click stepper.
+      pinned = !reduceMotion;
+      if (!pinned) return;
+      const vh = window.innerHeight;
+      // Scroll distance each step dwells for; larger = more scroll per step.
+      segPx = Math.round(vh * 0.85);
+      scrub = N * segPx;
+      const minTop = 24;
+      const stageH = stage.offsetHeight;
+      // Scale the stage down to fit shorter viewports (keeping Figma proportions)
+      // so the whole card stays visible while pinned rather than overflowing.
+      const fitScale = Math.min(1, (vh - minTop * 2) / stageH);
+      stage.style.transformOrigin = "top center";
+      stage.style.transform = fitScale < 1 ? `scale(${fitScale})` : "";
+      const scaledH = stageH * fitScale;
+      stickTop = Math.max(minTop, Math.round((vh - scaledH) / 2));
+      stage.style.top = `${stickTop}px`;
+      section.classList.add("is-pinned");
+      track.style.height = `${stageH + scrub}px`;
+
+      // Keep the swirl bloom pinned in sync with the cards. On its own the swirl
+      // is a plain `sticky top:0`, so it detaches from the viewport one swirl-
+      // height before its containing block ends — which, with the tall pinned
+      // track, lands midway through the LAST step and makes the bloom drift while
+      // the final card is still on screen. Extend the sticky containing block so
+      // the swirl only releases once the cards unpin (the raw===1 scroll point,
+      // plus any fit-scale slack), so the bloom stays put behind every step and
+      // lets go together with the stack.
+      if (swirlLayer && swirlStage) {
+        const secTop = section.getBoundingClientRect().top + window.scrollY;
+        const trackTop = track.getBoundingClientRect().top + window.scrollY;
+        const trackOffset = trackTop - secTop; // header height above the track
+        const swirlH = swirlStage.offsetHeight;
+        swirlLayer.style.bottom = "auto";
+        swirlLayer.style.height = `${Math.round(
+          trackOffset + scrub - stickTop + (stageH - scaledH) + swirlH,
+        )}px`;
+      }
+    };
+
+    const render = () => {
+      ticking = false;
+      if (!pinned) return;
+      // The stage sticks at top:stickTop and holds for `scrub` px; track top runs
+      // stickTop → stickTop − scrub across that span. Map it to an equal segment
+      // per step.
+      const raw = (stickTop - track.getBoundingClientRect().top) / scrub;
+      select(clamp(Math.floor(clamp(raw, 0, 1) * N), 0, N - 1));
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    };
+
+    // --- Eased scroll tween for nav clicks -----------------------------------
+    // Native `behavior:"smooth"` snaps too fast when a click spans several
+    // segments; tweening over an eased, distance-scaled duration glides the step
+    // scrubbing in at a steady pace. A manual wheel/touch cancels it.
+    const easeOutQuint = (t: number) => 1 - Math.pow(1 - t, 5);
+    let scrollAnim = 0;
+    const cancelScrollTween = () => {
+      if (scrollAnim) {
+        cancelAnimationFrame(scrollAnim);
+        scrollAnim = 0;
+      }
+    };
+    const smoothScrollTo = (target: number) => {
+      cancelScrollTween();
+      const start = window.scrollY;
+      const dist = target - start;
+      if (Math.abs(dist) < 1) return;
+      const segments = segPx ? Math.abs(dist) / segPx : 1;
+      const duration = Math.min(2000, Math.max(700, 520 * segments));
+      const startTime = performance.now();
+      const stepTween = (now: number) => {
+        const t = Math.min(1, (now - startTime) / duration);
+        window.scrollTo(0, start + dist * easeOutQuint(t));
+        scrollAnim = t < 1 ? requestAnimationFrame(stepTween) : 0;
+      };
+      scrollAnim = requestAnimationFrame(stepTween);
+    };
+    window.addEventListener("wheel", cancelScrollTween, { passive: true });
+    window.addEventListener("touchstart", cancelScrollTween, { passive: true });
+
+    // Scroll to a step's segment centre (only meaningful while pinned).
+    const scrollToStep = (i: number) => {
+      const trackTop = window.scrollY + track.getBoundingClientRect().top;
+      smoothScrollTo(trackTop - stickTop + (clamp(i, 0, N - 1) + 0.5) * segPx);
+    };
+
+    const goTo = (i: number) => {
+      if (pinned) scrollToStep(i);
+      else select(i);
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => goTo(i));
+      // Roving arrow-key navigation across the tablist.
+      tab.addEventListener("keydown", (e) => {
+        if (
+          e.key !== "ArrowDown" &&
+          e.key !== "ArrowRight" &&
+          e.key !== "ArrowUp" &&
+          e.key !== "ArrowLeft"
+        )
+          return;
+        e.preventDefault();
+        const dir = e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : -1;
+        const next = (Math.max(0, active) + dir + N) % N;
+        goTo(next);
+        tabs[next].focus();
+      });
+    });
+
+    // Mobile prev/next arrows step through the panels (clamped at the ends).
+    section
+      .querySelector<HTMLButtonElement>("[data-hiw-prev]")
+      ?.addEventListener("click", () => goTo(Math.max(0, active) - 1));
+    section
+      .querySelector<HTMLButtonElement>("[data-hiw-next]")
+      ?.addEventListener("click", () => goTo(Math.max(0, active) + 1));
+
+    const onResize = () => {
+      measure();
+      render();
+    };
+
+    select(0);
+    measure();
+    render();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    lgMQ.addEventListener("change", onResize);
+  }
+
+  document
+    .querySelectorAll<HTMLElement>("[data-howitworks]")
+    .forEach(initHowItWorks);
+</script>
+
+<style>
+  /* All panels occupy the same grid cell so the area sizes to the tallest step
+     and the active one crossfades over the inactive ones — no layout jump on
+     switch. Inactive panels keep their box (forced `display`) so the grid stays
+     sized to the tallest step; `[hidden]` only fades + de-activates them. */
+  /* All panels share the one grid cell so the area sizes to the tallest step.
+     Without JS, Tailwind's preflight collapses the `[hidden]` panels
+     (display:none !important) and only the first shows — a fine static fallback. */
+  .hiw-stack > .hiw-panel {
+    grid-area: 1 / 1;
+  }
+
+  /* Enhanced (JS) mode: the script strips `[hidden]` and drives the active step
+     via `.is-active`, so every panel stays rendered in the shared cell. We avoid
+     `[hidden]` here on purpose — Tailwind's `[hidden] { display:none !important }`
+     (in @layer base) would collapse inactive panels and defeat the fade, and an
+     unlayered `!important` can't beat a layered one.
+
+     The swap is SEQUENTIAL, not a true crossfade: the outgoing panel fades fully
+     out first, then the incoming one fades in after that. A simultaneous crossfade
+     leaves both panels at ~50% opacity mid-transition, and because they share one
+     grid cell (and the text columns have no background) the old step ghosts through
+     the new one. Staggering the two fades means only one panel is ever visible, so
+     there's no see-through double exposure. */
+  .hiw-stack.is-enhanced {
+    --hiw-fade: 0.42s;
+  }
+  .hiw-stack.is-enhanced > .hiw-panel {
+    display: flex;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    /* Fade out immediately; hide once faded. */
+    transition:
+      opacity var(--hiw-fade) ease-in,
+      visibility 0s linear var(--hiw-fade);
+  }
+  .hiw-stack.is-enhanced > .hiw-panel.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    /* Fade in only after the outgoing panel has finished fading out. */
+    transition:
+      opacity var(--hiw-fade) ease-out var(--hiw-fade),
+      visibility 0s linear 0s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hiw-stack.is-enhanced > .hiw-panel {
+      transition: none;
+    }
+  }
+
+  /* Pin: on lg + motion the stage sticks while vertical scroll is scrubbed into
+     one segment per step (JS drives the active step against the pinned progress,
+     panels crossfade in place — no horizontal slide). The stage stays in normal
+     flow until it sticks; JS sets `top` so it lands vertically centred, the track
+     height (taller than the viewport) reserves the scrub distance, and is-pinned
+     turns the sticky on. `overflow-x: clip` on the section clips horizontally
+     without creating a scroll container, so this sticky resolves to the viewport.
+     Off is-pinned (below lg / reduced motion) the stage is static — the plain
+     click stepper. */
+  [data-howitworks].is-pinned .hiw-stage {
+    position: sticky;
+  }
+
+  /* Purple swirl bloom layer — spans from the header down through the stepper
+     cards. A large elliptical mask keeps it a soft bloom that invades the card
+     area and fades to the surface at the edges. */
+  .hiw-swirl {
+    height: clamp(760px, 100vw, 1200px);
+    -webkit-mask-image: radial-gradient(
+      72% 62% at 50% 48%,
+      #000 0%,
+      #000 26%,
+      transparent 74%
+    );
+    mask-image: radial-gradient(
+      72% 62% at 50% 48%,
+      #000 0%,
+      #000 26%,
+      transparent 74%
+    );
+  }
+</style>
+
+<script>
+  // Animated purple swirl bloom behind the "Enroll. Coach. Prepare. Recover."
+  // headline — the shared hero swirl recoloured to the soft-purple palette
+  // (body ~#bda4ff, highlights from the purple-100 / tint tokens).
+  import { initSwirl } from "../../lib/swirl";
+
+  const stage = document.querySelector<HTMLElement>("[data-hiw-swirl-stage]");
+  const canvas = stage?.querySelector<HTMLCanvasElement>(
+    "canvas[data-hiw-swirl]",
+  );
+
+  if (stage && canvas) {
+    initSwirl(canvas, stage, {
+      grainUrl: "/hero/swirl/perlin1.png",
+      circular: true,
+      warp: 0.7, // cohesive, rounded blob with a filled centre
+      speed: 2.2,
+      falloffStart: 0.5, // keep the centre filled; only the outer edge fades out
+      falloffEnd: 0.92,
+      colors: {
+        bgColor: [0.976, 0.969, 1.0], // outer field — near-white with a faint lilac
+        soft: [0.882, 0.839, 1.0], // inner highlight — purple-100 (#e1d6ff)
+        body: [0.741, 0.643, 1.0], // dominant bloom — soft purple (~#bda4ff)
+        lavender: [0.933, 0.91, 1.0], // secondary highlight — purple-tint
+        crest: [0.97, 0.97, 0.97], // gradient crest — white
+      },
+    });
+    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
+  }
+</script>

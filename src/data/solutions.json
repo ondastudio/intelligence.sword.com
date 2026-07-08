@@ -1,0 +1,418 @@
+{
+  "hero": {
+    "eyebrow": "Surgery prehab and rehab",
+    "headline": "Prepare every patient, support every recovery.",
+    "paragraph": "Intelligence enrolls every patient on your surgical list, identifies who's at risk, delivers personalized preparation and stays with them all the way through recovery."
+  },
+  "logos": {
+    "title": "Join the Healthcare Organizations Scaling with Intelligence",
+    "items": [
+      {
+        "src": "/logos/hellenic-health.png",
+        "alt": "Hellenic Republic Ministry of Health"
+      },
+      {
+        "src": "/logos/nhs.svg",
+        "alt": "NHS"
+      },
+      {
+        "src": "/logos/ne-london.png",
+        "alt": "North East London Health & Care Partnership"
+      },
+      {
+        "src": "/logos/cheshire-merseyside.png",
+        "alt": "Cheshire and Merseyside Health and Care Partnership"
+      },
+      {
+        "src": "/logos/vivamas.svg",
+        "alt": "VivaMás Medical Centers"
+      }
+    ]
+  },
+  "media": {
+    "src": "/intro/product.webm",
+    "poster": "/intro/product.png",
+    "alt": "Sword Intelligence AI Care Manager handling a patient call"
+  },
+  "problem": {
+    "eyebrow": "Problem",
+    "heading": "The wait and the recovery are intervention windows. Most systems stay passive through both.",
+    "subheading": "Here’s what they can do for you and your patients.",
+    "cards": [
+      {
+        "value": "~1 in 5",
+        "label": "elective surgeries canceled on DOS",
+        "detail": {
+          "label": "International Journal of Surgery Open",
+          "href": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7440086/"
+        }
+      },
+      {
+        "value": "34%",
+        "label": "of all cancelations are due to inadequate patient preparation",
+        "detail": {
+          "label": "International Journal for Quality in Health Care",
+          "href": "https://www.oecd.org/en/publications/2025/11/health-at-a-glance-2025_a894f72e/full-report/waiting-times_3a1021fa.html"
+        }
+      },
+      {
+        "value": "~20%",
+        "label": "patients in high-income countries experience post-op complications",
+        "detail": {
+          "label": "British Journal of Anaesthesia",
+          "href": "https://www.bjanaesthesia.org/article/S0007-0912(17)30018-1/fulltext"
+        }
+      },
+      {
+        "value": "1 in 7",
+        "label": "patients readmitted within 30 days after major surgery",
+        "detail": {
+          "label": "PubMed Central",
+          "href": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12210902/"
+        }
+      }
+    ]
+  },
+  "solution": {
+    "eyebrow": "Solution",
+    "headingLead": "Our AI Care Managers turn your waiting list into ",
+    "headingAccent": "a preparation and recovery list.",
+    "subheading": "They enroll every patient autonomously, coach them through the crucial weeks, and keep supporting them through recovery, while your surgical team focuses on the clinical procedures.",
+    "cards": [
+      {
+        "value": "57%",
+        "label": "More patients ready for surgery",
+        "href": "/customers/nhs-surgery-readiness"
+      },
+      {
+        "value": "72%",
+        "label": "Reduction in surgical complications",
+        "href": "/customers/nhs-surgical-complications"
+      },
+      {
+        "value": "83%",
+        "label": "Reduction in post-op pulmonary complications",
+        "href": "/customers/nhs-surgical-complications"
+      },
+      {
+        "value": "£405K",
+        "label": "saved for one NHS Trust in 3 months",
+        "href": "/customers/nhs-prehabilitation"
+      }
+    ]
+  },
+  "careManagers": {
+    "eyebrow": "Technology",
+    "heading": "Meet your AI Care Managers.",
+    "description": "Behind every interaction is an intelligent agent purpose-built for healthcare operations. They contact patients, read documents, navigate legacy platforms, and act on what they find. Every action is logged, auditable, and configurable to your clinical protocols.",
+    "features": [
+      {
+        "media": "lottie",
+        "lottie": "/solutions/care-managers/anim/always-on.lottie",
+        "lead": "Always on",
+        "rest": ", answering every call and monitoring your population."
+      },
+      {
+        "media": "lottie",
+        "lottie": "/solutions/care-managers/anim/multichannel.lottie",
+        "lead": "Communication",
+        "rest": " across every channel the patient already uses, without losing context."
+      },
+      {
+        "media": "lottie",
+        "lottie": "/solutions/care-managers/anim/conversational.lottie",
+        "lead": "Conversational AI",
+        "rest": " that speaks naturally in any language and local accent."
+      },
+      {
+        "media": "icon",
+        "icon": "/solutions/care-managers/icon-coordination.svg",
+        "lead": "Coordination with qualified Prehabilitation Specialists",
+        "rest": " for every patient throughout the journey."
+      },
+      {
+        "media": "icon",
+        "icon": "/solutions/care-managers/icon-academy.svg",
+        "iconFull": true,
+        "lead": "Powered by Sword's Academy",
+        "rest": ", an evidence-informed content library covering exercise, nutrition, sleep, mindfulness, smoking cessation, and surgical preparation."
+      }
+    ],
+    "trust": {
+      "label": "Trusted by the most regulated industry in the world.",
+      "badgesImage": "/solutions/care-managers/trust-badges.svg",
+      "badgesAlt": "Certifications: ISO 13485 Accredited, SOC 2 Compliant, MDR Class IIa Compliant, NHS Compliant, HIPAA Compliant, Cyber Essentials Plus"
+    },
+    "ehr": {
+      "label": "No EHR migration. No platform overhaul.",
+      "logosImage": "/solutions/care-managers/ehr-logos.svg",
+      "logosAlt": "Supported EHRs: AdvancedMD, TruBridge, Veradigm, Cerner, Elation, eClinicalWorks, Greenway Health, Nextech, ModMed, athenahealth, MEDITECH Expanse, Epic"
+    }
+  },
+  "howItWorks": {
+    "eyebrow": "How it works",
+    "headline": "Enroll. Coach. Prepare. Recover.",
+    "capabilities": [
+      "Voice, SMS, Email, Chat",
+      "Surgical risk prediction",
+      "EHR real-time integration",
+      "Human coach in the loop"
+    ],
+    "steps": [
+      {
+        "icon": "content-writing",
+        "navLabel": "Automatic enrollment",
+        "eyebrow": "Automatic Enrollment",
+        "heading": "Enroll patients before they even think to ask.",
+        "body": "The moment a surgery is scheduled in your system, Intelligence picks it up and enrollment starts automatically — no manual referrals, or patient actions required before preparation starts.",
+        "media": "enrollment",
+        "enrollment": {
+          "title": "Waiting list activation",
+          "progressLabel": "Matching population…",
+          "progressValue": 80,
+          "patients": [
+            {
+              "name": "Amelia Carter",
+              "surgery": "Hip replacement",
+              "avatar": "/solutions/patients/amelia.png"
+            },
+            {
+              "name": "Jullie Smith",
+              "surgery": "Knee surgery",
+              "avatar": "/solutions/patients/jullie.png"
+            },
+            {
+              "name": "Kim Chen",
+              "surgery": "Hip replacement",
+              "avatar": "/solutions/patients/kim.png"
+            },
+            {
+              "name": "Charlie Webber",
+              "surgery": "Ankle surgery",
+              "avatar": "/solutions/patients/charlie.png"
+            }
+          ],
+          "waitingCount": 80
+        }
+      },
+      {
+        "icon": "bubble-chat",
+        "navLabel": "Conversational health assessment",
+        "eyebrow": "Conversational Health Assessment",
+        "heading": "Start by figuring out where each patient actually is.",
+        "body": "Before coaching begins, our AI Care Managers reach out to understand where each patient is starting from — their lifestyle, habits, and goals, so we can adapt the journey to their unique context.",
+        "media": "calling",
+        "avatar": "/solutions/conversational-health-assessment.jpg",
+        "contactName": "Sarah McDermott",
+        "contactStatus": "Calling…"
+      },
+      {
+        "icon": "orthogonal-edge",
+        "navLabel": "AI+Human coaching journey",
+        "eyebrow": "AI+Human Coaching Journey",
+        "heading": "Offer the right support, at every stage.",
+        "body": "Our AI agents deliver fully adaptive, responsive coaching around the clock, backed by a qualified prehabilitation specialist, always reachable for 1-to-1\nsupport when it matters the most.",
+        "media": "journey",
+        "journey": [
+          {
+            "icon": "bubble-chat",
+            "title": "SMS",
+            "meta": "14 days out",
+            "detail": "Suggest light exercise"
+          },
+          {
+            "icon": "phone",
+            "title": "Call",
+            "meta": "14 days out",
+            "detail": "clarify on medication instructions"
+          },
+          {
+            "icon": "check",
+            "title": "Surgery completed",
+            "detail": "Hip surgery"
+          }
+        ]
+      },
+      {
+        "icon": "ai-audio",
+        "navLabel": "Hyper personalized interactions",
+        "eyebrow": "Hyper Personalized Interactions",
+        "heading": "Meet patients where they already are.",
+        "body": "Voice calls, chat messages, SMS — our AI Care Managers will adapt to the channels your patients choose, and plan interactions to fit their existing routines. No additional apps to download.",
+        "media": "preferences",
+        "avatar": "/solutions/roberta-armond.png",
+        "contactName": "Roberta Armond",
+        "contactStatus": "prefers",
+        "preferences": [
+          {
+            "icon": "sms",
+            "label": "SMS",
+            "when": "all day"
+          },
+          {
+            "icon": "call",
+            "label": "Call",
+            "when": "after 6pm"
+          },
+          {
+            "icon": "email",
+            "label": "Email",
+            "when": "after 6pm"
+          }
+        ]
+      },
+      {
+        "icon": "home-10",
+        "navLabel": "Post-surgery recovery support",
+        "eyebrow": "Post-Surgery Recovery Support",
+        "heading": "Stay on for the critical weeks after surgery.",
+        "body": "On the weeks after surgery, Intelligence checks back in — covering activity, sleep, nutrition, and general wellbeing — through the same channels the patient already knows.",
+        "media": "recovery",
+        "recovery": [
+          {
+            "icon": "logout",
+            "title": "Immediate Outreach",
+            "channels": [
+              {
+                "icon": "bubble-chat",
+                "label": "SMS",
+                "meta": "Discharge day",
+                "highlight": true
+              },
+              {
+                "icon": "phone",
+                "label": "Call",
+                "meta": "2 days after"
+              }
+            ]
+          },
+          {
+            "icon": "pill",
+            "title": "Medication Adherence"
+          },
+          {
+            "icon": "route",
+            "title": "Follow-up Navigation"
+          },
+          {
+            "icon": "home-10",
+            "title": "Ongoing Monitoring"
+          }
+        ]
+      }
+    ]
+  },
+  "testimonials": {
+    "eyebrow": "Testimonials",
+    "heading": "Don’t take our word for it, take theirs.",
+    "items": [
+      {
+        "logo": {
+          "src": "/logos/ne-london.png",
+          "alt": "North East London Health & Care Partnership"
+        },
+        "quote": "“Working with Sword Intelligence has revolutionised our preoperative care, significantly improving patient outcomes and reducing complication rates.”",
+        "author": {
+          "name": "Lucy Gladman",
+          "role": "Deputy Divisional Manager of Anaesthetics"
+        },
+        "stats": [
+          {
+            "value": "57%",
+            "plus": false,
+            "label": "All sessions delivered"
+          },
+          {
+            "value": "0.71 d",
+            "plus": false,
+            "label": "Lives covered"
+          }
+        ],
+        "cta": {
+          "label": "Read case study",
+          "href": "/customers/nhs-surgery-readiness"
+        }
+      },
+      {
+        "logo": {
+          "src": "/logos/nhs-south-tee.png",
+          "alt": "South Tees Hospitals NHS Foundation Trust"
+        },
+        "quote": "“Our patients appreciate the detailed, supportive guidance\nthat has helped them feel more in control and better equipped\nto handle their surgeries and recoveries.”",
+        "author": {
+          "name": "Professor Gerard Danjoux",
+          "role": "Consultant Anaesthetist and Perioperative Care Lead"
+        },
+        "stats": [
+          {
+            "value": "84%",
+            "plus": false,
+            "label": "Improvement in patient-reported\nquality of life"
+          },
+          {
+            "value": "£250",
+            "plus": false,
+            "label": "Saved per patient"
+          }
+        ],
+        "cta": {
+          "label": "Read case study",
+          "href": "/customers/nhs-deprived-communities"
+        }
+      }
+    ]
+  },
+  "faqs": {
+    "heading": "FAQs",
+    "items": [
+      {
+        "question": "How does Intelligence personalize different surgical preparation programs?",
+        "answer": "Our AI Care Managers build a unique profile for each patient the moment they're enrolled — drawing on history, behavioral indicators, and contextual factors. More complex cases are automatically assigned more intensive preparation pathways. Additional criteria can be included to train bespoke risk models for your population."
+      },
+      {
+        "question": "What happens the moment a patient is added to the surgical list?",
+        "answer": "AI Care Managers act immediately. The patient is enrolled automatically, a conversational assessment begins, and their preparation journey starts — no manual referral, no action required from the patient before their first message arrives. The programme adapts in real time as the patient's profile develops throughout the waiting period."
+      },
+      {
+        "question": "Do agents adapt outreach to different patients?",
+        "answer": "Yes — it doesn't deliver the same journey to everyone. The frequency of check-ins, coaching content, channel, and intensity all adapt to each patient's risk profile, engagement patterns, and progress. A patient who is highly engaged and low-risk receives a lighter-touch program. A patient with multiple modifiable risk factors receives more intensive support. Every sequence runs until the patient is prepared — or escalated to a human specialist."
+      },
+      {
+        "question": "What if a patient situation needs human judgment?",
+        "answer": "A qualified Prehabilitation Health Specialist is always in the loop. When the AI detects complexity or identifies predefined escalation criteria (e.g., a question it can't answer, or a patient who needs more than coaching) it routes immediately to the right person. Human escalation is built into every workflow, not added as an afterthought."
+      },
+      {
+        "question": "What are AI Care Managers?",
+        "answer": "AI Care Managers are the AI agents that run the workflows built by Intelligence. They contact patients, process responses, deliver coaching content, navigate scheduling systems, and trigger the next action — 24/7, across every channel, in any language. They're not chatbots. They are objective-driven and like your best care teams, they're trained on healthcare operations and adapt to your existing infrastructure."
+      },
+      {
+        "question": "What can AI Care Managers actually do?",
+        "answer": "AI Care Managers can make and receive calls, send and interpret chat messages, SMS and email, read and act on documents, navigate legacy portals and platforms, deliver personalized coaching content, track patient progress, confirm appointments, offer reschedule slots, and escalate to a human when needed. They can be trained to handle any administrative task or logic the workflow requires. Every action is logged, auditable, and configurable to your protocols."
+      },
+      {
+        "question": "Do patients know they're talking to an AI?",
+        "answer": "Our agents always disclose they are AI, following your organization's guidelines and applicable regulatory requirements. This is communicated naturally — adapting tone, language, and channel to each patient. What patients consistently experience is fast, clear, helpful contact that never feels scripted or limited."
+      },
+      {
+        "question": "How does Intelligence integrate with our existing systems?",
+        "answer": "Intelligence sits between your patients and your existing infrastructure — connecting to EHRs, scheduling systems, CRMs, and national health platforms via FHIR APIs and HL7 messaging. It's designed to work with what you have, not replace it."
+      },
+      {
+        "question": "Can your agents actually navigate the platforms we already use?",
+        "answer": "Yes. AI Care Managers can log into, read, and act within legacy portals and third-party platforms — not just systems with open APIs. They use computer vision and document understanding to operate in environments that weren't built for integration. If your team navigates it today, our agents can be trained to navigate it too."
+      },
+      {
+        "question": "Does this require replacing our EHR/EPR or scheduling system?",
+        "answer": "No. Intelligence is an interoperability layer — it connects to your existing systems and operates within them. There's no rip-and-replace. Your data stays where it is, your workflows stay familiar, and Intelligence adds the coordination layer on top."
+      },
+      {
+        "question": "Is this a compliance-ready solution?",
+        "answer": "Every deployment meets HIPAA, HITRUST, SOC 2, and GDPR standards where applicable. All patient data is encrypted in transit and at rest. Every AI interaction is fully auditable, with role-based access controls throughout. Compliance requirements are scoped during the discovery phase and built into deployment from day one."
+      },
+      {
+        "question": "What is Sword, and why are we building this?",
+        "answer": "Sword has spent over a decade pioneering AI Care — trusted by more than 1 million patients, covering 100 million lives, across 5 continents. Intelligence was built because we ran into the same operational bottlenecks our customers face today. We acquired Surgery Hero, the NHS-proven digital prehabilitation platform with peer-reviewed outcomes across several NHS deployments. The clinical protocols, coaching methodology, and evidence base are built directly into Intelligence."
+      }
+    ]
+  }
+}

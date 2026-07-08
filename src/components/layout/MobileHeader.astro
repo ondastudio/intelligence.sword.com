@@ -18,8 +18,14 @@
 import site from "../../data/site.json";
 import Button from "../ui/Button.astro";
 
-// The phone list and the tablet/desktop tab row share one set of nav items.
-const menuItems = site.mobileMenu.items.filter((item) => !item.hidden);
+// Mobile menu content is authored separately from the desktop nav so the two
+// can diverge (the mobile panel has an expandable Solutions section).
+const mobileItems = site.mobileMenu.items.filter((item) => !item.hidden);
+
+// Tablet + desktop (md+) tab row: render EVERY item, including `hidden` ones, so
+// the Solution tab + its mega-menu live in the DOM ready to flip on later — the
+// `hidden` flag just adds a `hidden` class instead of dropping the markup.
+const tabItems = site.mobileMenu.items;
 ---
 
 {/*
@@ -129,16 +135,96 @@ const menuItems = site.mobileMenu.items.filter((item) => !item.hidden);
       class="flex flex-col font-sans text-sm font-semibold uppercase tracking-[-0.14px] text-black"
     >
       {
-        menuItems.map((item, i) => {
+        mobileItems.map((item, i) => {
           // Items are separated by a divider; the outer edges sit flush against
           // the panel padding (first: bottom-only, last: top-only, no border).
           const edge =
-            i === menuItems.length - 1
+            i === mobileItems.length - 1
               ? "pt-3"
               : i === 0
                 ? "border-b border-black/24 pb-3"
                 : "border-b border-black/24 py-3";
-          return (
+          return item.groups ? (
+            <div class={edge} data-submenu>
+              <button
+                type="button"
+                class="flex w-full items-center justify-between font-sans uppercase tracking-[-0.14px]"
+                aria-expanded="false"
+                data-submenu-toggle
+              >
+                <span>{item.label}</span>
+                <svg
+                  class="size-3 transition-transform duration-200"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  aria-hidden="true"
+                  data-submenu-caret
+                >
+                  <path
+                    d="M2.5 4.5 6 8l3.5-3.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+
+              <div class="hidden flex-col gap-6 pb-3 pt-6" data-submenu-panel>
+                {item.groups.map((group) => (
+                  <div class="flex flex-col gap-4">
+                    <p class="w-full">{group.label}</p>
+                    <div class="flex flex-col gap-6">
+                      {group.items.map((sub) => {
+                        // No href yet ⇒ render a plain <div>, not a link.
+                        const Tag = sub.href ? "a" : "div";
+                        return (
+                        <Tag href={sub.href} class="flex items-start gap-4">
+                          <span class="relative grid size-10 shrink-0 place-items-center rounded-full text-black">
+                            {/* Dotted ring — round-capped `0.01 8` dashes, the
+                                same ring every circle on the site uses (see
+                                ui/ArrowCircle). */}
+                            <svg
+                              class="col-start-1 row-start-1 size-full"
+                              viewBox="0 0 40 40"
+                              fill="none"
+                              aria-hidden="true"
+                            >
+                              <rect
+                                x="1"
+                                y="1"
+                                width="38"
+                                height="38"
+                                rx="19"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                                stroke-dasharray="0.01 8"
+                                class="group-hover/item:[stroke-dasharray:120_0] group-hover/item:[stroke-width:1]"
+                              />
+                            </svg>
+                            {sub.icon && (
+                              <img
+                                src={sub.icon}
+                                alt=""
+                                aria-hidden="true"
+                                class="col-start-1 row-start-1 size-6"
+                              />
+                            )}
+                          </span>
+                          <span class="flex min-w-0 flex-1 flex-col normal-case">
+                            <span class="text-black">{sub.title}</span>
+                            <span class="text-ink-mid">{sub.subtitle}</span>
+                          </span>
+                        </Tag>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
             <a href={item.href} class={edge}>
               {item.label}
             </a>
@@ -148,17 +234,123 @@ const menuItems = site.mobileMenu.items.filter((item) => !item.hidden);
     </nav>
     </div>
 
-    {/* Tablet + desktop (md+): a centered row of tab-pill links. */}
-    <div class="hidden items-center justify-center md:flex">
+    {/*
+      Tablet + desktop (md+): a centered row of tab pills, plus a mega-menu panel
+      for any tab that has groups (Solution). Tabs without groups are plain links;
+      the Solution tab toggles its panel and turns purple while open. `hidden`
+      items (Solution, for now) stay in the DOM but get a `hidden` class.
+    */}
+    <div class="hidden flex-col items-center gap-2 md:flex">
+      {/* Tab row — pills sit flush (no gap); their full radius makes the seam. */}
+      <div class="flex items-center justify-center">
+        {
+          tabItems.map((item, i) => {
+            // `hidden` and `inline-flex` are both display utilities, so a hidden
+            // item picks `hidden` INSTEAD of `inline-flex` (layering both lets
+            // inline-flex win the cascade and the pill shows anyway).
+            const pill =
+              "h-10 items-center gap-2 whitespace-nowrap rounded-full px-6 text-sm font-semibold uppercase backdrop-blur-[20px] transition-colors";
+            const show = item.hidden ? "hidden" : "inline-flex";
+            return item.groups ? (
+              <button
+                type="button"
+                class={`${show} ${pill} bg-lavender text-black`}
+                aria-expanded="false"
+                aria-controls={`menu-tab-${i}`}
+                data-tab-toggle={`menu-tab-${i}`}
+              >
+                {item.label}
+                <svg
+                  class="h-[6px] w-[12px] transition-transform duration-200"
+                  viewBox="0 0 9.17558 5.58579"
+                  fill="none"
+                  aria-hidden="true"
+                  data-tab-caret
+                >
+                  <path
+                    d="M5.2949 5.29289C4.90437 5.68342 4.27121 5.68342 3.88068 5.29289L0.294898 1.70711C-0.335067 1.07714 0.111099 0 1.002 0H8.17358C9.06448 0 9.51065 1.07714 8.88068 1.70711L5.2949 5.29289Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </button>
+            ) : (
+              <a
+                href={item.href}
+                class={`${show} ${pill} bg-lavender text-black hover:bg-purple-100`}
+              >
+                {item.label}
+              </a>
+            );
+          })
+        }
+      </div>
+
       {
-        menuItems.map((item) => (
-          <a
-            href={item.href}
-            class="inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full bg-lavender px-6 text-sm font-semibold uppercase text-black backdrop-blur-[20px] transition-colors hover:bg-purple-100"
-          >
-            {item.label}
-          </a>
-        ))
+        tabItems.map((item, i) =>
+          item.groups ? (
+            <div
+              id={`menu-tab-${i}`}
+              class="hidden max-h-[calc(100dvh-8rem)] overflow-y-auto rounded-[24px] bg-lavender p-8 backdrop-blur-[20px]"
+              data-tab-panel
+            >
+              <div class="flex w-[649px] max-w-full items-start gap-20 font-sans text-sm font-semibold uppercase tracking-[-0.14px] text-black">
+                {item.groups.map((group) => (
+                  <div class="flex flex-1 flex-col gap-10">
+                    <p class="w-full text-black">{group.label}</p>
+                    <div class="flex flex-col gap-6">
+                      {group.items.map((sub) => {
+                        // No href yet ⇒ render a plain <div>, not a link.
+                        const Tag = sub.href ? "a" : "div";
+                        return (
+                        <Tag href={sub.href} class="group/item flex w-full items-start gap-4">
+                          <span class="relative grid size-10 shrink-0 place-items-center rounded-full text-black">
+                            {/* Dotted ring — round-capped `0.01 8` dashes, the
+                                same ring every circle on the site uses (see
+                                ui/ArrowCircle). */}
+                            <svg
+                              class="col-start-1 row-start-1 size-full"
+                              viewBox="0 0 40 40"
+                              fill="none"
+                              aria-hidden="true"
+                            >
+                              <rect
+                                x="1"
+                                y="1"
+                                width="38"
+                                height="38"
+                                rx="19"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                                stroke-dasharray="0.01 8"
+                                class="group-hover/item:[stroke-dasharray:120_0] group-hover/item:[stroke-width:1]"
+                              />
+                            </svg>
+                            {sub.icon && (
+                              <img
+                                src={sub.icon}
+                                alt=""
+                                aria-hidden="true"
+                                class="col-start-1 row-start-1 size-6"
+                              />
+                            )}
+                          </span>
+                          <span class="flex min-w-0 flex-1 flex-col normal-case">
+                            <span class="w-full text-black">{sub.title}</span>
+                            <span class="w-full text-ink-mid">
+                              {sub.subtitle}
+                            </span>
+                          </span>
+                        </Tag>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null,
+        )
       }
     </div>
   </div>
@@ -218,11 +410,64 @@ const menuItems = site.mobileMenu.items.filter((item) => !item.hidden);
       panel?.classList.toggle("pointer-events-auto", open);
       iconOpen?.classList.toggle("hidden", open);
       iconClose?.classList.toggle("hidden", !open);
+      // Collapse any open md+ tab (e.g. Solution) so the menu reopens clean.
+      if (!open) closeTabs();
     };
 
     toggle?.addEventListener("click", (e) => {
       e.stopPropagation();
       setOpen(toggle.getAttribute("aria-expanded") !== "true");
+    });
+
+    // Expandable sub-sections inside the panel (e.g. Solutions).
+    panel
+      ?.querySelectorAll<HTMLElement>("[data-submenu]")
+      .forEach((submenu) => {
+        const subToggle = submenu.querySelector<HTMLButtonElement>(
+          "[data-submenu-toggle]",
+        );
+        const subPanel = submenu.querySelector<HTMLElement>(
+          "[data-submenu-panel]",
+        );
+        const caret = submenu.querySelector<HTMLElement>(
+          "[data-submenu-caret]",
+        );
+        subToggle?.addEventListener("click", () => {
+          const open = subToggle.getAttribute("aria-expanded") !== "true";
+          subToggle.setAttribute("aria-expanded", String(open));
+          subPanel?.classList.toggle("hidden", !open);
+          subPanel?.classList.toggle("flex", open);
+          caret?.classList.toggle("rotate-180", open);
+        });
+      });
+
+    // md+ tab pills: a tab with a [data-tab-toggle] reveals its mega-menu panel
+    // and turns purple while open. Only one is open at a time.
+    const tabToggles = Array.from(
+      panel?.querySelectorAll<HTMLButtonElement>("[data-tab-toggle]") ?? [],
+    );
+    const setTab = (btn: HTMLButtonElement, open: boolean) => {
+      const target = document.getElementById(
+        btn.getAttribute("data-tab-toggle") ?? "",
+      );
+      const caret = btn.querySelector<HTMLElement>("[data-tab-caret]");
+      btn.setAttribute("aria-expanded", String(open));
+      btn.classList.toggle("bg-brand", open);
+      btn.classList.toggle("text-white", open);
+      btn.classList.toggle("bg-lavender", !open);
+      btn.classList.toggle("text-black", !open);
+      target?.classList.toggle("hidden", !open);
+      caret?.classList.toggle("rotate-180", open);
+    };
+    function closeTabs() {
+      tabToggles.forEach((btn) => setTab(btn, false));
+    }
+    tabToggles.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const open = btn.getAttribute("aria-expanded") !== "true";
+        closeTabs();
+        setTab(btn, open);
+      });
     });
 
     document.addEventListener("click", (e) => {

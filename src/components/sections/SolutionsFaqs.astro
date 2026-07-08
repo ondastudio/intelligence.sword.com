@@ -1,0 +1,264 @@
+---
+/**
+ * SolutionsFaqs — the closing "FAQs" accordion on the Solutions page
+ * (Figma node 7878:14277, "Frame 2147224670"), sitting between the
+ * Testimonials block and the closing CTA.
+ *
+ * A centered Lora headline over a stack of white rounded pills, each a
+ * question that expands to reveal its answer. Behind the stack sits the shared
+ * soft-purple swirl bloom (the same animated WebGL swirl as SolutionsTestimonials
+ * / TriageCta, recoloured purple; a static radial gradient is the no-JS /
+ * reduced-motion fallback). One item is open at a time; the first opens by default.
+ *
+ * The toggle uses the site's dotted ring (same 40px round-capped dash ring as
+ * ui/ArrowCircle) enclosing a plus that collapses to a minus when open — the
+ * plus's vertical bar rotates + scales away. Expand/collapse animates the
+ * grid-template-rows 0fr→1fr trick so height transitions smoothly with no
+ * fixed max-height. Reduced-motion users get instant open/close.
+ *
+ * Content-free — copy comes from src/data/solutions.json (`faqs`).
+ */
+import solutions from "../../data/solutions.json";
+
+const { heading, items } = solutions.faqs;
+---
+
+<section
+  class="faqs relative isolate overflow-hidden px-6 py-20 lg:px-20 lg:py-[120px]"
+>
+  {/* Soft-purple swirl bloom filling the section behind the questions (z-0).
+      The static gradient is the no-JS / reduced-motion fallback; the canvas
+      fades in over it once the swirl mounts. Same mechanism as
+      SolutionsTestimonials / TriageCta. */}
+  <div
+    data-faqs-swirl-stage
+    aria-hidden="true"
+    class="faqs-swirl pointer-events-none absolute inset-0 -z-10"
+  >
+    <div class="faqs-swirl-fallback absolute inset-0"></div>
+    <canvas
+      data-faqs-swirl
+      class="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700"
+    ></canvas>
+  </div>
+
+  <div
+    class="relative mx-auto flex max-w-[1064px] flex-col items-center gap-14 lg:gap-[120px]"
+  >
+    <h2 data-reveal="title" class="text-center font-serif text-h5 text-black">
+      {heading}
+    </h2>
+
+    <ul class="flex w-full flex-col gap-4">
+      {
+        items.map((item, i) => (
+          <li
+            data-reveal
+            data-faq-item
+            style={`transition-delay:${Math.min(i, 6) * 60}ms`}
+            class:list={[
+              "faq-item w-full rounded-card bg-white",
+              { "is-open": i === 0 },
+            ]}
+          >
+            <h3>
+              <button
+                type="button"
+                data-faq-trigger
+                aria-expanded={i === 0 ? "true" : "false"}
+                aria-controls={`faq-panel-${i}`}
+                id={`faq-trigger-${i}`}
+                class="group flex w-full cursor-pointer items-center justify-between gap-6 py-6 pl-8 pr-6 text-left"
+              >
+                <span class="text-lg font-semibold text-black">
+                  {item.question}
+                </span>
+                {/* Dotted ring + plus/minus toggle (mirrors ui/ArrowCircle). */}
+                <span class="faq-icon relative grid size-10 shrink-0 place-items-center text-black">
+                  <svg
+                    class="col-start-1 row-start-1 size-full"
+                    viewBox="0 0 40 40"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <rect
+                      x="1"
+                      y="1"
+                      width="38"
+                      height="38"
+                      rx="19"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-dasharray="0.01 8"
+                      class="group-hover:[stroke-dasharray:120_0] group-hover:[stroke-width:1]"
+                    />
+                  </svg>
+                  <svg
+                    class="col-start-1 row-start-1 size-6 self-center justify-self-center"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M20 12H4"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      class="faq-bar-v"
+                      d="M12 4V20"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </h3>
+
+            <div
+              id={`faq-panel-${i}`}
+              role="region"
+              aria-labelledby={`faq-trigger-${i}`}
+              class="faq-panel grid"
+            >
+              <div class="overflow-hidden">
+                <p class="faq-answer max-w-[640px] pb-10 pl-8 pr-6 pt-4 text-xmd text-black">
+                  {item.answer}
+                </p>
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* Swirl bloom layer — fills the section behind the questions. A soft radial
+     mask keeps it a contained centred bloom that fades to the page background
+     before the section edges (taller ellipse than Testimonials since the FAQ
+     stack is long, so the bloom reaches more of the questions). */
+  .faqs-swirl {
+    -webkit-mask-image: radial-gradient(
+      ellipse 78% 70% at 50% 50%,
+      #000 0%,
+      #000 30%,
+      transparent 70%
+    );
+    mask-image: radial-gradient(
+      ellipse 78% 70% at 50% 50%,
+      #000 0%,
+      #000 30%,
+      transparent 70%
+    );
+  }
+
+  /* No-JS / reduced-motion fallback: a static soft-purple radial bloom. */
+  .faqs-swirl-fallback {
+    background: radial-gradient(
+      ellipse 60% 60% at 50% 50%,
+      #d3c2ff 0%,
+      #e1d6ff 40%,
+      transparent 68%
+    );
+  }
+
+  /* Expand/collapse — animate the grid track from 0fr → 1fr so the row's
+     natural height reveals with no fixed max-height. House easing curve. */
+  .faq-panel {
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .faq-item.is-open .faq-panel {
+    grid-template-rows: 1fr;
+  }
+
+  /* Answer fades in slightly behind the height reveal. */
+  .faq-answer {
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+  }
+  .faq-item.is-open .faq-answer {
+    opacity: 1;
+    transition: opacity 0.4s ease-out 0.15s;
+  }
+
+  /* Plus → minus: the vertical bar rotates + scales away when open. */
+  .faq-bar-v {
+    transform-origin: center;
+    transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .faq-item.is-open .faq-bar-v {
+    transform: rotate(90deg) scale(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-panel,
+    .faq-answer,
+    .faq-bar-v {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // FAQ accordion — one item open at a time. Clicking a trigger opens its
+  // item and closes the others; clicking the open item collapses it. `.is-open`
+  // on the <li> drives every transition (see <style>); `aria-expanded` keeps
+  // assistive tech in sync.
+  const items = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-faq-item]"),
+  );
+
+  items.forEach((item) => {
+    const trigger = item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
+    if (!trigger) return;
+
+    trigger.addEventListener("click", () => {
+      const willOpen = !item.classList.contains("is-open");
+      items.forEach((other) => {
+        const open = other === item && willOpen;
+        other.classList.toggle("is-open", open);
+        other
+          .querySelector<HTMLButtonElement>("[data-faq-trigger]")
+          ?.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+    });
+  });
+</script>
+
+<script>
+  // Animated swirl bloom filling the section — the shared hero swirl recoloured
+  // to a soft-purple palette, same config as SolutionsTestimonials / TriageCta.
+  import { initSwirl } from "../../lib/swirl";
+
+  const stage = document.querySelector<HTMLElement>("[data-faqs-swirl-stage]");
+  const canvas = stage?.querySelector<HTMLCanvasElement>(
+    "canvas[data-faqs-swirl]",
+  );
+
+  if (stage && canvas) {
+    initSwirl(canvas, stage, {
+      grainUrl: "/hero/swirl/perlin1.png",
+      circular: true,
+      warp: 0.7, // cohesive, rounded blob with a filled centre
+      speed: 2.2,
+      falloffStart: 0.5, // keep the centre filled; only the outer edge fades out
+      falloffEnd: 0.92,
+      colors: {
+        bgColor: [0.976, 0.969, 1.0], // outer field — near-white with a faint lilac
+        soft: [0.882, 0.839, 1.0], // inner highlight — purple-100 (#e1d6ff)
+        body: [0.741, 0.643, 1.0], // dominant bloom — soft purple (~#bda4ff)
+        lavender: [0.933, 0.91, 1.0], // secondary highlight — purple-tint
+        crest: [0.97, 0.97, 0.97], // gradient crest — white
+      },
+    });
+    requestAnimationFrame(() => canvas.classList.remove("opacity-0"));
+  }
+</script>
