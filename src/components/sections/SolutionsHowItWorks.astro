@@ -266,13 +266,23 @@ const channelTile: Record<string, string> = {
                 </p>
               </div>
               <div class="w-full shrink-0 lg:h-[616px] lg:w-[522px]">
-                {/* Mobile: the uniform design image (Figma export). */}
+                {/* Mobile: the uniform design image (Figma export), full-bleed. */}
                 <img
                   src={hiwMedia[step.media]}
                   alt=""
                   loading="lazy"
-                  class="aspect-[358/364] w-full rounded-card object-cover md:aspect-auto md:h-[300px] lg:hidden"
+                  class="aspect-[358/364] w-full rounded-card object-cover md:hidden"
                 />
+                {/* Tablet: the same image scaled to fit (uncropped) inside a
+                    300px card with 60px margins. */}
+                <div class="hidden h-[300px] w-full place-items-center rounded-card bg-white p-[30px] md:grid lg:hidden">
+                  <img
+                    src={hiwMedia[step.media]}
+                    alt=""
+                    loading="lazy"
+                    class="max-h-[240px] max-w-full object-contain"
+                  />
+                </div>
                 {/* Desktop: the built, interactive media card. */}
                 <div class="hidden h-full w-full place-items-center overflow-hidden rounded-card bg-white lg:grid">
                 {step.media === "enrollment" ? (
