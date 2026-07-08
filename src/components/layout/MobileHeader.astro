@@ -372,14 +372,14 @@ const tabItems = site.mobileMenu.items;
   }
 
   /* No-flash guard (removed by the script once the real state is computed). On
-     md+ (tablet + desktop) the secondary nav starts hidden — without a
-     transition — so it never flashes at the top of the page on load. Phones are
+     lg+ (desktop) the secondary nav starts hidden — without a transition — so it
+     never flashes at the top of the page on load. Phones + tablets are
      untouched: there the pill is the primary nav and is meant to be visible at
      the top. */
   [data-mobile-header].pre-init {
     transition: none;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     [data-mobile-header].pre-init {
       transform: translateY(-100%);
       opacity: 0;
@@ -478,7 +478,9 @@ const tabItems = site.mobileMenu.items;
     });
 
     const isMenuOpen = () => toggle?.getAttribute("aria-expanded") === "true";
-    const isMdUp = () => window.matchMedia("(min-width: 768px)").matches;
+    // lg+ (desktop) is where the pill is the SECONDARY nav (hidden until scrolled
+    // below the hero). Below lg — phones AND tablets — it's the primary nav.
+    const isLgUp = () => window.matchMedia("(min-width: 1024px)").matches;
     const setHidden = (hidden: boolean) => {
       header.classList.toggle("is-hidden", hidden);
     };
@@ -498,12 +500,12 @@ const tabItems = site.mobileMenu.items;
     const onScroll = () => {
       ticking = false;
 
-      // md+ (desktop + tablet) — this pill is a SECONDARY nav. It stays hidden
+      // lg+ (desktop) — this pill is a SECONDARY nav. It stays hidden
       // by default and fades IN only while the user scrolls UP below the hero,
       // then fades back OUT before the hero scrolls into view. Scroll direction
       // is read from the hero's viewport position (getBoundingClientRect), which
       // is robust to whichever element actually scrolls.
-      if (isMdUp()) {
+      if (isLgUp()) {
         if (!anchor) {
           setHidden(!isMenuOpen());
           lastY = window.scrollY;
@@ -523,8 +525,8 @@ const tabItems = site.mobileMenu.items;
         return;
       }
 
-      // Phone — this IS the primary nav, so it shows near the top and hides on
-      // scroll-down / reveals on scroll-up.
+      // Phone + tablet (below lg) — this IS the primary nav, so it shows near the
+      // top and hides on scroll-down / reveals on scroll-up.
       const y = window.scrollY;
       if (isMenuOpen() || y <= 80) {
         setHidden(false);
