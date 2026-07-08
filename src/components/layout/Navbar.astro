@@ -26,8 +26,8 @@ const solutionGroups =
   site.mobileMenu.items.find((item) => item.groups)?.groups ?? [];
 ---
 
-{/* Primary header (md+ — tablet + desktop). */}
-<header class="absolute inset-x-0 top-0 z-20 hidden md:block">
+{/* Primary header (lg+ — desktop only; tablet uses the secondary pill nav). */}
+<header class="absolute inset-x-0 top-0 z-20 hidden lg:block">
   <nav
     class="mx-auto flex max-w-[1440px] items-center justify-between px-6 pb-5 pt-10 lg:px-20"
   >
@@ -35,7 +35,7 @@ const solutionGroups =
 
     <!-- Centered menu (absolutely centered) -->
     <div
-      class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex"
+      class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex"
     >
       {
         site.nav.filter((item) => !item.hidden).map((item) =>
