@@ -27,12 +27,12 @@ import solutions from "../../data/solutions.json";
 const { problem, solution } = solutions;
 ---
 
-{/* Mobile ( < md ): the pinned scroll reel. Desktop ( md+ ): the crossfade. */}
-<div class="md:hidden">
+{/* Mobile + tablet ( < lg ): the pinned scroll reel. Desktop ( lg+ ): the crossfade. */}
+<div class="lg:hidden">
   <SolutionsHandoffMobile />
 </div>
 
-<section data-solutions-handoff class="solutions-handoff hidden text-black md:block">
+<section data-solutions-handoff class="solutions-handoff hidden text-black lg:block">
   <div data-handoff-stage class="handoff-stage">
     <div class="handoff-inner relative mx-auto w-full max-w-[1440px] px-4 md:px-8">
       {/* ---- State A — Problem ------------------------------------------------ */}
@@ -234,7 +234,7 @@ const { problem, solution } = solutions;
   function initHandoff(section: HTMLElement) {
     const enabled = () =>
       window.matchMedia(
-        "(prefers-reduced-motion: no-preference) and (min-width: 768px)",
+        "(prefers-reduced-motion: no-preference) and (min-width: 1024px)",
       ).matches;
 
     const stateA = section.querySelector<HTMLElement>('[data-handoff-state="a"]');
@@ -344,7 +344,7 @@ const { problem, solution } = solutions;
 
   /* Enhanced: pin the stage and crossfade the two panels as one. Pre-setting the
      start state here keeps the first paint flash-free before the rAF loop runs. */
-  @media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
     :global(html.js) .solutions-handoff {
       height: calc(100svh + 130vh);
       padding-block: 0;

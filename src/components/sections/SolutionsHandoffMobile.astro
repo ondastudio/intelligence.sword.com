@@ -1,6 +1,6 @@
 ---
 /**
- * SolutionsHandoffMobile — the mobile-only ( < md ) "Problem → Solution" beat,
+ * SolutionsHandoffMobile — the mobile + tablet ( < lg ) "Problem → Solution" beat,
  * as one pinned panel (Figma 9298:7482):
  *
  *   1. The panel opens on the Problem eyebrow + heading + text.
@@ -388,8 +388,8 @@ const metrics = problem.cards.map((p, i) => ({
     }
   }
 
-  /* ---- Enhanced = JS + motion + mobile: pin, crossfade, scroll cards up ---- */
-  @media (prefers-reduced-motion: no-preference) and (max-width: 767px) {
+  /* ---- Enhanced = JS + motion + mobile/tablet: pin, crossfade, scroll cards up ---- */
+  @media (prefers-reduced-motion: no-preference) and (max-width: 1023px) {
     :global(html.js) .handoff-mobile {
       height: calc(100svh + 280vh);
       padding-block: 0;
@@ -444,6 +444,18 @@ const metrics = problem.cards.map((p, i) => ({
       opacity: 0;
     }
   }
+
+  /* Tablet ( md–lg ): the card widens to sit 30px from each screen edge, rather
+     than keeping the 460px cap it uses on phones. */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .handoff-mobile {
+      padding-inline: 30px;
+    }
+    .hm-panel,
+    :global(html.js) .hm-panel {
+      max-width: none;
+    }
+  }
 </style>
 
 <script>
@@ -451,7 +463,7 @@ const metrics = problem.cards.map((p, i) => ({
     const enabled = () =>
       document.documentElement.classList.contains("js") &&
       window.matchMedia(
-        "(prefers-reduced-motion: no-preference) and (max-width: 767px)",
+        "(prefers-reduced-motion: no-preference) and (max-width: 1023px)",
       ).matches;
 
     const panel = section.querySelector<HTMLElement>("[data-hm-panel]");
