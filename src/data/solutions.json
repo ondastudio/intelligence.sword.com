@@ -314,17 +314,23 @@
         "quote": "“Working with Sword Intelligence has revolutionised our preoperative care, significantly improving patient outcomes and reducing complication rates.”",
         "author": {
           "name": "Lucy Gladman",
-          "role": "Deputy Divisional Manager of Anaesthetics",
-          "avatar": "/solutions/testimonials/lucy-gladman.jpg"
+          "role": "Deputy Divisional Manager of Anaesthetics"
         },
-        "stat": {
-          "value": "10M",
-          "plus": true,
-          "label": "Citizens served"
-        },
+        "stats": [
+          {
+            "value": "57%",
+            "plus": false,
+            "label": "All sessions delivered"
+          },
+          {
+            "value": "0.71 d",
+            "plus": false,
+            "label": "Lives covered"
+          }
+        ],
         "cta": {
           "label": "Read case study",
-          "href": "/customers/greece"
+          "href": "/customers/nhs-surgery-readiness"
         }
       },
       {
