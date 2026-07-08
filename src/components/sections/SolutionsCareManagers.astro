@@ -145,19 +145,34 @@ const ehrRows = [ehrLogos.slice(0, 6), ehrLogos.slice(6)];
           </div>
         </div>
 
-        {/* Row A — three tall feature cards driven by the home Care Lotties */}
-        <div class="hidden gap-4 md:grid md:grid-cols-3">
+        {/* Row A — three tall feature cards driven by the home Care Lotties.
+            Tablet ( md–lg ) drops to two per row, so the odd third card spans
+            the full width; desktop ( lg+ ) restores the three-across row. */}
+        <div class="hidden gap-4 md:grid md:grid-cols-2 lg:grid-cols-3">
           {
             lottieFeatures.map((f, i) => (
               <div
-                class={`${cardFrame} items-center justify-between gap-6 overflow-clip px-6 pb-10 pt-10 md:min-h-[540px] md:px-10 md:pt-10`}
+                class={`${cardFrame} items-center justify-between gap-6 overflow-clip px-6 pb-10 pt-10 md:min-h-[540px] md:px-10 md:pt-10${
+                  i === lottieFeatures.length - 1
+                    ? " md:col-span-2 lg:col-span-1"
+                    : ""
+                }`}
                 data-reveal
                 style={`transition-delay:${i * 80}ms`}
               >
                 {/* The animation bleeds through the card's side padding to the
                     edges (overflow-clip + rounded corners trim it), so each clip
-                    reads large — mirroring the home Care grid framing. */}
-                <div class="relative -mx-6 flex min-h-0 w-[calc(100%+3rem)] flex-1 items-center justify-center md:-mx-10 md:w-[calc(100%+5rem)]">
+                    reads large — mirroring the home Care grid framing. On tablet
+                    the odd third card spans the full width, so its `cover` clip
+                    would crop; there we cap + centre it to keep the same framing,
+                    then restore the full-bleed clip on desktop ( lg+ ). */}
+                <div
+                  class={
+                    i === lottieFeatures.length - 1
+                      ? "relative -mx-6 flex min-h-0 w-[calc(100%+3rem)] flex-1 items-center justify-center md:mx-auto md:w-full md:max-w-[480px] lg:-mx-10 lg:w-[calc(100%+5rem)] lg:max-w-none"
+                      : "relative -mx-6 flex min-h-0 w-[calc(100%+3rem)] flex-1 items-center justify-center md:-mx-10 md:w-[calc(100%+5rem)]"
+                  }
+                >
                   <canvas
                     class="h-full w-full"
                     data-lottie={f.lottie}
