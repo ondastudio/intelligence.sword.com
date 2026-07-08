@@ -1,18 +1,20 @@
 ---
 /**
  * SolutionsHandoffMobile — the mobile + tablet ( < lg ) "Problem → Solution" beat,
- * as one pinned panel (Figma 9298:7482):
+ * as ONE continuous panel:
  *
- *   1. The panel opens on the Problem eyebrow + heading + text.
- *   2. Scrolling crossfades that (fade + blur, panel warming grey → purple)
- *      into the Solution eyebrow + heading + text, held in the same spot.
- *   3. Still pinned, the Solution content then scrolls up inside the panel to
- *      reveal the stat cards stacked below the header — each card's info "i"
- *      reveals its source citation.
+ *   1. The panel's hero opens on the Problem eyebrow + heading + text.
+ *   2. Scrolling crossfades that (fade + blur, hero warming grey → purple) into
+ *      the Solution eyebrow + heading + text, held in the same spot. The hero is
+ *      pinned for this beat (the praised crossfade).
+ *   3. Once the Solution has arrived the pin RELEASES: the SAME panel keeps going
+ *      past the viewport and the stat cards flow beneath the header in normal page
+ *      scroll — no pin — each card morphing from its Problem stat (with source "i")
+ *      into the matching Solution outcome as it scrolls into view.
  *
- * One panel, one section. Gated on JS + no-reduced-motion + mobile width;
- * without it the panel is normal flow (problem block, then the solution header
- * and cards), all legible. Content comes from src/data/solutions.json.
+ * Gated on JS + no-reduced-motion + mobile/tablet width; without it everything is
+ * normal flow (solution header, then cards), all legible. Content comes from
+ * src/data/solutions.json.
  */
 import Eyebrow from "../ui/Eyebrow.astro";
 import ArrowCircle from "../ui/ArrowCircle.astro";
@@ -33,36 +35,35 @@ const metrics = problem.cards.map((p, i) => ({
 ---
 
 <section data-handoff-mobile class="handoff-mobile bg-surface px-5 py-[120px]">
-  <div class="hm-sticky">
-    <div data-hm-panel class="hm-panel">
-      {/* Background warms grey → purple via --hm-purple */}
-      <div class="hm-purple-layer" aria-hidden="true"></div>
-      <img
-        data-hm-bloom="problem"
-        src="/solutions/problem-bloom.svg"
-        alt=""
-        aria-hidden="true"
-        class="hm-bloom hm-bloom--problem"
-      />
-      <img
-        data-hm-bloom="solution"
-        src="/solutions/solution-bloom.svg"
-        alt=""
-        aria-hidden="true"
-        class="hm-bloom hm-bloom--solution"
-      />
+  <div data-hm-panel class="hm-panel">
+    {/* ---- Hero: Problem → Solution header crossfade (pinned, then releases) --- */}
+    <div class="hm-hero">
+      <div class="hm-hero-sticky">
+        <img
+          data-hm-bloom="problem"
+          src="/solutions/problem-bloom.svg"
+          alt=""
+          aria-hidden="true"
+          class="hm-bloom hm-bloom--problem"
+        />
+        <img
+          data-hm-bloom="solution"
+          src="/solutions/solution-bloom.svg"
+          alt=""
+          aria-hidden="true"
+          class="hm-bloom hm-bloom--solution"
+        />
 
-      {/* Problem — centred, crossfades out */}
-      <div data-hm-problem class="hm-problem">
-        <Eyebrow>{problem.eyebrow}</Eyebrow>
-        <h2 class="font-serif text-h6 font-normal text-black">
-          {problem.heading}
-        </h2>
-        <p class="max-w-[34ch] text-lg text-black">{problem.subheading}</p>
-      </div>
+        {/* Problem — centred, crossfades out */}
+        <div data-hm-problem class="hm-problem">
+          <Eyebrow>{problem.eyebrow}</Eyebrow>
+          <h2 class="font-serif text-h6 font-normal text-black">
+            {problem.heading}
+          </h2>
+          <p class="max-w-[34ch] text-lg text-black">{problem.subheading}</p>
+        </div>
 
-      {/* Solution — header + cards; scrolls up inside the panel */}
-      <div data-hm-track class="hm-track">
+        {/* Solution header — crossfades in, held in the same spot */}
         <div data-hm-shead class="hm-shead">
           <Eyebrow>{solution.eyebrow}</Eyebrow>
           <h2 class="font-serif text-h6 font-normal text-black">
@@ -72,139 +73,148 @@ const metrics = problem.cards.map((p, i) => ({
           </h2>
           <p class="max-w-[34ch] text-lg text-black">{solution.subheading}</p>
         </div>
+      </div>
+    </div>
 
-        <div data-hm-cards class="hm-cards">
-          {
-            metrics.map((m) => (
-              <div data-hm-card data-open="false" class="hm-card group flex flex-col">
-                <div class="hm-card-main">
-                  {/* Fills crossfade: grey (before) → white + gradient (after) */}
-                  <div class="hm-fill hm-fill--before" aria-hidden="true" />
-                  <div class="hm-fill hm-fill--after" aria-hidden="true" />
+    {/* ---- Cards — flow within the SAME panel beneath the header; no pin ------- */}
+    <div data-hm-cards class="hm-cards">
+      {
+        metrics.map((m) => (
+          <div data-hm-card data-open="false" class="hm-card group flex flex-col">
+            <div class="hm-card-main">
+              {/* Fills crossfade: grey (before) → white + gradient (after) */}
+              <div class="hm-fill hm-fill--before" aria-hidden="true" />
+              <div class="hm-fill hm-fill--after" aria-hidden="true" />
 
-                  {/* Reached-state link (Solution outcome → customer story) */}
-                  <a
-                    class="hm-card-link"
-                    href={m.after.href}
-                    aria-label={m.after.label}
-                  />
+              {/* Reached-state link (Solution outcome → customer story) */}
+              <a
+                class="hm-card-link"
+                href={m.after.href}
+                aria-label={m.after.label}
+              />
 
-                  <div class="hm-card-body">
-                    {/* Top affordance: info "i" (before) ↔ arrow (after) */}
-                    <div class="hm-top">
-                      {m.before.detail ? (
-                        <span class="hm-info">
-                          <ArrowCircle
-                            variant="dotted"
-                            glyph="info"
-                            label="Show the source for this figure"
-                            data-hm-toggle
-                            aria-expanded="false"
-                            class="text-black"
-                          />
-                        </span>
-                      ) : (
-                        <span class="hm-info" aria-hidden="true" />
-                      )}
-                      <span class="hm-arrow" aria-hidden="true">
-                        <ArrowCircle variant="dotted" glyph="arrow" decorative />
-                      </span>
-                    </div>
-
-                    {/* Value — before ↔ after in the same slot */}
-                    <div class="hm-swap hm-value font-serif text-h4 font-normal">
-                      <span class="hm-before text-gray-400">{m.before.value}</span>
-                      <span class="hm-after text-black">{m.after.value}</span>
-                    </div>
-
-                    {/* Label — before ↔ after in the same slot */}
-                    <div class="hm-swap hm-label text-sm font-semibold uppercase">
-                      <span class="hm-before max-w-[220px] text-gray-400">
-                        {m.before.label}
-                      </span>
-                      <span class="hm-after max-w-[220px] text-ink">
-                        {m.after.label}
-                      </span>
-                    </div>
-                  </div>
+              <div class="hm-card-body">
+                {/* Top affordance: info "i" (before) ↔ arrow (after) */}
+                <div class="hm-top">
+                  {m.before.detail ? (
+                    <span class="hm-info">
+                      <ArrowCircle
+                        variant="dotted"
+                        glyph="info"
+                        label="Show the source for this figure"
+                        data-hm-toggle
+                        aria-expanded="false"
+                        class="text-black"
+                      />
+                    </span>
+                  ) : (
+                    <span class="hm-info" aria-hidden="true" />
+                  )}
+                  <span class="hm-arrow" aria-hidden="true">
+                    <ArrowCircle variant="dotted" glyph="arrow" decorative />
+                  </span>
                 </div>
 
-                {m.before.detail && (
-                  <div class="hm-source">
-                    <div
-                      class={`hm-source-inner flex gap-2.5 rounded-[40px] bg-white px-8 py-10 text-left ${
-                        m.before.detail.label.length <= 18
-                          ? "items-center"
-                          : "items-start"
-                      }`}
-                    >
-                      <span
-                        class={`grid size-6 shrink-0 place-items-center text-black ${
-                          m.before.detail.label.length <= 18 ? "" : "mt-px"
-                        }`}
-                        aria-hidden="true"
-                      >
-                        <svg viewBox="0 0 24 24" class="size-full" fill="none">
-                          <circle
-                            cx="12"
-                            cy="12"
-                            r="11.25"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                          />
-                          <path
-                            d="M12 16.5V11.5"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M12 8.01V8"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </span>
-                      <a
-                        href={m.before.detail.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-sm font-semibold uppercase text-black"
-                      >
-                        {m.before.detail.label}
-                      </a>
-                    </div>
-                  </div>
-                )}
+                {/* Value — before ↔ after in the same slot */}
+                <div class="hm-swap hm-value font-serif text-h4 font-normal">
+                  <span class="hm-before text-gray-400">{m.before.value}</span>
+                  <span class="hm-after text-black">{m.after.value}</span>
+                </div>
+
+                {/* Label — before ↔ after in the same slot */}
+                <div class="hm-swap hm-label text-sm font-semibold uppercase">
+                  <span class="hm-before max-w-[220px] text-gray-400">
+                    {m.before.label}
+                  </span>
+                  <span class="hm-after max-w-[220px] text-ink">
+                    {m.after.label}
+                  </span>
+                </div>
               </div>
-            ))
-          }
-        </div>
-      </div>
+            </div>
+
+            {m.before.detail && (
+              <div class="hm-source">
+                <div
+                  class={`hm-source-inner flex gap-2.5 rounded-[40px] bg-white px-8 py-10 text-left ${
+                    m.before.detail.label.length <= 18
+                      ? "items-center"
+                      : "items-start"
+                  }`}
+                >
+                  <span
+                    class={`grid size-6 shrink-0 place-items-center text-black ${
+                      m.before.detail.label.length <= 18 ? "" : "mt-px"
+                    }`}
+                    aria-hidden="true"
+                  >
+                    <svg viewBox="0 0 24 24" class="size-full" fill="none">
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="11.25"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M12 16.5V11.5"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M12 8.01V8"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  <a
+                    href={m.before.detail.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-sm font-semibold uppercase text-black"
+                  >
+                    {m.before.detail.label}
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        ))
+      }
     </div>
   </div>
 </section>
 
 <style>
-  /* ---- Base = no-JS / reduced-motion / desktop: one normal-flow panel ------ */
+  /* ---- Base = no-JS / reduced-motion: one normal-flow panel, all legible ---- */
   .hm-panel {
     position: relative;
-    overflow: hidden;
     max-width: 460px;
     margin-inline: auto;
     border-radius: 40px;
     background-color: var(--color-purple-tint);
-    padding: 80px 32px;
   }
-  .hm-purple-layer {
-    position: absolute;
-    inset: 0;
-    background-color: var(--color-purple-tint);
-    opacity: 0;
+  .hm-hero {
+    position: relative;
+  }
+  /* The hero clips its own blooms to the rounded top; its square bottom lets the
+     panel's purple continue seamlessly into the cards below (one panel). */
+  .hm-hero-sticky {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 80px 32px 32px;
+    border-radius: 40px 40px 0 0;
+    overflow: hidden;
   }
   .hm-bloom {
     position: absolute;
@@ -226,14 +236,9 @@ const metrics = problem.cards.map((p, i) => ({
     gap: 20px;
     text-align: center;
   }
-  .hm-track {
+  .hm-shead {
     position: relative;
     z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 64px;
-  }
-  .hm-shead {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -244,6 +249,7 @@ const metrics = problem.cards.map((p, i) => ({
     display: flex;
     flex-direction: column;
     gap: 16px;
+    padding: 0 32px 40px;
   }
 
   /* Metric card — morphs from the Problem stat (before) to the Solution
@@ -388,29 +394,30 @@ const metrics = problem.cards.map((p, i) => ({
     }
   }
 
-  /* ---- Enhanced = JS + motion + mobile/tablet: pin, crossfade, scroll cards up ---- */
+  /* ---- Enhanced = JS + motion + mobile/tablet ------------------------------- */
   @media (prefers-reduced-motion: no-preference) and (max-width: 1023px) {
-    :global(html.js) .handoff-mobile {
-      height: calc(100svh + 280vh);
-      padding-block: 0;
+    /* The hero is a bounded scroll track: its sticky child pins just long enough
+       for the Problem → Solution crossfade, then RELEASES so the cards below flow
+       with the page. No `overflow` on .hm-panel / .hm-hero, so sticky resolves
+       against the viewport (not a clipped ancestor). */
+    :global(html.js) .hm-hero {
+      height: calc(100svh + 80vh);
     }
-    :global(html.js) .hm-sticky {
+    :global(html.js) .hm-hero-sticky {
       position: sticky;
       top: 0;
-      display: flex;
-      align-items: center;
-      min-height: 100svh;
-      padding-block: 16px;
-    }
-    :global(html.js) .hm-panel {
-      width: 100%;
-      max-width: 460px;
-      height: 84svh;
-      padding: 0;
+      height: 100svh;
+      padding: 40px 32px;
+      /* Warms grey → purple through the crossfade (--hm-purple, set by JS). Its
+         rounded top shows the card edge while pinned; the purple carries on into
+         the cards once it scrolls away. The Problem "from" colour is an OPAQUE
+         grey (--color-ink-wash 5% slate composited over --color-surface, i.e.
+         #f0f0f1 — same as the desktop Problem panel) so it reads grey rather than
+         letting the panel's purple-tint show through a translucent wash. */
       background-color: color-mix(
         in srgb,
         var(--color-purple-tint) calc(var(--hm-purple, 0) * 100%),
-        var(--color-ink-wash)
+        #f0f0f1
       );
     }
     :global(html.js) .hm-bloom--problem {
@@ -419,40 +426,48 @@ const metrics = problem.cards.map((p, i) => ({
     :global(html.js) .hm-bloom--solution {
       opacity: var(--hm-purple, 0);
     }
-    /* Problem is a centred overlay that fades out. */
-    :global(html.js) .hm-problem {
-      display: flex;
+    /* Problem + Solution header share the centred slot and crossfade in place. */
+    :global(html.js) .hm-problem,
+    :global(html.js) .hm-shead {
       position: absolute;
       inset: 0;
       z-index: 2;
+      display: flex;
       justify-content: center;
       padding: 40px 32px;
+    }
+    :global(html.js) .hm-problem {
       pointer-events: none;
     }
-    /* Solution content is a track pinned to the panel top, translated by JS. */
-    :global(html.js) .hm-track {
-      position: absolute;
-      inset-inline: 0;
-      top: 0;
-      /* Extra bottom room so the last card can scroll up past the focus line
-         (otherwise it rests at the panel base and never morphs). */
-      padding: 40px 32px 80px;
-      gap: 40px;
-      will-change: transform;
-    }
     :global(html.js) .hm-shead {
-      opacity: 0;
+      opacity: 0; /* fades in as the crossfade resolves */
+    }
+    /* Pull the cards up under the (centred) hero so they follow the header
+       closely once it releases, instead of after the hero's empty lower half.
+       The hero-sticky's opaque bg keeps them hidden until the pin lets go. */
+    :global(html.js) .hm-cards {
+      margin-top: -24vh;
     }
   }
 
-  /* Tablet ( md–lg ): the card widens to sit 30px from each screen edge, rather
+  /* Phones: pin the header→cards gap to exactly 64px. The header is centred in
+     the 100svh hero, so its released bottom sits ~50svh above the hero end; the
+     `-50svh` term cancels that, leaving a fixed 64px + half-header offset that is
+     independent of viewport height. (Tablet keeps the -24vh above — its wider
+     header wraps shorter, and that spacing already reads right.) */
+  @media (prefers-reduced-motion: no-preference) and (max-width: 767px) {
+    :global(html.js) .hm-cards {
+      margin-top: calc(269px - 50svh);
+    }
+  }
+
+  /* Tablet ( md–lg ): the panel widens to sit 30px from each screen edge, rather
      than keeping the 460px cap it uses on phones. */
   @media (min-width: 768px) and (max-width: 1023px) {
     .handoff-mobile {
       padding-inline: 30px;
     }
-    .hm-panel,
-    :global(html.js) .hm-panel {
+    .hm-panel {
       max-width: none;
     }
   }
@@ -467,14 +482,13 @@ const metrics = problem.cards.map((p, i) => ({
       ).matches;
 
     const panel = section.querySelector<HTMLElement>("[data-hm-panel]");
+    const hero = section.querySelector<HTMLElement>(".hm-hero");
     const problem = section.querySelector<HTMLElement>("[data-hm-problem]");
-    const track = section.querySelector<HTMLElement>("[data-hm-track]");
     const shead = section.querySelector<HTMLElement>("[data-hm-shead]");
-    const cards = section.querySelector<HTMLElement>("[data-hm-cards]");
     const cardEls = Array.from(
       section.querySelectorAll<HTMLElement>("[data-hm-card]"),
     );
-    if (!panel || !problem || !track || !shead || !cards) return;
+    if (!panel || !hero || !problem || !shead) return;
 
     const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -487,14 +501,11 @@ const metrics = problem.cards.map((p, i) => ({
         l.style.opacity = "";
         l.style.filter = "";
       });
-      cards.style.opacity = "";
-      cards.style.pointerEvents = "";
+      panel.style.removeProperty("--hm-purple");
       cardEls.forEach((c) => {
         c.removeAttribute("data-reached");
         delete c.dataset.hmReached;
       });
-      track.style.transform = "";
-      panel.style.removeProperty("--hm-purple");
     };
 
     const render = () => {
@@ -503,49 +514,32 @@ const metrics = problem.cards.map((p, i) => ({
         clear();
         return;
       }
-      const scrub = section.offsetHeight - window.innerHeight;
-      const p =
-        scrub > 0 ? clamp01(-section.getBoundingClientRect().top / scrub) : 0;
 
-      // 1. Problem → Solution header crossfade (fade + blur, panel warming).
-      const out = easeOutCubic(range(p, 0.04, 0.24));
+      // Crossfade progress over the pinned hero (how far it has scrolled past the
+      // top, normalised to its pin distance).
+      const pin = hero.offsetHeight - window.innerHeight;
+      const top = hero.getBoundingClientRect().top;
+      const cp = pin > 0 ? clamp01(-top / pin) : top <= 0 ? 1 : 0;
+
+      // Problem fades + blurs away; Solution header resolves out of a blur.
+      const out = easeOutCubic(range(cp, 0.05, 0.5));
       problem.style.opacity = String(1 - out);
       problem.style.filter = `blur(${out * BLUR}px)`;
 
-      const headIn = easeOutCubic(range(p, 0.14, 0.42));
+      const headIn = easeOutCubic(range(cp, 0.25, 0.8));
       shead.style.opacity = String(headIn);
       shead.style.filter = `blur(${(1 - headIn) * 8}px)`;
 
-      panel.style.setProperty("--hm-purple", String(range(p, 0.1, 0.5)));
+      // Hero warms grey → purple through the crossfade.
+      panel.style.setProperty("--hm-purple", String(range(cp, 0.1, 0.6)));
 
-      // Cards stay hidden until the crossfade to Solution is done — the Problem
-      // overlay is transparent, so an ungated card would show through behind it.
-      const reveal = range(p, 0.24, 0.34);
-      cards.style.opacity = String(reveal);
-      cards.style.pointerEvents = reveal > 0.5 ? "auto" : "none";
-
-      // 2. Scroll the Solution track up inside the panel to reveal the cards.
-      const panelH = panel.clientHeight;
-      const headH = shead.offsetHeight;
-      const trackH = track.scrollHeight;
-      const startY = (panelH - headH) / 2 - 40; // header centred (minus top pad)
-      const endY = Math.min(startY, panelH - trackH); // last card resting at base
-      const sp = range(p, 0.28, 1);
-      track.style.transform = `translate3d(0, ${startY + (endY - startY) * sp}px, 0)`;
-
-      // 3. Each card morphs before → after once it's scrolled up past the panel
-      //    focus line — the number swaps in the same slot.
-      const panelRect = panel.getBoundingClientRect();
-      const line = panelRect.top + panelH * 0.56;
-      const last = cardEls.length - 1;
-      cardEls.forEach((card, i) => {
+      // Cards morph before → after as their centre crosses the viewport focus
+      // line — driven by normal page scroll now (the cards are unpinned), so the
+      // last card reaches it just like the rest.
+      const line = window.innerHeight * 0.6;
+      cardEls.forEach((card) => {
         const r = card.getBoundingClientRect();
-        // Cards morph as their centre crosses the focus line. The last card
-        // rests near the panel base (80px bottom) and can't reach that line, so
-        // it morphs once it has fully settled into view instead.
-        const reached =
-          r.top + r.height / 2 < line ||
-          (i === last && r.bottom < panelRect.bottom - 24);
+        const reached = r.top + r.height / 2 < line;
         const was = card.dataset.hmReached === "1";
         if (reached && !was) {
           card.dataset.hmReached = "1";
@@ -575,10 +569,7 @@ const metrics = problem.cards.map((p, i) => ({
       requestAnimationFrame(render);
     };
 
-    // Info "i" toggles a card's source panel. The track grows/shrinks as the
-    // source expands; a ResizeObserver re-runs render() through the whole
-    // animation so endY (and the scroll) track the new height — otherwise the
-    // last card's freshly opened source would be clipped at the panel bottom.
+    // Info "i" toggles a card's source panel. Only one open at a time.
     const hmCards = Array.from(
       section.querySelectorAll<HTMLElement>("[data-hm-card]"),
     );
@@ -588,7 +579,6 @@ const metrics = problem.cards.map((p, i) => ({
           const card = btn.closest<HTMLElement>("[data-hm-card]");
           if (!card) return;
           const open = card.getAttribute("data-open") === "true";
-          // Only one source open at a time — opening one closes the others.
           hmCards.forEach((other) => {
             if (other !== card) {
               other.setAttribute("data-open", "false");
@@ -604,7 +594,6 @@ const metrics = problem.cards.map((p, i) => ({
     );
 
     render();
-    new ResizeObserver(onScroll).observe(track);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
   }
