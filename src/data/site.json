@@ -1,7 +1,6 @@
 {
   "logo": { "bold": "sword", "regular": "Intelligence" },
   "nav": [
-    { "label": "Solutions", "href": "/solutions/surgery", "caret": true },
     { "label": "Customers", "href": "/customers" },
     { "label": "Resources", "href": "#", "hidden": true },
     { "label": "About", "href": "/about" }
@@ -9,48 +8,6 @@
   "cta": { "label": "Book a meeting", "href": "/book" },
   "mobileMenu": {
     "items": [
-      {
-        "label": "Solutions",
-        "href": "/solutions/surgery",
-        "groups": [
-          {
-            "label": "Triage",
-            "items": [
-              {
-                "icon": "/solutions/menu/clinical-triage-line.svg",
-                "title": "Clinical Triage Line",
-                "subtitle": "Scale access, reduce ED visits"
-              }
-            ]
-          },
-          {
-            "label": "Care Orchestration",
-            "items": [
-              {
-                "icon": "/solutions/menu/no-show.svg",
-                "title": "No-Show & Waiting List Reduction",
-                "subtitle": "Turn cancellations into revenue"
-              },
-              {
-                "icon": "/solutions/menu/preventive-campaigns.svg",
-                "title": "Preventive Population Campaigns",
-                "subtitle": "Scale prevention without more staff"
-              },
-              {
-                "icon": "/solutions/menu/surgery-prehab.svg",
-                "title": "Surgery Prehab and Rehab",
-                "subtitle": "Improve surgical outcomes",
-                "href": "/solutions/surgery"
-              },
-              {
-                "icon": "/solutions/menu/readmission-prevention.svg",
-                "title": "Readmission Prevention",
-                "subtitle": "Reduce total cost of care"
-              }
-            ]
-          }
-        ]
-      },
       { "label": "Customers", "href": "/customers" },
       { "label": "About", "href": "/about" },
       { "label": "Resources", "href": "#", "hidden": true }
