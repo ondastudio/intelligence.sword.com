@@ -76,9 +76,9 @@ const { src, poster, alt, spotlight = false, class: className = "" } = Astro.pro
   @media (max-width: 639px) {
     .video-scroll {
       /* ~120px below the logos (matches the gap in Figma 8797:50783→50811),
-         5px gutters, and a tight 12px below the frame — the design keeps the
+         5px gutters, and a tight band below the frame — the design keeps the
          video frame snug (no big band beneath it before the next section). */
-      padding: 6px;
+      padding: 5px;
     }
   }
 
@@ -142,9 +142,10 @@ const { src, poster, alt, spotlight = false, class: className = "" } = Astro.pro
      landscape product video. Covers up to 1279px so ~1024px tablets stay 16:9. */
   @media (prefers-reduced-motion: no-preference) and (max-width: 1279px) {
     :global(html.js) .video-scroll {
-      /* No horizontal padding so width:100% == 100vw → the frame reaches the
-         screen edges at scale 1; the start scale (0.82) provides the inset. */
-      padding: 40px 0;
+      /* 5px horizontal gutters so the frame peaks at a 5px margin — never fully
+         edge-to-edge — at scale 1; the start scale (0.7) provides the larger
+         entry inset that eases down to those 5px as the frame centres. */
+      padding: 40px 5px;
     }
     :global(html.js) .video-frame {
       width: 100%;
