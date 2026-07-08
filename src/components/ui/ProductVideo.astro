@@ -10,8 +10,8 @@
  * motion it falls back to the design's contained, rounded 16:9 product frame.
  *
  * Generic and content-free: pass the `MediaFrame` source (`src`/`poster`/`alt`).
- * Shared by the home `Intro` and the Solutions page so there's a single copy of
- * the scrubber script (querying every `[data-video-scroll]` once).
+ * Used by the home `Intro`; the scrubber script queries every
+ * `[data-video-scroll]` once so any number of instances share one copy.
  *
  * `spotlight` swaps the desktop (xl+) treatment from the full-bleed fullscreen
  * takeover to a Ramp-style "stage": the section becomes a tall scroll track with
