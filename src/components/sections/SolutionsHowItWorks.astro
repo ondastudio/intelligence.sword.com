@@ -273,14 +273,15 @@ const channelTile: Record<string, string> = {
                   loading="lazy"
                   class="aspect-[358/364] w-full rounded-card object-cover md:hidden"
                 />
-                {/* Tablet: the same image scaled to full width inside a card
-                    with even 30px margins; the card height follows the image. */}
-                <div class="hidden w-full rounded-card bg-white p-[30px] md:block lg:hidden">
+                {/* Tablet: the same image full width inside a card with even
+                    30px margins; slightly shorter than the image so the top/
+                    bottom are trimmed a touch (object-cover). */}
+                <div class="hidden h-[650px] w-full rounded-card bg-white p-[30px] md:block lg:hidden">
                   <img
                     src={hiwMedia[step.media]}
                     alt=""
                     loading="lazy"
-                    class="w-full"
+                    class="h-full w-full object-cover"
                   />
                 </div>
                 {/* Desktop: the built, interactive media card. */}
