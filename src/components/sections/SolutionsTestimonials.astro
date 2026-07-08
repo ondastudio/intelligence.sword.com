@@ -87,8 +87,15 @@ const { eyebrow, heading, items } = solutions.testimonials;
             >
               <span
                 data-reveal="line"
-                class="h-px w-full origin-left bg-black/24 transition-colors group-aria-[selected=true]:bg-brand"
-              />
+                class="relative h-px w-full origin-left overflow-hidden bg-black/24"
+              >
+                {/* Progress fill — grows left→right over the active
+                    testimonial's dwell time, then advances to the next tab. */}
+                <span
+                  data-tt-fill
+                  class="tt-fill absolute inset-0 bg-brand"
+                />
+              </span>
               <img
                 src={item.logo.src}
                 alt={item.logo.alt}
@@ -223,6 +230,15 @@ const { eyebrow, heading, items } = solutions.testimonials;
     grid-area: 1 / 1;
     display: flex;
   }
+
+  /* Tab progress fill. The resting (empty) state is set via the `transform`
+     property — NOT Tailwind's `scale-x-*` utilities, which in Tailwind 4 write
+     the independent `scale` property; that would multiply with (and permanently
+     zero) the `transform: scaleX()` the JS animation drives. */
+  .tt-fill {
+    transform-origin: left center;
+    transform: scaleX(0);
+  }
   .tt-panel {
     opacity: 0;
     visibility: hidden;
@@ -291,11 +307,37 @@ const { eyebrow, heading, items } = solutions.testimonials;
   const panels = Array.from(
     document.querySelectorAll<HTMLElement>("[data-tt-panel]"),
   );
+  const fills = tabs.map((tab) =>
+    tab.querySelector<HTMLElement>("[data-tt-fill]"),
+  );
+
+  // How long each testimonial stays up before the fill completes and the next
+  // one is shown. Auto-advance is disabled under reduced-motion.
+  const DWELL = 7000;
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
 
   let current = 0;
+  let fillAnim: Animation | null = null;
+
+  // Run the active tab's progress fill; when it finishes, advance to the next
+  // testimonial (wrapping back to the first), so the tabs cycle on their own.
+  function playFill(index: number) {
+    fillAnim?.cancel();
+    fills.forEach((fill, i) => {
+      if (fill && i !== index) fill.style.transform = "scaleX(0)";
+    });
+    const fill = fills[index];
+    if (!fill || reduceMotion) return;
+    fillAnim = fill.animate(
+      [{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }],
+      { duration: DWELL, easing: "linear", fill: "forwards" },
+    );
+    fillAnim.onfinish = () => activate((index + 1) % panels.length);
+  }
 
   function activate(index: number) {
-    if (index === current) return;
     current = index;
     tabs.forEach((tab) =>
       tab.setAttribute(
@@ -313,11 +355,35 @@ const { eyebrow, heading, items } = solutions.testimonials;
       panel.classList.toggle("is-active", active);
       panel.setAttribute("aria-hidden", active ? "false" : "true");
     });
+    playFill(index);
   }
 
   tabs.forEach((tab) =>
     tab.addEventListener("click", () => activate(Number(tab.dataset.ttTab))),
   );
+
+  // Only start the auto-cycle once the section scrolls into view, so the first
+  // testimonial is always seen filling from empty (otherwise the whole cycle
+  // would run off-screen before the reader ever reaches it).
+  const section = document.querySelector<HTMLElement>(".testimonials");
+  if (section) {
+    let started = false;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && !started) {
+            started = true;
+            playFill(0);
+            io.disconnect();
+          }
+        }
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(section);
+  } else {
+    playFill(0);
+  }
 </script>
 
 <script>
