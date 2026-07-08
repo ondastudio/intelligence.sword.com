@@ -192,6 +192,11 @@
               "avatar": "/solutions/patients/charlie.png"
             }
           ],
+          "waitingAvatars": [
+            "/solutions/patients/waiting-1.png",
+            "/solutions/patients/waiting-2.png",
+            "/solutions/patients/waiting-3.png"
+          ],
           "waitingCount": 80
         }
       },

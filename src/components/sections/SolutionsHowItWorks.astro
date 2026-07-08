@@ -348,10 +348,10 @@ const channelTile: Record<string, string> = {
                     {/* Waiting-count pill */}
                     <div class="flex items-center gap-3 rounded-full border border-ink/20 bg-white/50 px-2 py-1.5">
                       <span class="flex -space-x-2">
-                        {step.enrollment?.patients.slice(0, 3).map((patient) => (
+                        {step.enrollment?.waitingAvatars.map((avatar) => (
                           <span class="size-7 overflow-hidden rounded-full ring-2 ring-lavender">
                             <img
-                              src={patient.avatar}
+                              src={avatar}
                               alt=""
                               loading="lazy"
                               class="size-full object-cover"
