@@ -365,7 +365,23 @@ const channelTile: Record<string, string> = {
                         {/* Left rail — dotted icon disc; the first card also
                             drops a connector line to the next stage. */}
                         <div class="flex flex-col items-center self-stretch">
-                          <span class="grid size-11 shrink-0 place-items-center rounded-full border border-dotted border-ink/25 text-ink">
+                          <span class="relative grid size-11 shrink-0 place-items-center rounded-full text-ink">
+                            <svg
+                              class="pointer-events-none absolute inset-0 size-full text-ink"
+                              viewBox="0 0 44 44"
+                              fill="none"
+                              aria-hidden="true"
+                            >
+                              <circle
+                                cx="22"
+                                cy="22"
+                                r="21.25"
+                                stroke="currentColor"
+                                stroke-width="1.25"
+                                stroke-linecap="round"
+                                stroke-dasharray="0 5.1"
+                              />
+                            </svg>
                             <svg
                               viewBox="0 0 24 24"
                               fill="none"
@@ -401,12 +417,28 @@ const channelTile: Record<string, string> = {
                                 <div class="flex items-center gap-3">
                                   <span
                                     class:list={[
-                                      "grid size-8 shrink-0 place-items-center rounded-full text-ink",
-                                      ch.highlight
-                                        ? "bg-accent"
-                                        : "border border-dotted border-ink/25",
+                                      "relative grid size-8 shrink-0 place-items-center rounded-full text-ink",
+                                      ch.highlight && "bg-accent",
                                     ]}
                                   >
+                                    {!ch.highlight && (
+                                      <svg
+                                        class="pointer-events-none absolute inset-0 size-full text-ink"
+                                        viewBox="0 0 44 44"
+                                        fill="none"
+                                        aria-hidden="true"
+                                      >
+                                        <circle
+                                          cx="22"
+                                          cy="22"
+                                          r="21.25"
+                                          stroke="currentColor"
+                                          stroke-width="1.25"
+                                          stroke-linecap="round"
+                                          stroke-dasharray="0 5.1"
+                                        />
+                                      </svg>
+                                    )}
                                     <svg
                                       viewBox="0 0 24 24"
                                       fill="none"
@@ -497,7 +529,23 @@ const channelTile: Record<string, string> = {
                         {/* Left rail — dotted icon disc + (on the first card) a
                             connector line running down to the next step. */}
                         <div class="flex flex-col items-center self-stretch">
-                          <span class="grid size-11 shrink-0 place-items-center rounded-full border border-dotted border-ink/25 text-ink">
+                          <span class="relative grid size-11 shrink-0 place-items-center rounded-full text-ink">
+                            <svg
+                              class="pointer-events-none absolute inset-0 size-full text-ink"
+                              viewBox="0 0 44 44"
+                              fill="none"
+                              aria-hidden="true"
+                            >
+                              <circle
+                                cx="22"
+                                cy="22"
+                                r="21.25"
+                                stroke="currentColor"
+                                stroke-width="1.25"
+                                stroke-linecap="round"
+                                stroke-dasharray="0 5.1"
+                              />
+                            </svg>
                             <svg
                               viewBox="0 0 24 24"
                               fill="none"
