@@ -47,7 +47,7 @@ const { problem, solution } = solutions;
           <div
             class="relative z-10 mx-auto flex w-full max-w-[1376px] flex-col gap-10 px-6 py-12 md:gap-16 md:px-20 md:py-16"
           >
-            <div class="flex flex-col items-center gap-6 text-center md:gap-8">
+            <div data-handoff-title class="flex flex-col items-center gap-6 text-center md:gap-8">
               <Eyebrow>{problem.eyebrow}</Eyebrow>
               <h2
                 class="max-w-[1152px] font-serif text-h6 font-normal text-black"
@@ -145,7 +145,7 @@ const { problem, solution } = solutions;
           <div
             class="relative z-10 mx-auto flex w-full max-w-[1376px] flex-col gap-10 px-6 py-12 md:gap-16 md:px-20 md:py-16"
           >
-            <div class="flex flex-col items-center gap-6 text-center md:gap-8">
+            <div data-handoff-title class="flex flex-col items-center gap-6 text-center md:gap-8">
               <Eyebrow>{solution.eyebrow}</Eyebrow>
               <h2
                 class="max-w-[1152px] font-serif text-h6 font-normal text-black"
@@ -239,23 +239,36 @@ const { problem, solution } = solutions;
 
     const stateA = section.querySelector<HTMLElement>('[data-handoff-state="a"]');
     const stateB = section.querySelector<HTMLElement>('[data-handoff-state="b"]');
-    const cards = Array.from(
+    const problemTitle = stateA?.querySelector<HTMLElement>("[data-handoff-title]");
+    const solutionTitle = stateB?.querySelector<HTMLElement>("[data-handoff-title]");
+    const problemCards = Array.from(
+      section.querySelectorAll<HTMLElement>("[data-problem-card]"),
+    );
+    const solutionCards = Array.from(
       section.querySelectorAll<HTMLElement>("[data-solution-card]"),
     );
     if (!stateA || !stateB) return;
 
     // Timeline (named windows so the feel is easy to tune). Each pair is a
     // progress window [start, end] over the section's scrub distance.
-    const A_OUT: [number, number] = [0.08, 0.46]; // Problem fades + blurs away
-    const B_IN: [number, number] = [0.42, 0.8]; // Solution resolves out of blur
-    const CARDS_IN: [number, number] = [0.62, 1]; // outcome cards stagger up last
-    const BLUR = 12; // px — start blur for each incoming/outgoing panel
-    const RISE = 32; // px — distance each card travels up as it appears
-    const STAGGER = 0.12; // share of the CARDS_IN window offset per card
+    //   1. The Problem panel shows as before, then its background + title cross-
+    //      fade slowly into the Solution panel's (a plain opacity dissolve).
+    //   2. On top of that, each Problem card blurs away while its Solution
+    //      counterpart resolves out of a heavy blur — a focus pull, staggered
+    //      across the row so the cards "turn into" the Solution cards.
+    const XFADE: [number, number] = [0.1, 0.7]; // background dissolve (slow)
+    const TITLE_OUT: [number, number] = [0.12, 0.4]; // Problem title clears out first
+    const TITLE_IN: [number, number] = [0.46, 0.74]; // Solution title fades in after — no overlap
+    const CARDS: [number, number] = [0.18, 0.92]; // card morph span
+    const CARD_W = 0.42; // each card's own morph width (they overlap)
+    const BLUR = 24; // px — peak card focus-pull blur
+    const RISE = 20; // px — distance each Solution card drifts up as it resolves
 
     const track = (p: number, [a, b]: [number, number]) =>
       Math.min(1, Math.max(0, (p - a) / (b - a)));
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+    const easeInOut = (t: number) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
     const clearStyles = (el: HTMLElement) => {
       el.style.opacity = "";
@@ -274,7 +287,10 @@ const { problem, solution } = solutions;
       if (!enabled()) {
         clearStyles(stateA);
         clearStyles(stateB);
-        cards.forEach(clearStyles);
+        if (problemTitle) clearStyles(problemTitle);
+        if (solutionTitle) clearStyles(solutionTitle);
+        problemCards.forEach(clearStyles);
+        solutionCards.forEach(clearStyles);
         return;
       }
 
@@ -287,32 +303,52 @@ const { problem, solution } = solutions;
             )
           : 0;
 
-      // Problem recedes into a blur.
-      const aOut = easeOutCubic(track(p, A_OUT));
-      stateA.style.opacity = String(1 - aOut);
-      stateA.style.filter = `blur(${aOut * BLUR}px)`;
+      // Background: a slow, plain opacity dissolve from the Problem panel to the
+      // Solution panel — carries the panel background colour + bloom across.
+      const x = easeInOut(track(p, XFADE));
+      stateA.style.opacity = String(1 - x);
+      stateB.style.opacity = String(x);
 
-      // Solution resolves out of a blur (held centred via the CSS transform).
-      const bIn = easeOutCubic(track(p, B_IN));
-      stateB.style.opacity = String(bIn);
-      stateB.style.filter = `blur(${(1 - bIn) * BLUR}px)`;
+      // Titles hand off cleanly on top of that dissolve: the Problem title clears
+      // out before the Solution title fades in, so the two are never both legible
+      // at once (a tiny gap where neither shows reads as a clean cut).
+      if (problemTitle)
+        problemTitle.style.opacity = String(1 - easeInOut(track(p, TITLE_OUT)));
+      if (solutionTitle)
+        solutionTitle.style.opacity = String(easeInOut(track(p, TITLE_IN)));
+
+      // Once the panel has handed off to the Solution, collapse any Problem source
+      // panel left open — otherwise it's still expanded when you scroll back up.
+      if (x > 0.5) {
+        problemCards.forEach((card) => {
+          if (card.getAttribute("data-open") === "true") closeProblemCard(card);
+        });
+      }
+
+      // Cards morph with the focus pull: each Problem card blurs away while its
+      // Solution counterpart resolves out of a heavy blur, staggered across the
+      // row so the set turns into the Solution cards rather than snapping. Opacity
+      // rides the panel dissolve above; here we only drive the blur (and a small
+      // upward drift on the resolving Solution cards).
+      const n = Math.max(problemCards.length, solutionCards.length);
+      const step = n > 1 ? (CARDS[1] - CARDS[0] - CARD_W) / (n - 1) : 0;
+      const morph = (i: number) =>
+        easeOutCubic(track(p, [CARDS[0] + i * step, CARDS[0] + i * step + CARD_W]));
+      problemCards.forEach((card, i) => {
+        card.style.filter = `blur(${morph(i) * BLUR}px)`;
+      });
+      solutionCards.forEach((card, i) => {
+        const r = morph(i);
+        card.style.filter = `blur(${(1 - r) * BLUR}px)`;
+        card.style.transform = `translateY(${(1 - r) * RISE}px)`;
+      });
 
       // Both panels share one absolutely-positioned slot, so the hidden one would
       // still sit on top and swallow clicks (the Problem "i" source toggles would
       // never fire). Only the dominant panel takes pointer events — Problem stays
       // interactive (so sources can be opened) until it's more than half faded.
-      stateA.style.pointerEvents = 1 - aOut > 0.5 ? "auto" : "none";
-      stateB.style.pointerEvents = bIn > 0.5 ? "auto" : "none";
-
-      // Outcome cards rise + fade in, staggered, after the text has arrived.
-      cards.forEach((card, i) => {
-        const idx = Number(card.style.getPropertyValue("--card-index")) || i;
-        const [a, b] = CARDS_IN;
-        const start = a + idx * STAGGER * (b - a);
-        const c = easeOutCubic(track(p, [start, b]));
-        card.style.opacity = String(c);
-        card.style.transform = `translateY(${(1 - c) * RISE}px)`;
-      });
+      stateA.style.pointerEvents = 1 - x > 0.5 ? "auto" : "none";
+      stateB.style.pointerEvents = x > 0.5 ? "auto" : "none";
     };
 
     const onScroll = () => {
@@ -346,7 +382,7 @@ const { problem, solution } = solutions;
      start state here keeps the first paint flash-free before the rAF loop runs. */
   @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
     :global(html.js) .solutions-handoff {
-      height: calc(100svh + 130vh);
+      height: calc(100svh + 105vh);
       padding-block: 0;
     }
     :global(html.js) .handoff-stage {
@@ -375,14 +411,17 @@ const { problem, solution } = solutions;
     }
     :global(html.js) [data-handoff-state="b"] {
       opacity: 0;
-      filter: blur(12px);
       /* Starts hidden on top of Problem; the rAF loop hands pointer events to
          whichever panel is dominant. Until it runs, Solution must not eat the
          clicks meant for the Problem cards' "i" source toggles. */
       pointer-events: none;
     }
+    /* Solution cards pre-blurred to the start of their focus pull, so the first
+       paint matches the rAF loop's opening frame (no flash). Their opacity rides
+       the panel dissolve, so it's the hidden Solution panel that keeps them out
+       of sight until the crossfade begins. */
     :global(html.js) [data-solution-card] {
-      opacity: 0;
+      filter: blur(24px);
     }
   }
 </style>
