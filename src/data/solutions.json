@@ -30,6 +30,7 @@
     ]
   },
   "media": {
+    "visible": false,
     "src": "/intro/product.webm",
     "poster": "/intro/product.png",
     "alt": "Sword Intelligence AI Care Manager handling a patient call"

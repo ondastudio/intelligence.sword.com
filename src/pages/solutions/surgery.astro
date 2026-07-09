@@ -2,7 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import SolutionsHero from "../../components/sections/SolutionsHero.astro";
 import SolutionsLogos from "../../components/sections/SolutionsLogos.astro";
-// import SolutionsVideo from "../../components/sections/SolutionsVideo.astro"; // hidden for now
+import SolutionsVideo from "../../components/sections/SolutionsVideo.astro";
 import SolutionsHandoff from "../../components/sections/SolutionsHandoff.astro";
 import SolutionsHowItWorks from "../../components/sections/SolutionsHowItWorks.astro";
 import SolutionsCareManagers from "../../components/sections/SolutionsCareManagers.astro";
@@ -10,6 +10,7 @@ import SolutionsTestimonials from "../../components/sections/SolutionsTestimonia
 import SolutionsFaqs from "../../components/sections/SolutionsFaqs.astro";
 import Cta from "../../components/sections/Cta.astro";
 import Footer from "../../components/sections/Footer.astro";
+import solutions from "../../data/solutions.json";
 ---
 
 <Layout
@@ -23,7 +24,8 @@ import Footer from "../../components/sections/Footer.astro";
     <SolutionsHero />
     <SolutionsLogos />
     <SolutionsHandoff />
-    {/* SolutionsVideo hidden for now — see commented import above */}
+    {/* Toggle in src/data/solutions.json → media.visible; swap the video via media.src/poster */}
+    {solutions.media.visible && <SolutionsVideo />}
     <SolutionsHowItWorks />
     <SolutionsCareManagers />
     <SolutionsTestimonials />
