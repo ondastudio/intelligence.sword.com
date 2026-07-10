@@ -81,21 +81,25 @@
     "subheading": "They enroll every patient autonomously, coach them through the crucial weeks, and keep supporting them through recovery, while your surgical team focuses on the clinical procedures.",
     "cards": [
       {
+        "variant": "stat",
         "value": "57%",
         "label": "More patients ready for surgery",
         "href": "/customers/nhs-surgery-readiness"
       },
       {
+        "variant": "stat",
         "value": "72%",
         "label": "Reduction in surgical complications",
         "href": "/customers/nhs-surgical-complications"
       },
       {
+        "variant": "stat",
         "value": "83%",
         "label": "Reduction in post-op pulmonary complications",
         "href": "/customers/nhs-surgical-complications"
       },
       {
+        "variant": "stat",
         "value": "£405K",
         "label": "saved for one NHS Trust in 3 months",
         "href": "/customers/nhs-prehabilitation"

@@ -21,10 +21,22 @@
  */
 import Eyebrow from "../ui/Eyebrow.astro";
 import ArrowCircle from "../ui/ArrowCircle.astro";
+import OutcomeIconCard from "../ui/OutcomeIconCard.astro";
 import SolutionsHandoffMobile from "./SolutionsHandoffMobile.astro";
 import solutions from "../../data/solutions.json";
 
 const { problem, solution } = solutions;
+
+// Solution cards come in two CMS-selectable designs, mixable in one row:
+//   "stat" (default) — big number + label + dotted arrow linking out.
+//   "icon"           — a lavender icon disc + a line of copy (OutcomeIconCard).
+const solutionCards = solution.cards as Array<{
+  variant?: "stat" | "icon";
+  value?: string;
+  label: string;
+  href?: string;
+  icon?: string;
+}>;
 ---
 
 {/* Mobile + tablet ( < lg ): the pinned scroll reel. Desktop ( lg+ ): the crossfade. */}
@@ -162,31 +174,41 @@ const { problem, solution } = solutions;
 
             <div class="relative flex flex-col gap-4 md:flex-row md:items-stretch">
               {
-                solution.cards.map((card, i) => (
-                  <div
-                    data-solution-card
-                    style={`--card-index:${i}`}
-                    class="group relative flex flex-1 cursor-pointer flex-col items-center justify-between gap-8 overflow-hidden rounded-card bg-white bg-[image:var(--gradient-solution-card)] px-8 pb-10 pt-[88px] text-center"
-                  >
-                    <a
+                solutionCards.map((card, i) =>
+                  card.variant === "icon" ? (
+                    <OutcomeIconCard
+                      data-solution-card
+                      style={`--card-index:${i}`}
+                      icon={card.icon ?? ""}
+                      label={card.label}
                       href={card.href}
-                      class="absolute inset-0 z-10"
-                      aria-label={card.label}
                     />
-                    <ArrowCircle
-                      variant="dotted"
-                      glyph="arrow"
-                      decorative
-                      class="absolute right-6 top-6"
-                    />
-                    <p class="font-serif text-h3 font-normal text-black">
-                      {card.value}
-                    </p>
-                    <p class="max-w-[244px] text-sm font-semibold uppercase text-ink">
-                      {card.label}
-                    </p>
-                  </div>
-                ))
+                  ) : (
+                    <div
+                      data-solution-card
+                      style={`--card-index:${i}`}
+                      class="group relative flex flex-1 cursor-pointer flex-col items-center justify-between gap-8 overflow-hidden rounded-card bg-white bg-[image:var(--gradient-solution-card)] px-8 pb-10 pt-[88px] text-center"
+                    >
+                      <a
+                        href={card.href}
+                        class="absolute inset-0 z-10"
+                        aria-label={card.label}
+                      />
+                      <ArrowCircle
+                        variant="dotted"
+                        glyph="arrow"
+                        decorative
+                        class="absolute right-6 top-6"
+                      />
+                      <p class="font-serif text-h3 font-normal text-black">
+                        {card.value}
+                      </p>
+                      <p class="max-w-[244px] text-sm font-semibold uppercase text-ink">
+                        {card.label}
+                      </p>
+                    </div>
+                  ),
+                )
               }
             </div>
           </div>

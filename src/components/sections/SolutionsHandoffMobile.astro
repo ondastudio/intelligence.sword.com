@@ -19,19 +19,33 @@
 import Eyebrow from "../ui/Eyebrow.astro";
 import ArrowCircle from "../ui/ArrowCircle.astro";
 import solutions from "../../data/solutions.json";
+import { outcomeIcons } from "../ui/outcomeIcons";
 
 const { problem, solution } = solutions;
 
 // Each card starts on its Problem stat (before) and, when reached, morphs into
-// the matching Solution outcome (after) — number swapping in the same slot.
-const metrics = problem.cards.map((p, i) => ({
-  before: { value: p.value, label: p.label, detail: p.detail },
-  after: {
-    value: solution.cards[i].value,
-    label: solution.cards[i].label,
-    href: solution.cards[i].href,
-  },
-}));
+// the matching Solution outcome (after) — swapping in the same slot. The after
+// state is either a "stat" (number + label, links out) or an "icon" card (a
+// lavender icon disc + copy, no link) — the CMS picks per card, mixable.
+const metrics = problem.cards.map((p, i) => {
+  const s = solution.cards[i] as {
+    variant?: "stat" | "icon";
+    value?: string;
+    label: string;
+    href?: string;
+    icon?: string;
+  };
+  return {
+    before: { value: p.value, label: p.label, detail: p.detail },
+    after: {
+      variant: s.variant ?? "stat",
+      value: s.value,
+      label: s.label,
+      href: s.href,
+      icon: s.icon,
+    },
+  };
+});
 ---
 
 <section data-handoff-mobile class="handoff-mobile bg-surface px-5 py-[120px]">
@@ -86,15 +100,20 @@ const metrics = problem.cards.map((p, i) => ({
               <div class="hm-fill hm-fill--before" aria-hidden="true" />
               <div class="hm-fill hm-fill--after" aria-hidden="true" />
 
-              {/* Reached-state link (Solution outcome → customer story) */}
-              <a
-                class="hm-card-link"
-                href={m.after.href}
-                aria-label={m.after.label}
-              />
+              {/* Reached-state link (Solution outcome → customer story). Icon
+                  cards have no link, so it's only rendered for a stat href. */}
+              {m.after.href && (
+                <a
+                  class="hm-card-link"
+                  href={m.after.href}
+                  aria-label={m.after.label}
+                />
+              )}
 
               <div class="hm-card-body">
-                {/* Top affordance: info "i" (before) ↔ arrow (after) */}
+                {/* Top affordance: info "i" (before) crossfades to the arrow (a
+                    stat card's link cue) or, for an icon card, to its icon disc —
+                    which sits here, level with the stat cards' arrow. */}
                 <div class="hm-top">
                   {m.before.detail ? (
                     <span class="hm-info">
@@ -110,25 +129,54 @@ const metrics = problem.cards.map((p, i) => ({
                   ) : (
                     <span class="hm-info" aria-hidden="true" />
                   )}
-                  <span class="hm-arrow" aria-hidden="true">
-                    <ArrowCircle variant="dotted" glyph="arrow" decorative />
+                  {m.after.variant === "icon" ? (
+                    <span class="hm-icon-disc" aria-hidden="true">
+                      <span class="grid size-12 place-items-center rounded-full bg-purple-150 text-black">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="size-8"
+                          set:html={outcomeIcons[m.after.icon ?? ""] ?? ""}
+                        />
+                      </span>
+                    </span>
+                  ) : (
+                    <span class="hm-arrow" aria-hidden="true">
+                      <ArrowCircle variant="dotted" glyph="arrow" decorative />
+                    </span>
+                  )}
+                </div>
+
+                {/* Value — the stat number (before ↔ after). For an icon card the
+                    after face is empty: its disc lives in the top row above, so
+                    this slot just clears to spacing between disc and copy. */}
+                <div class="hm-swap hm-value font-serif text-h4 font-normal">
+                  <span class="hm-before text-gray-400">{m.before.value}</span>
+                  <span class="hm-after text-black">
+                    {m.after.variant === "icon" ? "" : m.after.value}
                   </span>
                 </div>
 
-                {/* Value — before ↔ after in the same slot */}
-                <div class="hm-swap hm-value font-serif text-h4 font-normal">
-                  <span class="hm-before text-gray-400">{m.before.value}</span>
-                  <span class="hm-after text-black">{m.after.value}</span>
-                </div>
-
-                {/* Label — before ↔ after in the same slot */}
+                {/* Label — before ↔ after in the same slot. Icon cards render
+                    their copy in the serif card style rather than the stat's
+                    uppercase micro-label. */}
                 <div class="hm-swap hm-label text-sm font-semibold uppercase">
                   <span class="hm-before max-w-[220px] text-gray-400">
                     {m.before.label}
                   </span>
-                  <span class="hm-after max-w-[220px] text-ink">
-                    {m.after.label}
-                  </span>
+                  {m.after.variant === "icon" ? (
+                    <span class="hm-after max-w-[260px] font-serif text-2xl font-normal normal-case text-black">
+                      {m.after.label}
+                    </span>
+                  ) : (
+                    <span class="hm-after max-w-[220px] text-ink">
+                      {m.after.label}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -326,6 +374,26 @@ const metrics = problem.cards.map((p, i) => ({
   }
   .hm-card[data-reached] .hm-arrow {
     opacity: 1;
+  }
+  /* Icon-card disc: sits in the top row (its top edge level with the arrow),
+     centered, and crossfades in with the rest of the after state. It's 48px in
+     the 40px row, so it overflows a touch into the gap below — intended. */
+  .hm-icon-disc {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  .hm-card[data-reached] .hm-icon-disc {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hm-icon-disc {
+      transition: none;
+    }
   }
   /* Value / label: before + after stacked in one slot, crossfade + slide. */
   .hm-swap {

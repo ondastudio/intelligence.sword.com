@@ -16,6 +16,7 @@ import FeatureCard from "../components/ui/FeatureCard.astro";
 import MediaFrame from "../components/ui/MediaFrame.astro";
 import ScrollLetterReveal from "../components/ui/ScrollLetterReveal.astro";
 import SolutionCard from "../components/ui/SolutionCard.astro";
+import OutcomeIconCard from "../components/ui/OutcomeIconCard.astro";
 import TriageMedia from "../components/ui/TriageMedia.astro";
 import StoryCard from "../components/ui/StoryCard.astro";
 import TeamCard from "../components/ui/TeamCard.astro";
@@ -51,6 +52,39 @@ const demoCard = {
   glow: "/triage/card-glow-purple.svg",
   cta: { label: "Learn More", href: "#" },
 };
+
+// OutcomeIconCard demo — the icon-card variant, and its stat/icon mixes. Each
+// mix row is a list of cards; a card is either a stat (value + label) or an icon
+// (icon name + label). The Solution section renders exactly this way per card.
+const outcomeMixes = [
+  {
+    label: "Two stat + two icon",
+    cards: [
+      { stat: { value: "57%", label: "More patients ready for surgery" } },
+      { stat: { value: "72%", label: "Reduction in surgical complications" } },
+      { icon: "dna", label: "DNA risk for every appointment is predicted in real time." },
+      { icon: "calendar-03", label: "Cancellations become recovered revenue, autonomously." },
+    ],
+  },
+  {
+    label: "Three stat + one icon",
+    cards: [
+      { stat: { value: "57%", label: "More patients ready for surgery" } },
+      { stat: { value: "72%", label: "Reduction in surgical complications" } },
+      { stat: { value: "£405K", label: "saved for one NHS Trust in 3 months" } },
+      { icon: "lamp-01", label: "Waiting patients are instantly matched to open slots." },
+    ],
+  },
+  {
+    label: "Intercalated (stat, icon, stat, icon)",
+    cards: [
+      { stat: { value: "57%", label: "More patients ready for surgery" } },
+      { icon: "dna", label: "DNA risk for every appointment is predicted in real time." },
+      { stat: { value: "72%", label: "Reduction in surgical complications" } },
+      { icon: "calendar-03", label: "Cancellations become recovered revenue, autonomously." },
+    ],
+  },
+];
 
 const swatches = [
   { name: "brand", cls: "bg-brand", hex: "#7700ee" },
@@ -257,6 +291,85 @@ const swatches = [
           cta={demoCard.cta}
         />
       </div>
+    </section>
+
+    <!-- OutcomeIconCard -->
+    <section class="mt-14">
+      <h2 class="text-sm font-semibold uppercase">OutcomeIconCard</h2>
+      <p class="mt-1 max-w-2xl text-sm text-black/50">
+        The icon+text variant of a Solution card (Figma 9390-206): a lavender icon
+        disc + a line of serif copy, on the same white→purple gradient as the stat
+        card. Set per card in <code>data/solutions.json</code> via
+        <code>solution.cards[].variant: "icon"</code> (with an <code>icon</code>
+        name) — <code>"stat"</code> is the default. The section takes any number of
+        cards (up to the four Problem cards it morphs from), and stat + icon cards
+        can be mixed in any ratio and any order — including intercalated (stat,
+        icon, stat, icon). Icon names come from <code>ui/outcomeIcons.ts</code>.
+      </p>
+
+      {/* Four icon cards — an all-icon Solution row. */}
+      <p class="mt-4 text-xs font-semibold uppercase text-black/40">
+        Four icon cards
+      </p>
+      <div class="mt-2 flex flex-col gap-4 rounded-card bg-surface p-6 md:flex-row md:items-stretch">
+        <OutcomeIconCard
+          class="min-h-[334px]"
+          icon="dna"
+          label="DNA risk for every appointment is predicted in real time."
+        />
+        <OutcomeIconCard
+          class="min-h-[334px]"
+          icon="lamp-01"
+          label="Waiting patients are instantly matched to open slots."
+        />
+        <OutcomeIconCard
+          class="min-h-[334px]"
+          icon="calendar-03"
+          label="Cancellations become recovered revenue, autonomously."
+        />
+        <OutcomeIconCard
+          class="min-h-[334px]"
+          icon="heart-check"
+          label="Every patient is coached and supported through recovery."
+        />
+      </div>
+
+      {/* Mixed rows — stat + icon cards in different ratios. */}
+      {
+        outcomeMixes.map((row) => (
+          <>
+            <p class="mt-6 text-xs font-semibold uppercase text-black/40">
+              {row.label}
+            </p>
+            <div class="mt-2 flex flex-col gap-4 rounded-card bg-surface p-6 md:flex-row md:items-stretch">
+              {row.cards.map((card) =>
+                card.stat ? (
+                  <div class="group relative flex min-h-[334px] flex-1 flex-col items-center justify-between gap-8 overflow-hidden rounded-card bg-white bg-[image:var(--gradient-solution-card)] px-8 pb-10 pt-[88px] text-center">
+                    <ArrowCircle
+                      variant="dotted"
+                      glyph="arrow"
+                      decorative
+                      class="absolute right-6 top-6"
+                    />
+                    <p class="font-serif text-h3 font-normal text-black">
+                      {card.stat.value}
+                    </p>
+                    <p class="max-w-[244px] text-sm font-semibold uppercase text-ink">
+                      {card.stat.label}
+                    </p>
+                  </div>
+                ) : (
+                  <OutcomeIconCard
+                    class="min-h-[334px]"
+                    icon={card.icon}
+                    label={card.label}
+                  />
+                ),
+              )}
+            </div>
+          </>
+        ))
+      }
     </section>
 
     <!-- TriageMedia -->

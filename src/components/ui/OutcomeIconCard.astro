@@ -1,0 +1,60 @@
+---
+/**
+ * OutcomeIconCard — the icon+text variant of a Solution card (Figma 9390-206).
+ *
+ * The alternative to the big-number stat card in the Problem→Solution section:
+ * a soft-lavender icon disc near the top and a line of serif copy at the bottom,
+ * on the same white→purple gradient surface as the stat cards. No number, no
+ * arrow, no link (unless `href` is set). Cards of this variant can be mixed with
+ * stat cards in the same row — the section picks the variant per card from
+ * src/data/solutions.json (`solution.cards[].variant: "icon"`).
+ *
+ * Content-free: `icon` (a name from outcomeIcons) + `label` come from data.
+ * Extra attributes (e.g. the section's `data-solution-card` animation hook) pass
+ * through to the root so it participates in the handoff's focus-pull morph.
+ */
+import { outcomeIcons } from "./outcomeIcons";
+
+interface Props {
+  /** Icon name — a key of outcomeIcons (e.g. "dna", "lamp-01", "calendar-03"). */
+  icon: string;
+  /** Card copy. */
+  label: string;
+  /** Optional — makes the whole card a link. Icon cards are non-clickable by default. */
+  href?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { icon, label, href, class: className = "", ...rest } = Astro.props;
+const glyph = outcomeIcons[icon] ?? "";
+
+// The icon disc sits at pt-6 (24px), level with the stat cards' top-right arrow
+// button (top-6); the copy sits at pb-10 (40px), level with their label. Sharing
+// the row height, both edges line up with the stat cards. Sides stay 32px (px-8).
+const base =
+  "relative flex flex-1 flex-col items-center justify-between gap-8 overflow-hidden rounded-card bg-white bg-[image:var(--gradient-solution-card)] px-8 pb-10 pt-6 text-center";
+const classes = [base, href ? "cursor-pointer" : "", className].join(" ");
+
+const Tag = href ? "a" : "div";
+const linkAttrs = href ? { href } : {};
+---
+
+<Tag class={classes} {...linkAttrs} {...rest}>
+  <span
+    class="grid size-12 shrink-0 place-items-center rounded-full bg-purple-150 text-black"
+    aria-hidden="true"
+  >
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="size-8"
+      set:html={glyph}
+    />
+  </span>
+  <p class="font-serif text-2xl font-normal text-black">{label}</p>
+</Tag>
